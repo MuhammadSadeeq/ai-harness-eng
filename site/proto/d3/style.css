@@ -52,6 +52,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   background: var(--bg);
   -webkit-text-size-adjust: 100%;
@@ -127,7 +131,8 @@ a {
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
+  clip-path: inset(50%);
+  white-space: normal;
   border: 0;
 }
 
@@ -152,8 +157,7 @@ a {
 /* ---------- chrome ---------- */
 
 .topbar {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 20;
   background: color-mix(in srgb, var(--bg) 92%, transparent);
   border-bottom: 1px solid var(--line);
@@ -619,6 +623,24 @@ a {
   background: color-mix(in srgb, var(--ok) 10%, transparent);
 }
 
+.home-main {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  align-content: start;
+}
+.path-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+@media (min-width: 700px) {
+  .path-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 .runbook {
   display: grid;
   gap: 16px;
@@ -636,7 +658,7 @@ a {
 .path-row {
   width: 100%;
   display: grid;
-  grid-template-columns: 28px 1fr auto;
+  grid-template-columns: 28px minmax(0, 1fr);
   align-items: center;
   gap: 10px;
   min-height: 44px;
@@ -658,6 +680,7 @@ a {
   font-weight: 700;
 }
 .path-row .state {
+  display: block;
   font-size: 14px;
   color: var(--ink-2);
 }
@@ -1051,6 +1074,7 @@ a {
   position: absolute;
   top: 6px;
   transform: translateX(-50%);
+  white-space: nowrap;
 }
 .playhead {
   position: absolute;
@@ -1199,12 +1223,6 @@ a {
   max-height: 340px;
   overflow: auto;
   padding: 4px;
-}
-@media (max-width: 959px) {
-  .log {
-    max-height: none;
-    overflow: visible;
-  }
 }
 .log-row {
   display: grid;
@@ -1535,6 +1553,37 @@ input[type="range"]::-moz-range-thumb {
 
 /* ---------- prove: canary dashboard ---------- */
 
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 14px;
+}
+table.compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+table.compare caption {
+  caption-side: top;
+  text-align: left;
+  color: var(--ink-2);
+  font-size: 14px;
+  padding-bottom: 8px;
+}
+table.compare th,
+table.compare td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+table.compare th:not(:first-child),
+table.compare td:not(:first-child) {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
 .canary-head {
   display: grid;
   gap: 10px;
@@ -1623,7 +1672,8 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: inset 0 0 0 2px var(--ink-2);
 }
 .cell.is-pending {
-  opacity: 0.45;
+  border-style: dashed;
+  color: var(--ink-2);
 }
 .cell.is-appear {
   animation: cell-in var(--t-base) var(--ease) both;
@@ -1689,6 +1739,10 @@ input[type="range"]::-moz-range-thumb {
 .metric .label {
   font-size: 14px;
   color: var(--ink-2);
+}
+.metric .big .glyph {
+  margin-right: 8px;
+  vertical-align: -3px;
 }
 .metric .big {
   font-family: var(--mono);
@@ -1831,6 +1885,11 @@ input[type="range"]::-moz-range-thumb {
   width: 100%;
   height: auto;
   overflow: visible;
+}
+/* Chart and histogram text is drawn at its rendered size (see drawChart and histogram). */
+.chart text,
+.hist svg text {
+  font-size: 14px;
 }
 .plug-row {
   display: grid;

@@ -202,3 +202,12 @@ random verified facts against the live sources: 20/20 quotes present
 verbatim (one needed tag-aware matching). Spec facts quoted from Markdown use
 the pinned repository file as `source` (FACTS §3); ReAct and tau-bench
 citation facts are verified against the authors' own repositories.
+
+### D-033 · Every wire emits at least one event every turn · *decided (Phase 1 schema)*
+Prototyping showed that a lane with no events reads as broken (the D1 replay
+had empty context and errors lanes, and D0's observability lane was empty).
+The Phase 1 trace schema adds per-turn events so each lane shows the turn:
+`context_check` (context: prompt tokens vs window, action none/trim/compact),
+`recovery_check` or `model_error` (errors: attempts, breaker state, even when
+nothing failed), and `trace_write` (observe: what was recorded, what was
+redacted). Exact names are fixed in `scenarios/schema.json`.

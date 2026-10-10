@@ -262,8 +262,6 @@ export function summary(ev) {
 
 // --- puzzle and bench statistics -----------------------------------------------------
 
-export const TRIALS = DATA.bench.new.map((trial, i) => ({ index: i, seed: trial.seed }));
-
 export function percentile(values, p) {
   const sorted = [...values].sort((a, b) => a - b);
   if (p >= 100) return sorted[sorted.length - 1];
@@ -325,10 +323,10 @@ export function fmtCost(c) {
 }
 
 export function fmtSeconds(s) {
-  if (s < 60) return `${s.toFixed(1)} s`;
+  if (s < 60) return `${s.toFixed(1)}\u00a0s`;
   const m = Math.floor(s / 60);
   const rest = Math.round(s - m * 60);
-  return `${m} min ${rest} s`;
+  return `${m} min ${rest}\u00a0s`;
 }
 
 // --- motion, storage and announcements ------------------------------------------------
@@ -381,7 +379,7 @@ function applyMotion(value) {
   if (button) {
     const reduced = reducedMotion();
     button.setAttribute("aria-pressed", String(reduced));
-    button.querySelector("[data-motion-label]").textContent = reduced ? "Reduced" : "Full";
+    button.querySelector("[data-motion-label]").textContent = reduced ? "On" : "Off";
   }
   document.dispatchEvent(new CustomEvent("d3:motion", { detail: { reduced: reducedMotion() } }));
 }

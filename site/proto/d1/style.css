@@ -325,17 +325,19 @@ a { color: var(--ink); }
 .track { position: relative; min-height: 44px; background: linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), transparent 0), repeating-linear-gradient(90deg, transparent 0 39px, rgba(30,34,38,.09) 39px 40px); border-left: 2px solid var(--c); }
 .track .rail { position: absolute; left: 0; right: 0; top: 50%; height: 0; border-top: 2px dotted var(--c); opacity: .6; }
 .note {
-  position: absolute; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; padding: 0; border: 1px solid var(--edge); border-radius: 50%;
-  background: var(--panel); display: grid; place-items: center; cursor: pointer; color: var(--c); transition: transform 120ms ease;
+  position: absolute; z-index: 2; width: 30px; height: 30px; margin: 0 0 0 -15px; padding: 0; border: 0; background: transparent;
+  display: grid; place-items: center; cursor: pointer; color: var(--c); transition: transform 120ms ease;
+}
+.note::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 50%; background: var(--panel); border: 1px solid var(--edge);
 }
 .note .glyph { width: 20px; height: 20px; }
 .note.past { opacity: .85; }
 .note.future { opacity: .45; }
-.note.cur { outline: 3px solid var(--ink); outline-offset: 2px; opacity: 1; }
-.note.stacked-1 { margin-top: 13px; }
-.note.stacked-2 { margin-top: -13px; }
+.note.cur { opacity: 1; }
+.note.cur::before { border: 3px solid var(--ink); }
 .note.repeat::after { content: "↺"; position: absolute; right: -6px; top: -8px; font-size: 14px; background: var(--ink); color: var(--panel); border-radius: 50%; width: 16px; height: 16px; line-height: 16px; text-align: center; }
-.playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--ink); z-index: 4; pointer-events: none; }
+.playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--ink); z-index: 1; pointer-events: none; }
 .pulse { position: absolute; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 30%, transparent); pointer-events: none; z-index: 5; }
 .callout {
   position: absolute; z-index: 6; width: min(360px, 90%); padding: 10px 12px; background: var(--ink); color: var(--panel); border-radius: 6px;
@@ -509,3 +511,34 @@ a { color: var(--ink); }
   }
 }
 @media print { .bar, .toggles, .transport-bar { display: none; } }
+
+/* Layout helpers added with the screens. */
+.track { min-height: 56px; }
+.readout-stack { display: grid; gap: 10px; }
+.steps { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (min-width: 700px) { .steps { grid-template-columns: repeat(10, minmax(0, 1fr)); } }
+@media (max-width: 959px) { .cables { display: none; } }
+@media (max-width: 699px) { .detail-col { display: none; } }
+.scope svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.log-row[hidden], .lane[hidden] { display: none !important; }
+
+/* Fit fixes from review. */
+.slot-name { display: flex; gap: 6px; align-items: flex-start; }
+.slot-body .slot-foot { flex-wrap: wrap; justify-content: flex-start; gap: 8px; }
+.dial { width: 44px; height: 44px; }
+.dial::after { top: 5px; height: 14px; transform-origin: 50% 17px; }
+.slot-foot .label { font-stretch: 70%; letter-spacing: .02em; white-space: nowrap; }
+.plug-later { display: grid !important; gap: 2px; }
+.pl-id { font-family: var(--mono); font-size: 14px; color: var(--ink); }
+.pl-name { font-stretch: 80%; font-weight: 650; font-size: 15px; line-height: 1.2; }
+@media (min-width: 700px) { .lanes-wrap { padding-bottom: 76px; } }
+.log-row { grid-template-columns: 22px 64px 1fr; }
+.log-row .t { white-space: nowrap; }
+
+.run-key { min-width: 240px; min-height: 64px; font-size: 20px; }
+.scope-caption { color: var(--ink-2); font-family: var(--sans); font-size: 15px; margin: 0; }
+.scope-caption::before { content: none; }
+
+.fader-row .fader-line { flex-wrap: nowrap; }
+.fader-row .fader { flex: 1 1 auto; min-width: 0; }
+.fader-wrap { margin: 4px 0 0; }

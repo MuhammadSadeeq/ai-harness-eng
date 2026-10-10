@@ -52,7 +52,7 @@ function slot(wire, index) {
   if (isEmpty) {
     body = el("div", { class: "slot-body" }, [
       el("p", { class: "label small-ink", text: "Plugs in later" }),
-      el("p", { class: "plug-later", text: wire.later }),
+      el("p", { class: "plug-later" }, [el("span", { class: "pl-id", text: wire.later.split(" · ")[0] }), el("span", { class: "pl-name", text: wire.later.split(" · ")[1] })]),
     ]);
   } else {
     const nameRow = el("p", { class: "slot-name" }, [

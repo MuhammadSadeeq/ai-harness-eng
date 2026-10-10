@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prove · HARNESSED</title>
+<meta name="description" content="B2 Prove: run both boards on the same 20 seeds, then find the turn limit that beats par.">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="prove.js"></script>
+</head>
+<body data-page="prove">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="index.html">HARNESSED<small>Patch Bay</small></a>
+  <nav aria-label="Screens">
+    <a href="index.html">Home</a>
+    <a href="break.html">Break</a>
+    <a href="prove.html" aria-current="page">Prove</a>
+  </nav>
+  <div class="toggles">
+    <button class="key quiet" type="button" data-toggle="motion" aria-pressed="false">Reduced motion</button>
+    <button class="key quiet" type="button" data-toggle="clicks" aria-pressed="false">Clicks</button>
+  </div>
+</header>
+<p id="live" class="sr" role="status" aria-live="polite"></p>
+<main id="main">
+  <hx-proto-prove>
+    <noscript><p class="prove-wrap">The bench needs JavaScript. The results are in the lesson text.</p></noscript>
+  </hx-proto-prove>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Patch Bay · HARNESSED</title>
+<meta name="description" content="Your harness as a modular rack: the eight wires, the two modules you have, and what plugs in next.">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="home.js"></script>
+</head>
+<body data-page="home">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="index.html">HARNESSED<small>Patch Bay</small></a>
+  <nav aria-label="Screens">
+    <a href="index.html" aria-current="page">Home</a>
+    <a href="break.html">Break</a>
+    <a href="prove.html">Prove</a>
+  </nav>
+  <div class="toggles">
+    <button class="key quiet" type="button" data-toggle="motion" aria-pressed="false">Reduced motion</button>
+    <button class="key quiet" type="button" data-toggle="clicks" aria-pressed="false">Clicks</button>
+  </div>
+</header>
+<p id="live" class="sr" role="status" aria-live="polite"></p>
+<main id="main">
+  <hx-proto-home>
+    <noscript><p class="home-wrap">The rack needs JavaScript. Every lesson still works from its own page.</p></noscript>
+  </hx-proto-home>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

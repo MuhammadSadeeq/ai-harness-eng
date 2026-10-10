@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b0f14">
+<title>Night Shift · Console · HARNESSED</title>
+<link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<script type="module" src="home.js"></script>
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-dot" aria-hidden="true"></span>NIGHT SHIFT <span class="brand-sub">HARNESSED</span></a>
+    <nav class="nav" aria-label="Night Shift">
+      <a href="index.html" aria-current="page">Console</a>
+      <a href="break.html">Incident</a>
+      <a href="prove.html">Canary</a>
+    </nav>
+    <button type="button" class="motion" data-motion-toggle aria-pressed="false">Reduce motion <span data-motion-label>Off</span></button>
+  </div>
+</header>
+<main id="main" class="shell">
+  <hx-proto-home>
+    <section class="page-card is-alert" aria-labelledby="page-title">
+      <p class="kicker">PAGE · loop wire</p>
+      <h2 id="page-title">Run b2-spiral has called tools 14 times and hasn’t stopped.</h2>
+      <p class="detail">Incident: the “almost done” spiral. Turn on JavaScript to open the shift console.</p>
+      <div class="actions"><a class="btn" href="break.html">Acknowledge</a></div>
+    </section>
+    <p class="noscript">The Harness board and the runbook need JavaScript. The incident is still one link away.</p>
+  </hx-proto-home>
+</main>
+<p id="live" class="sr-only" aria-live="polite"></p>
+</body>
+</html>
