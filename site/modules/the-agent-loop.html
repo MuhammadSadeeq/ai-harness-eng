@@ -51,7 +51,7 @@
     <p>This run edits a file, runs the tests and reads the result. It has done that several times. Predict what it does next.</p>
 
     <hx-check mode="predict" src="B2" item="B2-p1" for="break-run">
-      <p>Without JavaScript, the question is: this run has edited and tested four times. What happens next?</p>
+      <p>Without JavaScript, the question is: this run has edited and tested several times. What happens next?</p>
       <ol>
         <li>The tests pass, the model says it is done, and the run ends.</li>
         <li>The loop reaches its turn limit and stops.</li>
@@ -72,8 +72,8 @@
   <section class="beat" data-beat="see" id="see">
     <h2>How the loop works</h2>
     <p>One model call gives one reply. An agent needs many calls, so something has to make them. That something is the <dfn data-term="agent-loop">agent loop</dfn>. It calls the model, runs the tools the model asks for, and calls the model again. Each pass is one <dfn data-term="turn">turn</dfn>: a call, and the results that follow it.</p>
-    <p>The pattern has a name from a research paper, <dfn data-term="react">ReAct</dfn>. <span class="fact" data-fact="papers.react-title-id">The authors' repo cites the paper as ReAct: Synergizing Reasoning and Acting in Language Models, ICLR 2023.</span></p>
-    <p>Read the code from the top. Each comment marks one step. <span class="fact" data-fact="api.content-multiple-blocks">A response's content is an array of content blocks, each with a type that determines its shape.</span> The loop reads each block by its type.</p>
+    <p>This loop is often called <dfn data-term="react">ReAct</dfn>, after a paper (<span class="fact" data-fact="papers.react-title-id">The authors' repo cites the paper as ReAct: Synergizing Reasoning and Acting in Language Models, ICLR 2023.</span>): reasoning and acting, in turns.</p>
+    <p>Read the code from the top. Each comment marks one step.</p>
 
     <pre data-run tabindex="0" role="region" aria-label="Python code"><code class="language-python">from collections.abc import Callable
 from typing import Any
@@ -107,6 +107,7 @@ def fake_model(messages: list[Any]) -&gt; Reply:            # asks for one tool,
 
 print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", max_turns=5))</code></pre>
     <pre data-output>done</pre>
+    <p><span class="fact" data-fact="api.content-multiple-blocks">A response's content is an array of content blocks, each with a type that determines its shape.</span> The loop reads each block by its type, so the text before a tool_use is never mistaken for the call.</p>
 
     <figure>
       <hx-clock tape="b2-spiral" board="b2-new" turn="3" data-objective="B2.o5">
@@ -145,25 +146,28 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
 
     <h3>A loop needs more than one exit</h3>
     <p>Each way out of the loop is an <dfn data-term="exit">exit</dfn>. The loop above has two. The first is the model's <dfn data-term="done-claim">done claim</dfn>, end_turn. It is a claim, and nothing in this loop checks it. The second belongs to the harness. A <dfn data-term="turn-limit">turn limit</dfn> stops the loop after a set number of model calls. A <dfn data-term="token-budget">token budget</dfn> stops it after a set number of tokens, input and output together. Neither depends on what the model thinks.</p>
+    <aside class="note">
+      <p>Why count model calls, not tool calls? Suppose one reply asks for three tools. That is still one turn, so the limit counts calls.</p>
+    </aside>
 
     <h3>Where the other seven wires plug in</h3>
-    <p>The other seven wires attach to the loop at fixed points. Control shapes the prompt before each call. Context &amp; memory decides what stays on the desk. Errors &amp; recovery decides what a failed call does. Permissions check each tool request before it runs. Verification checks the done claim. Observability records each step. The clock above shows where each one sits.</p>
+    <p>The other seven wires attach to the loop at fixed points. Control shapes the prompt before each call. Context &amp; memory decides what stays in the context window. Errors &amp; recovery decides what a failed call does. Permissions check each tool request before it runs. Verification checks the done claim. Observability records each step. The clock above shows where each one sits.</p>
   </section>
 
   <section class="beat" data-beat="fix" id="fix">
     <h2>Set the exits</h2>
     <p>Lower the turn limit, then run the bench on the same seeds. Find the cheapest turn limit that still lets every passing run finish.</p>
-    <p>With a turn limit of <hx-num for="bench-par" name="knob" pointer-only>12</hx-num> turns, the new board passes <hx-num for="bench-par" name="passed.new">—</hx-num> runs after a run.</p>
+    <p>With a turn limit of <hx-num for="bench-par" name="knob" pointer-only>12</hx-num> turns, the new board passes <hx-num for="bench-par" name="passed.new">—</hx-num> of 20 runs.</p>
 
     <figure>
       <hx-bench id="bench-par" tape="b2-spiral" old="b2-old" new="b2-new" knob="turn_limit.max_turns" knob-min="4" knob-max="30" par="cheapest-worst-case" data-objective="B2.o3">
         <p>Without JavaScript, the bench shows the old board and the new board on the same seeds, with a turn limit you can change.</p>
       </hx-bench>
-      <figcaption>FIG B2.3 · The Knob Bench. Try this: find the cheapest turn limit that keeps every passing run.</figcaption>
+      <figcaption>FIG B2.3 · The bench. Try this: find the cheapest turn limit that keeps every passing run.</figcaption>
     </figure>
 
-    <h3>Write the loop from memory</h3>
-    <p>Write <code>run_loop</code> from memory. Its tests run against a fake model, one stop reason at a time. Use a hint only when you are stuck.</p>
+    <h3>Write the loop</h3>
+    <p>Write <code>run_loop</code>. Its tests run against a fake model, one stop reason at a time. Use a hint only when you are stuck.</p>
     <hx-kata kata="B2-loop" data-objective="B2.o1 B2.o2">
       <p>Without JavaScript, open katas/B2-loop/test_kata.py. Each test names one stop reason or one rule of the loop.</p>
     </hx-kata>
@@ -185,7 +189,12 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
     <h2>Keep it</h2>
     <p class="law">Every run needs more than one exit.</p>
     <hx-cards src="B2">
-      <p>Without JavaScript, the cards are not shown. Re-read the terms above.</p>
+      <dl>
+        <dt>What is a turn in the agent loop?</dt><dd>One call to the model, plus the tool results that follow it.</dd>
+        <dt>What is a turn limit?</dt><dd>A cap on the number of model calls in one run. The loop stops when the cap is reached.</dd>
+        <dt>What is a token budget?</dt><dd>A cap on the total tokens a run may use, input and output together. The loop checks it before each call.</dd>
+        <dt>What is a done claim?</dt><dd>The model's own statement that it finished, carried by end_turn. The loop checks it. It is not proof.</dd>
+      </dl>
     </hx-cards>
     <h3>Say it out loud</h3>
     <hx-say src="B2">
@@ -194,11 +203,16 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
         <li>A run never stops. How do you debug it, and what do you change?</li>
       </ol>
     </hx-say>
+    <h3>Write it again from memory</h3>
+    <p>Come back tomorrow and write it from a blank file.</p>
+    <hx-kata kata="B2-loop" mode="memory" data-objective="B2.o1 B2.o2">
+      <p>Without JavaScript, open katas/B2-loop/test_kata.py and write run_loop from a blank file.</p>
+    </hx-kata>
     <aside class="portfolio">
       <h3>What to show from this module</h3>
       <ul>
         <li>Your loop, written from memory, with the tests passing.</li>
-        <li>The par value from the Knob Bench, and why that turn limit is the cheapest worst case.</li>
+        <li>The par value from the bench, and why that turn limit is the cheapest worst case.</li>
       </ul>
     </aside>
   </section>

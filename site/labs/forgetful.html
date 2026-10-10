@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The model has no memory · HARNESSED</title>
+<meta name="description" content="A model knows only what is in the request. Send the history, or do not, and see what it can answer.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">
+  import "../assets/components/hx-forgetful.js";
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · no memory</p>
+    <h1>Send the history</h1>
+    <p class="lede">Each request is all the model sees. Ask it something it can only answer from earlier messages, with and without the history.</p>
+  </header>
+  <section class="row" aria-labelledby="off-h">
+    <h2 id="off-h">Without the history</h2>
+    <hx-forgetful src="data/forgetful-demo.json">
+      <p>Type two messages. Without the history, the second one arrives alone.</p>
+    </hx-forgetful>
+  </section>
+  <section class="row" aria-labelledby="on-h">
+    <h2 id="on-h">With the history</h2>
+    <hx-forgetful src="data/forgetful-demo.json" resend="1">
+      <p>The same two messages. With the history resent, the second request holds the first.</p>
+    </hx-forgetful>
+  </section>
+</main>
+</body>
+</html>

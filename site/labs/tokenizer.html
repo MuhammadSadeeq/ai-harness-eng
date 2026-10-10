@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tokens and the window · HARNESSED</title>
+<meta name="description" content="A model reads tokens, not characters. Type text and see the estimate and the share of the context window.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">
+  import "../assets/components/hx-tokenizer.js";
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · tokens</p>
+    <h1>Count the tokens</h1>
+    <p class="lede">A model reads tokens. A token is a few characters. The window is how many tokens fit in one request.</p>
+  </header>
+  <section class="row" aria-labelledby="tok-h">
+    <h2 id="tok-h">Type text</h2>
+    <hx-tokenizer src="data/tokenizer-demo.json" window="8000" text="Why does my agent keep calling the same tool with the same input?">
+      <p>Type text to see its estimated tokens and its share of the window.</p>
+    </hx-tokenizer>
+  </section>
+</main>
+</body>
+</html>

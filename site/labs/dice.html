@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pass@k and pass^k · HARNESSED</title>
+<meta name="description" content="Two ways to count retries: at least one of k tries works, and all k tries work. Roll tasks and compare the formulas.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">
+  import "../assets/components/hx-dice.js";
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · pass@k and pass^k</p>
+    <h1>Retries and reliability</h1>
+    <p class="lede">A task that is tried k times can count as passed in two ways. Roll the tasks and compare the two numbers.</p>
+  </header>
+  <section class="row" aria-labelledby="dice-h">
+    <h2 id="dice-h">Roll the tasks</h2>
+    <hx-dice p="90" k="3" tasks="20" seed="1">
+      <p>Each try works with the chance you set. Roll to see twenty tasks of three tries each.</p>
+    </hx-dice>
+  </section>
+</main>
+</body>
+</html>

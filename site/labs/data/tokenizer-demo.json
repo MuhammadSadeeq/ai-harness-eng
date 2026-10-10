@@ -1,0 +1,15 @@
+{
+ "presets": [
+  {
+   "label": "A short question",
+   "text": "Why does my agent keep calling the same tool with the same input?"
+  },
+  {
+   "label": "A 40 KB log",
+   "repeat": {
+    "line": "2026-10-10 12:00:01 INFO worker-3 tool_call run_command pytest -q exit=1",
+    "times": 548
+   }
+  }
+ ]
+}

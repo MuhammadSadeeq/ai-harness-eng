@@ -1,0 +1,18 @@
+/* hx-forgetful: tokens only; keys and inputs come from hx.css. */
+hx-forgetful { display: block; margin: var(--sp-5) 0; }
+hx-forgetful .hx-ui { display: block; }
+.fg { display: grid; gap: var(--sp-3); }
+.fg-note { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.fg-toggle { display: flex; align-items: center; gap: var(--sp-2); min-height: 44px; font: 600 var(--fs-ui) var(--font-sans); }
+.fg-toggle input { width: 20px; height: 20px; accent-color: var(--hx-ink); }
+.fg-grid { display: grid; gap: var(--sp-4); }
+@media (min-width: 700px) { .fg-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.fg-label { margin: 0 0 var(--sp-2); font: 600 var(--fs-small)/1.2 var(--font-sans); letter-spacing: .04em; text-transform: uppercase; color: var(--hx-ink-2); }
+.fg-log, .fg-request { list-style: none; margin: 0; padding: var(--sp-3); display: grid; gap: var(--sp-2); min-height: 6rem; border: 1px solid var(--hx-rule); border-radius: var(--r-btn); background: var(--hx-panel); }
+.fg-turn, .fg-request li { display: grid; gap: 2px; }
+.fg-who, .fg-role { font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink-2); }
+.fg-text { font: 400 var(--fs-ui)/1.45 var(--font-serif); }
+.fg-suggest, .fg-compose { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); }
+.fg-compose input { flex: 1 1 12rem; min-height: 48px; padding: 0 var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 400 var(--fs-ui) var(--font-sans); }
+.fg-count, .fg-tokens { margin: var(--sp-2) 0 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); }
+.fg-tokens { font-family: var(--font-mono); color: var(--hx-ink-2); }

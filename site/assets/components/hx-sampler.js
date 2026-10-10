@@ -168,7 +168,7 @@ export class HxSampler extends HxElement {
       el("p", { class: "fig-label", text: "Next word" }),
       dom.prompt,
       el("div", { class: "sampler-temp" },
-        el("p", { class: "readout-label", text: "Temperature" }),
+        el("p", { class: "sampler-label", text: "Temperature" }),
         el("div", { class: "sampler-temp-row" }, dom.minus, dom.range, dom.plus, el("span", { class: "readout" }, dom.tempValue))),
       dom.zero,
       el("ol", { class: "cands", role: "list" }, ...dom.rows.map((r) => r.node)),

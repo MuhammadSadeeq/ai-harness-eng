@@ -13,7 +13,7 @@
 :root {
   --plate-edge: var(--hx-rule);
   --hx-gutter: 16px;
-  --hx-top-h: 60px;
+  --hx-top-h: 52px;
 }
 @media (min-width: 700px) { :root { --hx-gutter: 24px; } }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --plate-edge: var(--hx-rule-strong); } }
@@ -55,10 +55,10 @@ pre { margin: var(--sp-3) 0 0; padding: var(--sp-3) var(--sp-4); background: var
 pre code { background: none; padding: 0; color: inherit; }
 kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--hx-rule-strong); border-bottom-width: 2px; border-radius: 4px; background: var(--hx-panel); font-size: var(--fs-small); }
 
-/* ---------- top bar: one row (60 px; 56 px on phones; sticky strips and rails clear --hx-top-h) ---------- */
+/* ---------- top bar: one row (52 px; 56 px on phones; below 1100 px the settings live in the Menu sheet) ---------- */
 .topbar {
   position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: nowrap; align-items: center; gap: var(--sp-3);
-  min-height: var(--hx-top-h); padding: 6px var(--hx-gutter); background: var(--hx-paper); border-bottom: 1px solid var(--hx-rule);
+  min-height: var(--hx-top-h); padding: 0 var(--hx-gutter); background: var(--hx-paper); border-bottom: 1px solid var(--hx-rule);
 }
 .wordmark { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 44px; color: var(--hx-ink); text-decoration: none; font: 600 var(--fs-ui)/1 var(--font-sans); letter-spacing: .04em; }
 .connector { width: 22px; height: 22px; fill: none; stroke: var(--hx-ink); stroke-width: 2; stroke-linecap: round; }
@@ -71,15 +71,15 @@ kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--hx-rule-s
 .board-btn { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 44px; padding: 0 var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 600 var(--fs-small)/1 var(--font-sans); text-decoration: none; }
 .board-btn svg { width: 22px; height: 22px; }
 .board-btn { white-space: nowrap; }
-@media (max-width: 767px) { .board-word { display: none; } }
-@media (max-width: 1099px) { .topbar { gap: var(--sp-2); } .settings { gap: var(--sp-1); } }
+@media (max-width: 699px) { .board-word { display: none; } }
 .menu-btn { display: none; min-width: 44px; min-height: 44px; margin-left: auto; padding: 0 var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 600 var(--fs-ui)/1 var(--font-sans); cursor: pointer; }
-@media (max-width: 739px) {
-  .top-nav, .settings { display: none; }
+@media (max-width: 1099px) {
+  .settings { display: none; }
   .menu-btn { display: inline-flex; align-items: center; justify-content: center; }
 }
 @media (max-width: 699px) {
-  .topbar { min-height: 56px; padding: 5px var(--hx-gutter); }
+  .top-nav { display: none; }
+  .topbar { min-height: 56px; padding: 0 var(--hx-gutter); }
   .module-id .mod-title { display: none; }
 }
 @media (max-width: 699px) { .topbar { position: static; } }

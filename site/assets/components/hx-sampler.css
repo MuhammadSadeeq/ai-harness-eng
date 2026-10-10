@@ -5,7 +5,7 @@ hx-sampler .hx-ui { display: block; }
 .sampler .fig-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--hx-ink-2); }
 .sampler-prompt { margin: 0; font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }
 .sampler-temp { display: grid; gap: var(--sp-1); }
-.sampler-temp .readout-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); }
+.sampler-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink); }
 .sampler-temp-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px auto; gap: var(--sp-2); align-items: center; }
 .sampler-temp-row .readout { padding: var(--sp-1) var(--sp-2); }
 .sampler-temp-row .readout-value { margin: 0; }

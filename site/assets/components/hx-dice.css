@@ -1,0 +1,29 @@
+/* hx-dice: tokens only; keys, readouts and sliders come from hx.css. */
+hx-dice { display: block; margin: var(--sp-5) 0; }
+hx-dice .hx-ui { display: block; }
+.dice { display: grid; gap: var(--sp-3); }
+.dice-sliders { display: grid; gap: var(--sp-3); }
+@media (min-width: 700px) { .dice-sliders { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.dice-slider { display: grid; gap: var(--sp-1); }
+.dice-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink); }
+.dice-slider-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px auto; gap: var(--sp-2); align-items: center; }
+.dice-slider-row .readout { padding: var(--sp-1) var(--sp-2); }
+.dice-slider-row .readout-value { margin: 0; }
+.dice-formulas { display: grid; gap: var(--sp-2); }
+@media (min-width: 700px) { .dice-formulas { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.dice-formula .readout-value { margin: var(--sp-1) 0; }
+.dice-formula p { margin: 0; }
+.dice-sentence { font: 400 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-inst-label); }
+.dice-chain, .dice-observed, .illustrative { margin: 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.dice-chain { font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.dice-keys { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+.seed-label { font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); }
+.dice-legend { margin: 0; display: flex; align-items: center; gap: var(--sp-1); font: 400 var(--fs-small) var(--font-sans); color: var(--hx-ink-2); }
+.dice-legend .glyph { width: 16px; height: 16px; color: var(--hx-ink); }
+.dice-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-1); }
+.dice-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+.dice-task { min-width: 5.5rem; font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); }
+.dice-tries { display: flex; flex-wrap: wrap; gap: 4px; }
+.die { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid var(--hx-rule-strong); border-radius: 6px; background: var(--hx-panel); color: var(--hx-ink); }
+.die.is-bad { border-style: dashed; }
+.die .glyph { width: 18px; height: 18px; }

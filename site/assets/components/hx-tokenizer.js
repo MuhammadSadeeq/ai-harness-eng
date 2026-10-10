@@ -89,7 +89,7 @@ export class HxTokenizer extends HxElement {
     dom.counts = el("p", { class: "tok-counts" });
     dom.rule = el("p", { class: "tok-rule", text: "The estimate uses about 4 characters per token." });
     dom.est = el("p", { class: "tok-est" });
-    dom.split = el("div", { class: "tok-chips", role: "list" });
+    dom.split = el("div", { class: "tok-chips" });
     dom.splitNote = el("p", { class: "tok-note", text: "An approximate split. Real tokenizers differ." });
     dom.splitCount = el("p", { class: "tok-cap" });
     dom.desk = el("span", { class: "tok-desk-fill" });
