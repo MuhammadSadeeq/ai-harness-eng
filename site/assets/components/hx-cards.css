@@ -30,7 +30,7 @@ legend.card-front { margin: 0 0 var(--sp-3); }
 .json-line { min-height: 0; padding: 0 var(--sp-2); white-space: pre-wrap; overflow-wrap: anywhere; }
 .json-row {
   display: flex; align-items: center; gap: var(--sp-2); width: 100%; min-height: 44px; box-sizing: border-box;
-  padding: 0 var(--sp-2); border: 1px solid transparent; border-radius: 6px; background: transparent;
+  padding: 0 var(--sp-2); border: 1px dashed color-mix(in srgb, var(--hx-code-ink) 35%, transparent); border-radius: 6px; background: transparent;
   color: inherit; font: inherit; text-align: left; cursor: pointer; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .json-row:hover { background: var(--hx-panel-2); color: var(--hx-ink); }
