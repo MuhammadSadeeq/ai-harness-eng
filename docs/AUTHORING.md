@@ -173,7 +173,7 @@ In the page:
 | `hx-clock` | Turn Clock; with `board` it is the learner's Harness Board (DESIGN v2 §7.1, D-035) | `tape`, `turn`, `focus`, `board`, `compare="old,new"` |
 | `hx-bench` | Knob Bench, Run ×N | `tape`, `trials`, `knobs`, `old`, `new` |
 | `hx-incident` | Incident Room | `tape`, `family` |
-| `hx-kata` | Python kata (Pyodide) | `id` |
+| `hx-kata` | Python kata (Pyodide) | `kata` (the kata id), `mode="practice\|memory"` |
 | `hx-step` | Rein build step | `step` |
 | `hx-cards` | Spaced repetition | `src` |
 | `hx-say` | Say-it drill | `src` |

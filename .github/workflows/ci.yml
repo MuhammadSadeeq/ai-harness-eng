@@ -26,8 +26,11 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: "22"
+          cache: npm
       - name: Install tools
-        run: pip install -r requirements-dev.txt
+        run: |
+          pip install -r requirements-dev.txt
+          npm ci
       - name: Lint and types
         run: |
           ruff check tools site/assets/py
@@ -47,6 +50,7 @@ jobs:
           python tools/check_facts.py
           python tools/check_snippets.py
           python tools/check_katas.py
+          python tools/check_katas.py --pyodide
           python tools/check_steps.py
           python tools/check_scenarios.py
           python tools/check_wire.py
@@ -88,6 +92,8 @@ jobs:
       - run: npm ci
       - name: Install Chromium for the pinned Playwright
         run: npx playwright install --with-deps chromium
+      - name: Copy self-hosted Pyodide for the kata pages (D-015)
+        run: node tools/vendor/copy_pyodide.mjs
       - name: Pages, widgets, accessibility, budgets, CVD screenshots
         run: node tools/qa/run.mjs --cvd
       - name: Upload screenshots
