@@ -43,6 +43,7 @@ jobs:
           python tools/check_content.py
           python tools/gen_data.py --check
           python tools/gen_pages.py --check
+          python tools/gen_glossary.py --check
       - name: JS unit tests (simulator, shell, store)
         run: node --test "site/assets/**/test/*.test.mjs"
       - name: Content checkers

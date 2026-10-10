@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glossary · HARNESSED</title>
+<meta name="description" content="Every term the course defines, A to Z, with the wire it belongs to and the module that teaches it.">
+<link rel="stylesheet" href="assets/core/tokens.css">
+<link rel="stylesheet" href="assets/core/hx.css">
+<link rel="stylesheet" href="assets/core/pages.css">
+<script type="module" src="assets/core/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar" data-topbar>
+  <a class="wordmark" href="index.html" aria-label="HARNESSED, course home">
+    <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>
+    <span>HARNESSED</span>
+  </a>
+  <nav class="top-nav" aria-label="Pages">
+    <ol>
+      <li><a href="index.html">Course</a></li>
+      <li><a href="glossary.html" aria-current="page">Glossary</a></li>
+      <li><a href="readiness.html">Readiness</a></li>
+    </ol>
+  </nav>
+  <a class="board-btn" href="index.html#board" aria-label="Harness Board, cards due">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12V6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span><span class="board-word">Board · </span><span data-due-text>0 cards due</span></span>
+  </a>
+  <div class="settings">
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="menu-btn" type="button" data-menu-btn aria-haspopup="dialog" aria-expanded="false" aria-controls="menu-sheet" hidden>Menu</button>
+</header>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Reference</p>
+    <h1>Glossary</h1>
+    <p class="lede">Every term the course defines, A to Z. Each names its wire and the module that teaches it.</p>
+  </header>
+
+  <section class="beat" id="terms">
+    <hx-filter for="glossary-list">
+      <p>Filter the terms: with JavaScript on, a search box and a wire list appear here.</p>
+    </hx-filter>
+    <!-- gen:glossary -->
+    <nav class="glossary-index" aria-label="Letters">
+      <ul>
+        <li><a href="#letter-a">A</a></li>
+        <li><a href="#letter-d">D</a></li>
+        <li><a href="#letter-e">E</a></li>
+        <li><a href="#letter-m">M</a></li>
+        <li><a href="#letter-r">R</a></li>
+        <li><a href="#letter-t">T</a></li>
+      </ul>
+    </nav>
+    <div id="glossary-list" class="glossary-list">
+    <section class="glossary-group" id="letter-a" data-filter-group>
+      <h2>A</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-agent-loop">
+        <h3 class="term-name"><dfn id="term-agent-loop">agent loop</dfn></h3>
+        <p class="term-def">The code that calls the model, runs the tools the model asks for, adds the results to the history, and calls the model again. It stops when one of its exits is taken.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
+        </p>
+        <p class="term-alias">Also written: agent loops</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-d" data-filter-group>
+      <h2>D</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-dataclass">
+        <h3 class="term-name"><dfn id="term-dataclass">dataclass</dfn></h3>
+        <p class="term-def">A Python class that holds named fields. The @dataclass decorator writes the __init__ method, so Rein can build a reply with named fields.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/rein-1-talk-to-a-model.html">H1 · Rein 1: talk to a model</a></span>
+        </p>
+        <p class="term-alias">Also written: dataclasses</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-done-claim">
+        <h3 class="term-name"><dfn id="term-done-claim">done claim</dfn></h3>
+        <p class="term-def">The model&#x27;s own statement that it has finished, carried by end_turn. The loop treats it as a claim to check. It is not proof that the task is done.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
+        </p>
+        <p class="term-alias">Also written: done claims</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-e" data-filter-group>
+      <h2>E</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-exit">
+        <h3 class="term-name"><dfn id="term-exit">exit</dfn></h3>
+        <p class="term-def">A reason the loop stops. A loop with one exit stops only when that one exit is taken.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
+        </p>
+        <p class="term-alias">Also written: exits</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-m" data-filter-group>
+      <h2>M</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-model-interface">
+        <h3 class="term-name"><dfn id="term-model-interface">model interface</dfn></h3>
+        <p class="term-def">One function that Rein calls to get a reply. A scripted model and a real model both sit behind it, with the same inputs and the same kind of result.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/rein-1-talk-to-a-model.html">H1 · Rein 1: talk to a model</a></span>
+        </p>
+        <p class="term-alias">Also written: model interfaces</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-r" data-filter-group>
+      <h2>R</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-react">
+        <h3 class="term-name"><dfn id="term-react">ReAct</dfn></h3>
+        <p class="term-def">A name for the loop of reasoning and acting in turns, from the paper ReAct: Synergizing Reasoning and Acting in Language Models.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
+        </p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-t" data-filter-group>
+      <h2>T</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-token-budget">
+        <h3 class="term-name"><dfn id="term-token-budget">token budget</dfn></h3>
+        <p class="term-def">A cap on the total tokens a run may use, input and output together. The loop checks it before each call and stops when the total has reached the cap.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
+        </p>
+        <p class="term-alias">Also written: token budgets</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-registry">
+        <h3 class="term-name"><dfn id="term-tool-registry">tool registry</dfn></h3>
+        <p class="term-def">A table from each tool name to the Python function that runs it. The loop looks up the name the model asked for. A name that is not in the table gets an error result.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/rein-2-one-tool-and-the-loop.html">H2 · Rein 2: one tool and the loop</a></span>
+        </p>
+        <p class="term-alias">Also written: tool registries</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-turn">
+        <h3 class="term-name"><dfn id="term-turn">turn</dfn></h3>
+        <p class="term-def">One call to the model and the tool results that follow it. A run is a series of turns.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
+        </p>
+        <p class="term-alias">Also written: turns</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-turn-limit">
+        <h3 class="term-name"><dfn id="term-turn-limit">turn limit</dfn></h3>
+        <p class="term-def">A cap on the number of model calls in one run. When the count reaches it, the loop stops.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
+        </p>
+        <p class="term-alias">Also written: turn limits</p>
+      </div>
+    </section>
+    </div>
+    <p class="glossary-count" data-glossary-count>10 terms</p>
+    <!-- /gen:glossary -->
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <p class="live-status" data-store-status></p>
+    <div class="footer-actions">
+      <button class="btn" type="button" data-export>Export progress</button>
+      <label class="btn">Import progress<input class="sr-only" type="file" accept="application/json,.json" data-import></label>
+      <button class="btn btn-quiet" type="button" data-reset>Reset progress (keeps settings)</button>
+    </div>
+    <p><a href="design.html">Design system</a></p>
+    <p>Fonts: Newsreader (SIL OFL 1.1). Harnessed Sans and Harnessed Mono (SIL OFL 1.1; renamed IBM Plex subsets). Licences in <a href="assets/fonts/LICENSE-OFL.txt">LICENSE-OFL.txt</a> and <a href="assets/fonts/LICENSE-newsreader.txt">LICENSE-newsreader.txt</a>.</p>
+    <p data-facts-line>Facts verified as of 10 Oct 2026.</p>
+  </div>
+</footer>
+</body>
+</html>

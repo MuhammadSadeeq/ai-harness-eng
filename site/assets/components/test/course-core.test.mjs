@@ -1,5 +1,6 @@
 // The slim course (site/data/course-core.json, from tools/gen_data.py): what the components read, nothing more.
-// getCourseCore() fetches it once per page; only hx-kata reads module objectives, so only it keeps getCourse().
+// getCourseCore() fetches it once per page. Only hx-kata (on module pages) and hx-readiness (on its own page) read
+// module objectives, so only they keep getCourse().
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, statSync } from "node:fs";
@@ -38,11 +39,11 @@ test("getCourseCore fetches course-core.json once per page", async () => {
   assert.deepEqual(second, core);
 });
 
-test("only hx-kata reads a module's objectives, so only it keeps getCourse()", () => {
+test("only hx-kata and hx-readiness read a module's objectives, so only they keep getCourse()", () => {
   const dir = new URL("../", import.meta.url);
   const users = readdirSync(dir).filter((f) => f.endsWith(".js") && f.startsWith("hx-")).filter((f) => {
     const text = readFileSync(new URL(f, dir), "utf8");
     return /\bgetCourse\b/.test(text);
   });
-  assert.deepEqual(users, ["hx-kata.js"]);
+  assert.deepEqual(users.sort(), ["hx-kata.js", "hx-readiness.js"]);
 });

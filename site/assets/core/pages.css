@@ -1,0 +1,20 @@
+/* The page layouts of the reference pages (glossary.html, readiness.html): tokens only. The components' own
+   styles live with them (hx-filter.css, hx-readiness.css); the shared patterns live in hx.css. */
+/* The glossary's own layout (BP-5.2 §1): tokens only. */
+.glossary-index { margin: var(--sp-4) 0; }
+.glossary-index ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+.glossary-index a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); color: var(--hx-ink); font: 600 var(--fs-ui)/1 var(--font-sans); text-decoration: none; }
+.glossary-index a:hover { background: var(--hx-panel-2); }
+.glossary-group { display: grid; gap: var(--sp-3); margin: var(--sp-5) 0 0; }
+.glossary-group > h2 { margin: 0; font: 400 var(--fs-h2)/1.2 var(--font-serif); padding-bottom: var(--sp-1); border-bottom: 1px solid var(--hx-rule); }
+.term-entry { display: grid; gap: var(--sp-1); padding: var(--sp-3) 0; border-bottom: 1px solid var(--hx-rule); }
+.term-entry[hidden] { display: none !important; }
+.term-name { margin: 0; font: 600 var(--fs-ui)/1.3 var(--font-sans); color: var(--hx-ink); }
+.term-name dfn { font-style: normal; }
+.term-def { margin: 0; font: 400 var(--fs-body)/1.5 var(--font-serif); color: var(--hx-ink); }
+.term-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); margin: 0; font: 500 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }
+.term-meta .wire { display: inline-flex; align-items: center; gap: var(--sp-1); color: var(--hx-ink); font-weight: 600; }
+.term-meta .wire .glyph { width: 20px; height: 20px; color: var(--w, var(--hx-ink)); }
+.term-meta .taught a { color: var(--hx-ink); }
+.term-alias { margin: 0; font: 400 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }
+.glossary-count { margin: var(--sp-4) 0 0; font: 600 var(--fs-small)/1.3 var(--font-sans); color: var(--hx-ink-2); }
