@@ -34,7 +34,7 @@ hx-step [hidden] { display: none !important; }
 .dl-add .dl-mark { color: var(--hx-pass); }
 .dl-del { background: color-mix(in srgb, var(--hx-fail) 22%, transparent); text-decoration: line-through; }
 .dl-del .dl-mark { color: var(--hx-fail); }
-.dl-ctx { color: var(--hx-ink-2); }
+.dl-ctx { color: var(--hx-code-ink); }
 
 .keys { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
 .step-script, .step-fullfile { border: 1px solid var(--hx-rule-strong); border-radius: 6px; background: var(--hx-panel); padding: var(--sp-2) var(--sp-3); min-width: 0; }

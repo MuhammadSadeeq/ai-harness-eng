@@ -10,11 +10,11 @@ import { HxElement } from "./lib/hx-element.js";
 import { mountEditor } from "./lib/editor.js";
 import { sharedPython } from "./lib/py-host.js";
 import { getKata, getCourse } from "./lib/data.js";
+import { isKataId } from "./lib/kata-id.js";
 
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
 const DRAFT_DELAY_MS = 500;
-const SAFE_ID = /^[a-z0-9][a-z0-9-]*$/;
 const HINT_COUNT = 3;
 
 const TIMEOUT_MESSAGE = "Your code ran for more than 10 seconds and was stopped. Is there a loop without an exit?";
@@ -83,7 +83,7 @@ export class HxKata extends HxElement {
 
   async setup() {
     const id = this.getAttribute("kata") ?? "";
-    if (!SAFE_ID.test(id)) throw new Error(`hx-kata needs a kata id, got ${id}`);
+    if (!isKataId(id)) throw new Error(`hx-kata needs a kata id, got ${id}`);
     const mode = this.getAttribute("mode") ?? "practice";
     if (mode !== "practice" && mode !== "memory") throw new Error("hx-kata: mode must be practice or memory");
     const kata = await getKata(id);

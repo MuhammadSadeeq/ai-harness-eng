@@ -26,6 +26,8 @@
 @media (min-width: 700px) {
   .replay .wire-select { display: none; }
   .replay .bar { display: none; }
+  /* the thumb-zone sticky transport is for phones; from 700 px the desktop lanes sit above it and it would cover them */
+  .replay .transport { position: static; }
   .replay .readouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
 }
 @media (min-width: 1100px) {

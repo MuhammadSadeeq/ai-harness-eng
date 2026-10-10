@@ -39,7 +39,7 @@
   "aliases": [
    "ReAct"
   ],
-  "definition": "The name of a research paper: ReAct: Synergizing Reasoning and Acting in Language Models.",
+  "definition": "A name for the loop of reasoning and acting in turns, from the paper ReAct: Synergizing Reasoning and Acting in Language Models.",
   "id": "react",
   "module": "B2",
   "strict": true,

@@ -27,6 +27,12 @@ export function approximateSplit(text) {
   return out;
 }
 
+/** The share of the window as words: "less than 1%" above 0 and under 1, else the integer percent. */
+export function shareText(toks, window) {
+  const pct = Math.floor((toks * 100) / window);
+  return toks > 0 && pct < 1 ? "less than 1%" : `${formatInt(pct)}%`;
+}
+
 /** The course estimate: tokens() of the text, as the simulator counts a request. */
 export function estimate(text) {
   return tokens(text);
@@ -130,7 +136,7 @@ export class HxTokenizer extends HxElement {
     dom.splitCount.textContent = pieces.length > SPLIT_CAP ? `Showing the first ${formatInt(SPLIT_CAP)} of ${formatInt(pieces.length)} pieces.` : "";
     const pct = Math.floor((toks * 100) / s.window);
     dom.desk.style.width = `${Math.min(100, pct)}%`;
-    dom.deskText.textContent = `${formatInt(pct)}% of a ${formatInt(s.window)}-token window`;
+    dom.deskText.textContent = `${shareText(toks, s.window)} of a ${formatInt(s.window)}-token window`;
   }
 
   async selfTest() {

@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 globalThis.HTMLElement ??= class {};
 globalThis.customElements ??= { define() {}, get() {}, whenDefined: () => new Promise(() => {}) };
 const { probabilities, pick, topIndex } = await import("../hx-sampler.js");
-const { approximateSplit, estimate } = await import("../hx-tokenizer.js");
+const { approximateSplit, estimate, shareText } = await import("../hx-tokenizer.js");
 const { standIn, requestOf } = await import("../hx-forgetful.js");
 const { formulas, roll } = await import("../hx-dice.js");
 const { createPrng } = await import("../../sim/prng.js");
@@ -44,6 +44,13 @@ test("sampler: a draw picks by cumulative probability; the same seed repeats", (
 test("tokenizer: long words are cut into 4-character pieces; punctuation is its own piece", () => {
   assert.deepEqual(approximateSplit("tokenizers, ok"), ["toke", "nize", "rs", ",", " ok"]);
   assert.deepEqual(approximateSplit(""), []);
+});
+
+test("tokenizer: the window share is 'less than 1%' above 0 and under 1, else the integer percent", () => {
+  assert.equal(shareText(16, 8000), "less than 1%");
+  assert.equal(shareText(0, 8000), "0%", "an empty text has no share to call less than 1%");
+  assert.equal(shareText(80, 8000), "1%");
+  assert.equal(shareText(4000, 8000), "50%");
 });
 
 test("tokenizer: the estimate is the simulator's tokens() rule on the text", () => {

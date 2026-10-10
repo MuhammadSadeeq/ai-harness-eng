@@ -19,7 +19,7 @@
    }
   ],
   "outcome": "It kept going. A person stopped the run many turns after it went wrong.",
-  "question": "This run has edited and tested four times. What happens next?"
+  "question": "This run has edited and tested several times. What happens next?"
  },
  {
   "answer": 1,
@@ -32,8 +32,9 @@
     "why": "Tempting. A half-written tool call has no complete input, so running it can do the wrong thing."
    },
    {
+    "fact": "api.max-tokens-incomplete-tool-use",
     "text": "Retry with a higher max_tokens, so the whole tool call comes back. Never run the half-written call.",
-    "why": "Right. The docs say to retry with a higher max_tokens value to get the full tool use. Running the half-written call is the mistake."
+    "why": "Right. The docs say to retry with a higher max_tokens value to get the full tool use."
    },
    {
     "text": "Return the partial text as the final answer.",
@@ -58,7 +59,7 @@
    },
    {
     "text": "Context & memory",
-    "why": "Tempting. The turns add to the history, but the limit decides when to stop, not what is on the desk."
+    "why": "Tempting. The turns add to the history, but the limit decides when to stop, not what stays in the context window."
    },
    {
     "text": "Loop & state",

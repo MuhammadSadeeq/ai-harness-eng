@@ -248,7 +248,7 @@ export class HxStep extends HxElement {
       copy.addEventListener("click", () => this.copyText(addedLines(chunk).join("\n") + "\n", key));
       const hunks = chunk.hunks.map((hunk) => el("div", { class: "hunk" },
         el("p", { class: "hunk-where", text: hunk.where }),
-        el("ol", { class: "diff", "aria-label": `Lines for ${hunk.where}` },
+        el("ol", { class: "diff", "aria-label": hunk.where },
           ...diffRows(hunk.diff).map((row) => el("li", { class: `dl dl-${row.kind}` },
             el("span", { class: "dl-mark", "aria-hidden": "true", text: row.mark }),
             el("span", { class: "dl-text", text: row.text }))))));

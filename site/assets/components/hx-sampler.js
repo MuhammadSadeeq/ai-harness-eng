@@ -4,7 +4,7 @@
 // Values: temperature (tenths of a unit, 0 to 20, settable with hxRange), top_probability (percent, read-only).
 import { HxElement } from "./lib/hx-element.js";
 import { createPrng } from "../sim/prng.js";
-import { formatInt } from "./lib/format.js";
+import { formatInt, plural } from "./lib/format.js";
 
 const TENTHS = { min: 0, max: 20, step: 1 };
 const DRAWS = 20;
@@ -195,7 +195,7 @@ export class HxSampler extends HxElement {
       row.pct.textContent = `${pct}%`;
       row.node.classList.toggle("is-top", i === top);
       row.count.hidden = s.counts === null;
-      row.count.textContent = s.counts ? `×${formatInt(s.counts[i])}` : "";
+      row.count.textContent = s.counts ? plural(s.counts[i], "pick") : "";
     });
     dom.seedLabel.textContent = `Seed ${formatInt(s.seed)}`;
     dom.live.textContent = s.last ? `Picked "${s.last}".` : "";
