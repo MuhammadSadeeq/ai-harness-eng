@@ -1,6 +1,6 @@
 # HARNESSED: engine spec (simulator and reference harness)
 
-Status: v1 (Phase 1). Director-owned. Two implementations follow this file
+Status: v1 + amendment A1 (Phase 1). Director-owned. Two implementations follow this file
 exactly: the **JS simulator** (`site/assets/sim/`, runs in the browser and in
 Node) and the **Python reference harness** (`rein/src/rein/`). For every tape,
 board and seed they must produce **identical traces** (`check_scenarios.py`
@@ -227,7 +227,15 @@ loop:
   emit prompt_built(layers=layers, tokens=prompt_tokens)
 
   # ---- context wire
-  emit context_check(tokens=prompt_tokens, window=tape.window, percent=floor(100*prompt_tokens/tape.window), action="none")
+  over = prompt_tokens > tape.window
+  emit context_check(tokens=prompt_tokens, window=tape.window, percent=floor(100*prompt_tokens/tape.window),
+                     action=("overflow" if over else "none"))
+  if over:                                          # the request can't be sent (amendment A1)
+    emit model_call(attempt=1, tokens_in=prompt_tokens)
+    t += 300
+    emit model_error(type="invalid_request", attempt=1, retry_after_ms=0,
+                     message="prompt is too long: " + str(prompt_tokens) + " tokens > " + str(tape.window) + " maximum")
+    end("error")
 
   # ---- loop + errors wires: the call, with recovery
   attempt = 0
@@ -450,3 +458,11 @@ With board `b2-old` (no modules) a spiral seed never ends on its own; the
 simulator therefore has a hard **safety stop** at turn 60 that ends the run
 `interrupted` with `interrupt(by="operator")` (it represents the person who
 eventually notices; lessons say so).
+
+## Amendments
+
+- **A1 (2026-10-10): context overflow.** If the prompt is larger than the
+  tape's `window`, `context_check.action` is `"overflow"`, one `model_call`
+  (attempt 1) is followed by `model_error(type="invalid_request", ...)` with the
+  message shown in §7.1, `t` advances 300 ms, no fault draw and no script step
+  are consumed, and the run ends `"error"`. Retry never applies (permanent).
