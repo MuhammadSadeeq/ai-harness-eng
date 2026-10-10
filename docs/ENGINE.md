@@ -1144,3 +1144,9 @@ eventually notices; lessons say so).
      still the agent's own).
   5. `run_agent`'s 100 ms is paid on every call, refusals included, before
      the sub-agent's own time.
+  6. Also binding (from the JS side's readings): `tool_retry` never retries
+     a `run_agent` result; tape `faults` and `outage` apply to a sub-agent's
+     model calls too; the `progress` layer joins the system text with
+     `"\n\n"`, as the rules layer does, and `trace.schema.json` lists
+     `"progress"` among the layers; at run start the order is `run_start`,
+     `tool_rejected` events, `capability`, then the first `session_start`.
