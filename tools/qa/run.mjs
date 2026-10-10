@@ -96,7 +96,9 @@ function parseArgs(argv) {
 async function listHtml(dir, base = "") {
   const found = [];
   for (const entry of await readdir(path.join(dir, base), { withFileTypes: true })) {
-    if (entry.name === "vendor") continue;
+    // vendor/: third-party files; proto/: design-exploration prototypes, QA'd
+    // explicitly with --only by their builders (DECISIONS D-031).
+    if (entry.name === "vendor" || (!base && entry.name === "proto")) continue;
     const rel = base ? `${base}/${entry.name}` : entry.name;
     if (entry.isDirectory()) found.push(...(await listHtml(dir, rel)));
     else if (entry.name.endsWith(".html")) found.push(rel);
