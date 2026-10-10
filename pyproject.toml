@@ -4,7 +4,7 @@
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-extend-exclude = ["source", "site/vendor", "node_modules"]
+extend-exclude = ["source", "site/vendor", "node_modules", "tools/tests/fixtures", ".venv"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "SIM"]
@@ -13,8 +13,12 @@ select = ["E", "F", "W", "I", "B", "UP", "SIM"]
 python_version = "3.11"
 strict = true
 warn_unreachable = true
-files = ["tools"]
+files = ["tools", "site/assets/py"]
 exclude = ["tools/tests/fixtures/"]
+
+[[tool.mypy.overrides]]
+module = ["fontTools", "fontTools.*"]
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = ["tools.tests.*"]

@@ -28,17 +28,19 @@ name of the stop reason is a fact. When the API changes, only the fact changes.
 
 ## 2. Registry format
 
-One YAML file per area under `facts/`: `api.yaml` (Claude API and SDK),
-`models.yaml` (IDs, limits, prices), `harnesses.yaml` (Claude Code, Codex,
-open harnesses, managed agents), `standards.yaml` (MCP, OpenTelemetry, OWASP,
-Agent Skills, AGENTS.md, A2A), `security.yaml`, `evals.yaml`, `papers.yaml`,
-`careers.yaml`.
+One YAML file per area under `facts/`; the file stem is the id prefix.
+Areas: `api` (Claude API and SDK behavior), `models` (model IDs, limits,
+prices), `harnesses` (Claude Code, Codex, open harnesses, managed agents),
+`mcp`, `otel`, `owasp`, `skills`, `agentsmd`, `a2a`, `aaif` (standards and
+their stewards), `anthropic` and `openai` (the vendors' engineering and
+research posts), `security`, `evals`, `papers`, `careers`. A new area needs a
+director decision.
 
 ```yaml
 - id: api.parallel-tool-results          # <area>.<kebab-case>, unique, never reused
   claim: "All tool_result blocks answering one assistant turn go back in a single user message."
   source: https://platform.claude.com/docs/en/…   # canonical primary URL (final URL after redirects)
-  source_alt: https://github.com/…/blob/<sha>/…    # optional: the same text at a pinned commit
+  source_alt: https://…   # optional: the same text elsewhere (raw/markdown rendering, or a repo file at a pinned commit)
   quote: "<exact sentence(s) from the source, verbatim>"
   verified_on: 2026-10-10
   volatility: volatile                   # volatile | stable
