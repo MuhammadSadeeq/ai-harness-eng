@@ -48,6 +48,13 @@ LAB_EXCLUDED = frozenset(
 DRILL_TAGS = frozenset({"hx-say", "hx-design", "hx-kata", "hx-incident"})
 PROSE_TAGS = frozenset({"p", "li", "h2", "h3", "figcaption", "td", "th", "dt", "dd", "blockquote"})
 SKIP_TAGS = frozenset({"pre", "code", "script", "style", "svg"})
+# Regions the generator fills (tools/gen_pages.py). Their text is generated, so the prose rules
+# skip it; their markup must be one of GEN_TAGS (B9).
+GENERATED_REGIONS = frozenset({"module-meta", "course-map"})
+GEN_TAGS = frozenset({
+    "nav", "ol", "ul", "li", "a", "span", "p", "div", "svg", "use", "path", "circle",
+    "line", "rect", "g", "title", "strong", "em",
+})
 HEADINGS = frozenset({"h1", "h2", "h3", "h4", "h5", "h6"})
 VOID_TAGS = frozenset({
     "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param",
@@ -176,6 +183,19 @@ class _TreeBuilder(HTMLParser):
             self._saw_content = True
         self.stack[-1].children.append(Text(data, self.getpos()[0]))
 
+    def handle_comment(self, data: str) -> None:
+        """A region opens at <!-- gen:NAME --> and closes at <!-- /gen:NAME --> or <!-- /gen -->."""
+        text = data.strip()
+        if text.startswith("gen:"):
+            region = Element("#gen", {"name": text[len("gen:"):].strip()}, self.getpos()[0])
+            self.stack[-1].children.append(region)
+            self.stack.append(region)
+        elif text == "/gen" or text.startswith("/gen:"):
+            for index in range(len(self.stack) - 1, 0, -1):
+                if self.stack[index].tag == "#gen":
+                    del self.stack[index:]
+                    return
+
 
 def parse_page(text: str) -> Page:
     builder = _TreeBuilder()
@@ -211,7 +231,7 @@ def visible_text(
             if in_prose or not prose_only:
                 yield child
             continue
-        if child.tag in SKIP_TAGS or child.tag.startswith("hx-"):
+        if child.tag == "#gen" or child.tag in SKIP_TAGS or child.tag.startswith("hx-"):
             continue
         if skip_fwd and "fwd" in child.classes:
             continue
@@ -637,7 +657,22 @@ def check_page(path: Path, ctx: Context, report: Report) -> bool:
     _check_typed_counts(main, shown, report)
     _check_terms(page, module, ctx, shown, report)
     _check_hygiene(page, shown, report)
+    _check_generated(page, shown, report)
     return len(report.problems) == before
+
+
+def _check_generated(page: Page, shown: str, report: Report) -> None:
+    """[B9] The generated regions exist, and their markup is one the generator writes."""
+    regions = [e for e in descendants(page.root) if e.tag == "#gen"]
+    names = {e.attrs.get("name", "") for e in regions}
+    for name in sorted(GENERATED_REGIONS - names):
+        report.problem(shown, 0, f"[B9] the page needs a generated region gen:{name}")
+    for region in regions:
+        name = region.attrs.get("name", "")
+        for element in descendants(region):
+            if element.tag not in GEN_TAGS:
+                report.problem(shown, element.line,
+                               f"[B9] <{element.tag}> is not allowed in gen:{name}")
 
 
 def _main_or_root(page: Page) -> Element:

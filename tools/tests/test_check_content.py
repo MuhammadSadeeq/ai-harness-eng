@@ -27,10 +27,16 @@ BAD_CASES: list[tuple[str, str, str]] = [
     ("B7", "bad/B7e/the-agent-loop.html", "term 'type hint' is taught in T1"),
     ("B7", "bad/B7f/same-model-different-harness.html", "at most two are allowed"),
     ("B8", "bad/B8/same-model-different-harness.html", "inline style attributes"),
-    ("B8", "bad/B8-handler/same-model-different-harness.html",
-     "inline event-handler attribute 'onclick'"),
-    ("B8", "bad/B8-javascript/same-model-different-harness.html",
-     "javascript: URLs are not allowed in href"),
+    (
+        "B8",
+        "bad/B8-handler/same-model-different-harness.html",
+        "inline event-handler attribute 'onclick'",
+    ),
+    (
+        "B8",
+        "bad/B8-javascript/same-model-different-harness.html",
+        "javascript: URLs are not allowed in href",
+    ),
 ]
 
 
@@ -119,8 +125,18 @@ def test_page_name_must_be_a_module_slug(tmp_path: Path) -> None:
 def test_prose_between_900_and_1000_warns_without_failing(tmp_path: Path) -> None:
     root = copy_fixture(tmp_path)
     page = root / "site" / "modules" / "the-agent-loop.html"
-    words = ["garden", "river", "window", "kettle", "lantern", "meadow", "orchard", "pebble",
-             "quilt", "ribbon"]
+    words = [
+        "garden",
+        "river",
+        "window",
+        "kettle",
+        "lantern",
+        "meadow",
+        "orchard",
+        "pebble",
+        "quilt",
+        "ribbon",
+    ]
     filler = " ".join(words[i % len(words)] for i in range(850))
     text = page.read_text(encoding="utf-8").replace(
         "<p>The loop calls the model",
@@ -163,25 +179,43 @@ def test_course_mutations_fail_with_the_expected_rule(tmp_path: Path) -> None:
     for name, change, expected in [
         ("schema", pop("counts"), "[A1] schema"),
         ("unknown-wire", set_(["modules", 1, "wires"], ["nope"]), "unknown wire 'nope'"),
-        ("objective-id", set_(["modules", 1, "objectives", 0, "id"], "A1.o9"),
-         "expected 'A1.o1'"),
-        ("primer-objectives", set_(["modules", 2, "objectives"],
-                                   [{"id": f"T1.o{i}", "text": "x"} for i in range(1, 5)]),
-         "a primer has 4 objectives, needs 3"),
+        ("objective-id", set_(["modules", 1, "objectives", 0, "id"], "A1.o9"), "expected 'A1.o1'"),
+        (
+            "primer-objectives",
+            set_(
+                ["modules", 2, "objectives"], [{"id": f"T1.o{i}", "text": "x"} for i in range(1, 5)]
+            ),
+            "a primer has 4 objectives, needs 3",
+        ),
         ("cycle", set_(["modules", 0, "prereqs"], ["A1"]), "prerequisite cycle"),
         ("path-missing", set_(["path"], ["S0"]), "A1 is missing from path"),
         ("path-order", set_(["path"], ["A1", "S0"]), "comes before its prerequisite S0"),
         ("primer-in-path", set_(["path"], ["S0", "A1", "T1"]), "primer T1 must not be in path"),
-        ("term-two-owners",
-         lambda c: c["modules"][2]["terms"].append("agent"), "term 'agent' is listed by S0, T1"),
-        ("incident-without-family", set_(["modules", 1, "family"], None),
-         "requires an incident, so it needs a failure family"),
-        ("family-module-missing", set_(["failure_families", 0, "module"], "Z9"),
-         "module 'Z9' does not exist"),
-        ("counts-modules", set_(["counts", "modules"], 4),
-         "counts.modules: file has 4, computed 3"),
-        ("counts-kind", set_(["counts", "modules_by_kind", "core"], 2),
-         "counts.modules_by_kind.core: file has 2, computed 1"),
+        (
+            "term-two-owners",
+            lambda c: c["modules"][2]["terms"].append("agent"),
+            "term 'agent' is listed by S0, T1",
+        ),
+        (
+            "incident-without-family",
+            set_(["modules", 1, "family"], None),
+            "requires an incident, so it needs a failure family",
+        ),
+        (
+            "family-module-missing",
+            set_(["failure_families", 0, "module"], "Z9"),
+            "module 'Z9' does not exist",
+        ),
+        (
+            "counts-modules",
+            set_(["counts", "modules"], 4),
+            "counts.modules: file has 4, computed 3",
+        ),
+        (
+            "counts-kind",
+            set_(["counts", "modules_by_kind", "core"], 2),
+            "counts.modules_by_kind.core: file has 2, computed 1",
+        ),
     ]:
         case(name, change, expected)
 
@@ -194,8 +228,10 @@ def test_stale_and_current_curriculum_block(tmp_path: Path) -> None:
     assert report.problems == []
 
     stale = tmp_path / "stale.md"
-    stale.write_text("x\n<!-- BEGIN GENERATED: tools/render_curriculum.py -->\nold\n"
-                     "<!-- END GENERATED -->\n", encoding="utf-8")
+    stale.write_text(
+        "x\n<!-- BEGIN GENERATED: tools/render_curriculum.py -->\nold\n<!-- END GENERATED -->\n",
+        encoding="utf-8",
+    )
     report = Report()
     check_course(FIXTURES / "course.json", report, curriculum=stale)
     assert any("[A7] generated block is stale" in p.message for p in report.problems)
@@ -210,7 +246,8 @@ def test_stale_and_current_curriculum_block(tmp_path: Path) -> None:
 def test_invalid_content_yaml_reports_its_line(tmp_path: Path) -> None:
     root = copy_fixture(tmp_path)
     (root / "content" / "S0" / "cards.yaml").write_text(
-        "- id: S0-c1\n  front: [unclosed\n", encoding="utf-8")
+        "- id: S0-c1\n  front: [unclosed\n", encoding="utf-8"
+    )
     report, _ = run_on(root)
     yaml_problems = [p for p in report.problems if "invalid YAML" in p.message]
     assert yaml_problems and yaml_problems[0].line > 0
@@ -220,9 +257,11 @@ def test_invalid_content_yaml_reports_its_line(tmp_path: Path) -> None:
 def test_term_not_planned_for_its_module_is_rule_a(tmp_path: Path) -> None:
     root = copy_fixture(tmp_path)
     terms = root / "content" / "S0" / "terms.yaml"
-    terms.write_text(terms.read_text(encoding="utf-8") + "- id: gizmo\n  term: gizmo\n"
-                     "  aliases: [gizmo]\n  strict: true\n  wire: loop\n  definition: x\n",
-                     encoding="utf-8")
+    terms.write_text(
+        terms.read_text(encoding="utf-8") + "- id: gizmo\n  term: gizmo\n"
+        "  aliases: [gizmo]\n  strict: true\n  wire: loop\n  definition: x\n",
+        encoding="utf-8",
+    )
     report, _ = run_on(root)
     assert any("(a) term 'gizmo' is not planned for S0" in p.message for p in report.problems)
 
@@ -230,12 +269,13 @@ def test_term_not_planned_for_its_module_is_rule_a(tmp_path: Path) -> None:
 def test_duplicate_term_id_and_unknown_objective_in_content(tmp_path: Path) -> None:
     root = copy_fixture(tmp_path)
     terms = root / "content" / "S0" / "terms.yaml"
-    terms.write_text(terms.read_text(encoding="utf-8") + "- id: agent\n  term: harness\n"
-                     "  aliases: [harness]\n  strict: true\n  wire: loop\n  definition: x\n",
-                     encoding="utf-8")
+    terms.write_text(
+        terms.read_text(encoding="utf-8") + "- id: agent\n  term: harness\n"
+        "  aliases: [harness]\n  strict: true\n  wire: loop\n  definition: x\n",
+        encoding="utf-8",
+    )
     cards = root / "content" / "S0" / "cards.yaml"
-    cards.write_text(cards.read_text(encoding="utf-8").replace("S0.o1", "Z9.o1"),
-                     encoding="utf-8")
+    cards.write_text(cards.read_text(encoding="utf-8").replace("S0.o1", "Z9.o1"), encoding="utf-8")
     report, _ = run_on(root)
     assert any("term id 'agent' is used twice" in p.message for p in report.problems)
     assert any("[B4] unknown objective id 'Z9.o1'" in p.message for p in report.problems)
@@ -248,21 +288,70 @@ def test_page_only_run_skips_course_checks(tmp_path: Path) -> None:
     assert result == RunResult(course_checked=False, pages_checked=1, modules=3)
 
 
-def test_main_full_run_summary_and_failure_exit(tmp_path: Path, capsys: pytest.CaptureFixture[str]
-                                               ) -> None:
+def test_main_full_run_summary_and_failure_exit(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     root = copy_fixture(tmp_path)
     write_curriculum(root)
-    args = ["--course", str(root / "course.json"), "--site", str(root / "site"),
-            "--content", str(root / "content")]
+    args = [
+        "--course",
+        str(root / "course.json"),
+        "--site",
+        str(root / "site"),
+        "--content",
+        str(root / "content"),
+    ]
     assert main(args) == 0
     assert capsys.readouterr().out.strip().splitlines()[-1] == (
-        "check_content: course.json OK (3 modules), 3 pages OK")
+        "check_content: course.json OK (3 modules), 3 pages OK"
+    )
 
     assert main([*args, str(root / "site" / "modules" / "the-agent-loop.html")]) == 0
     assert capsys.readouterr().out.strip().splitlines()[-1] == (
-        "check_content: course.json not checked, 1 pages OK")
+        "check_content: course.json not checked, 1 pages OK"
+    )
 
     bad = FIXTURES / "bad" / "B8" / "same-model-different-harness.html"
     assert main([*args, str(bad)]) == 1
     assert capsys.readouterr().out.strip().splitlines()[-1] == (
-        "check_content: FAILED (1 problems)")
+        "check_content: FAILED (1 problems)"
+    )
+
+
+def _good_page_copy(tmp_path: Path) -> Path:
+    root = copy_fixture(tmp_path)
+    return root / "site" / "modules" / "the-agent-loop.html"
+
+
+def test_a_disallowed_element_in_a_generated_region_fails_b9(tmp_path: Path) -> None:
+    page = _good_page_copy(tmp_path)
+    text = page.read_text(encoding="utf-8")
+    table = "<table><tr><td>x</td></tr></table>"
+    text = text.replace("<!-- gen:module-meta -->", "<!-- gen:module-meta -->" + table, 1)
+    page.write_text(text, encoding="utf-8")
+    report, _ = run_on(page.parents[2], [page])
+    messages = [p.message for p in report.problems]
+    assert "[B9] <table> is not allowed in gen:module-meta" in messages
+    assert all(m.startswith("[B9]") for m in messages), messages
+
+
+def test_generated_text_is_not_checked_as_prose_or_counts(tmp_path: Path) -> None:
+    page = _good_page_copy(tmp_path)
+    text = page.read_text(encoding="utf-8")
+    text = text.replace(
+        "<!-- gen:module-meta -->", "<!-- gen:module-meta --><p>2 of 69 modules shown</p>", 1
+    )
+    page.write_text(text, encoding="utf-8")
+    report, _ = run_on(page.parents[2], [page])
+    assert report.problems == [], [str(p) for p in report.problems]
+
+
+def test_a_module_page_needs_both_generated_regions(tmp_path: Path) -> None:
+    page = _good_page_copy(tmp_path)
+    text = page.read_text(encoding="utf-8")
+    text = text.replace("<!-- gen:course-map -->\n    <!-- /gen -->\n", "", 1)
+    page.write_text(text, encoding="utf-8")
+    report, _ = run_on(page.parents[2], [page])
+    assert [p.message for p in report.problems] == [
+        "[B9] the page needs a generated region gen:course-map"
+    ]
