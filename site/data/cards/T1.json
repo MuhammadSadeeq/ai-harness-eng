@@ -1,0 +1,37 @@
+[
+ {
+  "back": "The value is an int, or None.",
+  "front": "What does int | None mean in a hint?",
+  "id": "T1-k1",
+  "objective": "T1.o1",
+  "type": "term"
+ },
+ {
+  "back": "After each parameter name, and after the arrow for the return type.",
+  "front": "Where does a type hint go on a function?",
+  "id": "T1-k2",
+  "objective": "T1.o1",
+  "type": "term"
+ },
+ {
+  "back": "A class that holds named fields. The reply in the next modules is one.",
+  "front": "What is a dataclass?",
+  "id": "T1-k3",
+  "objective": "T1.o2",
+  "type": "term"
+ },
+ {
+  "back": "No. Leave it out and done is False.",
+  "front": "Task has done: bool = False. Must you pass done to make a Task?",
+  "id": "T1-k4",
+  "objective": "T1.o2",
+  "type": "term"
+ },
+ {
+  "back": "mypy, on your own machine. Fix the first error it reports, then run the tests again.",
+  "front": "What do you run to check the hints in your file?",
+  "id": "T1-k5",
+  "objective": "T1.o3",
+  "type": "term"
+ }
+]

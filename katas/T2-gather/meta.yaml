@@ -1,0 +1,82 @@
+id: T2-gather
+module: T2
+title: Gather coroutines under one timeout
+objectives: [T2.o1, T2.o2, T2.o3]
+minutes: 20
+hints:
+  - "Read test_kata.py. Each test names one result, one order or one timeout that fetch_all must give."
+  - "Write fetch with await asyncio.sleep(delay). In fetch_all, make one coroutine per job, pass them all to one asyncio.gather call, and wrap that call in asyncio.wait_for with the timeout."
+  - "Nearly the code: calls = [fetch(n, d) for n, d in jobs], then return await asyncio.wait_for(asyncio.gather(*calls), timeout). fetch is async def, awaits asyncio.sleep(delay), and returns name."
+from_memory: true
+wrong_solutions:
+  - name: sequential
+    code: |
+      import asyncio
+
+
+      async def fetch(name: str, delay: float) -> str:
+          await asyncio.sleep(delay)
+          return name
+
+
+      async def fetch_all(jobs: list[tuple[str, float]], timeout: float) -> list[str]:
+          return [await fetch(name, delay) for name, delay in jobs]
+  - name: no-timeout
+    code: |
+      import asyncio
+
+
+      async def fetch(name: str, delay: float) -> str:
+          await asyncio.sleep(delay)
+          return name
+
+
+      async def fetch_all(jobs: list[tuple[str, float]], timeout: float) -> list[str]:
+          calls = [fetch(name, delay) for name, delay in jobs]
+          return await asyncio.gather(*calls)
+  - name: swallow-timeout
+    code: |
+      import asyncio
+
+
+      async def fetch(name: str, delay: float) -> str:
+          await asyncio.sleep(delay)
+          return name
+
+
+      async def fetch_all(jobs: list[tuple[str, float]], timeout: float) -> list[str]:
+          calls = [fetch(name, delay) for name, delay in jobs]
+          try:
+              return await asyncio.wait_for(asyncio.gather(*calls), timeout)
+          except TimeoutError:
+              return []
+  - name: finish-order
+    code: |
+      import asyncio
+
+
+      async def fetch(name: str, delay: float) -> str:
+          await asyncio.sleep(delay)
+          return name
+
+
+      async def fetch_all(jobs: list[tuple[str, float]], timeout: float) -> list[str]:
+          calls = [fetch(name, delay) for name, delay in jobs]
+          results = []
+          for done in asyncio.as_completed(calls):
+              results.append(await asyncio.wait_for(done, timeout))
+          return results
+  - name: blocking-fetch
+    code: |
+      import asyncio
+      import time
+
+
+      async def fetch(name: str, delay: float) -> str:
+          time.sleep(delay)
+          return name
+
+
+      async def fetch_all(jobs: list[tuple[str, float]], timeout: float) -> list[str]:
+          calls = [fetch(name, delay) for name, delay in jobs]
+          return await asyncio.wait_for(asyncio.gather(*calls), timeout)

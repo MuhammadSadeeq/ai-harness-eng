@@ -1,0 +1,295 @@
+{
+ "questions": [
+  {
+   "id": "S-1",
+   "options": [
+    {
+     "text": "Four"
+    },
+    {
+     "right": true,
+     "text": "Five"
+    },
+    {
+     "text": "Six"
+    }
+   ],
+   "part": "S",
+   "question": "How many beats does a core module have?",
+   "why": "Five: Break, See, Fix, Prove and Keep. Concept modules use Lab and Check in place of Fix and Prove."
+  },
+  {
+   "id": "S-2",
+   "options": [
+    {
+     "text": "Break"
+    },
+    {
+     "right": true,
+     "text": "Prove"
+    },
+    {
+     "text": "Keep"
+    }
+   ],
+   "part": "S",
+   "question": "Which beat proves a fix with numbers?",
+   "why": "Prove runs the old board and the new board on the same seeds and reports the pass rate."
+  },
+  {
+   "id": "S-3",
+   "options": [
+    {
+     "right": true,
+     "text": "Your settings next to what a run does"
+    },
+    {
+     "text": "Your saved files"
+    },
+    {
+     "text": "A chart of your typing speed"
+    }
+   ],
+   "part": "S",
+   "question": "What does your Harness Board show?",
+   "why": "It is the Turn Clock with a board: the harness's settings beside the run."
+  },
+  {
+   "id": "S-4",
+   "options": [
+    {
+     "right": true,
+     "text": "In the footer, with Export progress"
+    },
+    {
+     "text": "In a separate app"
+    },
+    {
+     "text": "Nowhere: progress is not kept"
+    }
+   ],
+   "part": "S",
+   "question": "Where do you export your progress?",
+   "why": "The footer has Export progress, which saves a file you can import on another device."
+  },
+  {
+   "id": "A-1",
+   "options": [
+    {
+     "text": "Always the same"
+    },
+    {
+     "right": true,
+     "text": "Not necessarily: answers can vary from run to run"
+    },
+    {
+     "text": "Only at night"
+    }
+   ],
+   "part": "A",
+   "question": "Does a model give the same answer twice to the same prompt?",
+   "why": "Sampling makes answers vary, so one good run proves little about the next one."
+  },
+  {
+   "id": "A-2",
+   "options": [
+    {
+     "text": "The number of messages in a chat"
+    },
+    {
+     "right": true,
+     "text": "The most text the model can read in one call"
+    },
+    {
+     "text": "A browser tab that holds the chat"
+    }
+   ],
+   "part": "A",
+   "question": "What is a context window?",
+   "why": "Everything in one call, the prompt and the tools included, has to fit inside the window."
+  },
+  {
+   "id": "A-3",
+   "options": [
+    {
+     "text": "Everything from the last call, on its own"
+    },
+    {
+     "right": true,
+     "text": "Only what the harness sends with the call"
+    },
+    {
+     "text": "Whatever the provider saved for it"
+    }
+   ],
+   "part": "A",
+   "question": "What does a model carry from one call to the next?",
+   "why": "Tempting. The course shows what each call carries in A3."
+  },
+  {
+   "id": "A-4",
+   "options": [
+    {
+     "right": true,
+     "text": "A function the harness runs when the model asks for it"
+    },
+    {
+     "text": "The model's weights"
+    },
+    {
+     "text": "A text prompt"
+    }
+   ],
+   "part": "A",
+   "question": "Which of these is a tool?",
+   "why": "The model asks; the harness runs the function and returns the result."
+  },
+  {
+   "id": "B-1",
+   "options": [
+    {
+     "text": "It answers faster"
+    },
+    {
+     "right": true,
+     "text": "It asks for tools, the harness runs them, and it calls the model again"
+    },
+    {
+     "text": "It has a longer system prompt"
+    }
+   ],
+   "part": "B",
+   "question": "What makes a chatbot into an agent?",
+   "why": "The model asks, the harness acts, and the loop goes on until something stops it."
+  },
+  {
+   "id": "B-2",
+   "options": [
+    {
+     "right": true,
+     "text": "A turn limit or a token budget"
+    },
+    {
+     "text": "The model's wish to stop"
+    },
+    {
+     "text": "A faster computer"
+    }
+   ],
+   "part": "B",
+   "question": "What stops a loop that never gets an answer?",
+   "why": "A turn limit and a token budget are exits the harness controls. A model's own stop is a claim."
+  },
+  {
+   "id": "B-3",
+   "options": [
+    {
+     "text": "The model itself"
+    },
+    {
+     "right": true,
+     "text": "Verification, with checks the harness runs"
+    },
+    {
+     "text": "The user, who reads the answer"
+    }
+   ],
+   "part": "B",
+   "question": "What checks a done claim?",
+   "why": "A done claim is only a claim until a check runs and confirms it."
+  },
+  {
+   "id": "B-4",
+   "options": [
+    {
+     "text": "Hide it from the model"
+    },
+    {
+     "right": true,
+     "text": "Send it back as the result, marked as an error"
+    },
+    {
+     "text": "End the run at once"
+    }
+   ],
+   "part": "B",
+   "question": "A tool call returns an error. What should the loop do?",
+   "why": "The model can read the error and try again. Dropping it hides the problem."
+  },
+  {
+   "id": "C-1",
+   "options": [
+    {
+     "text": "Observability"
+    },
+    {
+     "right": true,
+     "text": "Context and memory"
+    },
+    {
+     "text": "Permissions"
+    }
+   ],
+   "part": "C",
+   "question": "Which wire decides what stays in the context window?",
+   "why": "Context and memory decides what the model sees on each call."
+  },
+  {
+   "id": "C-2",
+   "options": [
+    {
+     "right": true,
+     "text": "Permissions"
+    },
+    {
+     "text": "Tools"
+    },
+    {
+     "text": "Control"
+    }
+   ],
+   "part": "C",
+   "question": "Which wire checks each tool request before it runs?",
+   "why": "Permissions checks each tool request before the tool runs."
+  },
+  {
+   "id": "C-3",
+   "options": [
+    {
+     "text": "Errors"
+    },
+    {
+     "text": "Verification"
+    },
+    {
+     "right": true,
+     "text": "Observability"
+    }
+   ],
+   "part": "C",
+   "question": "Which wire writes down each event, so a run can be read afterwards?",
+   "why": "Observability records each step, which is how a trace is made."
+  }
+ ],
+ "rules": [
+  {
+   "of": 4,
+   "part": "A",
+   "skip_if_right": 2,
+   "start": "A1"
+  },
+  {
+   "of": 4,
+   "part": "B",
+   "skip_if_right": 2,
+   "start": "B1"
+  },
+  {
+   "of": 3,
+   "part": "C",
+   "skip_if_right": 2,
+   "start": "C1"
+  }
+ ],
+ "start": "A1"
+}

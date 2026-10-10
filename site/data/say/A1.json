@@ -1,0 +1,31 @@
+[
+ {
+  "id": "A1-s1",
+  "model_answer": "The model reads the text so far and scores every possible next token. The sampler then turns those scores into probabilities and picks one token. Temperature sets how much the scores count: a higher temperature spreads the choice over more tokens, and at zero the top token always wins. The model does not check whether the token is true. That check has to come from the harness.",
+  "objectives": [
+   "A1.o1",
+   "A1.o2"
+  ],
+  "prompt": "Walk me through how a model picks its next token, and what temperature changes.",
+  "rubric": [
+   "Says the model scores every possible next token",
+   "Says the sampler picks one token from the scores",
+   "Says a higher temperature spreads the choice, and zero picks the top token",
+   "Says the model does not check whether its output is true"
+  ]
+ },
+ {
+  "id": "A1-s2",
+  "model_answer": "I check that the function exists in this project, before I trust the reply. Fluency is not evidence, and a made-up name reads just as well as a real one. I run the tests, and I read the result of that run, not the reply's claim that they pass. Only a run that I can see confirms it.",
+  "objectives": [
+   "A1.o3"
+  ],
+  "prompt": "A reply sounds sure and names a function that you do not recognise. What do you check before you use it?",
+  "rubric": [
+   "Checks that the named function exists in this project",
+   "Says fluency is not evidence that the claim is true",
+   "Runs a check and reads its result, rather than trusting the reply",
+   "Says a made-up name reads as well as a real one"
+  ]
+ }
+]

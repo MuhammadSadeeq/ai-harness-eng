@@ -1,0 +1,48 @@
+- id: A1-k1
+  type: term
+  objective: A1.o1
+  front: "What is a language model, in this course?"
+  back: "A model that reads a text and scores the possible next tokens. A harness calls it again and again."
+
+- id: A1-k2
+  type: term
+  objective: A1.o1
+  front: "What does next-token prediction score?"
+  back: "Every possible next token. Nothing in that step checks whether a token is true."
+
+- id: A1-k3
+  type: term
+  objective: A1.o1
+  front: "What does sampling do?"
+  back: "It picks one token from the scored options, by the rules it is given. The model scores; the sampler picks."
+
+- id: A1-k4
+  type: term
+  objective: A1.o2
+  front: "What does a higher temperature do to the choice?"
+  back: "It spreads the choice over more tokens, so less likely tokens get more chances. At zero, the top token always wins."
+
+- id: A1-k5
+  type: term
+  objective: A1.o3
+  front: "What is a hallucination?"
+  back: "A fluent, specific claim that is false. It reads the same as a true claim."
+
+- id: A1-k6
+  type: term
+  objective: A1.o4
+  front: "What sets the weights, and what only reads them?"
+  back: "Training sets the weights, before any chat. Inference reads them and leaves them the same."
+
+- id: A1-k7
+  type: which-wire
+  objective: A1.o3
+  wire: verify
+  front: "A reply says all tests pass, and no test ran. Which wire is that?"
+  back: "Verification. The harness took the reply's word, so nothing checked the claim."
+
+- id: A1-k8
+  type: term
+  objective: A1.o3
+  front: "Does a fluent reply show that it is true?"
+  back: "No. Fluency shows how the reply reads. Only a check shows whether the claim is true."

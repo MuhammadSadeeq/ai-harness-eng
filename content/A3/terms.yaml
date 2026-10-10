@@ -1,0 +1,47 @@
+- id: stateless
+  term: stateless
+  aliases: [stateless]
+  strict: true
+  wire: context
+  definition: >-
+    Keeping nothing between calls. A stateless call starts from what it is sent, and nothing else.
+
+- id: messages-array
+  term: messages array
+  aliases: [messages array, messages arrays, messages list]
+  strict: true
+  wire: context
+  definition: >-
+    The ordered list of messages sent with each call. It is the conversation the model can see.
+
+- id: role
+  term: role
+  aliases: [role, roles]
+  strict: false
+  wire: context
+  definition: >-
+    The label on each message in the list. A message is from the user or from the assistant.
+
+- id: system-prompt
+  term: system prompt
+  aliases: [system prompt, system prompts]
+  strict: true
+  wire: control
+  definition: >-
+    The instructions sent with every call, kept apart from the messages. The harness sends it each time.
+
+- id: conversation-history
+  term: conversation history
+  aliases: [conversation history, history]
+  strict: true
+  wire: context
+  definition: >-
+    The earlier messages in the list. The harness keeps them, and decides how much of them each call sends.
+
+- id: memory
+  term: memory
+  aliases: [memory, memories]
+  strict: false
+  wire: context
+  definition: >-
+    Anything a run can use later: what is in the window, what is in saved files, or what is in the model's weights.

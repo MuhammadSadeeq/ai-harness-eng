@@ -1,0 +1,42 @@
+- id: A3-c1
+  type: term
+  objective: A3.o1
+  front: "What does stateless mean for a model call?"
+  back: "The call starts from what it is sent, and nothing else. The model keeps nothing between calls."
+
+- id: A3-c2
+  type: term
+  objective: A3.o2
+  front: "What is the messages array?"
+  back: "The ordered list of messages sent with each call. It is the conversation the model can see."
+
+- id: A3-c3
+  type: term
+  objective: A3.o2
+  front: "What does a role tell you about a message?"
+  back: "Whether it is from the user or from the assistant."
+
+- id: A3-c4
+  type: term
+  objective: A3.o3
+  front: "What is conversation history?"
+  back: "The earlier messages in the list. The harness keeps them and decides how much each call sends."
+
+- id: A3-c5
+  type: term
+  objective: A3.o1
+  front: "Where does the system prompt go?"
+  back: "In the system prompt, kept apart from the messages. The harness sends it with every call."
+
+- id: A3-c6
+  type: wire-question
+  objective: A3.o4
+  wire: context
+  front: "Which wire decides what the next call sends from the history?"
+  back: "Context and memory. It decides what stays in the window and what the model sees on each call."
+
+- id: A3-c7
+  type: term
+  objective: A3.o4
+  front: "Which kind of memory does the harness control?"
+  back: "What is in the window and what is in saved files. The model's weights are not the harness's to change."

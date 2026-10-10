@@ -1,0 +1,79 @@
+- id: agent
+  term: agent
+  aliases: [agent, agents]
+  strict: true
+  wire: loop
+  definition: >-
+    A model that is called in a loop, asks for tools, and is stopped by the code around it. The model is one part of the agent.
+
+- id: harness
+  term: harness
+  aliases: [harness, harnesses]
+  strict: true
+  wire: control
+  definition: >-
+    Everything around the model: the loop, the tools, the permissions, the checks and the limits. Same model, different harness, different results.
+
+- id: tool
+  term: tool
+  aliases: [tool, tools]
+  strict: true
+  wire: tools
+  definition: >-
+    A function the harness runs when the model asks for it. The model only asks. The harness runs the function and returns the result.
+
+- id: run
+  term: run
+  aliases: [run, runs]
+  strict: false
+  wire: loop
+  definition: >-
+    One agent doing one task, from the first model call to a stop. A run has many turns.
+
+- id: trace
+  term: trace
+  aliases: [trace, traces]
+  strict: true
+  wire: observe
+  definition: >-
+    The record of a run: each model call, reply, permission, tool call and check, in order.
+
+- id: seed
+  term: seed
+  aliases: [seed, seeds]
+  strict: true
+  wire: observe
+  definition: >-
+    The number that sets the random draws of a scripted run. The same seed gives the same run, every time.
+
+- id: trial
+  term: trial
+  aliases: [trial, trials]
+  strict: false
+  wire: observe
+  definition: >-
+    One run with one seed. A bench runs many trials of the same setup.
+
+- id: pass-rate
+  term: pass rate
+  aliases: [pass rate, pass rates]
+  strict: true
+  wire: observe
+  definition: >-
+    The share of trials that pass their checks. It is a measure over many runs, not the result of one.
+
+- id: failure-family
+  term: failure family
+  aliases: [failure family, failure families]
+  strict: true
+  wire: verify
+  definition: >-
+    A named kind of failure that recurs across runs, such as a false done. Each module teaches one family.
+
+- id: harness-board
+  term: Harness Board
+  aliases: [Harness Board, Harness Boards]
+  strict: true
+  wire: control
+  definition: >-
+    The harness's settings, such as limits and gates, shown next to what a run does.

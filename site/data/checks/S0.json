@@ -1,0 +1,87 @@
+[
+ {
+  "answer": 2,
+  "id": "S0-p1",
+  "mode": "predict",
+  "objective": "S0.o2",
+  "options": [
+   {
+    "text": "It runs the checks before it accepts the claim.",
+    "why": "Tempting. Many harnesses do this. This board has no check, so nothing runs the tests."
+   },
+   {
+    "text": "It sends the model a message and asks it to run the tests.",
+    "why": "Tempting. That is a reasonable harness, but this board has no such step."
+   },
+   {
+    "text": "It ends the run as done, because nothing checks the claim.",
+    "why": "Right. The model's words are the only evidence, and the harness accepts them."
+   }
+  ],
+  "outcome": "It ended as done. The tests still failed, and nothing checked the claim.",
+  "question": "The model says the tests pass, and the run ends as done. What does the harness do next?"
+ },
+ {
+  "answer": 1,
+  "id": "S0-c1",
+  "mode": "check",
+  "objective": "S0.o1",
+  "options": [
+   {
+    "text": "One line of Python in the harness.",
+    "why": "Tempting. The code is the harness, but a replay steps through what the run did, not the code."
+   },
+   {
+    "text": "One model call, or one tool action.",
+    "why": "Right. A replay lists each call and each tool action in order."
+   },
+   {
+    "text": "One whole run.",
+    "why": "Wrong. A run has many steps. A step is one call or one action."
+   }
+  ],
+  "question": "In a replay, what is one step?"
+ },
+ {
+  "answer": 1,
+  "id": "S0-c2",
+  "mode": "check",
+  "objective": "S0.o3",
+  "options": [
+   {
+    "text": "The model got smarter.",
+    "why": "Tempting. The result changed, but the model did not. Only the harness changed."
+   },
+   {
+    "text": "One setting in the harness changed the result, with the model the same.",
+    "why": "Right. The bench changes one setting and keeps the model and the seeds."
+   },
+   {
+    "text": "Every run passed by luck.",
+    "why": "Wrong. A scripted run repeats exactly for the same seed, so luck does not explain it."
+   }
+  ],
+  "question": "The verify retries go from 0 to 1, and the pass rate rises. What does that show?"
+ },
+ {
+  "answer": 1,
+  "id": "S0-c3",
+  "mode": "check",
+  "objective": "S0.o4",
+  "options": [
+   {
+    "text": "Their model is newer.",
+    "why": "Tempting. It is the same model, so the model cannot explain the gap."
+   },
+   {
+    "text": "Their harnesses differ: the loop, the checks and the limits.",
+    "why": "Right. The harness is everything around the model, and it changes the result."
+   },
+   {
+    "text": "They wrote their prompts in a different font.",
+    "why": "Wrong. The prompt text matters, but the font does not change what the model reads."
+   }
+  ],
+  "question": "Two teams use the same model. One gets far better results. What is the likeliest reason?"
+ }
+]

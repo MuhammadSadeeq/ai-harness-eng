@@ -1,0 +1,31 @@
+[
+ {
+  "id": "A3-s1",
+  "model_answer": "On the third call the harness sends the system prompt, the tool definitions and the whole messages array: the task, the first reply, the tool result, the second reply and its result. The model has no memory of its own, so anything it should know has to be in that list. If the harness dropped the earlier messages, the model would be answering a fresh question with no history.",
+  "objectives": [
+   "A3.o2",
+   "A3.o3"
+  ],
+  "prompt": "Walk me through what the model sees on the third call of a conversation.",
+  "rubric": [
+   "Says the call sends the whole messages array, not only the newest message",
+   "Says what happens when the harness drops the earlier messages",
+   "Names the earlier replies and tool results as part of what is sent",
+   "Says the model keeps nothing between calls, so the list is its memory"
+  ]
+ },
+ {
+  "id": "A3-s2",
+  "model_answer": "The window holds what the model reads in one call. Saved files hold what the harness writes to disk and reads back later. The weights hold what the model learned in training. The harness controls the window and the saved files. It does not control the weights.",
+  "objectives": [
+   "A3.o4"
+  ],
+  "prompt": "Name three kinds of memory a run can use, and say which one the harness controls.",
+  "rubric": [
+   "Names the window, saved files and the weights",
+   "Says the harness controls the window and the saved files",
+   "Says the harness does not control the weights",
+   "Says the saved files are a memory the harness keeps, and reads back"
+  ]
+ }
+]

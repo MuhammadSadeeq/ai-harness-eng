@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "id": "a3-forgetful",
+  "title": "Reading the notes again",
+  "task": "Read notes.txt, then write the total of its numbers to report.txt.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a careful assistant. Use the file tools to read and write files.",
+  "rules": [],
+  "workspace": {
+    "notes.txt": "apples 3\npears 4\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "report.txt",
+      "contains": "Total: 7"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed: report.txt has no total"
+  },
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "seed_base": 20261010,
+  "boards": [
+    "a3-old",
+    "a3-new"
+  ],
+  "script": [
+    {
+      "repeat": {
+        "times": "forever",
+        "steps": [
+          {
+            "when": [
+              {
+                "if": "sent_lacks:apples 3",
+                "then": [
+                  {
+                    "say": "I need the notes. I will read them.",
+                    "tools": [
+                      [
+                        "read_file",
+                        {
+                          "path": "notes.txt"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "if": "sent_lacks:Wrote report.txt",
+                "then": [
+                  {
+                    "say": "The notes add up to 7. I will write the total.",
+                    "tools": [
+                      [
+                        "write_file",
+                        {
+                          "path": "report.txt",
+                          "content": "Total: 7\n"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "else": [
+                  {
+                    "say": "Done. The total is in report.txt.",
+                    "stop": "end_turn"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "incident": {
+    "family": "forgetful-harness",
+    "wire": "context",
+    "board": "a3-old",
+    "seed": 1,
+    "first_bad_seq": 9,
+    "accept_seqs": [
+      17
+    ],
+    "why": "The second request carries one message: the task. The read result is not in it, so the model reads the file again. Every later request does the same, because the harness keeps the history and sends none of it. The model is not forgetting. The harness dropped the history before the call.",
+    "hint": "Read the request the model answers on turn 2. Besides the task, what is in it?",
+    "notes": [
+      {
+        "seq": 13,
+        "text": "The model reads the file again. That is what it does when its request shows no earlier result. It is not the failure: the request it answers already lost the result."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Resend the whole history on every call, so each request holds the earlier messages and results",
+        "why": "The model can only use what the request holds. Resend the list and the result is there."
+      },
+      {
+        "text": "Tell the model in the system prompt to remember what it read",
+        "why": "The system prompt is resent, but the file contents are not. A rule to remember what it has no copy of does not help."
+      },
+      {
+        "text": "Use a model with a bigger context window",
+        "why": "The window is not the problem: the request is one message long. A bigger window would hold the same one message."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 60
+  }
+}

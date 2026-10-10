@@ -49,16 +49,35 @@
     <nav class="glossary-index" aria-label="Letters">
       <ul>
         <li><a href="#letter-a">A</a></li>
+        <li><a href="#letter-c">C</a></li>
         <li><a href="#letter-d">D</a></li>
         <li><a href="#letter-e">E</a></li>
+        <li><a href="#letter-f">F</a></li>
+        <li><a href="#letter-h">H</a></li>
+        <li><a href="#letter-i">I</a></li>
+        <li><a href="#letter-l">L</a></li>
         <li><a href="#letter-m">M</a></li>
+        <li><a href="#letter-n">N</a></li>
+        <li><a href="#letter-o">O</a></li>
+        <li><a href="#letter-p">P</a></li>
         <li><a href="#letter-r">R</a></li>
+        <li><a href="#letter-s">S</a></li>
         <li><a href="#letter-t">T</a></li>
+        <li><a href="#letter-w">W</a></li>
       </ul>
     </nav>
     <div id="glossary-list" class="glossary-list">
     <section class="glossary-group" id="letter-a" data-filter-group>
       <h2>A</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-agent">
+        <h3 class="term-name"><dfn id="term-agent">agent</dfn></h3>
+        <p class="term-def">A model that is called in a loop, asks for tools, and is stopped by the code around it. The model is one part of the agent.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: agents</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-agent-loop">
         <h3 class="term-name"><dfn id="term-agent-loop">agent loop</dfn></h3>
         <p class="term-def">The code that calls the model, runs the tools the model asks for, adds the results to the history, and calls the model again. It stops when one of its exits is taken.</p>
@@ -67,6 +86,36 @@
           <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
         </p>
         <p class="term-alias">Also written: agent loops</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-c" data-filter-group>
+      <h2>C</h2>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-context-window">
+        <h3 class="term-name"><dfn id="term-context-window">context window</dfn></h3>
+        <p class="term-def">The fixed-size desk the model reads on each call. Instructions, earlier messages, tool results and the reply all share it.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
+        </p>
+        <p class="term-alias">Also written: context windows</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-conversation-history">
+        <h3 class="term-name"><dfn id="term-conversation-history">conversation history</dfn></h3>
+        <p class="term-def">The earlier messages in the list. The harness keeps them, and decides how much of them each call sends.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/the-stateless-model.html">A3 · The stateless model</a></span>
+        </p>
+        <p class="term-alias">Also written: history</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-coroutine">
+        <h3 class="term-name"><dfn id="term-coroutine">coroutine</dfn></h3>
+        <p class="term-def">What an async def function returns when you call it.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/asyncio.html">T2 · asyncio</a></span>
+        </p>
+        <p class="term-alias">Also written: coroutines</p>
       </div>
     </section>
     <section class="glossary-group" id="letter-d" data-filter-group>
@@ -102,8 +151,108 @@
         <p class="term-alias">Also written: exits</p>
       </div>
     </section>
+    <section class="glossary-group" id="letter-f" data-filter-group>
+      <h2>F</h2>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-failure-family">
+        <h3 class="term-name"><dfn id="term-failure-family">failure family</dfn></h3>
+        <p class="term-def">A named kind of failure that recurs across runs, such as a false done. Each module teaches one family.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: failure families</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-h" data-filter-group>
+      <h2>H</h2>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-hallucination">
+        <h3 class="term-name"><dfn id="term-hallucination">hallucination</dfn></h3>
+        <p class="term-def">A fluent, specific claim that is false. The reply reads the same as a true one, so reading it does not reveal the error.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+        <p class="term-alias">Also written: hallucinations</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-harness">
+        <h3 class="term-name"><dfn id="term-harness">harness</dfn></h3>
+        <p class="term-def">Everything around the model: the loop, the tools, the permissions, the checks and the limits. Same model, different harness, different results.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: harnesses</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-harness-board">
+        <h3 class="term-name"><dfn id="term-harness-board">Harness Board</dfn></h3>
+        <p class="term-def">The harness&#x27;s settings, such as limits and gates, shown next to what a run does.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: Harness Boards</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-i" data-filter-group>
+      <h2>I</h2>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-inference">
+        <h3 class="term-name"><dfn id="term-inference">inference</dfn></h3>
+        <p class="term-def">A model call that reads the weights and the prompt and produces a reply. The weights stay the same during inference.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-input-tokens">
+        <h3 class="term-name"><dfn id="term-input-tokens">input tokens</dfn></h3>
+        <p class="term-def">The tokens the model reads on a call: the instructions, the earlier messages, the tool results and the new message.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
+        </p>
+        <p class="term-alias">Also written: input token</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-l" data-filter-group>
+      <h2>L</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-language-model">
+        <h3 class="term-name"><dfn id="term-language-model">language model</dfn></h3>
+        <p class="term-def">A model that reads a text and scores the possible next tokens. A harness calls it again and again, and each call gives one reply.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+        <p class="term-alias">Also written: language models</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-latency">
+        <h3 class="term-name"><dfn id="term-latency">latency</dfn></h3>
+        <p class="term-def">How long a call takes to finish. More tokens in and out usually mean a longer wait.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
+        </p>
+      </div>
+    </section>
     <section class="glossary-group" id="letter-m" data-filter-group>
       <h2>M</h2>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-memory">
+        <h3 class="term-name"><dfn id="term-memory">memory</dfn></h3>
+        <p class="term-def">Anything a run can use later: what is in the window, what is in saved files, or what is in the model&#x27;s weights.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/the-stateless-model.html">A3 · The stateless model</a></span>
+        </p>
+        <p class="term-alias">Also written: memories</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-messages-array">
+        <h3 class="term-name"><dfn id="term-messages-array">messages array</dfn></h3>
+        <p class="term-def">The ordered list of messages sent with each call. It is the conversation the model can see.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/the-stateless-model.html">A3 · The stateless model</a></span>
+        </p>
+        <p class="term-alias">Also written: messages arrays, messages list</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-model-interface">
         <h3 class="term-name"><dfn id="term-model-interface">model interface</dfn></h3>
         <p class="term-def">One function that Rein calls to get a reply. A scripted model and a real model both sit behind it, with the same inputs and the same kind of result.</p>
@@ -112,6 +261,60 @@
           <span class="taught">Taught in <a href="modules/rein-1-talk-to-a-model.html">H1 · Rein 1: talk to a model</a></span>
         </p>
         <p class="term-alias">Also written: model interfaces</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-n" data-filter-group>
+      <h2>N</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-next-token-prediction">
+        <h3 class="term-name"><dfn id="term-next-token-prediction">next-token prediction</dfn></h3>
+        <p class="term-def">The model&#x27;s one job on each step: score every possible next token. Nothing in this step checks whether a token is true.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+        <p class="term-alias">Also written: next token prediction</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-o" data-filter-group>
+      <h2>O</h2>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-output-limit">
+        <h3 class="term-name"><dfn id="term-output-limit">output limit</dfn></h3>
+        <p class="term-def">The most tokens one reply may use. A reply that reaches it stops there, and the reply says why.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
+        </p>
+        <p class="term-alias">Also written: output limits</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-output-tokens">
+        <h3 class="term-name"><dfn id="term-output-tokens">output tokens</dfn></h3>
+        <p class="term-def">The tokens the model writes in its reply. They use the same window as the input.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
+        </p>
+        <p class="term-alias">Also written: output token</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-p" data-filter-group>
+      <h2>P</h2>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-pass-rate">
+        <h3 class="term-name"><dfn id="term-pass-rate">pass rate</dfn></h3>
+        <p class="term-def">The share of trials that pass their checks. It is a measure over many runs, not the result of one.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: pass rates</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-probability">
+        <h3 class="term-name"><dfn id="term-probability">probability</dfn></h3>
+        <p class="term-def">A number from zero to one that says how likely a choice is. The sampler turns the scores into probabilities before it picks.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+        <p class="term-alias">Also written: probabilities</p>
       </div>
     </section>
     <section class="glossary-group" id="letter-r" data-filter-group>
@@ -124,9 +327,81 @@
           <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
         </p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-role">
+        <h3 class="term-name"><dfn id="term-role">role</dfn></h3>
+        <p class="term-def">The label on each message in the list. A message is from the user or from the assistant.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/the-stateless-model.html">A3 · The stateless model</a></span>
+        </p>
+        <p class="term-alias">Also written: roles</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-run">
+        <h3 class="term-name"><dfn id="term-run">run</dfn></h3>
+        <p class="term-def">One agent doing one task, from the first model call to a stop. A run has many turns.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: runs</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-s" data-filter-group>
+      <h2>S</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-sampling">
+        <h3 class="term-name"><dfn id="term-sampling">sampling</dfn></h3>
+        <p class="term-def">The step that picks one token from the scored options, by the rules it is given. The model scores; the sampler picks.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-seed">
+        <h3 class="term-name"><dfn id="term-seed">seed</dfn></h3>
+        <p class="term-def">The number that sets the random draws of a scripted run. The same seed gives the same run, every time.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: seeds</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-stateless">
+        <h3 class="term-name"><dfn id="term-stateless">stateless</dfn></h3>
+        <p class="term-def">Keeping nothing between calls. A stateless call starts from what it is sent, and nothing else.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/the-stateless-model.html">A3 · The stateless model</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-system-prompt">
+        <h3 class="term-name"><dfn id="term-system-prompt">system prompt</dfn></h3>
+        <p class="term-def">The instructions sent with every call, kept apart from the messages. The harness sends it each time.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/the-stateless-model.html">A3 · The stateless model</a></span>
+        </p>
+        <p class="term-alias">Also written: system prompts</p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-t" data-filter-group>
       <h2>T</h2>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-temperature">
+        <h3 class="term-name"><dfn id="term-temperature">temperature</dfn></h3>
+        <p class="term-def">A setting of the sampler that changes how much the scores count. Higher temperature spreads the choice over more tokens. At zero, the top token always wins.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-token">
+        <h3 class="term-name"><dfn id="term-token">token</dfn></h3>
+        <p class="term-def">A piece of text the model reads and writes. A token is often a word, but it can be part of a word or a punctuation mark.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+        <p class="term-alias">Also written: tokens</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-token-budget">
         <h3 class="term-name"><dfn id="term-token-budget">token budget</dfn></h3>
         <p class="term-def">A cap on the total tokens a run may use, input and output together. The loop checks it before each call and stops when the total has reached the cap.</p>
@@ -136,6 +411,24 @@
         </p>
         <p class="term-alias">Also written: token budgets</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-tokenizer">
+        <h3 class="term-name"><dfn id="term-tokenizer">tokenizer</dfn></h3>
+        <p class="term-def">The part that cuts text into tokens. Real tokenizers differ, so a count from the course is an estimate.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
+        </p>
+        <p class="term-alias">Also written: tokenizers</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool">
+        <h3 class="term-name"><dfn id="term-tool">tool</dfn></h3>
+        <p class="term-def">A function the harness runs when the model asks for it. The model only asks. The harness runs the function and returns the result.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: tools</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-registry">
         <h3 class="term-name"><dfn id="term-tool-registry">tool registry</dfn></h3>
         <p class="term-def">A table from each tool name to the Python function that runs it. The loop looks up the name the model asked for. A name that is not in the table gets an error result.</p>
@@ -144,6 +437,32 @@
           <span class="taught">Taught in <a href="modules/rein-2-one-tool-and-the-loop.html">H2 · Rein 2: one tool and the loop</a></span>
         </p>
         <p class="term-alias">Also written: tool registries</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-trace">
+        <h3 class="term-name"><dfn id="term-trace">trace</dfn></h3>
+        <p class="term-def">The record of a run: each model call, reply, permission, tool call and check, in order.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: traces</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-training">
+        <h3 class="term-name"><dfn id="term-training">training</dfn></h3>
+        <p class="term-def">The process that sets the model&#x27;s weights, from many example texts. It happens before any chat, and a chat does not run it.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-trial">
+        <h3 class="term-name"><dfn id="term-trial">trial</dfn></h3>
+        <p class="term-def">One run with one seed. A bench runs many trials of the same setup.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
+        </p>
+        <p class="term-alias">Also written: trials</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-turn">
         <h3 class="term-name"><dfn id="term-turn">turn</dfn></h3>
@@ -163,9 +482,30 @@
         </p>
         <p class="term-alias">Also written: turn limits</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-type-hint">
+        <h3 class="term-name"><dfn id="term-type-hint">type hint</dfn></h3>
+        <p class="term-def">A note that says what type a name should hold, such as count: int, or -&gt; str after the parameters of a function.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/py-typing-and-dataclasses.html">T1 · Python typing and dataclasses</a></span>
+        </p>
+        <p class="term-alias">Also written: type hints</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-w" data-filter-group>
+      <h2>W</h2>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-weights">
+        <h3 class="term-name"><dfn id="term-weights">weights</dfn></h3>
+        <p class="term-def">The numbers inside the model that set its scores. Training sets them. Inference only reads them.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
+        </p>
+        <p class="term-alias">Also written: weight</p>
+      </div>
     </section>
     </div>
-    <p class="glossary-count" data-glossary-count>10 terms</p>
+    <p class="glossary-count" data-glossary-count>44 terms</p>
     <!-- /gen:glossary -->
   </section>
 </main>

@@ -1,0 +1,53 @@
+- id: A3-p1
+  objective: A3.o3
+  mode: predict
+  question: "The run read notes.txt on its first turn. On its second call, what does the model have when it answers?"
+  options:
+    - text: "Everything from the first call, the file included."
+      why: "Tempting. It is easy to assume the model kept what it read. The model keeps nothing between calls."
+    - text: "Only the task, because the harness sent nothing else."
+      why: "Right. The request holds only the task, so the file contents are not in front of the model."
+    - text: "A saved copy of the file, kept by the provider."
+      why: "Tempting. The model keeps nothing between calls, so no copy is kept for it."
+  answer: 1
+  outcome: "It read the file again, and again. The harness had dropped the history, so each call started from the task."
+
+- id: A3-c1
+  objective: A3.o1
+  mode: check
+  question: "Why does each model call start from nothing?"
+  options:
+    - text: "The model forgets, the way people do."
+      why: "Tempting. It sounds like memory loss, but the model is not forgetting anything: it was never sent the earlier calls."
+    - text: "The model keeps no state between calls. Each call starts from what the harness sends."
+      fact: api.messages-stateless
+      why: "Right. The Messages API is stateless, so the harness sends the full history with each request."
+    - text: "The provider deletes the conversation after each call."
+      why: "Wrong. The question is what the model holds, and the answer is that it holds nothing between calls."
+  answer: 1
+
+- id: A3-c2
+  objective: A3.o2
+  mode: check
+  question: "For the model to use the result of a tool call on the next call, what must the messages array hold?"
+  options:
+    - text: "Only the new user message."
+      why: "Tempting. The new message is sent, but the reply that asked for the tool and the result are needed as well."
+    - text: "The earlier assistant message and the tool result that follows it."
+      why: "Right. The list holds the reply that asked for the tool and the result, in order."
+    - text: "A file path where the result was saved."
+      why: "Wrong. The model reads what is in the list, not a path the harness might read later."
+  answer: 1
+
+- id: A3-c3
+  objective: A3.o4
+  mode: check
+  question: "Which kind of memory belongs to the model's weights?"
+  options:
+    - text: "What the model learned in training."
+      why: "Right. The weights are set by training, and a run does not change them."
+    - text: "What the harness writes to saved files."
+      why: "Wrong. Saved files are written by the harness, outside the model."
+    - text: "What is in the window for this call."
+      why: "Wrong. The window holds what the call sends, and the harness controls it."
+  answer: 0

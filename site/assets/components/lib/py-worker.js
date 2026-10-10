@@ -57,12 +57,13 @@ async function init({ base, hxtest }) {
   self.postMessage({ type: "ready" });
 }
 
-function run({ id, code, tests }) {
+// Async: an async def test is awaited on Pyodide's own event loop (hxtest.run_async), so runPythonAsync.
+async function run({ id, code, tests }) {
   try {
     pyodide.FS.writeFile("/work/kata.py", code);
     pyodide.FS.writeFile("/work/test_kata.py", tests);
-    const text = pyodide.runPython(
-      "import json, hxtest\njson.dumps(hxtest.run('/work/test_kata.py'))",
+    const text = await pyodide.runPythonAsync(
+      "import json, hxtest\njson.dumps(await hxtest.run_async('/work/test_kata.py'))",
     );
     self.postMessage({ type: "result", id, result: JSON.parse(text) });
   } catch (error) {

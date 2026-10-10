@@ -3,6 +3,11 @@
 Runs the plain-assert tests of one kata file using the standard library only,
 so the same file runs under CPython (pytest) and in the browser (Pyodide).
 
+A test may be an ``async def test_*``: it is awaited. Under CPython, run() starts
+an event loop for each file (asyncio.run). In the browser, the page awaits
+run_async() with runPythonAsync, which uses Pyodide's own event loop; run() must
+not be called there (Pyodide cannot run a loop synchronously).
+
 Usage: python hxtest.py <test_file.py> [--json]
 """
 
@@ -10,9 +15,11 @@ from __future__ import annotations
 
 import argparse
 import ast
+import asyncio
 import contextlib
 import importlib.abc
 import importlib.util
+import inspect
 import io
 import json
 import os
@@ -36,6 +43,7 @@ class RunResult(TypedDict):
     errors: int
 
 
+TEST_DEFS = (ast.FunctionDef, ast.AsyncFunctionDef)
 COLLECTION = "<collection>"
 MODULE_NAME = "hxtest_test_module"
 KATA_MODULE = "kata"
@@ -94,7 +102,15 @@ class _KataFinder:
 
 
 def run(test_path: str) -> RunResult:
-    """Run every top-level ``test_*`` function of ``test_path`` in source order."""
+    """Run every top-level ``test_*`` function of ``test_path`` (CPython: starts a loop)."""
+    return asyncio.run(run_async(test_path))
+
+
+async def run_async(test_path: str) -> RunResult:
+    """Run every top-level ``test_*`` function of ``test_path`` in source order.
+
+    Async tests are awaited.
+    """
     path = os.path.abspath(test_path)
     directory = os.path.dirname(path)
     sys.modules.pop(KATA_MODULE, None)
@@ -110,9 +126,9 @@ def run(test_path: str) -> RunResult:
             results.append({"name": COLLECTION, "outcome": "error", "message": _describe(exc)})
             return _summarize(results)
         for node in tree.body:
-            if isinstance(node, ast.FunctionDef) and node.name.startswith("test_"):
+            if isinstance(node, TEST_DEFS) and node.name.startswith("test_"):
                 fn = getattr(module, node.name, None)
-                results.append(_run_one(node.name, fn, path, source, tree))
+                results.append(await _run_one(node.name, fn, path, source, tree))
     finally:
         sys.meta_path.remove(finder)
         sys.path[:] = saved_path
@@ -136,13 +152,15 @@ def _load(path: str) -> tuple[ModuleType, str, ast.Module]:
     return module, source, tree
 
 
-def _run_one(name: str, fn: object, path: str, source: str, tree: ast.Module) -> TestResult:
+async def _run_one(name: str, fn: object, path: str, source: str, tree: ast.Module) -> TestResult:
     if not callable(fn):
         return {"name": name, "outcome": "error", "message": "TypeError: test is not callable"}
     buffer = io.StringIO()
     try:
         with contextlib.redirect_stdout(buffer), contextlib.redirect_stderr(buffer):
-            fn()
+            outcome = fn()
+            if inspect.isawaitable(outcome):  # an async def test: wait for it
+                await outcome
     except AssertionError as exc:
         message = _assert_message(exc, path, source, tree)
         return {"name": name, "outcome": "failed", "message": message}

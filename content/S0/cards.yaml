@@ -1,0 +1,49 @@
+- id: S0-c1
+  type: term
+  objective: S0.o1
+  front: "What is a harness?"
+  back: "Everything around the model: the loop, the tools, the permissions, the checks and the limits."
+
+- id: S0-c2
+  type: term
+  objective: S0.o1
+  front: "What is a trace?"
+  back: "The record of a run, in order: each model call, reply, permission, tool call and check."
+
+- id: S0-c3
+  type: term
+  objective: S0.o3
+  front: "How is a trial different from a run?"
+  back: "A trial is one run with one seed. A bench runs many trials of the same setup and reports the pass rate."
+
+- id: S0-c4
+  type: term
+  objective: S0.o3
+  front: "What does a seed do?"
+  back: "It sets the random draws of a scripted run. The same seed gives the same run, so a bench repeats exactly."
+
+- id: S0-c5
+  type: term
+  objective: S0.o3
+  front: "What is a pass rate?"
+  back: "The share of trials that pass their checks. It measures many runs, not one run."
+
+- id: S0-c6
+  type: wire-question
+  objective: S0.o4
+  wire: verify
+  front: "Which wire checks a done claim before the run is accepted?"
+  back: "Verification and evals. A done claim stays a claim until a check runs and confirms it."
+
+- id: S0-c7
+  type: which-wire
+  objective: S0.o2
+  wire: verify
+  front: "The model says the tests pass, but no test ran. Which wire is that?"
+  back: "Verification and evals. The harness took the model's word, so nothing checked the done claim."
+
+- id: S0-c8
+  type: term
+  objective: S0.o4
+  front: "What is a failure family?"
+  back: "A named kind of failure that recurs across runs, such as a false done. Each module teaches one."

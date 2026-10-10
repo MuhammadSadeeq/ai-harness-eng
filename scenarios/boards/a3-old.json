@@ -1,0 +1,9 @@
+{
+  "id": "a3-old",
+  "label": "Old board",
+  "modules": {
+    "history": {
+      "resend": false
+    }
+  }
+}

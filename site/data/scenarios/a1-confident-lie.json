@@ -1,0 +1,154 @@
+{
+ "schema": 1,
+ "model_id": "claude-sonnet-5-5",
+ "pricing": {
+  "fact": "models.sonnet-5-5-price"
+ },
+ "window": 8000,
+ "rules": [],
+ "outside": {},
+ "custom_tools": [],
+ "human": {
+  "default": "approve"
+ },
+ "interrupt": null,
+ "golden_seeds": [
+  0,
+  1,
+  2
+ ],
+ "seed_base": 20261010,
+ "id": "a1-confident-lie",
+ "title": "The confident lie",
+ "task": "Make the count_words test pass",
+ "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the work is finished.",
+ "workspace": {
+  "count.py": "def count_words(s):\n    return 0\n",
+  "test_count.py": "from count import count_words\n\ndef test_count():\n    assert count_words(\"one two three\") == 3\n"
+ },
+ "tools": [
+  "read_file",
+  "edit_file",
+  "run_command"
+ ],
+ "checks": [
+  {
+   "file": "count.py",
+   "contains": "len(s.split())"
+  }
+ ],
+ "test_output": {
+  "pass": "1 passed",
+  "fail": "1 failed: ModuleNotFoundError: No module named 'text_utils'"
+ },
+ "script": [
+  {
+   "say": "Reading count.py.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "count.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "The text_utils module has a word_count helper. Using it.",
+   "tools": [
+    [
+     "edit_file",
+     {
+      "path": "count.py",
+      "old_text": "return 0",
+      "new_text": "from text_utils import word_count\n    return word_count(s)"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "All tests pass. Done."
+  },
+  {
+   "when": [
+    {
+     "if": "verify_feedback",
+     "then": [
+      {
+       "say": "The check failed. Running the tests to see why.",
+       "tools": [
+        [
+         "run_command",
+         {
+          "cmd": "pytest -q"
+         }
+        ]
+       ]
+      },
+      {
+       "say": "This project has no text_utils module. Counting the words directly.",
+       "tools": [
+        [
+         "edit_file",
+         {
+          "path": "count.py",
+          "old_text": "from text_utils import word_count\n    return word_count(s)",
+          "new_text": "return len(s.split())"
+         }
+        ]
+       ]
+      },
+      {
+       "say": "Fixed. Done."
+      }
+     ]
+    },
+    {
+     "else": [
+      {
+       "say": "Done."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "boards": [
+  "a1-old",
+  "a1-new"
+ ],
+ "incident": {
+  "family": "confident-lie",
+  "wire": "verify",
+  "board": "a1-old",
+  "seed": 1,
+  "first_bad_seq": 21,
+  "accept_seqs": [
+   23
+  ],
+  "why": "The model says all tests pass, and it never ran them. Its reply is fluent and sure, and it names a helper that this project does not have. Nothing checks the claim, so the harness takes it as done and ends the run.",
+  "hint": "Find the first name the model relies on. Does this project have it?",
+  "notes": [
+   {
+    "seq": 13,
+    "text": "That reply names a helper this project does not have. Models make mistakes like this all the time. The failure comes later: when does anything check the claim?"
+   }
+  ],
+  "fixes": [
+   {
+    "text": "Run the tests on every done claim, and send a failure back to the model",
+    "why": "A fluent claim becomes a question the harness answers. A failure goes back to the model, which fixes it."
+   },
+   {
+    "text": "Ask the model to check its own work before it says done",
+    "why": "It may catch the mistake, but that check is more of its own words. Only a run shows what is true."
+   },
+   {
+    "text": "Use a model that does not make things up",
+    "why": "No model is immune to a confident wrong answer. The check belongs in the harness."
+   }
+  ],
+  "correct_fix": 0,
+  "par_s": 45
+ }
+}

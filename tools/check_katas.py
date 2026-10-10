@@ -43,6 +43,8 @@ STDLIB = frozenset(sys.stdlib_module_names)
 Outcomes = dict[str, bool]
 
 # One Node process: loads Pyodide once, runs hxtest on each job in its own folder, writes results.
+# Jobs are awaited with runPythonAsync, so async tests run on Pyodide's own event loop
+# (hxtest.run_async).
 NODE_SCRIPT = """
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -59,20 +61,20 @@ pyodide.FS.mkdirTree("/hx");
 pyodide.FS.writeFile("/hx/hxtest.py", request.hxtest);
 pyodide.runPython("import sys\\nsys.path.insert(0, '/hx')");
 const results = [];
-request.jobs.forEach((job, index) => {
+for (const [index, job] of request.jobs.entries()) {
   const dir = `/work/job${index}`;
   pyodide.FS.mkdirTree(dir);
   pyodide.FS.writeFile(`${dir}/kata.py`, job.code);
   pyodide.FS.writeFile(`${dir}/test_kata.py`, job.tests);
   try {
-    const call = `json.dumps(hxtest.run('${dir}/test_kata.py'))`;
+    const call = `json.dumps(await hxtest.run_async('${dir}/test_kata.py'))`;
     const script = ["import json, hxtest", call].join("\\n");
-    const text = pyodide.runPython(script);
+    const text = await pyodide.runPythonAsync(script);
     results.push({ tests: JSON.parse(text).tests });
   } catch (error) {
     results.push({ error: String(error?.message ?? error).slice(0, 300) });
   }
-});
+}
 writeFileSync(request.result, JSON.stringify(results));
 """
 
@@ -369,7 +371,27 @@ def _verdict(passed: bool | None) -> str:
     return "pass" if passed else "fail"
 
 
+# pytest has no asyncio support in this environment (no pytest-asyncio), so the work folder
+# gets this
+# hook: an async def test_* runs on asyncio.run, as hxtest does. The kata itself stays plain.
+CONFTEST = """\
+import asyncio
+import inspect
+
+import pytest
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_pyfunc_call(pyfuncitem):
+    if inspect.iscoroutinefunction(pyfuncitem.obj):
+        asyncio.run(pyfuncitem.obj(**pyfuncitem.funcargs))
+        return True
+    return None
+"""
+
+
 def _run_pytest(work: Path) -> Outcomes:
+    (work / "conftest.py").write_text(CONFTEST, encoding="utf-8")
     report_path = work / "r.xml"
     command = [
         sys.executable,
@@ -533,10 +555,11 @@ def _test_functions(tests: str) -> list[str]:
         tree = ast.parse(tests)
     except SyntaxError:
         return []
+    test_defs = (ast.FunctionDef, ast.AsyncFunctionDef)
     return [
         node.name
         for node in tree.body
-        if isinstance(node, ast.FunctionDef) and node.name.startswith("test_")
+        if isinstance(node, test_defs) and node.name.startswith("test_")
     ]
 
 

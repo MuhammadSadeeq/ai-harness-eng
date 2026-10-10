@@ -1,0 +1,37 @@
+[
+ {
+  "back": "The list ['python3', '-c', 'print(1)', '4']. The value is text in the list.",
+  "front": "What does build_argv return for the script print(1) and the value 4?",
+  "id": "T3-k1",
+  "objective": "T3.o1",
+  "type": "term"
+ },
+ {
+  "back": "capture_output=True, text=True and timeout=timeout, in that one call.",
+  "front": "Which keyword arguments does run_checked pass to the runner?",
+  "id": "T3-k2",
+  "objective": "T3.o1",
+  "type": "term"
+ },
+ {
+  "back": "(3, ''). A non-zero exit code is a result, so it is returned, not raised.",
+  "front": "What does run_checked return for exit code 3 with no output?",
+  "id": "T3-k3",
+  "objective": "T3.o1",
+  "type": "term"
+ },
+ {
+  "back": "(None, 'timed out'). It catches subprocess.TimeoutExpired.",
+  "front": "What does run_checked return when the timeout passes?",
+  "id": "T3-k4",
+  "objective": "T3.o2",
+  "type": "term"
+ },
+ {
+  "back": "On your machine, in your own code, with the same keyword arguments. The kata's tests use a fake runner and start no child process.",
+  "front": "Where does the real subprocess.run call go in this module?",
+  "id": "T3-k5",
+  "objective": "T3.o2",
+  "type": "term"
+ }
+]

@@ -1,0 +1,7 @@
+- id: coroutine
+  term: coroutine
+  aliases:
+    - coroutine
+    - coroutines
+  strict: true
+  definition: What an async def function returns when you call it.

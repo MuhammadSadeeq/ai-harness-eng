@@ -1,0 +1,83 @@
+id: T3-timeout
+module: T3
+title: Run a command with a timeout
+objectives: [T3.o1, T3.o2]
+minutes: 15
+hints:
+  - "Read test_kata.py. Each test names one keyword argument, one result or one error that run_checked must handle."
+  - "Call runner with argv and the keyword arguments capture_output=True, text=True and timeout=timeout. Catch subprocess.TimeoutExpired and return (None, 'timed out')."
+  - "Nearly the code: try: result = runner(argv, capture_output=True, text=True, timeout=timeout), except subprocess.TimeoutExpired: return None, 'timed out', then return result.returncode, result.stdout."
+from_memory: true
+wrong_solutions:
+  - name: no-timeout
+    code: |
+      import subprocess
+
+
+      def build_argv(script: str, value: int) -> list[str]:
+          return ["python3", "-c", script, str(value)]
+
+
+      def run_checked(runner, argv: list[str], timeout: float) -> tuple[int | None, str]:
+          try:
+              result = runner(argv, capture_output=True, text=True)
+          except subprocess.TimeoutExpired:
+              return None, "timed out"
+          return result.returncode, result.stdout
+  - name: no-text
+    code: |
+      import subprocess
+
+
+      def build_argv(script: str, value: int) -> list[str]:
+          return ["python3", "-c", script, str(value)]
+
+
+      def run_checked(runner, argv: list[str], timeout: float) -> tuple[int | None, str]:
+          try:
+              result = runner(argv, capture_output=True, timeout=timeout)
+          except subprocess.TimeoutExpired:
+              return None, "timed out"
+          return result.returncode, result.stdout
+  - name: uncaught-timeout
+    code: |
+      import subprocess
+
+
+      def build_argv(script: str, value: int) -> list[str]:
+          return ["python3", "-c", script, str(value)]
+
+
+      def run_checked(runner, argv: list[str], timeout: float) -> tuple[int | None, str]:
+          result = runner(argv, capture_output=True, text=True, timeout=timeout)
+          return result.returncode, result.stdout
+  - name: check-true
+    code: |
+      import subprocess
+
+
+      def build_argv(script: str, value: int) -> list[str]:
+          return ["python3", "-c", script, str(value)]
+
+
+      def run_checked(runner, argv: list[str], timeout: float) -> tuple[int | None, str]:
+          try:
+              result = runner(argv, capture_output=True, text=True, timeout=timeout, check=True)
+          except subprocess.TimeoutExpired:
+              return None, "timed out"
+          return result.returncode, result.stdout
+  - name: no-output
+    code: |
+      import subprocess
+
+
+      def build_argv(script: str, value: int) -> list[str]:
+          return ["python3", "-c", script, str(value)]
+
+
+      def run_checked(runner, argv: list[str], timeout: float) -> tuple[int | None, str]:
+          try:
+              result = runner(argv, capture_output=True, text=True, timeout=timeout)
+          except subprocess.TimeoutExpired:
+              return None, "timed out"
+          return result.returncode, ""

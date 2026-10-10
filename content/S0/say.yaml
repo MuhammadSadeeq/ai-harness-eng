@@ -1,0 +1,26 @@
+- id: S0-s1
+  objectives: [S0.o3, S0.o4]
+  prompt: "Change one harness setting and tell me what it did to the pass rate, with your numbers."
+  model_answer: >-
+    I changed the verify retries and ran the bench on the same seeds. With no retries, the new board
+    passed fewer trials, because a false done was accepted. With one retry, every trial passed. The
+    model was the same in both runs, so the change came from the harness. That is the course thesis:
+    same model, different harness, different results. I would report the pass rate with its trial count.
+  rubric:
+    - "Names the one setting that changed, and the value before and after"
+    - "Reports the pass rate for each value, with the number of trials"
+    - "Says what the result does not show: other tasks and real models"
+    - "Says the model was the same, so the harness made the difference"
+
+- id: S0-s2
+  objectives: [S0.o2]
+  prompt: "A run says it is done. What do you check before you believe it?"
+  model_answer: >-
+    First I check whether anything ran the checks. If the model says the tests pass but no test ran,
+    the claim is only a claim. I look at the trace for the tool call that ran the tests, read its
+    result, and check that the result matches the claim. Only then do I accept the run.
+  rubric:
+    - "Looks for the tool call that ran the checks, in the trace"
+    - "Reads the result of that call, not the model's words"
+    - "Says a done claim is only a claim until a check runs"
+    - "Says a done claim is not proof until a check confirms it"

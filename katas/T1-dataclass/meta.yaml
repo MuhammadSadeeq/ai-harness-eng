@@ -1,0 +1,106 @@
+id: T1-dataclass
+module: T1
+title: Write a dataclass and two typed functions
+objectives: [T1.o1, T1.o2]
+minutes: 15
+hints:
+  - "Read test_kata.py. Each test names one field or one function that kata.py must have."
+  - "Put @dataclass above Reply and give output_tokens a default of 0. first_text returns None when the list is empty."
+  - "Nearly the code: the fields are text: str, stop_reason: str and output_tokens: int = 0. is_done returns reply.stop_reason == 'end_turn'. first_text returns replies[0].text, or None when the list is empty."
+from_memory: true
+wrong_solutions:
+  - name: no-default
+    code: |
+      from dataclasses import dataclass
+
+
+      @dataclass
+      class Reply:
+          text: str
+          stop_reason: str
+          output_tokens: int
+
+
+      def is_done(reply: Reply) -> bool:
+          return reply.stop_reason == "end_turn"
+
+
+      def first_text(replies: list[Reply]) -> str | None:
+          if not replies:
+              return None
+          return replies[0].text
+  - name: plain-class
+    code: |
+      class Reply:
+          def __init__(self, text: str, stop_reason: str, output_tokens: int = 0):
+              self.text = text
+              self.stop_reason = stop_reason
+              self.output_tokens = output_tokens
+
+
+      def is_done(reply: Reply) -> bool:
+          return reply.stop_reason == "end_turn"
+
+
+      def first_text(replies: list[Reply]) -> str | None:
+          if not replies:
+              return None
+          return replies[0].text
+  - name: empty-string
+    code: |
+      from dataclasses import dataclass
+
+
+      @dataclass
+      class Reply:
+          text: str
+          stop_reason: str
+          output_tokens: int = 0
+
+
+      def is_done(reply: Reply) -> bool:
+          return reply.stop_reason == "end_turn"
+
+
+      def first_text(replies: list[Reply]) -> str:
+          if not replies:
+              return ""
+          return replies[0].text
+  - name: no-empty-check
+    code: |
+      from dataclasses import dataclass
+
+
+      @dataclass
+      class Reply:
+          text: str
+          stop_reason: str
+          output_tokens: int = 0
+
+
+      def is_done(reply: Reply) -> bool:
+          return reply.stop_reason == "end_turn"
+
+
+      def first_text(replies: list[Reply]) -> str | None:
+          return replies[0].text
+  - name: not-tool-use
+    code: |
+      from dataclasses import dataclass
+
+
+      @dataclass
+      class Reply:
+          text: str
+          stop_reason: str
+          output_tokens: int = 0
+
+
+      def is_done(reply: Reply) -> bool:
+          return reply.stop_reason != "tool_use"
+
+
+      def first_text(replies: list[Reply]) -> str | None:
+          if not replies:
+              return None
+          return replies[0].text

@@ -1,0 +1,7 @@
+{
+  "rules": [
+    {"match": "my name is ([A-Za-z]+)", "remembers": "name", "reply": "Got it. Your name is $1."},
+    {"match": "what is my name", "reply": "Your name is $name."}
+  ],
+  "suggestions": ["My name is Sam.", "What is my name?"]
+}

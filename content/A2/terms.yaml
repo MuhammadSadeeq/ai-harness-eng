@@ -1,0 +1,47 @@
+- id: tokenizer
+  term: tokenizer
+  aliases: [tokenizer, tokenizers]
+  strict: true
+  wire: context
+  definition: >-
+    The part that cuts text into tokens. Real tokenizers differ, so a count from the course is an estimate.
+
+- id: context-window
+  term: context window
+  aliases: [context window, context windows]
+  strict: true
+  wire: context
+  definition: >-
+    The fixed-size desk the model reads on each call. Instructions, earlier messages, tool results and the reply all share it.
+
+- id: input-tokens
+  term: input tokens
+  aliases: [input tokens, input token]
+  strict: true
+  wire: context
+  definition: >-
+    The tokens the model reads on a call: the instructions, the earlier messages, the tool results and the new message.
+
+- id: output-tokens
+  term: output tokens
+  aliases: [output tokens, output token]
+  strict: true
+  wire: context
+  definition: >-
+    The tokens the model writes in its reply. They use the same window as the input.
+
+- id: output-limit
+  term: output limit
+  aliases: [output limit, output limits]
+  strict: true
+  wire: control
+  definition: >-
+    The most tokens one reply may use. A reply that reaches it stops there, and the reply says why.
+
+- id: latency
+  term: latency
+  aliases: [latency]
+  strict: false
+  wire: loop
+  definition: >-
+    How long a call takes to finish. More tokens in and out usually mean a longer wait.

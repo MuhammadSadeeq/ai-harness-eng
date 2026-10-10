@@ -4,6 +4,7 @@ import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runBench } from "../sim/index.js";
 import { summarize, wilson, percent, histogram, TURN_EDGES, sweepPar } from "./lib/stats.js";
+import { historyWords } from "./lib/board-tags.js";
 import { formatCost, formatInt, plural, pricingIsUsd, statusWords, isPass } from "./lib/format.js";
 
 const KNOB_LABELS = {
@@ -72,6 +73,10 @@ const money = (nano, priced) => formatCost(nano, { usd: priced });
 function modulesText(board) {
   const parts = [];
   for (const [module, params] of Object.entries(board.modules ?? {})) {
+    if (module === "history") {
+      parts.push(historyWords(params));
+      continue;
+    }
     const entries = Object.entries(params ?? {});
     if (entries.length === 0) parts.push(words(module));
     let plain = false;

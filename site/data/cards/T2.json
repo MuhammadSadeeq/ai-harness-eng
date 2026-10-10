@@ -1,0 +1,37 @@
+[
+ {
+  "back": "A coroutine. Its body has not run yet, as the first example shows.",
+  "front": "What does calling an async def function return?",
+  "id": "T2-k1",
+  "objective": "T2.o1",
+  "type": "term"
+ },
+ {
+  "back": "The value 8. The second example awaits double and returns what it gives.",
+  "front": "What does await give you when the coroutine returns 8?",
+  "id": "T2-k2",
+  "objective": "T2.o1",
+  "type": "term"
+ },
+ {
+  "back": "One fetch coroutine per job, in the order of jobs.",
+  "front": "What does fetch_all pass to asyncio.gather?",
+  "id": "T2-k3",
+  "objective": "T2.o2",
+  "type": "term"
+ },
+ {
+  "back": "In asyncio.wait_for, around the gather call. A TimeoutError from it reaches the caller.",
+  "front": "Where does the timeout go?",
+  "id": "T2-k4",
+  "objective": "T2.o2",
+  "type": "term"
+ },
+ {
+  "back": "They time three jobs of 0.2 s each and expect less than 0.4 s in total.",
+  "front": "How do the tests check that the jobs overlap?",
+  "id": "T2-k5",
+  "objective": "T2.o2",
+  "type": "term"
+ }
+]

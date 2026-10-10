@@ -1,0 +1,28 @@
+- id: T1-c1
+  objective: T1.o1
+  mode: check
+  question: "What does this hint allow? def label(count: int | None) -> str"
+  options:
+    - text: "Only an int"
+      why: "Too narrow. The | None part also allows None."
+    - text: "An int, or None"
+      why: "Right. The union of int and None is what the hint says."
+    - text: "Any value at all"
+      why: "Too wide. The hint names two types."
+    - text: "A string"
+      why: "No. Neither int nor None is a string."
+  answer: 1
+- id: T1-c2
+  objective: T1.o2
+  mode: check
+  question: "The snippet makes task = Task('write the test'). What does task.done hold?"
+  options:
+    - text: "An error, because done is required"
+      why: "Not in this snippet. Only title is passed, and done has a default."
+    - text: "False"
+      why: "Right. The default is False, and the call does not pass done."
+    - text: "None"
+      why: "No. The field's default is False, not None."
+    - text: "An empty string"
+      why: "No. done is a bool field, so its default is False."
+  answer: 1

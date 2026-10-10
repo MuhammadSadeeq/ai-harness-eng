@@ -1,4 +1,16 @@
 {
+ "agent": {
+  "aliases": [
+   "agent",
+   "agents"
+  ],
+  "definition": "A model that is called in a loop, asks for tools, and is stopped by the code around it. The model is one part of the agent.",
+  "id": "agent",
+  "module": "S0",
+  "strict": true,
+  "term": "agent",
+  "wire": "loop"
+ },
  "agent-loop": {
   "aliases": [
    "agent loop",
@@ -10,6 +22,41 @@
   "strict": true,
   "term": "agent loop",
   "wire": "loop"
+ },
+ "context-window": {
+  "aliases": [
+   "context window",
+   "context windows"
+  ],
+  "definition": "The fixed-size desk the model reads on each call. Instructions, earlier messages, tool results and the reply all share it.",
+  "id": "context-window",
+  "module": "A2",
+  "strict": true,
+  "term": "context window",
+  "wire": "context"
+ },
+ "conversation-history": {
+  "aliases": [
+   "conversation history",
+   "history"
+  ],
+  "definition": "The earlier messages in the list. The harness keeps them, and decides how much of them each call sends.",
+  "id": "conversation-history",
+  "module": "A3",
+  "strict": true,
+  "term": "conversation history",
+  "wire": "context"
+ },
+ "coroutine": {
+  "aliases": [
+   "coroutine",
+   "coroutines"
+  ],
+  "definition": "What an async def function returns when you call it.",
+  "id": "coroutine",
+  "module": "T2",
+  "strict": true,
+  "term": "coroutine"
  },
  "dataclass": {
   "aliases": [
@@ -47,6 +94,125 @@
   "term": "exit",
   "wire": "loop"
  },
+ "failure-family": {
+  "aliases": [
+   "failure family",
+   "failure families"
+  ],
+  "definition": "A named kind of failure that recurs across runs, such as a false done. Each module teaches one family.",
+  "id": "failure-family",
+  "module": "S0",
+  "strict": true,
+  "term": "failure family",
+  "wire": "verify"
+ },
+ "hallucination": {
+  "aliases": [
+   "hallucination",
+   "hallucinations"
+  ],
+  "definition": "A fluent, specific claim that is false. The reply reads the same as a true one, so reading it does not reveal the error.",
+  "id": "hallucination",
+  "module": "A1",
+  "strict": true,
+  "term": "hallucination",
+  "wire": "verify"
+ },
+ "harness": {
+  "aliases": [
+   "harness",
+   "harnesses"
+  ],
+  "definition": "Everything around the model: the loop, the tools, the permissions, the checks and the limits. Same model, different harness, different results.",
+  "id": "harness",
+  "module": "S0",
+  "strict": true,
+  "term": "harness",
+  "wire": "control"
+ },
+ "harness-board": {
+  "aliases": [
+   "Harness Board",
+   "Harness Boards"
+  ],
+  "definition": "The harness's settings, such as limits and gates, shown next to what a run does.",
+  "id": "harness-board",
+  "module": "S0",
+  "strict": true,
+  "term": "Harness Board",
+  "wire": "control"
+ },
+ "inference": {
+  "aliases": [
+   "inference"
+  ],
+  "definition": "A model call that reads the weights and the prompt and produces a reply. The weights stay the same during inference.",
+  "id": "inference",
+  "module": "A1",
+  "strict": false,
+  "term": "inference",
+  "wire": "control"
+ },
+ "input-tokens": {
+  "aliases": [
+   "input tokens",
+   "input token"
+  ],
+  "definition": "The tokens the model reads on a call: the instructions, the earlier messages, the tool results and the new message.",
+  "id": "input-tokens",
+  "module": "A2",
+  "strict": true,
+  "term": "input tokens",
+  "wire": "context"
+ },
+ "language-model": {
+  "aliases": [
+   "language model",
+   "language models"
+  ],
+  "definition": "A model that reads a text and scores the possible next tokens. A harness calls it again and again, and each call gives one reply.",
+  "id": "language-model",
+  "module": "A1",
+  "strict": true,
+  "term": "language model",
+  "wire": "loop"
+ },
+ "latency": {
+  "aliases": [
+   "latency"
+  ],
+  "definition": "How long a call takes to finish. More tokens in and out usually mean a longer wait.",
+  "id": "latency",
+  "module": "A2",
+  "strict": false,
+  "term": "latency",
+  "wire": "loop"
+ },
+ "memory": {
+  "aliases": [
+   "memory",
+   "memories"
+  ],
+  "definition": "Anything a run can use later: what is in the window, what is in saved files, or what is in the model's weights.",
+  "id": "memory",
+  "module": "A3",
+  "strict": false,
+  "term": "memory",
+  "wire": "context"
+ },
+ "messages-array": {
+  "aliases": [
+   "messages array",
+   "messages arrays",
+   "messages list"
+  ],
+  "definition": "The ordered list of messages sent with each call. It is the conversation the model can see.",
+  "id": "messages-array",
+  "module": "A3",
+  "strict": true,
+  "term": "messages array",
+  "wire": "context"
+ },
  "model-interface": {
   "aliases": [
    "model interface",
@@ -57,6 +223,66 @@
   "module": "H1",
   "strict": true,
   "term": "model interface",
+  "wire": "loop"
+ },
+ "next-token-prediction": {
+  "aliases": [
+   "next-token prediction",
+   "next token prediction"
+  ],
+  "definition": "The model's one job on each step: score every possible next token. Nothing in this step checks whether a token is true.",
+  "id": "next-token-prediction",
+  "module": "A1",
+  "strict": true,
+  "term": "next-token prediction",
+  "wire": "loop"
+ },
+ "output-limit": {
+  "aliases": [
+   "output limit",
+   "output limits"
+  ],
+  "definition": "The most tokens one reply may use. A reply that reaches it stops there, and the reply says why.",
+  "id": "output-limit",
+  "module": "A2",
+  "strict": true,
+  "term": "output limit",
+  "wire": "control"
+ },
+ "output-tokens": {
+  "aliases": [
+   "output tokens",
+   "output token"
+  ],
+  "definition": "The tokens the model writes in its reply. They use the same window as the input.",
+  "id": "output-tokens",
+  "module": "A2",
+  "strict": true,
+  "term": "output tokens",
+  "wire": "context"
+ },
+ "pass-rate": {
+  "aliases": [
+   "pass rate",
+   "pass rates"
+  ],
+  "definition": "The share of trials that pass their checks. It is a measure over many runs, not the result of one.",
+  "id": "pass-rate",
+  "module": "S0",
+  "strict": true,
+  "term": "pass rate",
+  "wire": "observe"
+ },
+ "probability": {
+  "aliases": [
+   "probability",
+   "probabilities"
+  ],
+  "definition": "A number from zero to one that says how likely a choice is. The sampler turns the scores into probabilities before it picks.",
+  "id": "probability",
+  "module": "A1",
+  "strict": false,
+  "term": "probability",
   "wire": "loop"
  },
  "react": {
@@ -70,6 +296,99 @@
   "term": "ReAct",
   "wire": "loop"
  },
+ "role": {
+  "aliases": [
+   "role",
+   "roles"
+  ],
+  "definition": "The label on each message in the list. A message is from the user or from the assistant.",
+  "id": "role",
+  "module": "A3",
+  "strict": false,
+  "term": "role",
+  "wire": "context"
+ },
+ "run": {
+  "aliases": [
+   "run",
+   "runs"
+  ],
+  "definition": "One agent doing one task, from the first model call to a stop. A run has many turns.",
+  "id": "run",
+  "module": "S0",
+  "strict": false,
+  "term": "run",
+  "wire": "loop"
+ },
+ "sampling": {
+  "aliases": [
+   "sampling"
+  ],
+  "definition": "The step that picks one token from the scored options, by the rules it is given. The model scores; the sampler picks.",
+  "id": "sampling",
+  "module": "A1",
+  "strict": true,
+  "term": "sampling",
+  "wire": "loop"
+ },
+ "seed": {
+  "aliases": [
+   "seed",
+   "seeds"
+  ],
+  "definition": "The number that sets the random draws of a scripted run. The same seed gives the same run, every time.",
+  "id": "seed",
+  "module": "S0",
+  "strict": true,
+  "term": "seed",
+  "wire": "observe"
+ },
+ "stateless": {
+  "aliases": [
+   "stateless"
+  ],
+  "definition": "Keeping nothing between calls. A stateless call starts from what it is sent, and nothing else.",
+  "id": "stateless",
+  "module": "A3",
+  "strict": true,
+  "term": "stateless",
+  "wire": "context"
+ },
+ "system-prompt": {
+  "aliases": [
+   "system prompt",
+   "system prompts"
+  ],
+  "definition": "The instructions sent with every call, kept apart from the messages. The harness sends it each time.",
+  "id": "system-prompt",
+  "module": "A3",
+  "strict": true,
+  "term": "system prompt",
+  "wire": "control"
+ },
+ "temperature": {
+  "aliases": [
+   "temperature"
+  ],
+  "definition": "A setting of the sampler that changes how much the scores count. Higher temperature spreads the choice over more tokens. At zero, the top token always wins.",
+  "id": "temperature",
+  "module": "A1",
+  "strict": false,
+  "term": "temperature",
+  "wire": "control"
+ },
+ "token": {
+  "aliases": [
+   "token",
+   "tokens"
+  ],
+  "definition": "A piece of text the model reads and writes. A token is often a word, but it can be part of a word or a punctuation mark.",
+  "id": "token",
+  "module": "A1",
+  "strict": true,
+  "term": "token",
+  "wire": "context"
+ },
  "token-budget": {
   "aliases": [
    "token budget",
@@ -82,6 +401,30 @@
   "term": "token budget",
   "wire": "loop"
  },
+ "tokenizer": {
+  "aliases": [
+   "tokenizer",
+   "tokenizers"
+  ],
+  "definition": "The part that cuts text into tokens. Real tokenizers differ, so a count from the course is an estimate.",
+  "id": "tokenizer",
+  "module": "A2",
+  "strict": true,
+  "term": "tokenizer",
+  "wire": "context"
+ },
+ "tool": {
+  "aliases": [
+   "tool",
+   "tools"
+  ],
+  "definition": "A function the harness runs when the model asks for it. The model only asks. The harness runs the function and returns the result.",
+  "id": "tool",
+  "module": "S0",
+  "strict": true,
+  "term": "tool",
+  "wire": "tools"
+ },
  "tool-registry": {
   "aliases": [
    "tool registry",
@@ -93,6 +436,41 @@
   "strict": true,
   "term": "tool registry",
   "wire": "tools"
+ },
+ "trace": {
+  "aliases": [
+   "trace",
+   "traces"
+  ],
+  "definition": "The record of a run: each model call, reply, permission, tool call and check, in order.",
+  "id": "trace",
+  "module": "S0",
+  "strict": true,
+  "term": "trace",
+  "wire": "observe"
+ },
+ "training": {
+  "aliases": [
+   "training"
+  ],
+  "definition": "The process that sets the model's weights, from many example texts. It happens before any chat, and a chat does not run it.",
+  "id": "training",
+  "module": "A1",
+  "strict": false,
+  "term": "training",
+  "wire": "control"
+ },
+ "trial": {
+  "aliases": [
+   "trial",
+   "trials"
+  ],
+  "definition": "One run with one seed. A bench runs many trials of the same setup.",
+  "id": "trial",
+  "module": "S0",
+  "strict": false,
+  "term": "trial",
+  "wire": "observe"
  },
  "turn": {
   "aliases": [
@@ -117,5 +495,28 @@
   "strict": true,
   "term": "turn limit",
   "wire": "loop"
+ },
+ "type-hint": {
+  "aliases": [
+   "type hint",
+   "type hints"
+  ],
+  "definition": "A note that says what type a name should hold, such as count: int, or -> str after the parameters of a function.",
+  "id": "type-hint",
+  "module": "T1",
+  "strict": true,
+  "term": "type hint"
+ },
+ "weights": {
+  "aliases": [
+   "weights",
+   "weight"
+  ],
+  "definition": "The numbers inside the model that set its scores. Training sets them. Inference only reads them.",
+  "id": "weights",
+  "module": "A1",
+  "strict": false,
+  "term": "weights",
+  "wire": "context"
  }
 }

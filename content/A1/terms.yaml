@@ -1,0 +1,79 @@
+- id: language-model
+  term: language model
+  aliases: [language model, language models]
+  strict: true
+  wire: loop
+  definition: >-
+    A model that reads a text and scores the possible next tokens. A harness calls it again and again, and each call gives one reply.
+
+- id: token
+  term: token
+  aliases: [token, tokens]
+  strict: true
+  wire: context
+  definition: >-
+    A piece of text the model reads and writes. A token is often a word, but it can be part of a word or a punctuation mark.
+
+- id: next-token-prediction
+  term: next-token prediction
+  aliases: [next-token prediction, next token prediction]
+  strict: true
+  wire: loop
+  definition: >-
+    The model's one job on each step: score every possible next token. Nothing in this step checks whether a token is true.
+
+- id: probability
+  term: probability
+  aliases: [probability, probabilities]
+  strict: false
+  wire: loop
+  definition: >-
+    A number from zero to one that says how likely a choice is. The sampler turns the scores into probabilities before it picks.
+
+- id: sampling
+  term: sampling
+  aliases: [sampling]
+  strict: true
+  wire: loop
+  definition: >-
+    The step that picks one token from the scored options, by the rules it is given. The model scores; the sampler picks.
+
+- id: temperature
+  term: temperature
+  aliases: [temperature]
+  strict: false
+  wire: control
+  definition: >-
+    A setting of the sampler that changes how much the scores count. Higher temperature spreads the choice over more tokens. At zero, the top token always wins.
+
+- id: hallucination
+  term: hallucination
+  aliases: [hallucination, hallucinations]
+  strict: true
+  wire: verify
+  definition: >-
+    A fluent, specific claim that is false. The reply reads the same as a true one, so reading it does not reveal the error.
+
+- id: training
+  term: training
+  aliases: [training]
+  strict: false
+  wire: control
+  definition: >-
+    The process that sets the model's weights, from many example texts. It happens before any chat, and a chat does not run it.
+
+- id: inference
+  term: inference
+  aliases: [inference]
+  strict: false
+  wire: control
+  definition: >-
+    A model call that reads the weights and the prompt and produces a reply. The weights stay the same during inference.
+
+- id: weights
+  term: weights
+  aliases: [weights, weight]
+  strict: false
+  wire: context
+  definition: >-
+    The numbers inside the model that set its scores. Training sets them. Inference only reads them.

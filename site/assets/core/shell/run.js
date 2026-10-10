@@ -13,6 +13,9 @@ let serial = 0;
 /** Adds the key after every pre[data-run] under doc. `python` is injectable for tests. */
 export function mountRunKeys(doc = document, python = sharedPython()) {
   for (const pre of doc.querySelectorAll("pre[data-run]")) {
+    // data-run="machine": checked by check_snippets on CPython, but it starts a child process, which
+    // the page's Python cannot do, so it gets no key (the block says it runs on your machine).
+    if (pre.dataset.run === "machine") continue;
     if (pre.nextElementSibling?.classList.contains("run-key")) continue;
     mountKey(doc, pre, python);
   }

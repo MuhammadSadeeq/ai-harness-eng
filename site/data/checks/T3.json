@@ -1,0 +1,44 @@
+[
+ {
+  "answer": 0,
+  "id": "T3-c1",
+  "mode": "check",
+  "objective": "T3.o3",
+  "options": [
+   {
+    "text": "-15",
+    "why": "Yes. The snippet printed -15."
+   },
+   {
+    "text": "15",
+    "why": "No. The printed value has a minus sign: -15."
+   },
+   {
+    "text": "0",
+    "why": "No. The printed value is not 0."
+   }
+  ],
+  "question": "The snippet made its child send itself SIGTERM. What did it print?"
+ },
+ {
+  "answer": 0,
+  "id": "T3-c2",
+  "mode": "check",
+  "objective": "T3.o3",
+  "options": [
+   {
+    "text": "caught KeyboardInterrupt",
+    "why": "Yes. The child's except block printed that line."
+   },
+   {
+    "text": "Nothing",
+    "why": "No. The except block prints a line."
+   },
+   {
+    "text": "A traceback",
+    "why": "No. The except block catches the exception, so no traceback is printed."
+   }
+  ],
+  "question": "The snippet made its child send itself SIGINT. What did the child print?"
+ }
+]

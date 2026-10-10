@@ -63,6 +63,11 @@ export function taggedModules(course) {
   return course.path.map((id) => modules[id]).filter((m) => m?.tag);
 }
 
+/** The words a bench panel shows for the history module (ENGINE A5): resent when the request holds the earlier messages. */
+export function historyWords(params) {
+  return params?.resend === false ? "history not resent" : "history resent";
+}
+
 /** The comes-in module of a wire: the first module on the default path whose tag is on that wire (D-043). */
 export function comesIn(course, wireId) {
   const modules = byId(course);

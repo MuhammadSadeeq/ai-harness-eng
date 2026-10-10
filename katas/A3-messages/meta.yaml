@@ -1,0 +1,37 @@
+id: A3-messages
+module: A3
+title: Keep the messages array
+objectives: [A3.o2, A3.o3]
+minutes: 15
+hints:
+  - "The model sees only what you pass to ask. Look at what the first turn leaves in history before the second turn starts."
+  - "Three steps, in order: append the user message, call ask with the whole history, then append the reply as an assistant message. Return the reply last."
+  - "Nearly the code: history.append({'role': 'user', 'content': user_text}); reply = ask(list(history)); history.append({'role': 'assistant', 'content': reply}); return reply."
+from_memory: true
+wrong_solutions:
+  - name: only-the-new-message
+    code: |
+      def send_turn(history, user_text, ask):
+          history.append({"role": "user", "content": user_text})
+          reply = ask([{"role": "user", "content": user_text}])
+          history.append({"role": "assistant", "content": reply})
+          return reply
+  - name: reply-not-kept
+    code: |
+      def send_turn(history, user_text, ask):
+          history.append({"role": "user", "content": user_text})
+          return ask(list(history))
+  - name: ask-before-the-user-message
+    code: |
+      def send_turn(history, user_text, ask):
+          reply = ask(list(history))
+          history.append({"role": "user", "content": user_text})
+          history.append({"role": "assistant", "content": reply})
+          return reply
+  - name: returns-the-history
+    code: |
+      def send_turn(history, user_text, ask):
+          history.append({"role": "user", "content": user_text})
+          reply = ask(list(history))
+          history.append({"role": "assistant", "content": reply})
+          return history

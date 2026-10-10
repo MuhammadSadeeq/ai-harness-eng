@@ -1,0 +1,7 @@
+- id: type-hint
+  term: type hint
+  aliases:
+    - type hint
+    - type hints
+  strict: true
+  definition: 'A note that says what type a name should hold, such as count: int, or -> str after the parameters of a function.'

@@ -136,7 +136,7 @@ export class HxTokenizer extends HxElement {
     dom.splitCount.textContent = pieces.length > SPLIT_CAP ? `Showing the first ${formatInt(SPLIT_CAP)} of ${formatInt(pieces.length)} pieces.` : "";
     const pct = Math.floor((toks * 100) / s.window);
     dom.desk.style.width = `${Math.min(100, pct)}%`;
-    dom.deskText.textContent = `${shareText(toks, s.window)} of a ${formatInt(s.window)}-token window`;
+    dom.deskText.textContent = `${shareText(toks, s.window)} of the ${formatInt(s.window)}-token window`;
   }
 
   async selfTest() {

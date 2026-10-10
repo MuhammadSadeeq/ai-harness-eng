@@ -1,0 +1,26 @@
+{
+ "candidates": [
+  {
+   "correct": false,
+   "logit": 2.6,
+   "text": "text_utils.word_count(s)"
+  },
+  {
+   "correct": true,
+   "logit": 2.1,
+   "text": "s.split()"
+  },
+  {
+   "correct": false,
+   "logit": 0.9,
+   "text": "len(s)"
+  },
+  {
+   "correct": false,
+   "logit": 0.2,
+   "text": "s.count(\" \")"
+  }
+ ],
+ "note": "Written for this module. The scores are illustrative.",
+ "prompt": "To count the words in a sentence in Python, call"
+}

@@ -266,7 +266,7 @@
  ],
  "modules": [
   {
-   "built": false,
+   "built": true,
    "id": "S0",
    "kind": "concept",
    "minutes": 25,
@@ -279,7 +279,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "A1",
    "kind": "concept",
    "minutes": 30,
@@ -291,7 +291,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "A2",
    "kind": "concept",
    "minutes": 30,
@@ -303,7 +303,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "A3",
    "kind": "core",
    "minutes": 40,
@@ -1184,7 +1184,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "T1",
    "kind": "primer",
    "minutes": 20,
@@ -1194,7 +1194,7 @@
    "wires": []
   },
   {
-   "built": false,
+   "built": true,
    "id": "T2",
    "kind": "primer",
    "minutes": 25,
@@ -1204,7 +1204,7 @@
    "wires": []
   },
   {
-   "built": false,
+   "built": true,
    "id": "T3",
    "kind": "primer",
    "minutes": 20,

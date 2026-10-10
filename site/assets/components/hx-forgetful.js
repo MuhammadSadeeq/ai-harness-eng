@@ -7,6 +7,17 @@ import { tokens } from "../sim/index.js";
 import { formatInt, plural } from "./lib/format.js";
 
 const NO_RULE = "I don't have a rule for that in this demo.";
+const DEFAULT_SUGGESTIONS = ["My name is Sam.", "What is my name?"];
+
+/** The two buttons: the file's own suggestions when it has them (exactly two texts), else the demo's pair. */
+export function suggestionsOf(data) {
+  if (data.suggestions === undefined) return [...DEFAULT_SUGGESTIONS];
+  const s = data.suggestions;
+  if (!Array.isArray(s) || s.length !== 2 || s.some((t) => typeof t !== "string" || t.trim() === "")) {
+    throw new Error("hx-forgetful: suggestions must be two texts");
+  }
+  return [...s];
+}
 
 /**
  * The stand-in's answer to the newest message in `request`. It remembers only what an earlier user message in
@@ -70,6 +81,7 @@ export class HxForgetful extends HxElement {
       new RegExp(rule.match, "i");
     }
     this.rules = data.rules;
+    this.suggestions = suggestionsOf(data);
     const raw = this.getAttribute("resend");
     this.state = { messages: [], resend: raw !== null && raw !== "0", request: [] };
   }
@@ -119,7 +131,7 @@ export class HxForgetful extends HxElement {
         this.onSend(dom.input.value);
       }
     });
-    dom.suggest = ["My name is Sam.", "What is my name?"].map((text) => {
+    dom.suggest = this.suggestions.map((text) => {
       const button = el("button", { class: "key", type: "button", text });
       button.addEventListener("click", () => this.send(text));
       return button;

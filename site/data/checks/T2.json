@@ -1,0 +1,27 @@
+[
+ {
+  "answer": 1,
+  "id": "T2-c1",
+  "mode": "check",
+  "objective": "T2.o1",
+  "options": [
+   {
+    "text": "8",
+    "why": "Not at the call. Calling an async def function gives a coroutine, and the body has not run yet."
+   },
+   {
+    "text": "A coroutine",
+    "why": "Right. The call gives a coroutine, as the first example shows."
+   },
+   {
+    "text": "None",
+    "why": "No. The call hands back an object, not None."
+   },
+   {
+    "text": "A string",
+    "why": "No. The object is a coroutine, not a string."
+   }
+  ],
+  "question": "A function is written async def double(n). What does double(4) give you when you call it?"
+ }
+]

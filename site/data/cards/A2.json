@@ -1,0 +1,59 @@
+[
+ {
+  "back": "The part that cuts text into tokens. Real tokenizers differ, so a count from the course is an estimate.",
+  "front": "What is a tokenizer?",
+  "id": "A2-k1",
+  "objective": "A2.o1",
+  "type": "term"
+ },
+ {
+  "back": "About four characters per token. It is an estimate, and the Tokenizer labels it that way.",
+  "front": "What is the course's rule of thumb for tokens?",
+  "id": "A2-k2",
+  "objective": "A2.o1",
+  "type": "term"
+ },
+ {
+  "back": "No. A token can be a word, part of a word, or a punctuation mark.",
+  "front": "Is a token always a word?",
+  "id": "A2-k3",
+  "objective": "A2.o1",
+  "type": "term"
+ },
+ {
+  "back": "The fixed-size desk the model reads on each call. Instructions, earlier messages, tool results and the reply share it.",
+  "front": "What is a context window?",
+  "id": "A2-k4",
+  "objective": "A2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Context. The desk is full, and the harness has no cap on what went onto it.",
+  "front": "One tool result fills most of the window, so the next prompt cannot be sent. Which wire is that?",
+  "id": "A2-k5",
+  "objective": "A2.o2",
+  "type": "which-wire",
+  "wire": "context"
+ },
+ {
+  "back": "The most tokens one reply may use. A reply that reaches it stops there.",
+  "front": "What is the output limit?",
+  "id": "A2-k6",
+  "objective": "A2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Input tokens are what the model reads on a call. Output tokens are what it writes. Both use the window.",
+  "front": "What is the difference between input tokens and output tokens?",
+  "id": "A2-k7",
+  "objective": "A2.o3",
+  "type": "term"
+ },
+ {
+  "back": "More tokens in and out. Each token is work for the model, and prices are set per million tokens.",
+  "front": "What makes a call slower and more costly?",
+  "id": "A2-k8",
+  "objective": "A2.o4",
+  "type": "term"
+ }
+]

@@ -1,0 +1,59 @@
+[
+ {
+  "back": "A model that reads a text and scores the possible next tokens. A harness calls it again and again.",
+  "front": "What is a language model, in this course?",
+  "id": "A1-k1",
+  "objective": "A1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Every possible next token. Nothing in that step checks whether a token is true.",
+  "front": "What does next-token prediction score?",
+  "id": "A1-k2",
+  "objective": "A1.o1",
+  "type": "term"
+ },
+ {
+  "back": "It picks one token from the scored options, by the rules it is given. The model scores; the sampler picks.",
+  "front": "What does sampling do?",
+  "id": "A1-k3",
+  "objective": "A1.o1",
+  "type": "term"
+ },
+ {
+  "back": "It spreads the choice over more tokens, so less likely tokens get more chances. At zero, the top token always wins.",
+  "front": "What does a higher temperature do to the choice?",
+  "id": "A1-k4",
+  "objective": "A1.o2",
+  "type": "term"
+ },
+ {
+  "back": "A fluent, specific claim that is false. It reads the same as a true claim.",
+  "front": "What is a hallucination?",
+  "id": "A1-k5",
+  "objective": "A1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Training sets the weights, before any chat. Inference reads them and leaves them the same.",
+  "front": "What sets the weights, and what only reads them?",
+  "id": "A1-k6",
+  "objective": "A1.o4",
+  "type": "term"
+ },
+ {
+  "back": "Verification. The harness took the reply's word, so nothing checked the claim.",
+  "front": "A reply says all tests pass, and no test ran. Which wire is that?",
+  "id": "A1-k7",
+  "objective": "A1.o3",
+  "type": "which-wire",
+  "wire": "verify"
+ },
+ {
+  "back": "No. Fluency shows how the reply reads. Only a check shows whether the claim is true.",
+  "front": "Does a fluent reply show that it is true?",
+  "id": "A1-k8",
+  "objective": "A1.o3",
+  "type": "term"
+ }
+]

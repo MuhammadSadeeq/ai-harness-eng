@@ -1,0 +1,48 @@
+- id: A2-k1
+  type: term
+  objective: A2.o1
+  front: "What is a tokenizer?"
+  back: "The part that cuts text into tokens. Real tokenizers differ, so a count from the course is an estimate."
+
+- id: A2-k2
+  type: term
+  objective: A2.o1
+  front: "What is the course's rule of thumb for tokens?"
+  back: "About four characters per token. It is an estimate, and the Tokenizer labels it that way."
+
+- id: A2-k3
+  type: term
+  objective: A2.o1
+  front: "Is a token always a word?"
+  back: "No. A token can be a word, part of a word, or a punctuation mark."
+
+- id: A2-k4
+  type: term
+  objective: A2.o2
+  front: "What is a context window?"
+  back: "The fixed-size desk the model reads on each call. Instructions, earlier messages, tool results and the reply share it."
+
+- id: A2-k5
+  type: which-wire
+  objective: A2.o2
+  wire: context
+  front: "One tool result fills most of the window, so the next prompt cannot be sent. Which wire is that?"
+  back: "Context. The desk is full, and the harness has no cap on what went onto it."
+
+- id: A2-k6
+  type: term
+  objective: A2.o3
+  front: "What is the output limit?"
+  back: "The most tokens one reply may use. A reply that reaches it stops there."
+
+- id: A2-k7
+  type: term
+  objective: A2.o3
+  front: "What is the difference between input tokens and output tokens?"
+  back: "Input tokens are what the model reads on a call. Output tokens are what it writes. Both use the window."
+
+- id: A2-k8
+  type: term
+  objective: A2.o4
+  front: "What makes a call slower and more costly?"
+  back: "More tokens in and out. Each token is work for the model, and prices are set per million tokens."

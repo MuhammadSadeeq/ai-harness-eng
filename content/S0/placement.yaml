@@ -1,0 +1,150 @@
+questions:
+  - id: S-1
+    part: S
+    question: "How many beats does a core module have?"
+    options:
+      - text: "Four"
+      - text: "Five"
+        right: true
+      - text: "Six"
+    why: "Five: Break, See, Fix, Prove and Keep. Concept modules use Lab and Check in place of Fix and Prove."
+  - id: S-2
+    part: S
+    question: "Which beat proves a fix with numbers?"
+    options:
+      - text: "Break"
+      - text: "Prove"
+        right: true
+      - text: "Keep"
+    why: "Prove runs the old board and the new board on the same seeds and reports the pass rate."
+  - id: S-3
+    part: S
+    question: "What does your Harness Board show?"
+    options:
+      - text: "Your settings next to what a run does"
+        right: true
+      - text: "Your saved files"
+      - text: "A chart of your typing speed"
+    why: "It is the Turn Clock with a board: the harness's settings beside the run."
+  - id: S-4
+    part: S
+    question: "Where do you export your progress?"
+    options:
+      - text: "In the footer, with Export progress"
+        right: true
+      - text: "In a separate app"
+      - text: "Nowhere: progress is not kept"
+    why: "The footer has Export progress, which saves a file you can import on another device."
+  - id: A-1
+    part: A
+    question: "Does a model give the same answer twice to the same prompt?"
+    options:
+      - text: "Always the same"
+      - text: "Not necessarily: answers can vary from run to run"
+        right: true
+      - text: "Only at night"
+    why: "Sampling makes answers vary, so one good run proves little about the next one."
+  - id: A-2
+    part: A
+    question: "What is a context window?"
+    options:
+      - text: "The number of messages in a chat"
+      - text: "The most text the model can read in one call"
+        right: true
+      - text: "A browser tab that holds the chat"
+    why: "Everything in one call, the prompt and the tools included, has to fit inside the window."
+  - id: A-3
+    part: A
+    question: "What does a model carry from one call to the next?"
+    options:
+      - text: "Everything from the last call, on its own"
+      - text: "Only what the harness sends with the call"
+        right: true
+      - text: "Whatever the provider saved for it"
+    why: "Tempting. The course shows what each call carries in A3."
+  - id: A-4
+    part: A
+    question: "Which of these is a tool?"
+    options:
+      - text: "A function the harness runs when the model asks for it"
+        right: true
+      - text: "The model's weights"
+      - text: "A text prompt"
+    why: "The model asks; the harness runs the function and returns the result."
+  - id: B-1
+    part: B
+    question: "What makes a chatbot into an agent?"
+    options:
+      - text: "It answers faster"
+      - text: "It asks for tools, the harness runs them, and it calls the model again"
+        right: true
+      - text: "It has a longer system prompt"
+    why: "The model asks, the harness acts, and the loop goes on until something stops it."
+  - id: B-2
+    part: B
+    question: "What stops a loop that never gets an answer?"
+    options:
+      - text: "A turn limit or a token budget"
+        right: true
+      - text: "The model's wish to stop"
+      - text: "A faster computer"
+    why: "A turn limit and a token budget are exits the harness controls. A model's own stop is a claim."
+  - id: B-3
+    part: B
+    question: "What checks a done claim?"
+    options:
+      - text: "The model itself"
+      - text: "Verification, with checks the harness runs"
+        right: true
+      - text: "The user, who reads the answer"
+    why: "A done claim is only a claim until a check runs and confirms it."
+  - id: B-4
+    part: B
+    question: "A tool call returns an error. What should the loop do?"
+    options:
+      - text: "Hide it from the model"
+      - text: "Send it back as the result, marked as an error"
+        right: true
+      - text: "End the run at once"
+    why: "The model can read the error and try again. Dropping it hides the problem."
+  - id: C-1
+    part: C
+    question: "Which wire decides what stays in the context window?"
+    options:
+      - text: "Observability"
+      - text: "Context and memory"
+        right: true
+      - text: "Permissions"
+    why: "Context and memory decides what the model sees on each call."
+  - id: C-2
+    part: C
+    question: "Which wire checks each tool request before it runs?"
+    options:
+      - text: "Permissions"
+        right: true
+      - text: "Tools"
+      - text: "Control"
+    why: "Permissions checks each tool request before the tool runs."
+  - id: C-3
+    part: C
+    question: "Which wire writes down each event, so a run can be read afterwards?"
+    options:
+      - text: "Errors"
+      - text: "Verification"
+      - text: "Observability"
+        right: true
+    why: "Observability records each step, which is how a trace is made."
+rules:
+  - part: A
+    of: 4
+    skip_if_right: 2
+    start: A1
+  - part: B
+    of: 4
+    skip_if_right: 2
+    start: B1
+  - part: C
+    of: 3
+    skip_if_right: 2
+    start: C1
+start: A1

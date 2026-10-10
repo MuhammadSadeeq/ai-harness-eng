@@ -1,0 +1,157 @@
+[
+ {
+  "answer": 2,
+  "id": "A2-p1",
+  "mode": "predict",
+  "objective": "A2.o2",
+  "options": [
+   {
+    "text": "It cuts the log to fit the window, and the run goes on.",
+    "why": "Tempting. This board has no cap, so nothing cuts the log."
+   },
+   {
+    "text": "The model reads the log in pieces, and the run goes on.",
+    "why": "Tempting. Nothing in this board reads in pieces. The whole log stays in the prompt."
+   },
+   {
+    "text": "The next request is too big to send, and the run fails.",
+    "why": "Right. The log comes back whole, and the prompt grows past the window."
+   }
+  ],
+  "outcome": "The log came back whole. The next prompt was too big to send, and the run failed.",
+  "question": "A tool returns a whole log, and the log is bigger than the window. What does the harness do next?"
+ },
+ {
+  "answer": 1,
+  "id": "A2-c1",
+  "mode": "check",
+  "objective": "A2.o1",
+  "options": [
+   {
+    "text": "About 4 tokens.",
+    "why": "Tempting. That reads the rule backwards: four characters make about one token, not four tokens."
+   },
+   {
+    "text": "About 10 tokens.",
+    "why": "Right. Forty characters divided by four characters per token is about ten tokens."
+   },
+   {
+    "text": "About 40 tokens.",
+    "why": "Tempting. That counts one token per character, which the rule does not say."
+   }
+  ],
+  "question": "The course's rule is about four characters per token. About how many tokens is a 40-character line?"
+ },
+ {
+  "answer": 1,
+  "id": "A2-c2",
+  "mode": "check",
+  "objective": "A2.o1",
+  "options": [
+   {
+    "text": "A token is always one word.",
+    "why": "Tempting. Many tokens are words, but not all of them."
+   },
+   {
+    "text": "A token can be a word, part of a word, or a punctuation mark.",
+    "why": "Right. The tokenizer cuts text where it cuts, and the pieces vary."
+   },
+   {
+    "text": "A token is always one character.",
+    "why": "Wrong. A token is usually longer than one character."
+   }
+  ],
+  "question": "Which statement about tokens is right?"
+ },
+ {
+  "answer": 1,
+  "id": "A2-c3",
+  "mode": "check",
+  "objective": "A2.o2",
+  "options": [
+   {
+    "text": "Only the earlier messages count against the window.",
+    "why": "Tempting. History is one part. The instructions and the tool results count too."
+   },
+   {
+    "text": "All of them share one window, and the reply counts too.",
+    "why": "Right. The window is one desk, and everything on it uses the same space."
+   },
+   {
+    "text": "The reply has a separate window of its own.",
+    "why": "Wrong. The reply shares the window with the input."
+   }
+  ],
+  "question": "Instructions, earlier messages, tool results and the reply all go into the context window. Which is true?"
+ },
+ {
+  "answer": 1,
+  "id": "A2-c4",
+  "mode": "check",
+  "objective": "A2.o3",
+  "options": [
+   {
+    "fact": "api.stop-reason-end-turn",
+    "text": "end_turn",
+    "why": "Tempting. end_turn is the reason when the model finished its response naturally, not when it hits a limit."
+   },
+   {
+    "fact": "api.stop-reason-max-tokens",
+    "text": "max_tokens",
+    "why": "Right. The API reports max_tokens when the reply reaches the request's max_tokens limit."
+   },
+   {
+    "fact": "api.stop-reason-model-context-window-exceeded",
+    "text": "model_context_window_exceeded",
+    "why": "Tempting. That value is for the window filling up, not for the reply's own limit."
+   }
+  ],
+  "question": "A reply stops because it reached its output limit. Which value does the API report as the reason?"
+ },
+ {
+  "answer": 1,
+  "id": "A2-c5",
+  "mode": "check",
+  "objective": "A2.o3",
+  "options": [
+   {
+    "fact": "api.stop-reason-max-tokens",
+    "text": "max_tokens",
+    "why": "Tempting. That value is for the reply reaching its own limit, not the window filling."
+   },
+   {
+    "fact": "api.stop-reason-model-context-window-exceeded",
+    "text": "model_context_window_exceeded",
+    "why": "Right. The API reports this when the reply stops because it reached the model's context window limit."
+   },
+   {
+    "fact": "api.stop-reason-tool-use",
+    "text": "tool_use",
+    "why": "Tempting. tool_use is the value when the model is calling a tool and expects the application to run it."
+   }
+  ],
+  "question": "The whole context window fills before the reply finishes. Which value does the API report as the reason?"
+ },
+ {
+  "answer": 0,
+  "id": "A2-c6",
+  "mode": "check",
+  "objective": "A2.o4",
+  "options": [
+   {
+    "fact": "models.sonnet-5-5-price",
+    "text": "The bigger call takes longer, and it costs more.",
+    "why": "Right. More tokens means more work. The Sonnet 5.5 price is quoted per million tokens."
+   },
+   {
+    "text": "Nothing changes, because the model reads the same text.",
+    "why": "Wrong. The model reads twice as many tokens, so the work doubles."
+   },
+   {
+    "text": "The bigger call is faster, because the model has more to go on.",
+    "why": "Tempting. More input is more work for the model, not less."
+   }
+  ],
+  "question": "Two calls are the same, but one reads twice as many tokens. Which is most likely true?"
+ }
+]

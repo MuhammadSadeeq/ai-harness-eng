@@ -108,7 +108,7 @@ export class HxWire extends HxElement {
     root.append(this.#controls());
     if (this.state.view === "wire") root.append(this.#wireView(request, response));
     else root.append(this.#friendly(request, response, previous));
-    root.append(el("p", "wire-total", `Prompt: ${formatInt(this.promptTokens(request))} tokens of a ${formatInt(this.tape.window)}-token window.`));
+    root.append(el("p", "wire-total", `Prompt: ${formatInt(this.promptTokens(request))} tokens of the ${formatInt(this.tape.window)}-token window.`));
     this.ui.replaceChildren(root);
   }
 

@@ -1,0 +1,32 @@
+[
+ {
+  "id": "A2-s1",
+  "model_answer": "First I estimate the tokens, with the course's rule of thumb of about four characters per token. A log that size is many thousands of tokens. Then I compare that with the window, because the instructions, the earlier messages, the tool results and the reply all share it. One big result can fill the window on its own, so the next prompt may not fit. I would cap the result before it goes back.",
+  "objectives": [
+   "A2.o1",
+   "A2.o2"
+  ],
+  "prompt": "A tool returns a 40 KB log. Walk me through what it does to the desk, and what you estimate first.",
+  "rubric": [
+   "Estimates the tokens with a stated rule, and says it is an estimate",
+   "Says the window is shared by instructions, earlier messages, tool results and the reply",
+   "Says one large tool result can fill the window and block the next prompt",
+   "Names a cap on each tool result as a way to keep the window from filling"
+  ]
+ },
+ {
+  "id": "A2-s2",
+  "model_answer": "The reply reached its output limit, so it stopped there, and the API says so. That is the output limit, not the window. The limit is on what the model writes. Each token it reads or writes is work, so a longer call takes longer and costs more. A harness can keep a reply short, or raise the limit and accept the longer wait.",
+  "objectives": [
+   "A2.o3",
+   "A2.o4"
+  ],
+  "prompt": "A reply stops because it reached its output limit. What happened, and what does a longer reply cost?",
+  "rubric": [
+   "Says the reply stopped at the output limit, not the window",
+   "Says what the limit covers: the tokens the model writes",
+   "Says tokens drive both latency and cost",
+   "Says each token is work, so a longer call takes longer and costs more"
+  ]
+ }
+]

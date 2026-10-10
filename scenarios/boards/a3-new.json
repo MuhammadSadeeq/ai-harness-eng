@@ -1,0 +1,9 @@
+{
+  "id": "a3-new",
+  "label": "New board",
+  "modules": {
+    "history": {
+      "resend": true
+    }
+  }
+}

@@ -1,0 +1,129 @@
+[
+ {
+  "answer": 2,
+  "id": "A1-p1",
+  "mode": "predict",
+  "objective": "A1.o3",
+  "options": [
+   {
+    "text": "It checks the claim, because the reply sounds sure.",
+    "why": "Tempting. A sure tone is not a check. This board runs no check, so nothing tests the claim."
+   },
+   {
+    "text": "It asks the model to name the helper it used.",
+    "why": "Tempting. That is a reasonable step, but this board has no such step. The reply goes straight through."
+   },
+   {
+    "text": "It ends the run as done, because nothing checks the reply.",
+    "why": "Right. The reply's words are the only evidence, and the harness accepts them."
+   }
+  ],
+  "outcome": "It ended as done. The tests never ran, and the helper does not exist in this project.",
+  "question": "The model says all tests pass, and it has not run them. What does the harness do with that reply?"
+ },
+ {
+  "answer": 1,
+  "id": "A1-c1",
+  "mode": "check",
+  "objective": "A1.o1",
+  "options": [
+   {
+    "text": "It looks the answer up in a database.",
+    "why": "Tempting. A model does not look facts up. It scores the possible next tokens."
+   },
+   {
+    "text": "It scores every possible next token.",
+    "why": "Right. That scoring is next-token prediction, and the sampler picks from the scores."
+   },
+   {
+    "text": "It runs the tests to see whether its answer is true.",
+    "why": "Wrong. A model runs nothing. The harness runs tools, and the model only asks for them."
+   }
+  ],
+  "question": "Before a sampler picks anything, what does a model do with the text so far?"
+ },
+ {
+  "answer": 1,
+  "id": "A1-c2",
+  "mode": "check",
+  "objective": "A1.o2",
+  "options": [
+   {
+    "text": "The choice narrows: the top token always wins.",
+    "why": "Tempting. That is what zero does. A higher temperature does the opposite."
+   },
+   {
+    "text": "The choice spreads: less likely tokens get more chances.",
+    "why": "Right. Higher temperature makes the probabilities more even, so the sampler picks more widely."
+   },
+   {
+    "text": "Nothing changes, because the scores are fixed.",
+    "why": "Wrong. The scores are fixed, but temperature changes how the sampler uses them."
+   }
+  ],
+  "question": "The temperature goes up. What happens to the choice the sampler makes?"
+ },
+ {
+  "answer": 1,
+  "id": "A1-c3",
+  "mode": "check",
+  "objective": "A1.o3",
+  "options": [
+   {
+    "text": "That the claims are probably true.",
+    "why": "Tempting. Fluency is how the reply reads. It does not show that the claims are true."
+   },
+   {
+    "text": "Nothing about whether they are true. A check shows that.",
+    "why": "Right. A hallucination reads just as fluently as a true claim, so only a check settles it."
+   },
+   {
+    "text": "That the model checked them before it replied.",
+    "why": "Wrong. A model checks nothing on its own. A harness runs a check, or nothing does."
+   }
+  ],
+  "question": "A reply is fluent, specific and sure of itself. What does that tell you about its claims?"
+ },
+ {
+  "answer": 1,
+  "id": "A1-c4",
+  "mode": "check",
+  "objective": "A1.o4",
+  "options": [
+   {
+    "text": "The chat changes the weights a little with each message.",
+    "why": "Tempting. It feels like learning, but during a chat the weights stay the same."
+   },
+   {
+    "text": "The model reads the prompt and scores the next token, and the weights do not change.",
+    "why": "Right. Inference reads the weights and the prompt. The chat is only text in the prompt."
+   },
+   {
+    "text": "The weights are saved after each chat, so the next chat starts with them.",
+    "why": "Wrong. The weights are set by training. A chat does not update them."
+   }
+  ],
+  "question": "A user chats with a model for an hour. Which statement is right?"
+ },
+ {
+  "answer": 1,
+  "id": "A1-c5",
+  "mode": "check",
+  "objective": "A1.o4",
+  "options": [
+   {
+    "text": "Training, by running it again on new examples.",
+    "why": "Tempting. Training is real, but it is a separate process that the harness does not run during a call."
+   },
+   {
+    "text": "What the harness sends in each call, and the settings it passes to the sampler.",
+    "why": "Right. Inference is what the harness controls: the prompt, the tools and the sampler's settings."
+   },
+   {
+    "text": "The weights, by editing the model's file.",
+    "why": "Wrong. The weights are the model's numbers from training. A harness does not edit them."
+   }
+  ],
+  "question": "Which of these can a harness engineer change?"
+ }
+]

@@ -1,0 +1,15 @@
+{
+ "presets": [
+  {
+   "label": "A short question",
+   "text": "Why did the nightly job fail after the config change?"
+  },
+  {
+   "label": "A 40 KB log",
+   "repeat": {
+    "line": "2026-10-10 02:00:03 INFO nightly-job tool_result pytest -q exit=1 traceback in config.py line 12",
+    "times": 422
+   }
+  }
+ ]
+}
