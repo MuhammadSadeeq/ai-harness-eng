@@ -144,7 +144,10 @@ test("the real course: no evidence leaves every wire at level 0, and the built m
   const model = readiness(realCourse, realCore, []);
   assert.equal(model.wires.length, 8);
   assert.ok(model.wires.every((wire) => wire.level === 0));
-  assert.equal(model.summary, "Nothing explained yet. Next step: Explain every Control module.");
+  // The weakest wire is the first in turn order (Control); its step depends on whether a Control module is built yet.
+  const controlBuilt = realCourse.modules.some((mod) => (mod.wires ?? []).includes("control") && realCore.modules.find((m) => m.id === mod.id)?.built);
+  const controlStep = controlBuilt ? "Explain every Control module." : "No built module teaches Control yet.";
+  assert.equal(model.summary, `Nothing explained yet. Next step: ${controlStep}`);
   const loop = model.wires.find((wire) => wire.id === "loop");
   assert.match(loop.lines[0], /^L1: 0 of \d+ modules explained$/);
   const builtOnLoop = realCourse.modules.filter((mod) => (mod.wires ?? []).includes("loop") && realCore.modules.find((m) => m.id === mod.id)?.built).length;
