@@ -297,10 +297,10 @@ export function laneStrip({ events, wires = WIRES, compact = false, labels = fal
     });
     strip.lanes.set(w.id, track);
     strip.append(track);
-    const glyphEl = glyph(w.glyph, "glyph lane-glyph");
+    const glyphEl = glyph(`g-${w.glyph}`, "glyph lane-glyph");
     const tag = el("div", { class: `lane-tag w-${w.id}${labels ? " has-button" : ""}` }, glyphEl);
     if (labels) {
-      const button = el("button", { class: "lane-label", type: "button", "aria-pressed": "false", "data-wire": w.id, title: w.name }, glyph(w.glyph, "glyph"), el("span", { text: w.short }));
+      const button = el("button", { class: "lane-label", type: "button", "aria-pressed": "false", "data-wire": w.id, title: w.name }, glyph(`g-${w.glyph}`, "glyph"), el("span", { text: w.short }));
       button.addEventListener("click", () => onWire?.(w.id));
       tag.append(button);
     }

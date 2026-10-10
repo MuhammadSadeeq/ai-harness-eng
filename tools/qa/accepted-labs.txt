@@ -6,3 +6,5 @@ labs/count.html
 labs/wire.html
 labs/bench.html
 labs/check.html
+labs/incident.html
+labs/replay.html

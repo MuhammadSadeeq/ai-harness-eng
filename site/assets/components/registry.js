@@ -5,6 +5,8 @@ export const REGISTRY = Object.freeze({
   "hx-check": "../../components/hx-check.js",
   "hx-clock": "../../components/hx-clock.js",
   "hx-count": "../../components/hx-count.js",
+  "hx-incident": "../../components/hx-incident.js",
   "hx-num": "../../components/hx-num.js",
+  "hx-replay": "../../components/hx-replay.js",
   "hx-wire": "../../components/hx-wire.js",
 });

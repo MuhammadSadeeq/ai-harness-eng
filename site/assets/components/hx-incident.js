@@ -238,7 +238,7 @@ export class HxIncident extends HxElement {
       input.addEventListener("change", () => this.setState({ wirePick: w.id }));
       return el("label", { class: `choice w-${w.id}${s.named && right ? " is-right" : ""}`, "data-key": `wire-row-${w.id}` },
         input,
-        el("span", { class: "choice-text" }, el("span", { class: "wire-name" }, glyph(w.glyph), el("span", { text: w.name })), verdict));
+        el("span", { class: "choice-text" }, el("span", { class: "wire-name" }, glyph(`g-${w.glyph}`), el("span", { text: w.name })), verdict));
     });
     const commit = el("button", { class: "key key-primary", type: "button", "data-key": "commit-name", disabled: s.named || null, text: "Commit" });
     commit.addEventListener("click", () => this.commitName());
@@ -273,7 +273,7 @@ export class HxIncident extends HxElement {
     const taps = plural(s.wrongTaps, "wrong tap", "wrong taps");
     const fixOk = s.fixPick === inc.correct_fix;
     return el("div", { class: "result", role: "status" },
-      el("p", { class: "result-time", text: `Found in ${formatMs(this.seconds() * 1000)}. Par is ${formatMs(inc.par_s * 1000)}.` }),
+      el("p", { class: "result-time", text: `Found in ${this.seconds()} s. Par is ${formatMs(inc.par_s * 1000)}.` }),
       el("p", { class: "result-taps", text: s.wrongTaps === 0 ? "No wrong taps." : `${taps}.` }),
       el("p", { class: `verdict ${fixOk ? "is-pass" : "is-fail"}`, text: fixOk ? "Your fix is the one that works." : "That fix does not stop it. The one that works is marked." }));
   }
