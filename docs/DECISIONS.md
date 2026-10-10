@@ -410,3 +410,14 @@ basis for Phase 1, and answered SPEC §14:
 - `site/proto/v2` and `site/proto/shared` are removed: every screen they
   showed is now a production component (replay, incident, bench, check,
   clock) on the DESIGN v2 system. They stay in git at `86e0c33`.
+
+### D-049 · Harness bugs are board modules (ENGINE A5) · *decided*
+- Several failure families are mistakes in harness code (the forgetful
+  harness, reading only the first block, splitting tool results). They are
+  modeled as board modules that **add** the bug, so the incident is real
+  simulator output and the fix is a board without it; both runtimes implement
+  them with parity like any feature.
+- What the real API does with a malformed history (split results, an
+  unanswered `tool_use`) is a fact question, not a simulator choice: those
+  behaviors wait for verified facts (wave 3.2's fact-checker) before the
+  simulator models them or a page states them.

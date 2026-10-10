@@ -602,3 +602,29 @@ eventually notices; lessons say so).
   the par time to diagnose, in seconds. `check_scenarios` checks every
   reference: the family and its wire, the board and seed, and that every seq
   named exists in that golden trace. A tape without an incident omits the block.
+- **A5 (2026-10-10): harness bugs on purpose, and a prompt-aware condition.**
+  Some failure families are bugs in the harness code itself (DECISIONS
+  D-049). These board modules make the simulated harness have the bug, so a
+  lesson can show it and the fix is removing the module (the new board).
+  1. *`history: {"resend": false}`* (absent: resend). The forgetful harness:
+     every model call sends `messages = [user(text(task))]`, the first message
+     only; the harness still keeps its own history (so `last_*` conditions and
+     the missing-result check still use the full history), but the request,
+     `prompt_built.tokens`, `context_check` and the wire payload use the sent
+     messages. `prompt_built.layers` ends with `"history (not resent)"` instead
+     of `"history"`.
+  2. *Condition `history_lt:<n>`*: true when the request about to be sent has
+     fewer than `n` messages (a scripted model can "start from nothing" when its
+     prompt has no history).
+  3. *`first_block_only: {}`*. The harness reads tool calls only from
+     `content[0]`: if it is a `tool_use` block, that one call runs and any later
+     `tool_use` blocks in the reply are missed (the next call then fails with the
+     missing-result error, A3.16); if `content[0]` is not a `tool_use`, the
+     harness found no call. When `stop_reason` is `tool_use` and no call was
+     found, the harness takes the `end_turn` branch of §7.1 (verify gate
+     included) as the buggy code would. The assistant message stored is the full
+     reply (the bug is in reading, not storing), and `model_reply` still lists
+     every `tool_use` (the trace tells the truth).
+  4. Both modules map to the loop wire on the board (`hx-clock`) with the tag
+     labels `history not resent` and `reads the first block only`, drawn with
+     the warning mark: they are bugs, not features.
