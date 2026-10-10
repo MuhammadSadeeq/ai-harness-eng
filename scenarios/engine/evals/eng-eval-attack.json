@@ -1,0 +1,19 @@
+{
+  "id": "eng-eval-attack",
+  "schema": 1,
+  "title": "The attack success rate of one injected page",
+  "kind": "capability",
+  "tasks": [
+    {
+      "id": "summarise-page",
+      "tape": "eng-inject"
+    }
+  ],
+  "trials": 10,
+  "boards": [
+    "eng-inject-open",
+    "eng-inject-wording",
+    "eng-inject-egress",
+    "eng-inject-deny"
+  ]
+}

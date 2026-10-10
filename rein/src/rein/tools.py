@@ -48,16 +48,21 @@ def _too_many(path: str) -> str:
 
 
 class Toolbox:
-    def __init__(self, tape: Tape) -> None:
+    def __init__(self, tape: Tape, rejected: frozenset[str] = frozenset()) -> None:
         self.tape = tape
         self.vfs = Vfs(tape.workspace, tape.outside)
         self._available = set(tape.tools)
-        self._custom = {str(c["name"]): c for c in tape.custom_tools}
+        # A11.5: a rejected tool is not in the toolbox; a call to it is an unknown tool (A12.1).
+        self._custom = {
+            str(c["name"]): c for c in tape.custom_tools if str(c["name"]) not in rejected
+        }
 
     def definitions(self) -> list[dict[str, Any]]:
         """Built-ins named in `tools`, in tooldefs order; then custom tools in tape order (A3.1)."""
         defs = [copy.deepcopy(d) for d in load_tooldefs() if str(d["name"]) in self._available]
         for custom in self.tape.custom_tools:
+            if str(custom["name"]) not in self._custom:
+                continue
             defs.append(
                 {
                     "name": custom["name"],

@@ -3,10 +3,11 @@
 import { createPrng } from "./prng.js";
 import { tokens } from "./tokens.js";
 import { pyjson } from "./pyjson.js";
-import { ScriptedModel, ERROR_MESSAGE } from "./model.js";
+import { ScriptedModel, ERROR_MESSAGE, stringsIn } from "./model.js";
 import { Vfs, isInside } from "./vfs.js";
 import {
   Tools, toolDefs, applyOverrides, checksHold, testsHold, catPath, searchMatches, TOOL_SEARCH_DEF, TOOL_SEARCH_MAX,
+  rejectedTools,
 } from "./tools.js";
 import { decidePermission, egressHost } from "./policy.js";
 import { createHuman } from "./human.js";
@@ -34,6 +35,16 @@ const toolResult = (id, content, isError) => ({
   content,
   is_error: isError,
 });
+
+// A11.1: the last user message of the history has a tool_result whose content contains the text.
+function lastResultContains(messages, text) {
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    if (messages[i].role === "user") {
+      return messages[i].content.some((b) => b.type === "tool_result" && typeof b.content === "string" && b.content.includes(text));
+    }
+  }
+  return false;
+}
 
 // A5.3: the buggy harness reads a tool call only from content[0]; no call when that block is not a tool_use.
 function firstBlockCalls(reply) {
@@ -95,9 +106,13 @@ export function runCore(tape, board, seed, facts) {
   const trace = new Trace(run, mods.redact?.patterns ?? [], st);
   const prng = createPrng(seed);
   const vfs = new Vfs(tape.workspace, tape.outside);
-  const tools = new Tools(tape, vfs);
-  // A9.1: every tool definition, with the board's overrides. A9.2: the tools the request sends this turn.
-  const allDefs = applyOverrides(toolDefs(tape), mods.tool_overrides);
+  // A11.5: tool_pins rejects some custom tools. A rejected tool is never sent and runs as an unknown tool.
+  const rejects = rejectedTools(tape.custom_tools, mods.tool_pins?.pins);
+  const rejectedNames = new Set(rejects.map((r) => r.tool));
+  const tools = new Tools(tape, vfs, rejectedNames);
+  // A9.1: every tool definition, with the board's overrides. A12.1: a rejected tool is an unknown tool, so it
+  // has no definition to send or to check. A9.2: the tools the request sends this turn.
+  const allDefs = applyOverrides(toolDefs(tape), mods.tool_overrides).filter((d) => !rejectedNames.has(d.name));
   const alwaysTools = new Set(mods.tool_search?.always ?? []);
   const loadedTools = new Set();
   const requestDefs = () => {
@@ -182,7 +197,8 @@ export function runCore(tape, board, seed, facts) {
       const p = catPath(call.input.cmd);
       if (p !== null) return checkPath(p);
     }
-    const def = tools.custom.get(call.name);
+    // A12.1: a rejected tool is an unknown tool; the harness no longer knows its effect, so no egress check.
+    const def = rejectedNames.has(call.name) ? undefined : tools.custom.get(call.name);
     if (def && def.effect === "network" && typeof call.input.url === "string") {
       const host = egressHost(call.input.url);
       if (mods.sandbox.egress.includes(host)) return TOOL_OK;
@@ -285,6 +301,12 @@ export function runCore(tape, board, seed, facts) {
       });
       lastTruncated = capped.truncated;
       recent.push(`${call.name} ${pyjson(call.input)}`);
+      // A11.3: a network custom tool that ran (not rejected) and got a canary in its input leaks it.
+      const netTool = tools.custom.get(call.name);
+      if (netTool && netTool.effect === "network" && !rejectedNames.has(call.name)) {
+        const found = tape.canaries.filter((c) => stringsIn(call.input).some((x) => x.includes(c)));
+        if (found.length > 0) trace.emit("leak", { tool: call.name, canaries: found, tool_use_id: call.id });
+      }
       results.push(toolResult(call.id, capped.shown, !out.ok));
     }
     if (mods.split_results) {
@@ -384,6 +406,7 @@ export function runCore(tape, board, seed, facts) {
         last_truncated: lastTruncated,
         effort: effortLevel,
         results_split: hasConsecutiveUsers(sent),
+        last_result_contains: (text) => lastResultContains(messages, text),
       };
       let attempt = 0;
       let reply;
@@ -534,6 +557,8 @@ export function runCore(tape, board, seed, facts) {
   };
 
   trace.emit("run_start", { task: tape.task, board: board.id, seed, model_id: tape.model_id });
+  // A11.5: right after run_start, before the first turn, in tape order of the custom tools.
+  for (const r of rejects) trace.emit("tool_rejected", { tool: r.tool, server: r.server, version: r.version, reason: r.reason });
   messages.push(user([textBlock(tape.task)]));
   const status = loop();
   trace.flush();

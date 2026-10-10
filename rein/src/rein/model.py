@@ -239,6 +239,12 @@ def condition_holds(condition: str, ctx: CallContext) -> bool:
     if condition.startswith("effort_gte:"):  # A7.3: the level in force, in EFFORT_LEVELS order
         wanted = condition.split(":", 1)[1]
         return EFFORT_LEVELS.index(ctx.level) >= EFFORT_LEVELS.index(wanted)
+    if condition.startswith("last_result_contains:"):  # A11.1: tool_result of the last user turn
+        text = condition.split(":", 1)[1]
+        return any(
+            block.get("type") == "tool_result" and text in str(block.get("content", ""))
+            for block in _last_user_content(ctx.messages)
+        )
     if condition == "results_split":  # A7.2: two user messages in a row in the request
         sent = ctx.messages if ctx.sent is None else ctx.sent
         roles = [message.get("role") for message in sent]

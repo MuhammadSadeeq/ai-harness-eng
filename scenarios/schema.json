@@ -677,6 +677,16 @@
           "check"
         ]
       }
+    },
+    "canaries": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+      },
+      "description": "A11.3: secret strings the tape plants in workspace or outside."
     }
   },
   "required": [
@@ -988,6 +998,10 @@
         {
           "type": "string",
           "pattern": "^tool_loaded:.+$"
+        },
+        {
+          "type": "string",
+          "pattern": "^last_result_contains:.+$"
         }
       ]
     },
@@ -1061,6 +1075,27 @@
           "required": [
             "output"
           ]
+        },
+        "server": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "trifecta": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "private_data",
+              "untrusted_content",
+              "exfiltration"
+            ]
+          }
         }
       },
       "required": [

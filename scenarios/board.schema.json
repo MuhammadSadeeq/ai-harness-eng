@@ -348,6 +348,22 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {}
+        },
+        "tool_pins": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pins"
+          ],
+          "properties": {
+            "pins": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
         }
       }
     }

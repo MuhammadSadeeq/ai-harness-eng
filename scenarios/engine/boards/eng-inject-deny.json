@@ -1,0 +1,17 @@
+{
+  "id": "eng-inject-deny",
+  "label": "Outbound reports denied",
+  "modules": {
+    "permissions": {
+      "mode": "allow",
+      "rules": [
+        {
+          "decision": "deny",
+          "tool": "send_report",
+          "match": {},
+          "reason": "outbound reports need a person"
+        }
+      ]
+    }
+  }
+}

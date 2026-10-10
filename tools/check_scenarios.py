@@ -12,12 +12,17 @@ output of both runtimes on every check; the digest only guards the Python output
 Branch coverage (A3.22): across the tape's boards and golden seeds, every option of every branch
 step that a run reaches must be taken at least once; an untaken option is a problem.
 
+Evals (A11.7, A11.8): every scenarios/engine/evals/*.json and scenarios/evals/*.json is validated
+against scenarios/eval.schema.json, and for each of its boards the Python eval object (one canonical
+line) must equal ``node tools/sim_cli.mjs eval`` line for line and the golden in
+scenarios/golden/evals/<eval>.<board>.json.
+
 ``--update <tape>`` rewrites golden files from Python, only when JS matches on every run.
 ``--suggest-seeds N`` prints, per tape, a small set of seeds among 0..N-1 that covers every
 reachable branch option (print only).
 
-Last line: ``check_scenarios: <t> tapes, <r> runs, parity OK`` or ``check_scenarios: FAILED (<n>
-problems)``.
+Last line: ``check_scenarios: <t> tapes, <r> runs, <e> evals, <x> eval runs, parity OK`` or
+``check_scenarios: FAILED (<n> problems)``.
 """
 
 from __future__ import annotations
@@ -65,6 +70,8 @@ class Report:
     problems: list[Problem] = field(default_factory=list)
     tapes: int = 0
     runs: int = 0
+    evals: int = 0
+    eval_runs: int = 0
 
     def error(self, path: str, line: int, message: str) -> None:
         self.problems.append(Problem(path, line, message))
@@ -455,6 +462,107 @@ def check_incident(
             )
 
 
+def _discover_evals(scenarios_dir: Path) -> list[Path]:
+    """A11.7: the eval files, engine ones in scenarios/engine/evals/, others in scenarios/evals/."""
+    found: list[Path] = []
+    for folder in (scenarios_dir / "engine" / "evals", scenarios_dir / "evals"):
+        if folder.is_dir():
+            found.extend(
+                sorted(p for p in folder.glob("*.json") if not p.name.endswith("schema.json"))
+            )
+    return found
+
+
+def _eval_golden(golden_dir: Path, eval_id: str, board_id: str) -> Path:
+    """A11.8: scenarios/golden/evals/<eval>.<board>.json, canonical JSON and a newline."""
+    return golden_dir / "evals" / f"{eval_id}.{board_id}.json"
+
+
+def _python_eval_lines(
+    eval_path: Path, board_path: Path, scenarios_dir: Path, facts: dict[str, Any] | None
+) -> list[str]:
+    """The Python eval object as the one canonical line the CLI prints."""
+    _rein_import()
+    evals = importlib.import_module("rein.evals")
+    board_mod = importlib.import_module("rein.board")
+    pyjson = importlib.import_module("rein.pyjson")
+    spec = evals.load_eval(eval_path)
+    board = board_mod.load_board(board_path)
+    tapes = evals.load_tapes(spec, scenarios_dir)
+    summary = evals.run_eval(spec, tapes, board, facts)
+    return [pyjson.trace_line(summary)]
+
+
+def _check_eval(
+    eval_path: Path,
+    scenarios_dir: Path,
+    runner: JsRunner,
+    facts: dict[str, Any] | None,
+    facts_path: Path,
+    validator: jsonschema.protocols.Validator | None,
+    report: Report,
+    update: str | None,
+    js_missing: bool,
+) -> bool:
+    """Compare one eval on each of its boards: Python against JS, then the golden (A11.8)."""
+    data = _load_and_validate(eval_path, validator, report)
+    if data is None:
+        return js_missing
+    eval_id = str(data.get("id"))
+    if eval_id != eval_path.stem:
+        report.error(_display(eval_path), 0, f"eval id {eval_id!r} must equal the file stem")
+    if update is not None and update not in (eval_id, eval_path.stem):
+        return js_missing
+    report.evals += 1
+    engine = eval_path.parent.resolve() == (scenarios_dir / "engine" / "evals").resolve()
+    boards_dir = scenarios_dir / "engine" / "boards" if engine else scenarios_dir / "boards"
+    golden_dir = scenarios_dir / "golden"
+    for board_id in data.get("boards", []):
+        board_path = _find_board(str(board_id), boards_dir)
+        if board_path is None:
+            report.error(_display(eval_path), 0, f"board {board_id!r} not found")
+            continue
+        where = f"{_display(eval_path)}:{board_id}"
+        report.eval_runs += 1
+        try:
+            python_lines = _python_eval_lines(eval_path, board_path, scenarios_dir, facts)
+        except (ValueError, OSError, KeyError, RuntimeError) as exc:
+            report.error(where, 0, f"python eval failed: {exc}")
+            continue
+        if js_missing:
+            continue
+        js_argv = [
+            "node",
+            str(SIM_CLI),
+            "eval",
+            "--eval",
+            str(eval_path),
+            "--board",
+            str(board_path),
+            "--scenarios",
+            str(scenarios_dir),
+            "--facts",
+            str(facts_path),
+        ]
+        try:
+            js_lines = runner(js_argv).splitlines()
+        except JsUnavailableError as exc:
+            report.error(where, 0, f"js simulator failed: {exc}")
+            js_missing = True
+            continue
+        parity = _first_difference(where, python_lines, js_lines, report)
+        golden = _eval_golden(golden_dir, eval_id, str(board_id))
+        if update is not None:
+            if parity:
+                golden.parent.mkdir(parents=True, exist_ok=True)
+                golden.write_text("".join(line + "\n" for line in python_lines), encoding="utf-8")
+            else:
+                report.error(where, 0, "golden update refused: python and js do not match")
+            continue
+        _check_golden(golden, python_lines, report, where)
+    return js_missing
+
+
 def check(
     scenarios_dir: Path,
     *,
@@ -521,7 +629,21 @@ def check(
                 for location, index in choices:
                     taken.setdefault(location, set()).add(index)
         _branch_coverage(tape_path, data, taken, report)
-    if update is not None and not any(update in (_load_id(p), p.stem) for p in targets):
+    evals = _discover_evals(scenarios_dir)
+    eval_validator = _validator(scenarios_dir / "eval.schema.json", report) if evals else None
+    for eval_path in evals:
+        js_missing = _check_eval(
+            eval_path,
+            scenarios_dir,
+            runner,
+            facts,
+            facts_path,
+            eval_validator,
+            report,
+            update,
+            js_missing,
+        )
+    if update is not None and not any(update in (_load_id(p), p.stem) for p in [*targets, *evals]):
         report.error(update, 0, "no tape with that id to update")
     if js_missing:
         report.error(_display(SIM_CLI), 0, "js simulator unavailable; parity not checked")
@@ -690,7 +812,10 @@ def main(argv: list[str] | None = None) -> int:
     if report.problems:
         print(f"check_scenarios: FAILED ({len(report.problems)} problems)")
         return 1
-    print(f"check_scenarios: {report.tapes} tapes, {report.runs} runs, parity OK")
+    print(
+        f"check_scenarios: {report.tapes} tapes, {report.runs} runs, "
+        f"{report.evals} evals, {report.eval_runs} eval runs, parity OK"
+    )
     return 0
 
 

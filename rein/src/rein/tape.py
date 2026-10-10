@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from .plain import check_plain, loads_strict
-from .spec import BUILTIN_TOOLS, CANONICAL_INDEX, EFFORT_LEVELS, ERROR_TYPES, NOTE_KINDS
+from .spec import BUILTIN_TOOLS, CANONICAL_INDEX, EFFORT_LEVELS, ERROR_TYPES, NOTE_KINDS, TRIFECTA
 from .vfs import is_outside, normalize
 
 REPLY_STOPS = ("end_turn", "tool_use", "max_tokens", "refusal")
@@ -51,6 +51,7 @@ class Tape:
     cache_rules: dict[str, int] | None = None  # A6.5: min_tokens and ttl_ms of the model
     effort: dict[str, Any] | None = None  # A7.3: default and thinking_tokens, when given
     tests: list[dict[str, Any]] = field(default_factory=list)  # A9.3: the test suite, when given
+    canaries: list[str] = field(default_factory=list)  # A11.3: secrets the tape plants
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -86,6 +87,7 @@ def _build(raw: dict[str, Any]) -> Tape:
     for entry in custom:
         if "latency_ms" in entry:
             _int(entry["latency_ms"], f"custom tool {entry['name']}.latency_ms", minimum=0)
+        _check_provenance(entry)
     _check_roots(raw["workspace"], raw["outside"])
     window = _int(raw["window"], "window", minimum=1)
     # A3.12: the defaults for absent fields.
@@ -134,6 +136,7 @@ def _build(raw: dict[str, Any]) -> Tape:
         cache_rules=_check_cache_rules(raw.get("cache_rules")),
         effort=_check_effort(raw.get("effort")),
         tests=_check_tests(raw.get("tests", [])),
+        canaries=_check_canaries(raw.get("canaries", [])),
         raw=raw,
     )
 
@@ -305,8 +308,37 @@ def _check_condition(condition: str, where: str) -> None:
         raise TapeError(f"{where}: tools_gte needs a canonical integer, got {condition!r}")
     if condition.startswith("tool_loaded:") and argument == "":
         raise TapeError(f"{where}: tool_loaded needs a tool name")
+    if condition.startswith("last_result_contains:") and argument == "":  # A11.1
+        raise TapeError(f"{where}: last_result_contains needs text after the colon")
     if condition.startswith("effort_gte:") and argument not in EFFORT_LEVELS:
         raise TapeError(f"{where}: effort_gte needs one of {', '.join(EFFORT_LEVELS)}")
+
+
+def _check_provenance(entry: dict[str, Any]) -> None:
+    """A11.4: a custom tool's server and version go together; trifecta holds distinct labels."""
+    name = entry["name"]
+    if ("server" in entry) != ("version" in entry):
+        raise TapeError(f"custom tool {name}: server and version go together (A11.4)")
+    if "server" in entry:
+        _text(entry["server"], f"custom tool {name}.server")
+        _text(entry["version"], f"custom tool {name}.version")
+    if "trifecta" in entry:
+        labels = entry["trifecta"]
+        if not isinstance(labels, list) or len(set(map(str, labels))) != len(labels):
+            raise TapeError(f"custom tool {name}.trifecta must be a list of distinct labels")
+        for label in labels:
+            if label not in TRIFECTA:
+                raise TapeError(f"custom tool {name}.trifecta: {label!r} is not one of {TRIFECTA}")
+
+
+def _check_canaries(raw: Any) -> list[str]:
+    """A11.3: the canaries are non-empty and distinct."""
+    if not isinstance(raw, list):
+        raise TapeError("canaries must be a list")
+    values = [_text(item, "canaries entry") for item in raw]
+    if len(set(values)) != len(values):
+        raise TapeError("canaries must be distinct")
+    return values
 
 
 def _check_notes(raw: Any) -> list[dict[str, Any]]:

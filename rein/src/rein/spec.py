@@ -93,6 +93,7 @@ MODULES = (
     "tool_overrides",
     "tool_search",
     "cost_attribution",
+    "tool_pins",  # A11.5
 )
 # Section 9: the wire of every event kind.
 KIND_WIRE = {
@@ -117,6 +118,13 @@ KIND_WIRE = {
     "cache": "context",
     "input_check": "tools",
     "cost": "observe",
+    "leak": "permissions",  # A11.3
+    "tool_rejected": "tools",  # A11.5
 }
+TRIFECTA = ("private_data", "untrusted_content", "exfiltration")  # A11.4, the labels, in order
+EVAL_KINDS = ("capability", "regression")  # A12.3
+EVAL_MAX_TASKS = 20  # A11.7
+EVAL_MAX_TRIALS = 50
+NAME_PATTERN = re.compile(r"[a-z0-9][a-z0-9-]*")  # A12.3: a task's tape id
 ASCII_PATTERN = re.compile(r"[\x20-\x7e\n\t]*")
 CANONICAL_INDEX = re.compile(r"(0|[1-9][0-9]*)")

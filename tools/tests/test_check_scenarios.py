@@ -192,7 +192,7 @@ def test_main_reports_a_result_line(
     assert cs.main(["--scenarios", str(scen), "--facts", str(FACTS), "--update", "b2-spiral"]) == 0
     assert cs.main(["--scenarios", str(scen), "--facts", str(FACTS)]) == 0
     assert capsys.readouterr().out.strip().splitlines()[-1] == (
-        "check_scenarios: 1 tapes, 4 runs, parity OK"
+        "check_scenarios: 1 tapes, 4 runs, 0 evals, 0 eval runs, parity OK"
     )
 
 

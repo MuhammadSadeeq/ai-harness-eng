@@ -127,6 +127,13 @@ def _check_a6_a7(name: str, params: dict[str, Any]) -> None:
                 raise BoardError(f"tool_overrides.{tool}.description must be a non-empty string")
             if "input_schema" in override and not isinstance(override["input_schema"], dict):
                 raise BoardError(f"tool_overrides.{tool}.input_schema must be an object")
+    if name == "tool_pins":  # A11.5: {"pins": {"<server>": "<version>"}}, nothing else
+        pins = params.get("pins")
+        if set(params) != {"pins"} or not isinstance(pins, dict):
+            raise BoardError('tool_pins takes exactly {"pins": {"<server>": "<version>"}} (A11.5)')
+        for server, version in pins.items():
+            if not isinstance(server, str) or not isinstance(version, str) or not server:
+                raise BoardError("tool_pins.pins maps server names to version strings (A11.5)")
     if name == "tool_search":  # A9.2
         always = params.get("always")
         if not isinstance(always, list) or len(set(always)) != len(always):

@@ -1,0 +1,17 @@
+{
+  "id": "eng-pins-search",
+  "label": "Pinned servers and tools on demand",
+  "modules": {
+    "tool_pins": {
+      "pins": {
+        "notes": "1.2.0",
+        "search": "0.9.1"
+      }
+    },
+    "tool_search": {
+      "always": [
+        "calc"
+      ]
+    }
+  }
+}

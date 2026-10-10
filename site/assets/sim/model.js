@@ -45,6 +45,10 @@ function conditionHolds(cond, snap) {
     const text = cond.slice("sent_lacks:".length);
     return !stringsIn(snap.request).some((x) => x.includes(text));
   }
+  // A11.1: a tool_result in the last user message of the history contains the text (after the output cap).
+  if (cond.startsWith("last_result_contains:")) {
+    return snap.last_result_contains(cond.slice("last_result_contains:".length));
+  }
   // A9.2: the request about to be sent has at least n tool definitions (tool_search's own counts).
   if (cond.startsWith("tools_gte:")) return snap.request.tools.length >= Number(cond.slice("tools_gte:".length));
   // A9.2: the named tool is among the request's tool definitions.

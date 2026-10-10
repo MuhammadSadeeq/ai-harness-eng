@@ -1,0 +1,16 @@
+{
+  "id": "eng-pins-egress",
+  "label": "Pinned tool servers, sandbox egress",
+  "modules": {
+    "tool_pins": {
+      "pins": {
+        "notes": "1.2.0"
+      }
+    },
+    "sandbox": {
+      "egress": [
+        "docs.example"
+      ]
+    }
+  }
+}

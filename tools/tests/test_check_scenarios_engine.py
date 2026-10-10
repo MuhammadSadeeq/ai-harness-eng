@@ -26,9 +26,15 @@ FACTS = ROOT / "site" / "data" / "facts.json"
 
 def fake_js(argv: list[str]) -> str:
     """The JS CLI's contract, answered by the Python harness itself."""
+    facts: Any = json.loads(FACTS.read_text(encoding="utf-8"))
+    if argv[2:3] == ["eval"]:  # A11.8: the eval object, answered by the Python engine here
+        evals = importlib.import_module("rein.evals")
+        spec = evals.load_eval(Path(argv[argv.index("--eval") + 1]))
+        board = load_board(Path(argv[argv.index("--board") + 1]))
+        tapes = evals.load_tapes(spec, Path(argv[argv.index("--scenarios") + 1]))
+        return trace_line(evals.run_eval(spec, tapes, board, facts)) + "\n"
     tape = load_tape(Path(argv[argv.index("--tape") + 1]))
     board = load_board(Path(argv[argv.index("--board") + 1]))
-    facts: Any = json.loads(FACTS.read_text(encoding="utf-8"))
     trial = run_trial(tape, board, int(argv[argv.index("--seed") + 1]), facts)
     if "--choices" in argv:
         lines = [trace_line([loc, idx]) for loc, idx in trial.result.choices]

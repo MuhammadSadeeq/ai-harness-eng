@@ -1,0 +1,7 @@
+{
+  "id": "eng-inject-wording",
+  "label": "The rules say not to send",
+  "modules": {
+    "rules_file": {}
+  }
+}

@@ -24,6 +24,8 @@ const WIRE = {
   cache: "context",
   input_check: "tools",
   cost: "observe",
+  leak: "permissions",
+  tool_rejected: "tools",
 };
 
 export class Trace {

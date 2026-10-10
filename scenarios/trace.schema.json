@@ -70,6 +70,12 @@
     },
     {
       "$ref": "#/$defs/subagent_end"
+    },
+    {
+      "$ref": "#/$defs/leak"
+    },
+    {
+      "$ref": "#/$defs/tool_rejected"
     }
   ],
   "$defs": {
@@ -1611,6 +1617,133 @@
         "cache_cost",
         "top_part",
         "top_tokens"
+      ]
+    },
+    "leak": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "leak"
+        },
+        "wire": {
+          "const": "permissions"
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "canaries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+          }
+        },
+        "tool_use_id": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "tool",
+        "canaries",
+        "tool_use_id"
+      ]
+    },
+    "tool_rejected": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "tool_rejected"
+        },
+        "wire": {
+          "const": "tools"
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "server": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "tool",
+        "server",
+        "version",
+        "reason"
       ]
     }
   }

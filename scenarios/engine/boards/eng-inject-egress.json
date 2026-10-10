@@ -1,0 +1,11 @@
+{
+  "id": "eng-inject-egress",
+  "label": "Sandbox egress to docs only",
+  "modules": {
+    "sandbox": {
+      "egress": [
+        "docs.example"
+      ]
+    }
+  }
+}

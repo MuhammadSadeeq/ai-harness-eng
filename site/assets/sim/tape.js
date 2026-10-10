@@ -6,6 +6,8 @@ import { normalizePath, isInside } from "./vfs.js";
 export const ASCII = /^[\x20-\x7E\n\t]*$/;
 export const BUILTIN_TOOLS = ["read_file", "write_file", "edit_file", "list_files", "run_command"];
 export const ERROR_TYPES = ["overloaded", "rate_limit", "api_error", "timeout", "invalid_request"];
+// A11.4: the labels a custom tool may carry (the course shows them; the run ignores them).
+export const TRIFECTA = ["private_data", "untrusted_content", "exfiltration"];
 const STOPS = ["end_turn", "tool_use", "max_tokens", "refusal"];
 const CONDITIONS = ["last_result_error", "last_denied", "verify_feedback", "last_truncated", "results_split"];
 
@@ -109,6 +111,8 @@ function checkCondition(cond, where) {
   // A6.1: context_gte:<n>; sent_lacks:<text> where <text> is everything after the first colon.
   if (typeof cond === "string" && /^context_gte:(0|[1-9][0-9]*)$/.test(cond)) return;
   if (typeof cond === "string" && /^sent_lacks:[\s\S]+$/.test(cond)) return;
+  // A11.1: last_result_contains:<text>, where <text> is everything after the first colon (never empty).
+  if (typeof cond === "string" && /^last_result_contains:[\s\S]+$/.test(cond)) return;
   // A7.3: effort_gte:<level>, the level in force compared with a level name.
   if (typeof cond === "string" && /^effort_gte:(low|medium|high|xhigh|max)$/.test(cond)) return;
   // A9.2: tools_gte:<n>, and tool_loaded:<name> where <name> is everything after the colon.
@@ -196,6 +200,19 @@ function loadCustomTool(c, i, seen) {
     return { match: r.match ?? {}, output: reqStr(r, "output", w), ok: r.ok ?? true };
   });
   const dflt = c.default ?? { output: "", ok: false };
+  // A11.4: provenance. server and version come together or not at all; trifecta holds distinct labels.
+  const hasServer = c.server !== undefined && c.server !== null;
+  const hasVersion = c.version !== undefined && c.version !== null;
+  if (hasServer !== hasVersion) fail(where, '"server" and "version" must be given together');
+  if (hasServer && (typeof c.server !== "string" || typeof c.version !== "string")) {
+    fail(where, "server and version must be strings");
+  }
+  const trifecta = c.trifecta ?? [];
+  if (!Array.isArray(trifecta)) fail(where, "trifecta must be a list");
+  for (const label of trifecta) {
+    if (!TRIFECTA.includes(label)) fail(where, `trifecta "${label}" is not one of: ${TRIFECTA.join(", ")}`);
+  }
+  if (new Set(trifecta).size !== trifecta.length) fail(where, "trifecta must not repeat a label");
   return {
     name,
     description: c.description,
@@ -204,7 +221,21 @@ function loadCustomTool(c, i, seen) {
     results,
     default: { output: reqStr(dflt, "output", `${where}.default`), ok: dflt.ok ?? false },
     effect: c.effect ?? null,
+    server: hasServer ? c.server : null,
+    version: hasVersion ? c.version : null,
+    trifecta: [...trifecta],
   };
+}
+
+// A11.3: secret strings the tape plants; each non-empty and distinct. Absent means none.
+function loadCanaries(raw, where) {
+  if (raw === undefined || raw === null) return [];
+  if (!Array.isArray(raw)) fail(where, "canaries must be a list");
+  raw.forEach((s, i) => {
+    if (typeof s !== "string" || s === "") fail(where, `canaries[${i}] must be a non-empty string`);
+  });
+  if (new Set(raw).size !== raw.length) fail(where, "canaries must not repeat");
+  return [...raw];
 }
 
 // Returns a new, validated tape object. The input is not modified.
@@ -312,6 +343,7 @@ export function loadTape(raw) {
   }
   const seen = new Set();
   t.custom_tools = (raw.custom_tools ?? []).map((c, i) => loadCustomTool(c, i, seen));
+  t.canaries = loadCanaries(raw.canaries, where);
   t.checks = (raw.checks ?? []).map((c, i) => {
     const w = `${where}.checks[${i}]`;
     if (typeof c.file !== "string") fail(w, "file must be a string");

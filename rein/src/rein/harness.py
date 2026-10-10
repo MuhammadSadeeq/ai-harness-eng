@@ -12,7 +12,15 @@ from typing import Any
 
 from .board import Board, BoardError
 from .inputs import check_input
-from .model import CallContext, ErrorOutcome, Reply, ScriptedModel, ToolUse, missing_results
+from .model import (
+    CallContext,
+    ErrorOutcome,
+    Reply,
+    ScriptedModel,
+    ToolUse,
+    _string_values,
+    missing_results,
+)
 from .policy import NO_POLICY, Approver, Policy
 from .pricing import Prices
 from .prng import Mulberry32
@@ -81,7 +89,21 @@ class Harness:
         if board.has("redact"):
             patterns = [str(p) for p in board.param("redact", "patterns")]
         self.rec = Recorder(f"{tape.id}:{board.id}:{seed}", patterns)
-        self.toolbox = Toolbox(tape)
+        # A11.5: the tools whose server the board does not pin, or whose version differs.
+        self.rejected: dict[str, tuple[str, str, str]] = {}  # tool -> (server, version, reason)
+        pins = dict(board.param("tool_pins", "pins")) if board.has("tool_pins") else None
+        for custom in tape.custom_tools:
+            if "server" not in custom or pins is None:
+                continue
+            server, version = str(custom["server"]), str(custom["version"])
+            if server not in pins:
+                reason = f"server not pinned: {server}"
+            elif str(pins[server]) != version:
+                reason = f"version {version} is not the pinned {pins[server]}"
+            else:
+                continue
+            self.rejected[str(custom["name"])] = (server, version, reason)
+        self.toolbox = Toolbox(tape, frozenset(self.rejected))
         self.model = ScriptedModel(tape, self.rng)
         self.approver = Approver.from_config(tape.human)
         self.policy: Policy | None = (
@@ -188,6 +210,8 @@ class Harness:
             seed=self.seed,
             model_id=self.tape.model_id,
         )
+        for name, (server, version, reason) in self.rejected.items():  # A11.5: after run_start
+            self._emit("tool_rejected", tool=name, server=server, version=version, reason=reason)
         self.messages = [user_message([text_block(self.tape.task)])]
         status = self._loop()
         passed = self._finish(status)
@@ -761,9 +785,22 @@ class Harness:
             truncated=truncated,
             tool_use_id=call.id,
         )
+        self._leak_check(call)
         self.recent_calls.append(call.name + " " + pyjson(call.input))
         self.last_truncated = truncated
         return tool_result(call.id, shown, not ok)
+
+    def _leak_check(self, call: ToolUse) -> None:
+        """A11.3: a network custom tool that ran, with a canary inside its input, leaks."""
+        if not self.tape.canaries or call.name in self.rejected:
+            return
+        custom = next((c for c in self.tape.custom_tools if c["name"] == call.name), None)
+        if custom is None or custom.get("effect") != "network":
+            return
+        values = list(_string_values(call.input))
+        found = [c for c in self.tape.canaries if any(c in value for value in values)]
+        if found:
+            self._emit("leak", tool=call.name, canaries=found, tool_use_id=call.id)
 
     def _sandbox(self, call: ToolUse) -> tuple[bool, str]:
         """A3.8: paths of read, write, edit and `cat <path>`; then the egress of network tools."""
@@ -778,7 +815,15 @@ class Harness:
             reason = sandbox_reason(self.toolbox.vfs.resolve(path))
             if reason is not None:
                 return False, reason
-        custom = next((c for c in self.tape.custom_tools if c["name"] == call.name), None)
+        # A12.1: a rejected tool is an unknown tool here too: no effect, so no egress check.
+        custom = next(
+            (
+                c
+                for c in self.tape.custom_tools
+                if c["name"] == call.name and call.name not in self.rejected
+            ),
+            None,
+        )
         if custom is not None and custom.get("effect") == "network":
             url = call.input.get("url")
             if isinstance(url, str):

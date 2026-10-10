@@ -25,6 +25,7 @@ const MODULE_PARAMS = {
   split_results: [],
   effort: ["level"],
   cost_attribution: [],
+  tool_pins: ["pins"],
 };
 const DECISIONS = ["allow", "ask", "deny"];
 
@@ -124,6 +125,16 @@ function loadModule(name, p, where) {
       }
       if (new Set(always).size !== always.length) fail(where, "always must not repeat a tool");
       return { always: [...always] };
+    }
+    case "tool_pins": {
+      // A11.5: pins maps each trusted server to the one version someone reviewed.
+      const pins = p.pins;
+      if (!isObj(pins) || Object.values(pins).some((v) => typeof v !== "string")) {
+        fail(where, 'tool_pins is {"pins": {"<server>": "<version>"}}');
+      }
+      const out = Object.create(null);
+      for (const [server, version] of Object.entries(pins)) out[server] = version;
+      return { pins: out };
     }
     case "redact": {
       const patterns = p.patterns ?? [];

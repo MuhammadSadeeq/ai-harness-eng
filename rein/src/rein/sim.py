@@ -1,6 +1,7 @@
 """The simulator: run_trial, run_bench and the CLI (ENGINE.md section 10; A3.19, A3.21, A3.22).
 
     python -m rein.sim run --tape T --board B --seed N [--wire] [--choices] [--facts PATH]
+    python -m rein.sim eval --eval E --board B [--scenarios DIR] [--facts PATH]   (A11.8)
 
 prints canonical JSONL, one line per record, each ending in a newline: events, or wire payloads
 with --wire, or the branch choices ``[location, option]`` with --choices. A run with no lines
@@ -19,6 +20,7 @@ from pathlib import Path
 from typing import Any
 
 from .board import Board, BoardError, load_board
+from .evals import EvalError, load_eval, load_tapes, run_eval
 from .harness import Harness, RunResult
 from .model import ScriptError
 from .pricing import PricingError, resolve_prices
@@ -86,11 +88,20 @@ def _build_parser() -> argparse.ArgumentParser:
     output.add_argument("--wire", action="store_true", help="print wire payloads")
     output.add_argument("--choices", action="store_true", help="print branch choices")
     run.add_argument("--facts", default=None, help="facts registry (default: site/data/facts.json)")
+    evaluate = commands.add_parser("eval", help="run an eval and print its summary object")
+    evaluate.add_argument("--eval", type=Path, required=True)
+    evaluate.add_argument("--board", type=Path, required=True)
+    evaluate.add_argument("--scenarios", type=Path, default=Path("scenarios"))
+    evaluate.add_argument(
+        "--facts", default=None, help="facts registry (default: site/data/facts.json)"
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    if args.command == "eval":
+        return _eval_main(args)
     try:
         tape = load_tape(args.tape)
         board = load_board(args.board)
@@ -109,6 +120,29 @@ def main(argv: list[str] | None = None) -> int:
         lines = [trace_line(item) for item in trial.events]
     for line in lines:
         print(line)
+    return 0
+
+
+def _eval_main(args: argparse.Namespace) -> int:
+    """A11.8: the eval's object as one canonical JSON line; errors to stderr with exit 2."""
+    try:
+        spec = load_eval(args.eval)
+        board = load_board(args.board)
+        facts = load_facts(args.facts)
+        tapes = load_tapes(spec, args.scenarios)
+        summary = run_eval(spec, tapes, board, facts)
+    except (
+        EvalError,
+        TapeError,
+        BoardError,
+        PricingError,
+        ScriptError,
+        ValueError,
+        OSError,
+    ) as exc:
+        print(f"rein.sim: {exc}", file=sys.stderr)
+        return 2
+    print(trace_line(summary))
     return 0
 
 

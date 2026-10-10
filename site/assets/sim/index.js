@@ -1,6 +1,7 @@
 // Public entry point of the JS simulator (docs/ENGINE.md, all sections).
 //   runTrial(tape, board, seed, {facts}) -> {events, wire, result}
 //   runBench(tape, board, n, {facts})    -> {trials: [{seed, status, passed, turns, tokens, cost}], passed, n}
+//   runEval(spec, tapes, board, {facts}) -> the A11.7 eval object (see evals.js)
 // Trial i of a bench uses seed tape.seed_base + i. facts is an object shaped like
 // site/data/facts.json (the caller reads the file; this module never does I/O).
 import { loadTape } from "./tape.js";
@@ -21,6 +22,8 @@ export { decidePermission } from "./policy.js";
 // A2: the simulated human, shared with hx-gatekeeper: createHuman(human, prng) -> {ask(call), asks}. Pass the
 // loaded tape.human and a PRNG (the labs use createPrng(seed)); the harness uses this same function.
 export { createHuman } from "./human.js";
+// A11.7: evals. runEval(spec, tapes, board, {facts}) -> {eval, board, kind, trials, results, summary}; loadEval validates an eval file.
+export { runEval, loadEval } from "./evals.js";
 
 // The two shared rules the labs reuse (ENGINE A6.3 and A6.5). The labs import them from here and
 // never copy them: there is one implementation, and the harness uses the same one.

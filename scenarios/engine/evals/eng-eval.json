@@ -1,0 +1,30 @@
+{
+  "id": "eng-eval",
+  "schema": 1,
+  "title": "Three tasks, two tapes, a model grader",
+  "kind": "regression",
+  "tasks": [
+    {
+      "id": "tamper-plain",
+      "tape": "eng-tamper"
+    },
+    {
+      "id": "overrides-old",
+      "tape": "eng-overrides"
+    },
+    {
+      "id": "tamper-pristine",
+      "tape": "eng-tamper"
+    }
+  ],
+  "trials": 5,
+  "boards": [
+    "eng-tamper-plain",
+    "eng-tamper-pristine"
+  ],
+  "seed_base": 7,
+  "model_grader": {
+    "false_pass_percent": 30,
+    "false_fail_percent": 10
+  }
+}

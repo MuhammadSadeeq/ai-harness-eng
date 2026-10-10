@@ -118,15 +118,39 @@ export function searchMatches(query, candidates) {
   });
 }
 
+// A11.5: the custom tools a board's tool_pins rejects, in tape order. A tool with a server is rejected when the
+// server is not in pins or its version is not the pinned one. Tools without a server are never rejected.
+export function rejectedTools(customTools, pins) {
+  if (!pins) return [];
+  const out = [];
+  for (const c of customTools) {
+    if (c.server === null) continue;
+    if (!Object.prototype.hasOwnProperty.call(pins, c.server)) {
+      out.push({ tool: c.name, server: c.server, version: c.version, reason: `server not pinned: ${c.server}` });
+    } else if (pins[c.server] !== c.version) {
+      out.push({
+        tool: c.name,
+        server: c.server,
+        version: c.version,
+        reason: `version ${c.version} is not the pinned ${pins[c.server]}`,
+      });
+    }
+  }
+  return out;
+}
+
 export class Tools {
-  constructor(tape, vfs) {
+  // rejected: the names tool_pins rejected (A11.5). A rejected tool runs as an unknown tool.
+  constructor(tape, vfs, rejected = new Set()) {
     this.tape = tape;
     this.vfs = vfs;
     this.builtin = new Set(tape.tools);
     this.custom = new Map(tape.custom_tools.map((c) => [c.name, c]));
+    this.rejected = rejected;
   }
 
   latency(name) {
+    if (this.rejected.has(name)) return UNKNOWN_LATENCY;
     if (this.custom.has(name)) return this.custom.get(name).latency_ms;
     if (this.builtin.has(name)) return BUILTIN_LATENCY[name];
     return UNKNOWN_LATENCY;
@@ -134,6 +158,7 @@ export class Tools {
 
   // Runs one tool call against the workspace. Returns {ok, output}.
   run(call) {
+    if (this.rejected.has(call.name)) return { ok: false, output: `Unknown tool: ${call.name}` };
     if (this.custom.has(call.name)) return this.runCustom(this.custom.get(call.name), call.input);
     if (this.builtin.has(call.name)) return this.runBuiltin(call.name, call.input);
     return { ok: false, output: `Unknown tool: ${call.name}` };
