@@ -109,8 +109,9 @@ Three small protocols, nothing else:
 - **Values.** A component with numbers others can read or drive implements
   `hxValue(name) -> integer | null`, `hxSetValue(name, integer)` (ignored when
   the value is read-only) and `hxRange(name) -> {min, max, step} | null`
-  (null for read-only), and dispatches a bubbling `hx-change`
-  `{name, value}` whenever a value changes. `hx-num for="<id>" name="<value>"`
+  (null for read-only), optionally `hxLabel(name) -> string` (what the value
+  is, for an accessible name such as "Turn limit"), and dispatches a bubbling
+  `hx-change` `{name, value}` whenever a value changes. `hx-num for="<id>" name="<value>"`
   binds to it (DESIGN §7.7). Each component's blueprint lists its value names.
 
 ## 11. Content sources in demo pages
@@ -118,3 +119,8 @@ Three small protocols, nothing else:
 `site/data/<kind>/B2.json`) or, on demo pages only, a path ending in `.json`
 relative to the page (`site/labs/data/…`). Demo content is still reviewed
 content: correct, in the course voice, and short.
+
+## 12. Shared wording
+Costs, counts, durations, plurals, what counts as a pass, and how a run's end
+status is said all come from `lib/format.js` (director-owned, D-045). No
+component formats these itself.
