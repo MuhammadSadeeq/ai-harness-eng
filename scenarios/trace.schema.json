@@ -1,0 +1,1416 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Trace event (docs/ENGINE.md section 9; D-033)",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/run_start"
+    },
+    {
+      "$ref": "#/$defs/prompt_built"
+    },
+    {
+      "$ref": "#/$defs/context_check"
+    },
+    {
+      "$ref": "#/$defs/model_call"
+    },
+    {
+      "$ref": "#/$defs/model_error"
+    },
+    {
+      "$ref": "#/$defs/retry_wait"
+    },
+    {
+      "$ref": "#/$defs/breaker"
+    },
+    {
+      "$ref": "#/$defs/recovery_check"
+    },
+    {
+      "$ref": "#/$defs/model_reply"
+    },
+    {
+      "$ref": "#/$defs/interrupt"
+    },
+    {
+      "$ref": "#/$defs/permission"
+    },
+    {
+      "$ref": "#/$defs/sandbox"
+    },
+    {
+      "$ref": "#/$defs/tool_call"
+    },
+    {
+      "$ref": "#/$defs/verify"
+    },
+    {
+      "$ref": "#/$defs/guard"
+    },
+    {
+      "$ref": "#/$defs/trace_write"
+    },
+    {
+      "$ref": "#/$defs/run_end"
+    },
+    {
+      "$ref": "#/$defs/compaction"
+    },
+    {
+      "$ref": "#/$defs/cache"
+    },
+    {
+      "$ref": "#/$defs/subagent_start"
+    },
+    {
+      "$ref": "#/$defs/subagent_end"
+    }
+  ],
+  "$defs": {
+    "run_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "run_start"
+        },
+        "wire": {
+          "const": "loop"
+        },
+        "task": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "board": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "model_id": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "task",
+        "board",
+        "seed",
+        "model_id"
+      ]
+    },
+    "prompt_built": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "prompt_built"
+        },
+        "wire": {
+          "const": "control"
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "system",
+              "rules",
+              "tools",
+              "history"
+            ]
+          }
+        },
+        "tokens": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "layers",
+        "tokens"
+      ]
+    },
+    "context_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "context_check"
+        },
+        "wire": {
+          "const": "context"
+        },
+        "tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "window": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "percent": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "action": {
+          "enum": [
+            "none",
+            "trim",
+            "compact",
+            "overflow"
+          ]
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "tokens",
+        "window",
+        "percent",
+        "action"
+      ]
+    },
+    "model_call": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "model_call"
+        },
+        "wire": {
+          "const": "loop"
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tokens_in": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "attempt",
+        "tokens_in"
+      ]
+    },
+    "model_error": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "model_error"
+        },
+        "wire": {
+          "const": "errors"
+        },
+        "type": {
+          "enum": [
+            "overloaded",
+            "rate_limit",
+            "api_error",
+            "timeout",
+            "invalid_request"
+          ]
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "retry_after_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "message": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "type",
+        "attempt",
+        "retry_after_ms",
+        "message"
+      ]
+    },
+    "retry_wait": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "retry_wait"
+        },
+        "wire": {
+          "const": "errors"
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "wait_ms": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "attempt",
+        "wait_ms"
+      ]
+    },
+    "breaker": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "breaker"
+        },
+        "wire": {
+          "const": "errors"
+        },
+        "state": {
+          "const": "open"
+        },
+        "failures": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "state",
+        "failures"
+      ]
+    },
+    "recovery_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "recovery_check"
+        },
+        "wire": {
+          "const": "errors"
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "breaker": {
+          "enum": [
+            "closed",
+            "none"
+          ]
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "attempts",
+        "breaker"
+      ]
+    },
+    "model_reply": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "model_reply"
+        },
+        "wire": {
+          "const": "loop"
+        },
+        "stop_reason": {
+          "enum": [
+            "end_turn",
+            "tool_use",
+            "max_tokens",
+            "refusal"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "tool_uses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+              },
+              "name": {
+                "type": "string",
+                "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+              },
+              "input": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "input"
+            ]
+          }
+        },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "input_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output_tokens": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "input_tokens",
+            "output_tokens"
+          ]
+        },
+        "cost": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "stop_reason",
+        "text",
+        "tool_uses",
+        "usage",
+        "cost"
+      ]
+    },
+    "interrupt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "interrupt"
+        },
+        "wire": {
+          "const": "loop"
+        },
+        "by": {
+          "enum": [
+            "human",
+            "operator"
+          ]
+        },
+        "pending": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+          }
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "by",
+        "pending"
+      ]
+    },
+    "permission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "permission"
+        },
+        "wire": {
+          "const": "permissions"
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "decision": {
+          "enum": [
+            "allow",
+            "ask",
+            "deny"
+          ]
+        },
+        "rule": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "human": {
+          "enum": [
+            "approve",
+            "deny",
+            null
+          ]
+        },
+        "final": {
+          "enum": [
+            "allow",
+            "deny"
+          ]
+        },
+        "tool_use_id": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "tool",
+        "decision",
+        "rule",
+        "reason",
+        "human",
+        "final",
+        "tool_use_id"
+      ]
+    },
+    "sandbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "sandbox"
+        },
+        "wire": {
+          "const": "permissions"
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "allowed": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "tool_use_id": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "tool",
+        "allowed",
+        "reason",
+        "tool_use_id"
+      ]
+    },
+    "tool_call": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "tool_call"
+        },
+        "wire": {
+          "const": "tools"
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "input": {
+          "type": "object"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "output": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "tool_use_id": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "tool",
+        "input",
+        "ok",
+        "output",
+        "output_tokens",
+        "truncated",
+        "tool_use_id"
+      ]
+    },
+    "verify": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "verify"
+        },
+        "wire": {
+          "const": "verify"
+        },
+        "check": {
+          "const": "tests"
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "output": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "check",
+        "passed",
+        "output"
+      ]
+    },
+    "guard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "guard"
+        },
+        "wire": {
+          "const": "loop"
+        },
+        "guard": {
+          "enum": [
+            "max_turns",
+            "budget",
+            "loop"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "guard",
+        "limit",
+        "value"
+      ]
+    },
+    "trace_write": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "trace_write"
+        },
+        "wire": {
+          "const": "observe"
+        },
+        "events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "redacted": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "events",
+        "redacted"
+      ]
+    },
+    "run_end": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "run_end"
+        },
+        "wire": {
+          "const": "loop"
+        },
+        "status": {
+          "enum": [
+            "done",
+            "unverified",
+            "max_turns",
+            "budget",
+            "loop",
+            "circuit_open",
+            "interrupted",
+            "refused",
+            "max_tokens_reply",
+            "error"
+          ]
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tokens": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "input": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "input",
+            "output"
+          ]
+        },
+        "cost": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "status",
+        "passed",
+        "turns",
+        "tokens",
+        "cost"
+      ]
+    },
+    "compaction": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "compaction"
+        },
+        "wire": {
+          "enum": [
+            "control",
+            "context",
+            "loop",
+            "errors",
+            "tools",
+            "permissions",
+            "verify",
+            "observe"
+          ]
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "kind",
+        "wire"
+      ]
+    },
+    "cache": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "cache"
+        },
+        "wire": {
+          "enum": [
+            "control",
+            "context",
+            "loop",
+            "errors",
+            "tools",
+            "permissions",
+            "verify",
+            "observe"
+          ]
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "kind",
+        "wire"
+      ]
+    },
+    "subagent_start": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "subagent_start"
+        },
+        "wire": {
+          "enum": [
+            "control",
+            "context",
+            "loop",
+            "errors",
+            "tools",
+            "permissions",
+            "verify",
+            "observe"
+          ]
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "kind",
+        "wire"
+      ]
+    },
+    "subagent_end": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "subagent_end"
+        },
+        "wire": {
+          "enum": [
+            "control",
+            "context",
+            "loop",
+            "errors",
+            "tools",
+            "permissions",
+            "verify",
+            "observe"
+          ]
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "kind",
+        "wire"
+      ]
+    }
+  }
+}

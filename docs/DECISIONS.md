@@ -311,3 +311,16 @@ basis for Phase 1, and answered SPEC §14:
   a directory argument fails, so CI and blueprints use the glob.
 - JSON module imports (`import … with { type: "json" }`) are accepted for
   `tooldefs.json`: Baseline in all engines since 2025.
+
+### D-041 · Incident hunts: what counts as "the first bad event" · *decided*
+- The hunt asks for the first event where things went wrong **as the harness
+  engineer sees it**: an ordinary model mistake (a wrong edit) is not the
+  failure; the harness letting it through is. Tempting taps get a specific
+  reply (`notes`), the symptom at the end (the API error, the operator stop)
+  says "look earlier", and events of the same mistake also count
+  (`accept_seqs`). Format: ENGINE A4.
+- The c6-outage seed tape has **no incident**: with one client, its old board
+  (no retry) shows "one transient error ends the run", not the retry-storm
+  family (clients retrying in lockstep). C6's incident is designed with its
+  outage lab in Phase 3; the tape stays as the parity tape for outages,
+  retries, jitter and the breaker.

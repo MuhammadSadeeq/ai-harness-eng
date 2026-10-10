@@ -120,6 +120,41 @@
  ],
  "incident": {
   "family": "orphaned-tool-call",
-  "wire": "loop"
+  "wire": "loop",
+  "board": "c5-old",
+  "seed": 1,
+  "first_bad_seq": 16,
+  "accept_seqs": [
+   15,
+   18
+  ],
+  "why": "After the interrupt, the edit_file call has a tool_use but no tool_result. The harness builds the next prompt with that gap in it, and the API rejects any history where a tool_use is not answered right after it.",
+  "hint": "Follow the tool call that was pending at the interrupt. Was it ever answered?",
+  "notes": [
+   {
+    "seq": 14,
+    "text": "Stopping the run was fine; people interrupt runs all the time. Look at what the harness left behind."
+   },
+   {
+    "seq": 19,
+    "text": "This is the API refusing the request. The request was already broken; find where it was built."
+   }
+  ],
+  "fixes": [
+   {
+    "text": "On interrupt, answer every pending tool call with an 'interrupted' result",
+    "why": "Every tool_use then has its tool_result, so the history stays valid and the run can resume."
+   },
+   {
+    "text": "Don't let people interrupt runs",
+    "why": "Interrupts are a safety feature. The bug is what the harness does after one."
+   },
+   {
+    "text": "Retry the failed call",
+    "why": "The request is invalid, not unlucky: it fails the same way every time."
+   }
+  ],
+  "correct_fix": 0,
+  "par_s": 60
  }
 }

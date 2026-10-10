@@ -190,6 +190,40 @@
  "seed_base": 20261010,
  "incident": {
   "family": "almost-done-spiral",
-  "wire": "loop"
+  "wire": "loop",
+  "board": "b2-old",
+  "seed": 1,
+  "first_bad_seq": 29,
+  "accept_seqs": [
+   31
+  ],
+  "why": "Here the model stops fixing and starts circling: it turns + 1 into - 1 instead of removing it. Nothing in the loop counts turns, so the same four steps repeat until someone stops the run.",
+  "hint": "Look at what the model does right after the first failed test run in turn 3.",
+  "notes": [
+   {
+    "seq": 23,
+    "text": "A failing test is useful news, not the failure. Watch what the model does with it."
+   },
+   {
+    "seq": 481,
+    "text": "This is where a person finally stopped the run, 56 turns after it went wrong. Look much earlier."
+   }
+  ],
+  "fixes": [
+   {
+    "text": "Give the loop more exits: a turn limit and a token budget",
+    "why": "The run stops after a set number of turns or tokens, whatever the model believes."
+   },
+   {
+    "text": "Tell the model in the prompt to stop when it is stuck",
+    "why": "Tempting, but the model already thinks it is almost done. A request in the prompt is not a stop."
+   },
+   {
+    "text": "Run it again with a stronger model",
+    "why": "Any model can circle when the only way out is the model saying it is done."
+   }
+  ],
+  "correct_fix": 0,
+  "par_s": 60
  }
 }

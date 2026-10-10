@@ -236,6 +236,37 @@
  ],
  "incident": {
   "family": "approval-fatigue",
-  "wire": "permissions"
+  "wire": "permissions",
+  "board": "c9-old",
+  "seed": 1,
+  "first_bad_seq": 86,
+  "accept_seqs": [
+   85,
+   87
+  ],
+  "why": "The eleventh ask is the dangerous one: delete ../data, outside the project. After ten harmless prompts the person approves without reading, and 2,431 files are gone. The run still passes its tests.",
+  "hint": "Read what each approved call actually touched, not just whether it was approved.",
+  "notes": [
+   {
+    "seq": 6,
+    "text": "Asking about a read-only call does no harm yet. Count how often it happens before the ask that matters."
+   }
+  ],
+  "fixes": [
+   {
+    "text": "Allow read-only tools, deny paths outside the project, and ask only for the rest",
+    "why": "Fewer prompts, so the ones left get read, and the worst case is blocked by a rule instead of a tired person."
+   },
+   {
+    "text": "Ask before every call, to be safe",
+    "why": "That is this board. More prompts made the person less careful, not more."
+   },
+   {
+    "text": "Turn the prompts off so the run goes faster",
+    "why": "Then nothing at all stands between the model and the deletion."
+   }
+  ],
+  "correct_fix": 0,
+  "par_s": 60
  }
 }

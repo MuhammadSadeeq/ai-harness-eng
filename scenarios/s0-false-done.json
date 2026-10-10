@@ -148,6 +148,36 @@
  ],
  "incident": {
   "family": "false-done",
-  "wire": "verify"
+  "wire": "verify",
+  "board": "s0-old",
+  "seed": 1,
+  "first_bad_seq": 21,
+  "accept_seqs": [
+   23
+  ],
+  "why": "The model says the tests pass, but it never ran them, and the harness takes its word. The run ends done while the checks fail: a false done.",
+  "hint": "Find the moment the model claims success. What checked that claim?",
+  "notes": [
+   {
+    "seq": 13,
+    "text": "That edit is wrong, but models make wrong edits all the time. The failure comes later: when does anything check it?"
+   }
+  ],
+  "fixes": [
+   {
+    "text": "Check the work on every done claim: run the tests before ending",
+    "why": "The claim becomes a question the harness answers, and a failure goes back to the model."
+   },
+   {
+    "text": "Tell the model to always run the tests",
+    "why": "It might, most of the time. A check in the harness runs every time."
+   },
+   {
+    "text": "Use a more careful model",
+    "why": "Same model, different harness, different results: the fix is in the harness."
+   }
+  ],
+  "correct_fix": 0,
+  "par_s": 45
  }
 }

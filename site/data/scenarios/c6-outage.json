@@ -78,9 +78,5 @@
  "boards": [
   "c6-old",
   "c6-new"
- ],
- "incident": {
-  "family": "retry-storm",
-  "wire": "errors"
- }
+ ]
 }

@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Board (docs/ENGINE.md section 7)",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "label": {
+      "type": "string",
+      "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+    },
+    "modules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "turn_limit": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_turns": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "max_turns"
+          ]
+        },
+        "token_budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_tokens": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "max_tokens"
+          ]
+        },
+        "loop_detect": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "window": {
+              "type": "integer",
+              "minimum": 2
+            }
+          },
+          "required": [
+            "window"
+          ]
+        },
+        "output_cap": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_tokens": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "max_tokens"
+          ]
+        },
+        "retry": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_attempts": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "base_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cap_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "jitter": {
+              "enum": [
+                "none",
+                "full"
+              ]
+            }
+          },
+          "required": [
+            "max_attempts",
+            "base_ms",
+            "cap_ms",
+            "jitter"
+          ]
+        },
+        "breaker": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "threshold": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "threshold"
+          ]
+        },
+        "permissions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "enum": [
+                "allow",
+                "ask",
+                "deny"
+              ]
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "decision": {
+                    "enum": [
+                      "allow",
+                      "ask",
+                      "deny"
+                    ]
+                  },
+                  "tool": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "match": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+                    }
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+                  }
+                },
+                "required": [
+                  "decision",
+                  "tool",
+                  "reason"
+                ]
+              }
+            }
+          },
+          "required": [
+            "mode"
+          ]
+        },
+        "sandbox": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "egress": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+              }
+            }
+          }
+        },
+        "verify_gate": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_feedback": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "max_feedback"
+          ]
+        },
+        "close_books": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "rules_file": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "redact": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "patterns": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+              }
+            }
+          },
+          "required": [
+            "patterns"
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "id",
+    "label",
+    "modules"
+  ]
+}

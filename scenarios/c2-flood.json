@@ -108,6 +108,36 @@
  ],
  "incident": {
   "family": "context-flood",
-  "wire": "context"
+  "wire": "context",
+  "board": "c2-old",
+  "seed": 1,
+  "first_bad_seq": 7,
+  "accept_seqs": [
+   10
+  ],
+  "why": "The log comes back whole: 10,991 tokens into an 8,000-token window. Nothing cuts it to size, so the next prompt is too big to send.",
+  "hint": "Compare the size of each tool result with the window: 8,000 tokens.",
+  "notes": [
+   {
+    "seq": 12,
+    "text": "This error is the symptom. The prompt was already too big when it was built; find where it grew."
+   }
+  ],
+  "fixes": [
+   {
+    "text": "Cap every tool result, keeping its start and its end",
+    "why": "The model still sees how the log begins and ends, and the prompt fits the window."
+   },
+   {
+    "text": "Switch to a model with a bigger window",
+    "why": "That moves the edge, not the flood: the next log is bigger."
+   },
+   {
+    "text": "Ask the model to read less",
+    "why": "It asked for one file. The harness decides how much of it comes back."
+   }
+  ],
+  "correct_fix": 0,
+  "par_s": 45
  }
 }
