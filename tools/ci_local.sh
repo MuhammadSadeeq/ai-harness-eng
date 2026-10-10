@@ -26,7 +26,7 @@ step() { printf '\n== %s\n' "$*"; }
 step "lint";            $RUFF check tools site/assets/py
 step "types";           $MYPY
 step "checker tests";   $PY -m pytest -q 2>&1 | tail -1
-step "course + docs";   $PY tools/render_curriculum.py --check; $PY tools/check_content.py | tail -1; $PY tools/gen_data.py --check | tail -1
+step "course + docs";   $PY tools/render_curriculum.py --check; $PY tools/check_content.py | tail -1; $PY tools/gen_data.py --check | tail -1; $PY tools/gen_pages.py --check | tail -1
 step "content";         for t in facts snippets katas steps scenarios wire; do $PY tools/check_$t.py | tail -1; done
 step "js tests";        node --test "site/assets/**/test/*.test.mjs" 2>&1 | grep -E "^# (pass|fail) "
 step "palette";         $PY tools/qa/check_palette.py | tail -1

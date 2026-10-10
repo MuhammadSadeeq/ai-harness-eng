@@ -20,9 +20,9 @@ A subset is a modified version, so the family names in the name table are change
 Licence: LICENSE-OFL.txt is the package LICENSE.txt, copied verbatim (IBM Corp.
   copyright notice and the SIL OFL 1.1 text).
 
-Newsreader: @fontsource/newsreader Latin static WOFF2 files, copied unchanged (not subset,
-  not renamed). Its licence (LICENSE-newsreader.txt, the package LICENSE, SIL OFL 1.1) names
-  no Reserved Font Name, so no rename is needed.
+Newsreader: @fontsource/newsreader Latin static WOFF2 files, copied unchanged
+  (not subset, not renamed). Its licence (LICENSE-newsreader.txt, the package
+  LICENSE, SIL OFL 1.1) names no Reserved Font Name, so no rename is needed.
 
 Files:
   harnessed-sans-400.woff2  <- plex-sans (Sans Regular 400)
@@ -33,4 +33,5 @@ Files:
   newsreader-latin-400-italic.woff2  <- newsreader (Newsreader Italic 400)
   newsreader-latin-600-normal.woff2  <- newsreader (Newsreader SemiBold 600)
 
-Removed in DESIGN v2: the Harnessed Sans Condensed face and the Harnessed Sans italic face.
+Removed in DESIGN v2: the Harnessed Sans Condensed face and
+the Harnessed Sans italic face.

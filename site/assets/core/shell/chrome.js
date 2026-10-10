@@ -40,6 +40,19 @@ export function mountChrome(store, doc = document) {
     wide.addEventListener?.("change", apply);
   }
 
+  // The course map rail scrolls on desktop. Its "More below" cue shows until the rail is at its end.
+  const rail = doc.querySelector(".rail");
+  if (rail) {
+    const mark = () => {
+      const atEnd = rail.scrollHeight - rail.clientHeight - rail.scrollTop <= 4;
+      rail.dataset.end = atEnd ? "true" : "false";
+    };
+    mark();
+    rail.addEventListener("scroll", mark, { passive: true });
+    courseMap?.addEventListener("toggle", mark);
+    if (typeof ResizeObserver === "function") new ResizeObserver(mark).observe(rail);
+  }
+
   const paintDue = () => {
     const due = dueCards(store.state, todayIso());
     for (const el of doc.querySelectorAll("[data-due]")) el.textContent = String(due);

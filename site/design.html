@@ -3,361 +3,293 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Design system specimen · HARNESSED</title>
-<meta name="description" content="The HARNESSED design system specimen: wires, glyphs, type, components and the Turn Clock.">
+<title>Design system · HARNESSED</title>
+<meta name="description" content="The HARNESSED design system: surfaces, wires, glyphs, type, instruments, facts, terms and margin notes, in both themes.">
+<link rel="preload" href="assets/fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/newsreader-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/harnessed-sans-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/harnessed-sans-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/harnessed-mono-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/core/tokens.css">
 <link rel="stylesheet" href="assets/core/hx.css">
 <script type="module" src="assets/core/app.js"></script>
 </head>
-<body>
+<body data-page="design">
 <a class="skip" href="#main">Skip to content</a>
-<main id="main" class="page">
-  <header>
-    <p class="plate-label">DS · Design system specimen · Phase 0</p>
-    <h1>Design system specimen</h1>
-    <p class="lede">The wires, glyphs, type, components and two signature diagrams, on one page. The rules are in docs/DESIGN.md.</p>
+<header class="topbar" data-topbar>
+  <a class="wordmark" href="index.html" aria-label="HARNESSED, course home">
+    <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>
+    <span>HARNESSED</span>
+  </a>
+  <nav class="top-nav" aria-label="Pages">
+    <ol>
+      <li><a href="index.html">Course</a></li>
+    </ol>
+  </nav>
+  <a class="board-btn" href="#board" aria-label="Harness Board, cards due">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12V6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span><span class="board-word">Board · </span><span data-due>0</span> due</span>
+  </a>
+  <div class="settings">
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="menu-btn" type="button" data-menu-btn aria-haspopup="dialog" aria-expanded="false" aria-controls="menu-sheet" hidden>Menu</button>
+</header>
+<dialog class="menu-sheet" id="menu-sheet" data-menu-sheet aria-labelledby="menu-title">
+  <h2 class="menu-title" id="menu-title">Menu</h2>
+  <nav aria-label="Pages in the menu">
+    <ol class="menu-pages">
+      <li><a href="index.html">Course</a></li>
+    </ol>
+  </nav>
+  <div class="menu-settings">
+    <p class="menu-label">Theme</p>
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="key menu-close" type="button" data-close>Close menu</button>
+</dialog>
+
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Design system · DESIGN v2</p>
+    <h1>Design system</h1>
+    <p class="lede">The surfaces, wires, glyphs, type, instruments and components the course is built from. Use the theme control in the top bar to see the day and night themes.</p>
   </header>
 
-  <section class="plate ticked" aria-labelledby="s1">
-    <p class="plate-label">FIG DS.1 · Wires · turn order</p>
-    <h2 id="s1">1 · Wires</h2>
-    <ol class="specimen-wires">
-      <li class="wire-row" data-wire="control">
-        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg>
-        <div class="meta"><strong>Control plane</strong><span>control</span><span>clock 12 · 0°</span></div>
-        <div class="sample"><span class="swatch" aria-hidden="true"></span><svg width="120" height="8" viewBox="0 0 120 8" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="4" x2="120" y2="4" stroke-width="2"/></svg><span class="small">solid, 2 px</span></div>
-        <p class="q">What is the model told, and which instruction wins?</p>
-        <p class="lw">Words guide, code enforces.</p>
-      </li>
-      <li class="wire-row" data-wire="context">
-        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg>
-        <div class="meta"><strong>Context &amp; memory</strong><span>context</span><span>clock 1–2 · 45°</span></div>
-        <div class="sample"><span class="swatch" aria-hidden="true"></span><svg width="120" height="8" viewBox="0 0 120 8" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="4" x2="120" y2="4" stroke-width="2" stroke-dasharray="10 4"/></svg><span class="small">long dash 10 4</span></div>
-        <p class="q">What is on the desk this call, and what is saved?</p>
-        <p class="lw">The smallest window that works.</p>
-      </li>
-      <li class="wire-row" data-wire="loop">
-        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg>
-        <div class="meta"><strong>Loop &amp; state</strong><span>loop</span><span>clock 3 (the hand) · 90°</span></div>
-        <div class="sample"><span class="swatch" aria-hidden="true"></span><svg width="120" height="8" viewBox="0 0 120 8" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="4" x2="120" y2="4" stroke-width="3.5"/></svg><span class="small">solid, 3.5 px</span></div>
-        <p class="q">What happens next, what do we carry, when do we stop?</p>
-        <p class="lw">Every run needs more than one exit.</p>
-      </li>
-      <li class="wire-row" data-wire="errors">
-        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg>
-        <div class="meta"><strong>Errors &amp; recovery</strong><span>errors</span><span>clock 4–5 · 135°</span></div>
-        <div class="sample"><span class="swatch" aria-hidden="true"></span><svg width="120" height="8" viewBox="0 0 120 8" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="4" x2="120" y2="4" stroke-width="2" stroke-dasharray="8 3 2 3"/></svg><span class="small">dash-dot 8 3 2 3</span></div>
-        <p class="q">When something fails, how do we continue without spinning?</p>
-        <p class="lw">Errors are the main path.</p>
-      </li>
-      <li class="wire-row" data-wire="tools">
-        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg>
-        <div class="meta"><strong>Tools</strong><span>tools</span><span>clock 6 · 180°</span></div>
-        <div class="sample"><span class="swatch" aria-hidden="true"></span><svg width="120" height="8" viewBox="0 0 120 8" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="4" x2="120" y2="4" stroke-width="2" stroke-dasharray="4 3"/></svg><span class="small">short dash 4 3</span></div>
-        <p class="q">What can the model do, and is each tool easy to use?</p>
-        <p class="lw">A tool is a user interface for a model.</p>
-      </li>
-      <li class="wire-row" data-wire="permissions">
-        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg>
-        <div class="meta"><strong>Permissions &amp; sandbox</strong><span>permissions</span><span>clock 7–8 · 225°</span></div>
-        <div class="sample"><span class="swatch" aria-hidden="true"></span><svg width="120" height="8" viewBox="0 0 120 8" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="4" x2="120" y2="4" stroke-width="2" stroke-dasharray="8 3 2 3 2 3"/></svg><span class="small">dash-dot-dot 8 3 2 3 2 3</span></div>
-        <p class="q">Which actions are allowed, and how bad can a mistake get?</p>
-        <p class="lw">Judge the action and its target.</p>
-      </li>
-      <li class="wire-row" data-wire="verify">
-        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg>
-        <div class="meta"><strong>Verification &amp; evals</strong><span>verify</span><span>clock 9–10 · 285°</span></div>
-        <div class="sample"><span class="swatch" aria-hidden="true"></span><svg width="120" height="8" viewBox="0 0 120 8" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="4" x2="120" y2="4" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="0.1 4"/></svg><span class="small">dotted 0.1 4, round caps, 2.5 px</span></div>
-        <p class="q">How do we know it's really done, and did the change help?</p>
-        <p class="lw">“Done” is a claim.</p>
-      </li>
-      <li class="wire-row" data-wire="observe">
-        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg>
-        <div class="meta"><strong>Observability</strong><span>observe</span><span>clock 11 (rim) · 330°</span></div>
-        <div class="sample"><span class="swatch" aria-hidden="true"></span><svg width="120" height="8" viewBox="0 0 120 8" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="4" x2="120" y2="4" stroke-width="1.5" stroke-dasharray="2 2"/></svg><span class="small">fine dash 2 2, 1.5 px</span></div>
-        <p class="q">What exactly happened, and where did time and money go?</p>
-        <p class="lw">If it isn't in the trace, it didn't happen.</p>
-      </li>
-    </ol>
-  </section>
-
-  <section class="plate ticked" aria-labelledby="s2">
-    <p class="plate-label">FIG DS.2 · Trace event glyphs</p>
-    <h2 id="s2">2 · Trace event glyphs</h2>
-    <div class="table-wrap" tabindex="0" role="region" aria-label="Trace event glyphs (scrolls sideways on small screens)">
-      <table>
-        <thead><tr><th scope="col">Event kind</th><th scope="col">Wire</th><th scope="col">Glyph</th><th scope="col">Variant</th></tr></thead>
-        <tbody>
-          <tr data-wire="loop"><td>run_start</td><td>loop</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-play"/></svg> play</td><td>none</td></tr>
-          <tr data-wire="loop"><td>run_end</td><td>loop</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-flag"/></svg> flag</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-flag-filled"/></svg> filled when status is done</td></tr>
-          <tr data-wire="control"><td>prompt_built</td><td>control</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg> layers</td><td>none</td></tr>
-          <tr data-wire="loop"><td>model_call</td><td>loop</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-box"/></svg> box</td><td>none</td></tr>
-          <tr data-wire="loop"><td>model_reply</td><td>loop</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-box-filled"/></svg> box, filled</td><td>none</td></tr>
-          <tr data-wire="errors"><td>model_error</td><td>errors</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg> zigzag</td><td>none</td></tr>
-          <tr data-wire="errors"><td>retry_wait</td><td>errors</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hourglass"/></svg> hourglass</td><td>none</td></tr>
-          <tr data-wire="errors"><td>breaker</td><td>errors</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-switch-open"/></svg> switch</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-switch-closed"/></svg> closed state</td></tr>
-          <tr data-wire="tools"><td>tool_call</td><td>tools</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg> hexagon</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon-fail"/></svg> ok is false</td></tr>
-          <tr data-wire="permissions"><td>permission</td><td>permissions</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg> diamond</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-permission-allow"/></svg> allow <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-permission-ask"/></svg> ask <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-permission-deny"/></svg> deny</td></tr>
-          <tr data-wire="context"><td>compaction</td><td>context</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-squeeze"/></svg> squeeze</td><td>none</td></tr>
-          <tr data-wire="context"><td>cache</td><td>context</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-prefix"/></svg> prefix</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cache-read"/></svg> read <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cache-write"/></svg> write</td></tr>
-          <tr data-wire="verify"><td>verify</td><td>verify</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg> shield</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield-pass"/></svg> passed <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield-fail"/></svg> failed</td></tr>
-          <tr data-wire="loop"><td>guard</td><td>loop</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-noentry"/></svg> noentry</td><td>none</td></tr>
-          <tr data-wire="loop"><td>interrupt</td><td>loop</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-pause"/></svg> pause</td><td>none</td></tr>
-          <tr data-wire="loop"><td>subagent_start</td><td>loop</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-nested"/></svg> nested</td><td>none</td></tr>
-          <tr data-wire="loop"><td>subagent_end</td><td>loop</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-nested"/></svg> nested</td><td><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-nested-filled"/></svg> inner square filled</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="small">Beats (Break, See, Fix, Prove, Keep) have no glyphs. They appear as numbered words.</p>
-  </section>
-
-  <section class="plate ticked" aria-labelledby="s3">
-    <p class="plate-label">FIG DS.3 · UI marks</p>
-    <h2 id="s3">3 · UI marks</h2>
-    <ul class="marks">
-      <li class="mark-pass"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-check"/></svg><span>passed, done, verified</span></li>
-      <li class="mark-fail"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cross"/></svg><span>failed</span></li>
-      <li class="mark-warn"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-bang"/></svg><span>warning, stale</span></li>
-      <li><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-ext"/></svg><span>external link</span></li>
-      <li><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-prog-0"/></svg><span>not started</span></li>
-      <li><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-prog-1"/></svg><span>in progress</span></li>
-      <li><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-prog-2"/></svg><span>done</span></li>
+  <section class="beat" aria-labelledby="surfaces-h">
+    <h2 id="surfaces-h">Surfaces and ink</h2>
+    <p>Every colour comes from one token file. Each token has a day value and a night value. Night shift is a full theme: plates gain a visible border, and instrument windows stay dark in both themes.</p>
+    <!-- gen:swatches -->
+    <ul class="swatches">
+      <li><span class="swatch-chip sw-paper" aria-hidden="true"></span><span class="name">--hx-paper</span><span class="role">page background</span></li>
+      <li><span class="swatch-chip sw-panel" aria-hidden="true"></span><span class="name">--hx-panel</span><span class="role">plates and cards</span></li>
+      <li><span class="swatch-chip sw-panel-2" aria-hidden="true"></span><span class="name">--hx-panel-2</span><span class="role">insets, hover, table stripes</span></li>
+      <li><span class="swatch-chip sw-grid" aria-hidden="true"></span><span class="name">--hx-grid-minor</span><span class="role">faint grid, inside instrument plates only</span></li>
+      <li><span class="swatch-chip sw-ink" aria-hidden="true"></span><span class="name">--hx-ink</span><span class="role">text and primary strokes</span></li>
+      <li><span class="swatch-chip sw-ink-2" aria-hidden="true"></span><span class="name">--hx-ink-2</span><span class="role">secondary text, margin notes</span></li>
+      <li><span class="swatch-chip sw-rule" aria-hidden="true"></span><span class="name">--hx-rule</span><span class="role">hairlines, plate borders</span></li>
+      <li><span class="swatch-chip sw-rule-strong" aria-hidden="true"></span><span class="name">--hx-rule-strong</span><span class="role">form-control borders</span></li>
+      <li><span class="swatch-chip sw-focus" aria-hidden="true"></span><span class="name">--hx-focus</span><span class="role">3 px focus ring</span></li>
+      <li><span class="swatch-chip sw-inst" aria-hidden="true"></span><span class="name">--hx-inst</span><span class="role">readout windows, dark in both themes</span></li>
+      <li><span class="swatch-chip sw-inst-amber" aria-hidden="true"></span><span class="name">--hx-inst-amber</span><span class="role">live readout values</span></li>
+      <li><span class="swatch-chip sw-scrub" aria-hidden="true"></span><span class="name">--hx-scrub</span><span class="role">interactive-number highlight</span></li>
+      <li><span class="swatch-chip sw-code" aria-hidden="true"></span><span class="name">--hx-code-bg</span><span class="role">code and Wire JSON</span></li>
+      <li><span class="swatch-chip sw-pass" aria-hidden="true"></span><span class="name">--hx-pass</span><span class="role">pass, always with a mark and a word</span></li>
+      <li><span class="swatch-chip sw-fail" aria-hidden="true"></span><span class="name">--hx-fail</span><span class="role">fail, always with a mark and a word</span></li>
+      <li><span class="swatch-chip sw-warn" aria-hidden="true"></span><span class="name">--hx-warn</span><span class="role">warnings</span></li>
     </ul>
+    <!-- /gen:swatches -->
   </section>
 
-  <section class="plate ticked specimen-type" aria-labelledby="s4">
-    <p class="plate-label">FIG DS.4 · Type</p>
-    <h2 id="s4">4 · Type</h2>
-    <p class="h1-sample">Heading 1 · Condensed 600</p>
-    <p class="h2-sample">Heading 2 · Condensed 600</p>
-    <h3>Heading 3 · Sans 600</h3>
-    <p class="lede">Lede · 19 px on phones, 20 px on wider screens. Module openings use this size.</p>
-    <p>Body · Sans 400 at 17 px on phones and 18 px on wider screens, line height 1.6. Prose sets at most 44 rem wide, so a line holds about 68 characters.</p>
-    <p class="small">Small · 14 px. This is the floor on phones.</p>
-    <p class="mono">Mono · 42 / 20 · 2.5 s · stop_reason</p>
-    <p><em>Italic · Sans 400 italic for a sample sentence.</em></p>
-    <p>The loop reads <code>stop_reason</code> from every model reply.</p>
-    <pre><code><span class="syn-kw">def</span> <span class="syn-fn">run_turn</span>(msgs, limit=<span class="syn-num">8</span>):
-  <span class="syn-kw">for</span> turn <span class="syn-kw">in</span> <span class="syn-fn">range</span>(limit):
-    reply <span class="syn-op">=</span> call(msgs)
-    <span class="syn-kw">if</span> reply[<span class="syn-str">"stop"</span>] <span class="syn-op">==</span> <span class="syn-str">"end"</span>:
-      <span class="syn-kw">return</span> reply[<span class="syn-str">"text"</span>]
-  <span class="syn-kw">raise</span> <span class="syn-fn">RuntimeError</span>(<span class="syn-str">"limit"</span>)</code></pre>
+  <section class="beat" aria-labelledby="wires-h">
+    <h2 id="wires-h">The eight wires</h2>
+    <p>Each wire sits at a fixed clock angle in every view. Each wire has a glyph and a name, and its spoke sits at that angle.</p>
+    <!-- gen:wires -->
+    <ol class="wire-rows">
+      <li class="w-control"><span class="sw-wire w-control" aria-hidden="true"></span><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg><span><span class="wire-name">Control plane</span><span class="wire-meta">12 o&#x27;clock · 0° · solid 2 px · glyph layers</span></span></li>
+      <li class="w-context"><span class="sw-wire w-context" aria-hidden="true"></span><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg><span><span class="wire-name">Context &amp; memory</span><span class="wire-meta">1–2 o&#x27;clock · 45° · long dash · glyph window</span></span></li>
+      <li class="w-loop"><span class="sw-wire w-loop" aria-hidden="true"></span><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg><span><span class="wire-name">Loop &amp; state</span><span class="wire-meta">3 o&#x27;clock (the hand) · 90° · solid 3.5 px · glyph cycle</span></span></li>
+      <li class="w-errors"><span class="sw-wire w-errors" aria-hidden="true"></span><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg><span><span class="wire-name">Errors &amp; recovery</span><span class="wire-meta">4–5 o&#x27;clock · 135° · dash-dot · glyph zigzag</span></span></li>
+      <li class="w-tools"><span class="sw-wire w-tools" aria-hidden="true"></span><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg><span><span class="wire-name">Tools</span><span class="wire-meta">6 o&#x27;clock · 180° · short dash · glyph hexagon</span></span></li>
+      <li class="w-permissions"><span class="sw-wire w-permissions" aria-hidden="true"></span><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg><span><span class="wire-name">Permissions &amp; sandbox</span><span class="wire-meta">7–8 o&#x27;clock · 225° · dash-dot-dot · glyph diamond</span></span></li>
+      <li class="w-verify"><span class="sw-wire w-verify" aria-hidden="true"></span><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg><span><span class="wire-name">Verification &amp; evals</span><span class="wire-meta">9–10 o&#x27;clock · 285° · dotted, round caps · glyph shield</span></span></li>
+      <li class="w-observe"><span class="sw-wire w-observe" aria-hidden="true"></span><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg><span><span class="wire-name">Observability</span><span class="wire-meta">11 o&#x27;clock (rim) · 330° · fine dash · glyph eye</span></span></li>
+    </ol>
+    <!-- /gen:wires -->
   </section>
 
-  <section class="plate ticked" aria-labelledby="s5">
-    <p class="plate-label">FIG DS.5 · Components</p>
-    <h2 id="s5">5 · Components</h2>
-    <h3>Buttons</h3>
-    <p class="switch-group">
-      <button class="btn primary" type="button">Run ×20</button>
-      <button class="btn" type="button">Show the payload</button>
-      <button class="btn quiet" type="button">Plug it in</button>
-    </p>
-    <h3>Wire chips</h3>
-    <p class="switch-group">
-      <span class="wire-chip" data-wire="control"><svg class="glyph glyph-16" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg>Control</span>
-      <span class="wire-chip" data-wire="context"><svg class="glyph glyph-16" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg>Context</span>
-      <span class="wire-chip" data-wire="loop"><svg class="glyph glyph-16" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg>Loop</span>
-      <span class="wire-chip" data-wire="errors"><svg class="glyph glyph-16" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg>Errors</span>
-      <span class="wire-chip" data-wire="tools"><svg class="glyph glyph-16" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg>Tools</span>
-      <span class="wire-chip" data-wire="permissions"><svg class="glyph glyph-16" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg>Permissions</span>
-      <span class="wire-chip" data-wire="verify"><svg class="glyph glyph-16" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg>Verification</span>
-      <span class="wire-chip" data-wire="observe"><svg class="glyph glyph-16" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg>Observability</span>
-    </p>
-    <h3>Term</h3>
-    <p>A <span class="term">stop reason</span> says why the model stopped: <code>end_turn</code>, <code>tool_use</code>, <code>max_tokens</code>.</p>
-    <h3>Fact chips</h3>
-    <p class="switch-group">
-      <span class="fact-chip"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-check"/></svg>verified Oct 2026<svg class="glyph ext" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-ext"/></svg></span>
-      <span class="fact-chip"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-check"/></svg>verified Oct 2026 · company report<svg class="glyph ext" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-ext"/></svg></span>
-      <span class="fact-chip stale"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-bang"/></svg>check source · verified Jun 2026<svg class="glyph ext" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-ext"/></svg></span>
-    </p>
-    <h3>Callouts</h3>
-    <p class="law" data-wire="loop"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg>Every run needs more than one exit.</p>
-    <aside class="realterm" data-wire="context"><p>The desk → the context window: everything the model reads in one call.</p></aside>
-    <aside class="warn"><p class="warn-label"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cross"/></svg>Common mistake</p><p>Treating <code>end_turn</code> as proof that the task is done.</p></aside>
-    <aside class="noise"><p>How much of this is luck: one run of 20 is not enough to tell two boards apart.</p></aside>
-    <h3>Table with a numeric column</h3>
-    <p class="small">Sample values for layout only, not results.</p>
-    <div class="table-wrap" tabindex="0" role="region" aria-label="Sample table with a numeric column (scrolls sideways on small screens)">
+  <section class="beat" aria-labelledby="glyphs-h">
+    <h2 id="glyphs-h">Glyphs</h2>
+    <h3>Wires</h3>
+    <!-- gen:glyph-wires -->
+    <ul class="glyph-grid">
+      <li class="w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg><span>Control plane</span></li>
+      <li class="w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg><span>Context &amp; memory</span></li>
+      <li class="w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg><span>Loop &amp; state</span></li>
+      <li class="w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg><span>Errors &amp; recovery</span></li>
+      <li class="w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg><span>Tools</span></li>
+      <li class="w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg><span>Permissions &amp; sandbox</span></li>
+      <li class="w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg><span>Verification &amp; evals</span></li>
+      <li class="w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg><span>Observability</span></li>
+    </ul>
+    <!-- /gen:glyph-wires -->
+    <h3>Events</h3>
+    <!-- gen:glyph-events -->
+    <ul class="glyph-grid">
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-play"/></svg><span>run start</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-flag"/></svg><span>run end</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg><span>prompt built</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-box"/></svg><span>model call</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-box-filled"/></svg><span>model reply</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg><span>model error</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hourglass"/></svg><span>retry wait</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-switch-closed"/></svg><span>breaker</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg><span>tool call</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon-fail"/></svg><span>tool failed</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-permission-allow"/></svg><span>permission: allow</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-permission-ask"/></svg><span>permission: ask</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-permission-deny"/></svg><span>permission: deny</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-squeeze"/></svg><span>compaction</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-prefix"/></svg><span>cache prefix</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg><span>context check</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield-pass"/></svg><span>verify: pass</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield-fail"/></svg><span>verify: fail</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-noentry"/></svg><span>guard</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-pause"/></svg><span>interrupt</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-nested"/></svg><span>subagent</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg><span>trace write</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-sandbox"/></svg><span>sandbox</span></li>
+    </ul>
+    <!-- /gen:glyph-events -->
+    <h3>Marks</h3>
+    <p>Marks are drawn shapes, never Unicode symbols, and each one has its word.</p>
+    <!-- gen:glyph-marks -->
+    <ul class="glyph-grid">
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-check"/></svg><span>done</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cross"/></svg><span>failed</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-bang"/></svg><span>needs attention</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-ext"/></svg><span>external link</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-prog-0"/></svg><span>not started</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-prog-1"/></svg><span>in progress</span></li>
+      <li><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-prog-2"/></svg><span>done</span></li>
+    </ul>
+    <!-- /gen:glyph-marks -->
+  </section>
+
+  <section class="beat" aria-labelledby="type-h">
+    <h2 id="type-h">Type</h2>
+    <p>Three families, all self-hosted. Newsreader carries the reading text and headings. Harnessed Sans carries the interface. Harnessed Mono carries code, traces and numbers that must align.</p>
+    <p class="type-line"><span class="t-serif-h2">Read the run. Then change it.</span><span class="type-meta">Newsreader 600 · headings</span></p>
+    <p class="type-line">The model says it is almost done. It is not. Reading text is Newsreader 400, set at 19 px on phones and 20 px from 768 px, with a line height of 1.55.</p>
+    <p class="type-line"><span class="t-ui">Continue · Step · Run ×20</span><span class="type-meta">Harnessed Sans 600 · controls and labels, 15 px</span></p>
+    <p class="type-line"><span class="t-mono">73 events · turn 14 · ≈ 0.138 units</span><span class="type-meta">Harnessed Mono 600 · numbers and code</span></p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Type scale, scrollable">
       <table>
-        <thead><tr><th scope="col">Board</th><th scope="col" class="num">Passed</th><th scope="col" class="num">Turns</th><th scope="col" class="num">Cost (≈)</th></tr></thead>
+        <caption class="sr-only">Type scale by role</caption>
+        <thead><tr><th scope="col">Role</th><th scope="col" class="num">Phone</th><th scope="col" class="num">≥ 768 px</th></tr></thead>
         <tbody>
-          <tr><td>Old board</td><td class="num">9/20</td><td class="num">14</td><td class="num">≈$0.0123</td></tr>
-          <tr><td>New board</td><td class="num">18/20</td><td class="num">9</td><td class="num">≈$0.0087</td></tr>
+          <tr><th scope="row">Captions, labels, chips (the floor)</th><td class="num">14 px</td><td class="num">14 px</td></tr>
+          <tr><th scope="row">Buttons, controls, tables</th><td class="num">15 px</td><td class="num">15 px</td></tr>
+          <tr><th scope="row">Reading text</th><td class="num">19 px</td><td class="num">20 px</td></tr>
+          <tr><th scope="row">Module lede</th><td class="num">21 px</td><td class="num">23 px</td></tr>
+          <tr><th scope="row">Heading, level 2</th><td class="num">26 px</td><td class="num">30 px</td></tr>
+          <tr><th scope="row">Code, Wire JSON</th><td class="num">14 px</td><td class="num">15 px</td></tr>
+          <tr><th scope="row">Instrument value</th><td class="num">22 px</td><td class="num">28 px</td></tr>
         </tbody>
       </table>
     </div>
-    <h3>Input</h3>
-    <div class="field">
-      <label for="spec-run">Run name</label>
-      <input id="spec-run" type="text" value="fix-add-basic" autocomplete="off">
-    </div>
   </section>
 
-  <section class="plate ticked" aria-labelledby="s6">
-    <p class="plate-label">FIG DS.6 · Turn Clock · static</p>
-    <h2 id="s6">6 · Turn Clock</h2>
-    <figure class="clock">
-      <div class="clock-stage">
-        <svg class="clock-svg" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
-          <circle class="face" cx="200" cy="200" r="168"/>
-          <line class="tick" x1="200.00" y1="40.00" x2="200.00" y2="32.00"/>
-          <line class="tick" x1="280.00" y1="61.44" x2="284.00" y2="54.51"/>
-          <line class="tick" x1="338.56" y1="120.00" x2="345.49" y2="116.00"/>
-          <line class="tick" x1="360.00" y1="200.00" x2="368.00" y2="200.00"/>
-          <line class="tick" x1="338.56" y1="280.00" x2="345.49" y2="284.00"/>
-          <line class="tick" x1="280.00" y1="338.56" x2="284.00" y2="345.49"/>
-          <line class="tick" x1="200.00" y1="360.00" x2="200.00" y2="368.00"/>
-          <line class="tick" x1="120.00" y1="338.56" x2="116.00" y2="345.49"/>
-          <line class="tick" x1="61.44" y1="280.00" x2="54.51" y2="284.00"/>
-          <line class="tick" x1="40.00" y1="200.00" x2="32.00" y2="200.00"/>
-          <line class="tick" x1="61.44" y1="120.00" x2="54.51" y2="116.00"/>
-          <line class="tick" x1="120.00" y1="61.44" x2="116.00" y2="54.51"/>
-          <circle class="rim" cx="200" cy="200" r="182"/>
-          <line class="hand" x1="200" y1="200" x2="350" y2="200"/>
-          <rect class="model-box" x="168" y="180" width="64" height="40" rx="6"/>
-          <g class="pulse-orbit">
-            <circle class="halo" cx="200" cy="18" r="16"/>
-            <circle class="pulse" cx="200" cy="18" r="8"/>
-          </g>
-        </svg>
-        <span class="clock-num n12">12</span>
-        <span class="clock-num n3">3</span>
-        <span class="clock-num n6">6</span>
-        <span class="clock-num n9">9</span>
-        <span class="clock-model">model</span>
-        <span class="socket" data-wire="control" aria-hidden="true"><svg class="glyph" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg></span>
-        <span class="socket" data-wire="context" aria-hidden="true"><svg class="glyph" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg></span>
-        <span class="socket" data-wire="loop" aria-hidden="true"><svg class="glyph" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg></span>
-        <span class="socket" data-wire="errors" aria-hidden="true"><svg class="glyph" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg></span>
-        <span class="socket" data-wire="tools" aria-hidden="true"><svg class="glyph" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg></span>
-        <span class="socket" data-wire="permissions" aria-hidden="true"><svg class="glyph" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg></span>
-        <span class="socket" data-wire="verify" aria-hidden="true"><svg class="glyph" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg></span>
-        <span class="socket" data-wire="observe" aria-hidden="true"><svg class="glyph" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg></span>
-        <span class="clock-label" data-wire="control">Control</span>
-        <span class="clock-label" data-wire="context">Context</span>
-        <span class="clock-label" data-wire="loop">Loop</span>
-        <span class="clock-label" data-wire="errors">Errors</span>
-        <span class="clock-label" data-wire="tools">Tools</span>
-        <span class="clock-label" data-wire="permissions">Permissions</span>
-        <span class="clock-label" data-wire="verify">Verification</span>
-        <span class="clock-label" data-wire="observe">Observability</span>
-      </div>
-      <ol class="clock-legend">
-        <li data-wire="control"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg><span>1 Control plane, 12 o'clock</span></li>
-        <li data-wire="context"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg><span>2 Context &amp; memory, 1–2 o'clock</span></li>
-        <li data-wire="loop"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg><span>3 Loop &amp; state, 3 o'clock (the hand)</span></li>
-        <li data-wire="errors"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg><span>4 Errors &amp; recovery, 4–5 o'clock</span></li>
-        <li data-wire="tools"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg><span>5 Tools, 6 o'clock</span></li>
-        <li data-wire="permissions"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg><span>6 Permissions &amp; sandbox, 7–8 o'clock</span></li>
-        <li data-wire="verify"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg><span>7 Verification &amp; evals, 9–10 o'clock</span></li>
-        <li data-wire="observe"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg><span>8 Observability, 11 o'clock (rim)</span></li>
-      </ol>
-      <div class="clock-controls">
-        <button class="btn quiet" type="button" data-toggle-pause aria-pressed="false">Pause pulse</button>
-      </div>
-      <figcaption class="small">One signal pulse laps the rim in about 2.4 s. Each wire plugs in at its clock angle. Under reduced motion the loop socket gets a ring instead.</figcaption>
+  <section class="beat" aria-labelledby="instruments-h">
+    <h2 id="instruments-h">Instruments</h2>
+    <h3>Keys</h3>
+    <p>Keys are 48 px high, with an 8 px radius and a 2 px bottom edge that compresses when pressed.</p>
+    <p class="row-keys">
+      <button class="key key-primary" type="button">Step</button>
+      <button class="key" type="button">Back</button>
+      <button class="key" type="button" disabled>Back (disabled)</button>
+      <button class="key key-icon" type="button" aria-label="Example: minus"><span aria-hidden="true">−</span></button>
+      <button class="key key-icon" type="button" aria-label="Example: plus"><span aria-hidden="true">+</span></button>
+    </p>
+    <h3>Readout windows</h3>
+    <p>Live values sit in dark windows in both themes, in mono amber.</p>
+    <div class="readouts">
+      <div class="readout"><p class="readout-label">Turn</p><p class="readout-value">4 of 14</p></div>
+      <div class="readout"><p class="readout-label">Desk (context)</p><p class="readout-value">26%</p><p class="readout-note">2,084 of 8,000 tokens</p></div>
+      <div class="readout"><p class="readout-label">Cost so far</p><p class="readout-value">≈ 0.026</p><p class="readout-note">units, relative</p></div>
+    </div>
+    <p class="readout-bar"><span class="rb-label">Turn</span><span class="rb-value">4/14</span><span class="rb-sep">·</span><span class="rb-label">Desk</span><span class="rb-value">26%</span><span class="rb-sep">·</span><span class="rb-value">≈ 0.026</span></p>
+    <p class="note-block">The same three values, in one row.</p>
+    <h3>Steppers and sliders</h3>
+    <div class="stepper" role="group" aria-label="Example stepper">
+      <button class="key key-icon" type="button" aria-label="Lower the example"><span aria-hidden="true">−</span></button>
+      <span class="readout-value">7</span>
+      <button class="key key-icon" type="button" aria-label="Raise the example"><span aria-hidden="true">+</span></button>
+    </div>
+    <div class="range-row">
+      <button class="key key-icon" type="button" aria-label="One event earlier"><span aria-hidden="true">−</span></button>
+      <input type="range" min="0" max="14" value="7" aria-label="Example slider">
+      <button class="key key-icon" type="button" aria-label="One event later"><span aria-hidden="true">+</span></button>
+      <span class="counter">7 / 14</span>
+    </div>
+    <h3>Whole-row radios</h3>
+    <p>The whole row is the target, at least 44 px tall. The dot is 20 px.</p>
+    <fieldset>
+      <legend>What runs next?</legend>
+      <ul class="choices">
+        <li><label class="choice"><input type="radio" name="spec-radio" value="a"><span class="choice-text">The loop asks the model again.</span></label></li>
+        <li><label class="choice"><input type="radio" name="spec-radio" value="b" checked><span class="choice-text">The harness runs the requested tool.</span></label></li>
+        <li><label class="choice"><input type="radio" name="spec-radio" value="c"><span class="choice-text">The run ends.</span></label></li>
+      </ul>
+    </fieldset>
+    <h3>Chips and scrubbable numbers</h3>
+    <ul class="chips" aria-label="Example wires">
+      <li><span class="chip w-loop" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg>Loop</span></li>
+      <li><span class="chip w-tools" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg>Tools</span></li>
+      <li><button class="chip w-permissions" type="button" aria-pressed="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg>Permissions</button></li>
+    </ul>
+    <p class="live-sentence">At turn <span class="scrub">7</span>, the prompt is 4,212 tokens and the run has cost ≈ 0.06 units.</p>
+  </section>
+
+  <section class="beat" aria-labelledby="prose-h">
+    <h2 id="prose-h">Prose, margin notes, callouts, facts and terms</h2>
+    <div class="row">
+      <p>A run ends when the model stops asking for tools. Read the reason it gives, not the words it writes.</p>
+      <p class="mnote"><strong>Turn</strong>One turn is one model call and the tool calls it asks for.</p>
+      <details class="inote"><summary>Turn</summary><div class="inote-body">One turn is one model call and the tool calls it asks for.</div></details>
+    </div>
+    <aside class="callout">
+      <p class="kicker">Callout</p>
+      <p>The explanation sits next to what it explains, and says one thing.</p>
+    </aside>
+    <p>A claim from the facts registry, with its chip:
+      <!-- gen:fact -->
+      <span class="fact" data-fact="api.effort-five-levels" data-verified="2026-10-10">The effort page says Claude Fable 5.1 supports all five effort levels.</span>
+      <!-- /gen:fact -->
+    </p>
+    <p>A term with its definition in a popover: <dfn data-term="stop-reason">stop_reason</dfn> is the field in every model reply that says why the model stopped. Later uses are tagged <span class="term" data-term="stop-reason">stop reasons</span>.</p>
+  </section>
+
+  <section class="beat" aria-labelledby="tables-h">
+    <h2 id="tables-h">Tables, code and plates</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Surface tokens by role, scrollable">
+      <table>
+        <caption class="sr-only">Surface tokens by role</caption>
+        <thead><tr><th scope="col">Token</th><th scope="col">Role</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">--hx-paper</th><td>page background</td></tr>
+          <tr><th scope="row">--hx-panel</th><td>plates and cards</td></tr>
+          <tr><th scope="row">--hx-ink</th><td>text and primary strokes</td></tr>
+          <tr><th scope="row">--hx-pass</th><td>pass, with a mark and a word</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <pre tabindex="0" role="region" aria-label="Code sample, scrollable"><code>{"event": "tool_call", "tool": "edit_file", "ok": true}</code></pre>
+    <figure class="plate instrument">
+      <div class="plate-head"><span class="fig-label">FIG 1 · SPECIMEN</span><span class="plate-state">Instrument plate</span></div>
+      <p>Figures sit on an instrument plate with a faint grid. Each figure has a label and a caption that says what to try.</p>
+      <figcaption class="caption">Try this: press a key and watch its edge compress.</figcaption>
     </figure>
   </section>
-
-  <section class="plate ticked" aria-labelledby="s7">
-    <p class="plate-label">FIG DS.7 · Replay lanes · static</p>
-    <h2 id="s7">7 · Replay lanes</h2>
-    <div class="replay">
-      <ol class="lanes-list">
-        <li class="lane" data-wire="control">
-          <p class="lane-name"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg><span class="lane-label">Control</span></p>
-          <div class="lane-track">
-            <svg class="lane-line" height="4" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="2" x2="100%" y2="2" stroke-width="1"/></svg>
-            <span class="ev" data-at="0.2"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg></span>
-          </div>
-        </li>
-        <li class="lane" data-wire="context">
-          <p class="lane-name"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg><span class="lane-label">Context</span></p>
-          <div class="lane-track">
-            <svg class="lane-line" height="4" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="2" x2="100%" y2="2" stroke-width="1" stroke-dasharray="10 4"/></svg>
-            <span class="ev" data-at="0.4"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cache-read"/></svg></span>
-            <span class="ev" data-at="6.2"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-squeeze"/></svg></span>
-          </div>
-        </li>
-        <li class="lane" data-wire="loop">
-          <p class="lane-name"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg><span class="lane-label">Loop</span></p>
-          <div class="lane-track">
-            <svg class="lane-line" height="4" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="2" x2="100%" y2="2" stroke-width="1"/></svg>
-            <span class="ev" data-at="0"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-play"/></svg></span>
-            <span class="ev" data-at="0.8"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-box"/></svg></span>
-            <span class="ev current" data-at="1.8"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-box-filled"/></svg></span>
-            <span class="ev" data-at="3.6"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-nested"/></svg></span>
-            <span class="ev" data-at="4.6"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-nested-filled"/></svg></span>
-            <span class="ev" data-at="8.4"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-flag-filled"/></svg></span>
-          </div>
-        </li>
-        <li class="lane" data-wire="errors">
-          <p class="lane-name"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg><span class="lane-label">Errors</span></p>
-          <div class="lane-track">
-            <svg class="lane-line" height="4" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="2" x2="100%" y2="2" stroke-width="1" stroke-dasharray="8 3 2 3"/></svg>
-            <span class="ev" data-at="2.2"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg></span>
-            <span class="ev" data-at="3.2"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hourglass"/></svg></span>
-            <span class="ev" data-at="5.5"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-switch-open"/></svg></span>
-          </div>
-        </li>
-        <li class="lane" data-wire="tools">
-          <p class="lane-name"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg><span class="lane-label">Tools</span></p>
-          <div class="lane-track">
-            <svg class="lane-line" height="4" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="2" x2="100%" y2="2" stroke-width="1" stroke-dasharray="4 3"/></svg>
-            <span class="ev" data-at="1.8"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg></span>
-            <span class="ev" data-at="4.2"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon-fail"/></svg></span>
-          </div>
-        </li>
-        <li class="lane" data-wire="permissions">
-          <p class="lane-name"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg><span class="lane-label">Permissions</span></p>
-          <div class="lane-track">
-            <svg class="lane-line" height="4" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="2" x2="100%" y2="2" stroke-width="1" stroke-dasharray="8 3 2 3 2 3"/></svg>
-            <span class="ev" data-at="1.9"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-permission-allow"/></svg></span>
-            <span class="ev" data-at="4.1"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-permission-deny"/></svg></span>
-          </div>
-        </li>
-        <li class="lane" data-wire="verify">
-          <p class="lane-name"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg><span class="lane-label">Verification</span></p>
-          <div class="lane-track">
-            <svg class="lane-line" height="4" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="2" x2="100%" y2="2" stroke-width="2" stroke-linecap="round" stroke-dasharray="0.1 4"/></svg>
-            <span class="ev" data-at="4.4"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield-fail"/></svg></span>
-            <span class="ev" data-at="7"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield-pass"/></svg></span>
-          </div>
-        </li>
-        <li class="lane" data-wire="observe">
-          <p class="lane-name"><svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg><span class="lane-label">Observability</span></p>
-          <div class="lane-track">
-            <svg class="lane-line" height="4" aria-hidden="true" focusable="false"><line class="wire-line" x1="0" y1="2" x2="100%" y2="2" stroke-width="1" stroke-dasharray="2 2"/></svg>
-          </div>
-        </li>
-      </ol>
-      <div class="axis-row">
-        <span></span>
-        <div class="axis" aria-hidden="true"><span>0 s</span><span>2 s</span><span>4 s</span><span>6 s</span><span>8 s</span><span>10 s</span></div>
-      </div>
-    </div>
-    <p class="replay-note">The current event has a 2 px ring. Observability has no trace event kind yet (DESIGN section 4.2), so its lane is empty.</p>
-  </section>
-
-  <section class="plate" aria-labelledby="s8">
-    <p class="plate-label">FIG DS.8 · Preferences</p>
-    <h2 id="s8">8 · Theme and motion</h2>
-    <p>Day, night shift, or auto (follows your system). Motion: full, reduced, or auto. Choices are saved on this device only.</p>
-    <div class="switch-group" role="group" aria-labelledby="sw-theme">
-      <span class="plate-label" id="sw-theme">Theme</span>
-      <button class="btn" type="button" data-set-theme="light" aria-pressed="false">Day</button>
-      <button class="btn" type="button" data-set-theme="dark" aria-pressed="false">Night</button>
-      <button class="btn" type="button" data-set-theme="auto" aria-pressed="true">Auto</button>
-    </div>
-    <div class="switch-group" role="group" aria-labelledby="sw-motion">
-      <span class="plate-label" id="sw-motion">Motion</span>
-      <button class="btn" type="button" data-set-motion="full" aria-pressed="false">Full</button>
-      <button class="btn" type="button" data-set-motion="reduced" aria-pressed="false">Reduced</button>
-      <button class="btn" type="button" data-set-motion="auto" aria-pressed="true">Auto</button>
-    </div>
-  </section>
 </main>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <p class="live-status" data-store-status></p>
+    <div class="footer-actions">
+      <button class="btn" type="button" data-export>Export progress</button>
+      <label class="btn">Import progress<input class="sr-only" type="file" accept="application/json,.json" data-import></label>
+      <button class="btn btn-quiet" type="button" data-reset>Reset progress (keeps settings)</button>
+    </div>
+    <p><a href="design.html">Design system</a></p>
+    <p>Fonts: Newsreader (SIL OFL 1.1). Harnessed Sans and Harnessed Mono (SIL OFL 1.1; renamed IBM Plex subsets). Licences in <a href="assets/fonts/LICENSE-OFL.txt">LICENSE-OFL.txt</a> and <a href="assets/fonts/LICENSE-newsreader.txt">LICENSE-newsreader.txt</a>.</p>
+    <!-- gen:facts -->
+    <p data-facts-line>Facts verified as of <span data-facts-oldest data-facts-oldest-iso="2026-10-10">2026-10-10</span>.</p>
+    <!-- /gen:facts -->
+  </div>
+</footer>
+
 </body>
 </html>

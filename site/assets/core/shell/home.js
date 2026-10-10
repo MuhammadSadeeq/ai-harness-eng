@@ -1,5 +1,6 @@
 // The course home: the static course map and path are the fallback; this reads them back from the DOM and
-// draws the progress marks, the Continue target, and the on-call card for the current theme.
+// draws the progress marks, the Continue target, and the on-call card for the current theme. A module whose
+// page is not built yet is not a link: its keys are disabled and say that the module opens soon.
 import { partMarks, continueTarget } from "./pure.js";
 import { resolvedTheme } from "./settings.js";
 
@@ -13,14 +14,26 @@ function courseFromDom(doc) {
   const modules = [...doc.querySelectorAll("[data-module-id]")].map((el) => ({
     id: el.dataset.moduleId, slug: el.dataset.slug, part: el.dataset.part, title: el.dataset.title,
     family: el.dataset.family || null, familyName: el.dataset.familyName || null, familySummary: el.dataset.familySummary || null,
-    minutes: Number(el.dataset.minutes) || 0,
+    minutes: Number(el.dataset.minutes) || 0, built: el.dataset.built === "true",
   }));
   const parts = [...doc.querySelectorAll("[data-part-id]")].map((el) => ({ id: el.dataset.partId, title: el.dataset.partTitle }));
-  const path = modules.filter((m) => m.pathIndex !== undefined).map((m) => m.id);
-  const pathed = [...doc.querySelectorAll("[data-module-id][data-path]")]
+  // The path is the order of data-path on the module rows (course.json "path"), not the order of the parts.
+  const path = [...doc.querySelectorAll("[data-module-id][data-path]")]
     .sort((a, b) => Number(a.dataset.path) - Number(b.dataset.path))
     .map((el) => el.dataset.moduleId);
-  return { parts, modules, path: pathed.length ? pathed : path };
+  return { parts, modules, path };
+}
+
+/** A key that opens a module page is a link; one whose page is not built is disabled (no href). */
+function setOpens(el, href) {
+  if (!el) return;
+  if (href) {
+    el.setAttribute("href", href);
+    el.removeAttribute("aria-disabled");
+  } else {
+    el.removeAttribute("href");
+    el.setAttribute("aria-disabled", "true");
+  }
 }
 
 function markSvg(state) {
@@ -50,28 +63,33 @@ export function renderHome(store, doc = document) {
     for (const el of doc.querySelectorAll("[data-module-id]")) {
       const id = el.dataset.moduleId;
       const status = doc2.modules?.[id]?.status ?? "todo";
-      el.dataset.status = status;
+      el.dataset.state = status;
       const slot = el.querySelector(".module-mark");
       if (slot) slot.replaceChildren(markSvg(status === "done" ? "done" : status === "started" ? "in_progress" : "ahead"));
     }
     const next = continueTarget(course, doc2);
+    const shift = next ? course.modules.find((m) => m.id === next.id) : null;
+    const built = Boolean(shift?.built);
+    const href = built ? next.href : null;
     const title = doc.querySelector("[data-continue-title]");
     const link = doc.querySelector("[data-continue-link]");
     const meta = doc.querySelector("[data-continue-meta]");
+    const note = doc.querySelector("[data-soon-note]");
     if (next) {
-      const module = course.modules.find((m) => m.id === next.id);
       if (title) title.textContent = `${next.id} · ${next.title}`;
-      if (link) link.href = next.href;
-      if (meta) meta.textContent = `${module.minutes} minutes · Part ${module.part}`;
+      setOpens(link, href);
+      if (link) link.hidden = false;
+      if (meta) meta.textContent = `${shift.minutes} minutes · Part ${shift.part}`;
+      if (note) note.hidden = built;
     } else {
       if (title) title.textContent = "Every module in the path is done";
       if (link) link.hidden = true;
+      if (note) note.hidden = true;
       if (meta) meta.textContent = "Keep going with the other parts in the course map.";
     }
-    const shift = next ? course.modules.find((m) => m.id === next.id) : null;
-    for (const el of doc.querySelectorAll("[data-family-name]")) el.textContent = shift?.familyName ?? "No incident for this module";
-    for (const el of doc.querySelectorAll("[data-family-summary]")) el.textContent = shift?.familySummary ?? "";
-    for (const el of doc.querySelectorAll("[data-family-link]")) el.href = next ? next.href : "#";
+    for (const el of doc.querySelectorAll("[data-slot=\"family-name\"]")) el.textContent = shift?.familyName ?? "No incident for this module";
+    for (const el of doc.querySelectorAll("[data-slot=\"family-summary\"]")) el.textContent = shift?.familySummary ?? "";
+    for (const el of doc.querySelectorAll("[data-family-link]")) setOpens(el, href);
     const night = resolvedTheme(store.state.prefs.theme) === "night";
     const shiftCard = doc.querySelector("[data-shift]");
     const pageCard = doc.querySelector("[data-page-card]");
@@ -80,10 +98,15 @@ export function renderHome(store, doc = document) {
     const state = doc.querySelector("[data-page-state]");
     const take = doc.querySelector("[data-take-page]");
     const open = doc.querySelector("[data-open-incident]");
-    if (take) take.hidden = page.taken;
+    if (take) {
+      take.hidden = page.taken;
+      take.disabled = !built;
+    }
     if (state) {
-      state.hidden = !page.taken;
-      state.textContent = page.taken ? "You have the page. Open the incident to start." : "";
+      state.hidden = !page.taken && built;
+      state.textContent = page.taken
+        ? "You have the page. Open the incident to start."
+        : `${next?.id ?? "This module"} opens soon. You can take the page once its module is built.`;
     }
     if (open) open.hidden = !page.taken;
   };

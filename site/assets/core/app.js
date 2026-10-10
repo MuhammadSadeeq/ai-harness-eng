@@ -1,92 +1,40 @@
-// HARNESSED shell, phase 0: preferences (theme, motion) and the clock pause control.
-// Logs nothing and never throws when storage is unavailable (private windows, blocked data).
+// HARNESSED shell (Phase 1). Every page loads this module. It opens the progress store once, applies the stored
+// theme and motion, draws the top bar, the Menu sheet, the course map, the footer and (on the home page) the
+// progress marks and Continue. It also wires term popovers and fact chips, and loads only the registered
+// components a page uses. Nothing here reads course.json: the course map is the page's own static fallback.
+import { createStore, browserStorage } from "./store.js";
+import { announcer } from "./shell/announce.js";
+import { applySettings, mountSettings } from "./shell/settings.js";
+import { mountChrome } from "./shell/chrome.js";
+import { mountFooter } from "./shell/footer.js";
+import { renderHome } from "./shell/home.js";
+import { mountClock } from "./shell/clock.js";
+import { mountTerms } from "./shell/terms.js";
+import { mountFacts } from "./shell/facts.js";
+import { loadComponents } from "./shell/loader.js";
+import { mountEvidence } from "./shell/evidence.js";
+import { setContext } from "./context.js";
 
-const KEY = "harnessed:v1";
-const THEMES = ["light", "dark", "auto"];
-const MOTIONS = ["full", "reduced", "auto"];
-const DEFAULTS = { schema: 1, prefs: { theme: "auto", motion: "auto" } };
+// Scripts are running: CSS shows the drawn parts of the page only from here on.
+document.documentElement.classList.add("js");
 
-const state = { theme: "auto", motion: "auto" };
-
-function readStored() {
-  try {
-    const raw = window.localStorage.getItem(KEY);
-    if (!raw) return null;
-    const data = JSON.parse(raw);
-    return data && typeof data === "object" && data.prefs ? data.prefs : null;
-  } catch {
-    return null;
-  }
+const announce = announcer();
+const store = createStore({ storage: browserStorage(), onNotice: (message) => announce(message) });
+store.load();
+applySettings(store.state.prefs);
+mountSettings(store);
+mountChrome(store);
+mountClock();
+mountFooter(store, announce);
+if (document.querySelector("[data-continue-link]")) renderHome(store);
+mountFacts();
+if (document.querySelector("[data-term]")) {
+  fetch(new URL("../../data/terms.json", import.meta.url))
+    .then((response) => (response.ok ? response.json() : []))
+    .then((terms) => mountTerms(terms))
+    .catch(() => mountTerms([]));
 }
-
-function writeStored() {
-  try {
-    const doc = { schema: DEFAULTS.schema, prefs: { theme: state.theme, motion: state.motion } };
-    window.localStorage.setItem(KEY, JSON.stringify(doc));
-  } catch {
-    // Storage is unavailable: the choice still applies for this page view.
-  }
-}
-
-function apply() {
-  const root = document.documentElement;
-  if (state.theme === "auto") root.removeAttribute("data-theme");
-  else root.setAttribute("data-theme", state.theme);
-  if (state.motion === "auto") root.removeAttribute("data-motion");
-  else root.setAttribute("data-motion", state.motion);
-  markPressed();
-}
-
-function markPressed() {
-  for (const button of document.querySelectorAll("[data-set-theme]")) {
-    const on = button.getAttribute("data-set-theme") === state.theme;
-    button.setAttribute("aria-pressed", on ? "true" : "false");
-  }
-  for (const button of document.querySelectorAll("[data-set-motion]")) {
-    const on = button.getAttribute("data-set-motion") === state.motion;
-    button.setAttribute("aria-pressed", on ? "true" : "false");
-  }
-}
-
-/** Save and apply one preference. name is "theme" or "motion". */
-export function setPref(name, value) {
-  if (name === "theme" && THEMES.includes(value)) state.theme = value;
-  else if (name === "motion" && MOTIONS.includes(value)) state.motion = value;
-  else return;
-  writeStored();
-  apply();
-}
-
-function init() {
-  const stored = readStored();
-  if (stored) {
-    if (THEMES.includes(stored.theme)) state.theme = stored.theme;
-    if (MOTIONS.includes(stored.motion)) state.motion = stored.motion;
-  }
-  apply();
-
-  document.addEventListener("click", (event) => {
-    const target = event.target instanceof Element ? event.target : null;
-    if (!target) return;
-    const theme = target.closest("[data-set-theme]");
-    if (theme) {
-      setPref("theme", theme.getAttribute("data-set-theme"));
-      return;
-    }
-    const motion = target.closest("[data-set-motion]");
-    if (motion) {
-      setPref("motion", motion.getAttribute("data-set-motion"));
-      return;
-    }
-    const pause = target.closest("[data-toggle-pause]");
-    if (pause) {
-      const clock = pause.closest(".clock");
-      if (!clock) return;
-      const paused = clock.classList.toggle("is-paused");
-      pause.setAttribute("aria-pressed", paused ? "true" : "false");
-      pause.textContent = paused ? "Play pulse" : "Pause pulse";
-    }
-  });
-}
-
-init();
+// Components read the store and the announcer through hxContext(); evidence they report is written here.
+setContext({ store, announce });
+mountEvidence(store);
+loadComponents();

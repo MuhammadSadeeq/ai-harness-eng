@@ -1,8 +1,8 @@
-// The component loader. REGISTRY maps a tag to its module; wave 2 fills it. Only registered tags that the page
-// contains are loaded. Every other hx-* element stays as its no-JS fallback, without an error.
+// The component loader. The registry (site/assets/components/registry.js, director-owned) maps a tag to its
+// module. Only registered tags that the page contains are loaded. Every other hx-* element stays as its no-JS
+// fallback, without an error.
 import { filterRegistry } from "./pure.js";
-
-export const REGISTRY = Object.freeze({});
+import { REGISTRY } from "../../components/registry.js";
 
 export function presentTags(root = document) {
   const tags = new Set();

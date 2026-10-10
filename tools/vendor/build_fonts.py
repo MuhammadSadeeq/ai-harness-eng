@@ -3,12 +3,14 @@
 
 Harnessed Sans 400 and 600, Harnessed Mono 400 and 600: subsets of the pinned IBM Plex npm packages,
 Latin only, renamed because IBM Plex reserves the name "Plex" under OFL 1.1 (DESIGN §5, D-013).
-Newsreader 400, 400 italic and 600: the Latin static files of the pinned @fontsource/newsreader package,
-copied unchanged (not subset, not renamed: its licence names no Reserved Font Name).
+Newsreader 400, 400 italic and 600: the Latin static files of the pinned
+@fontsource/newsreader package, copied unchanged (not subset, not renamed: its licence names
+no Reserved Font Name).
 
-Sources: node_modules/@ibm/<package>/fonts/complete/woff2/ and node_modules/@fontsource/newsreader/files/
-(both installed by `npm ci`). Output: site/assets/fonts/. Writes LICENSE-OFL.txt, LICENSE-newsreader.txt and
-FONTLOG.txt. The Plex output is reproducible: head.modified is set to head.created.
+Sources: node_modules/@ibm/<package>/fonts/complete/woff2/ and
+node_modules/@fontsource/newsreader/files/ (both installed by `npm ci`). Output:
+site/assets/fonts/. Writes LICENSE-OFL.txt, LICENSE-newsreader.txt and FONTLOG.txt.
+The Plex output is reproducible: head.modified is set to head.created.
 """
 
 from __future__ import annotations
@@ -55,16 +57,35 @@ class Face:
 
 PLEX_FACES: Final[tuple[Face, ...]] = (
     Face("plex-sans", "IBMPlexSans-Regular.woff2", "harnessed-sans-400.woff2", "Sans Regular 400"),
-    Face("plex-sans", "IBMPlexSans-SemiBold.woff2", "harnessed-sans-600.woff2", "Sans SemiBold 600"),
+    Face(
+        "plex-sans", "IBMPlexSans-SemiBold.woff2", "harnessed-sans-600.woff2", "Sans SemiBold 600"
+    ),
     Face("plex-mono", "IBMPlexMono-Regular.woff2", "harnessed-mono-400.woff2", "Mono Regular 400"),
-    Face("plex-mono", "IBMPlexMono-SemiBold.woff2", "harnessed-mono-600.woff2", "Mono SemiBold 600"),
+    Face(
+        "plex-mono", "IBMPlexMono-SemiBold.woff2", "harnessed-mono-600.woff2", "Mono SemiBold 600"
+    ),
 )
 
 # Newsreader: static Latin files, copied as they are.
 NEWSREADER_FACES: Final[tuple[Face, ...]] = (
-    Face("newsreader", "newsreader-latin-400-normal.woff2", "newsreader-latin-400-normal.woff2", "Newsreader Regular 400"),
-    Face("newsreader", "newsreader-latin-400-italic.woff2", "newsreader-latin-400-italic.woff2", "Newsreader Italic 400"),
-    Face("newsreader", "newsreader-latin-600-normal.woff2", "newsreader-latin-600-normal.woff2", "Newsreader SemiBold 600"),
+    Face(
+        "newsreader",
+        "newsreader-latin-400-normal.woff2",
+        "newsreader-latin-400-normal.woff2",
+        "Newsreader Regular 400",
+    ),
+    Face(
+        "newsreader",
+        "newsreader-latin-400-italic.woff2",
+        "newsreader-latin-400-italic.woff2",
+        "Newsreader Italic 400",
+    ),
+    Face(
+        "newsreader",
+        "newsreader-latin-600-normal.woff2",
+        "newsreader-latin-600-normal.woff2",
+        "Newsreader SemiBold 600",
+    ),
 )
 
 
@@ -150,7 +171,7 @@ def write_fontlog(today: str) -> None:
         f"  layout features: {','.join(LAYOUT_FEATURES)}",
         "  flavor: woff2",
         "",
-        "Rename: IBM Plex reserves the name \"Plex\" under the SIL OFL 1.1 (Reserved Font Name).",
+        'Rename: IBM Plex reserves the name "Plex" under the SIL OFL 1.1 (Reserved Font Name).',
         "A subset is a modified version, so the family names in the name table are changed:",
         "  IBM Plex Sans -> Harnessed Sans; IBM Plex Mono -> Harnessed Mono; PostScript",
         "  IBMPlexSans-* and IBMPlexMono-* -> HarnessedSans-* and HarnessedMono-*.",
@@ -159,15 +180,19 @@ def write_fontlog(today: str) -> None:
         "Licence: LICENSE-OFL.txt is the package LICENSE.txt, copied verbatim (IBM Corp.",
         "  copyright notice and the SIL OFL 1.1 text).",
         "",
-        "Newsreader: @fontsource/newsreader Latin static WOFF2 files, copied unchanged (not subset,",
-        "  not renamed). Its licence (LICENSE-newsreader.txt, the package LICENSE, SIL OFL 1.1) names",
-        "  no Reserved Font Name, so no rename is needed.",
+        "Newsreader: @fontsource/newsreader Latin static WOFF2 files, copied unchanged",
+        "  (not subset, not renamed). Its licence (LICENSE-newsreader.txt, the package",
+        "  LICENSE, SIL OFL 1.1) names no Reserved Font Name, so no rename is needed.",
         "",
         "Files:",
     ]
     for face in PLEX_FACES + NEWSREADER_FACES:
         lines.append(f"  {face.output}  <- {face.package} ({face.face})")
-    lines += ["", "Removed in DESIGN v2: the Harnessed Sans Condensed face and the Harnessed Sans italic face."]
+    lines += [
+        "",
+        "Removed in DESIGN v2: the Harnessed Sans Condensed face and",
+        "the Harnessed Sans italic face.",
+    ]
     (OUT_DIR / "FONTLOG.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

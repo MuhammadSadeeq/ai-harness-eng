@@ -5,12 +5,12 @@ import { UNAVAILABLE_NOTICE, UNREADABLE_NOTICE, NEWER_NOTICE, exportFilename } f
 
 export function statusText(store) {
   if (!store.persistent) return UNAVAILABLE_NOTICE;
-  if (store.blocked) return store.state.schema > 1 ? NEWER_NOTICE : UNREADABLE_NOTICE;
+  if (store.blocked) return store.blockReason === "newer" ? NEWER_NOTICE : UNREADABLE_NOTICE;
   return "";
 }
 
 export function mountFooter(store, announce, doc = document) {
-  const status = doc.querySelector("[data-status]");
+  const status = doc.querySelector("[data-store-status]");
   const paint = () => {
     const text = statusText(store);
     if (status) status.textContent = text;
