@@ -363,3 +363,16 @@ def test_placement_yaml_is_a_mapping_and_is_not_read_as_a_list(tmp_path: Path) -
     (owner / "placement.yaml").write_text("questions: []\nrules: []\nstart: X1\n", encoding="utf-8")
     report, _ = run_on(root)
     assert report.problems == []
+
+
+def test_the_generated_objectives_list_is_not_an_assessment_item(tmp_path: Path) -> None:
+    root = copy_fixture(tmp_path)
+    page = root / "site" / "modules" / "python-dataclasses.html"
+    text = page.read_text(encoding="utf-8")
+    text = text.replace(' data-objective="T1.o1"', "")
+    listing = ('<ol class="objectives" data-objective-list>'
+               '<li data-objective="T1.o1">Listed only.</li></ol>')
+    text = text.replace("<main", listing + "<main", 1)
+    page.write_text(text, encoding="utf-8")
+    report, _ = run_on(root, [page])
+    assert any("[B4] objective T1.o1 has no assessment item" in p.message for p in report.problems)

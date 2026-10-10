@@ -812,7 +812,13 @@ def _check_requirements(
 
 def _check_objectives(page: Page, module: Module, ctx: Context, shown: str, report: Report) -> None:
     covered: set[str] = set()
+    # The generated header lists every objective (gen:module-meta); a list item there is not an
+    # assessment item, so it never counts as coverage.
+    listed = {id(d) for e in descendants(page.root) if "data-objective-list" in e.attrs
+              for d in descendants(e)}
     for element in descendants(page.root):
+        if id(element) in listed:
+            continue
         for token in element.attrs.get("data-objective", "").split():
             covered.add(token)
             if token not in ctx.objective_ids:
