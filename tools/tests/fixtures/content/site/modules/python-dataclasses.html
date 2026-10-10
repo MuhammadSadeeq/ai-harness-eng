@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" data-module="T1">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Python typing and dataclasses · HARNESSED</title>
+<meta name="description" content="After this module you can annotate a function and run mypy on it.">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">T1 · Python primers</p>
+    <h1>Python typing and dataclasses</h1>
+    <p class="lede">Types written in the code are read by a checker.</p>
+  </header>
+
+  <section class="beat" data-beat="see" id="see" data-objective="T1.o1">
+    <h2>See</h2>
+    <p>A <dfn data-term="type-hint">type hint</dfn> says what a value should be. Python does not enforce it at runtime.</p>
+    <p>A <span class="term" data-term="dataclass">dataclass</span> is a record with defaults. It is useful when a value has several named fields.</p>
+  </section>
+
+  <section class="beat" data-beat="fix" id="fix" data-objective="T1.o2">
+    <h2>Fix</h2>
+    <p>Run <span class="term" data-term="mypy">mypy</span> on the file, then fix the error it reports.</p>
+    <hx-kata id="T1-typing" data-objective="T1.o3">
+      <p>Annotate the function and check it with mypy.</p>
+    </hx-kata>
+  </section>
+
+  <section class="beat" data-beat="keep" id="keep">
+    <h2>Keep</h2>
+    <p class="law">Types are documentation the checker reads.</p>
+    <hx-cards src="T1"><p>Cards for this module appear here.</p></hx-cards>
+    <aside class="portfolio"><p>What to show from this module:</p>
+      <ul><li>One annotated function that mypy accepts.</li></ul></aside>
+  </section>
+</main>
+</body>
+</html>

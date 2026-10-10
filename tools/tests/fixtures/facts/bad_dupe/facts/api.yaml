@@ -1,0 +1,12 @@
+- id: api.dup
+  claim: "First entry."
+  source: https://example.com/a
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable
+- id: api.dup
+  claim: "Second entry with the same id."
+  source: https://example.com/b
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable

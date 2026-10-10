@@ -1,0 +1,322 @@
+{
+  "schema": 1,
+  "product": {
+    "name": "HARNESSED",
+    "build_project": "Rein",
+    "tagline": "Fixture course for the BP-0.5B tests.",
+    "mnemonic": "Fixture mnemonic."
+  },
+  "wires": [
+    {
+      "id": "loop",
+      "n": 1,
+      "name": "Agent loop",
+      "short": "Loop",
+      "clock": "12",
+      "angle": 0,
+      "glyph": "cycle",
+      "line": "solid",
+      "question": "What runs next?",
+      "law": "The loop decides only what the model asked for."
+    },
+    {
+      "id": "verify",
+      "n": 2,
+      "name": "Verification",
+      "short": "Verify",
+      "clock": "6",
+      "angle": 180,
+      "glyph": "shield",
+      "line": "solid",
+      "question": "Was it checked?",
+      "law": "Done is a claim until something checks it."
+    }
+  ],
+  "parts": [
+    {
+      "id": "S",
+      "title": "Start here"
+    },
+    {
+      "id": "A",
+      "title": "The model"
+    },
+    {
+      "id": "T",
+      "title": "Python primers"
+    }
+  ],
+  "kinds": {
+    "core": {
+      "beats": [
+        "break",
+        "see",
+        "fix",
+        "prove",
+        "keep"
+      ],
+      "requires": [
+        "incident",
+        "lab",
+        "kata",
+        "prove",
+        "cards",
+        "say"
+      ]
+    },
+    "concept": {
+      "beats": [
+        "break",
+        "see",
+        "lab",
+        "check",
+        "keep"
+      ],
+      "requires": [
+        "incident",
+        "lab",
+        "check",
+        "cards",
+        "say"
+      ]
+    },
+    "build": {
+      "beats": [
+        "break",
+        "see",
+        "fix",
+        "prove",
+        "keep"
+      ],
+      "requires": [
+        "incident",
+        "step",
+        "prove",
+        "cards",
+        "say"
+      ]
+    },
+    "guide": {
+      "beats": [
+        "see",
+        "do",
+        "keep"
+      ],
+      "requires": [
+        "cards",
+        "say"
+      ]
+    },
+    "career": {
+      "beats": [
+        "see",
+        "do",
+        "keep"
+      ],
+      "requires": [
+        "drill"
+      ]
+    },
+    "primer": {
+      "beats": [
+        "see",
+        "fix",
+        "keep"
+      ],
+      "requires": [
+        "kata",
+        "cards"
+      ]
+    }
+  },
+  "failure_families": [
+    {
+      "id": "false-done",
+      "name": "False done",
+      "wire": "verify",
+      "summary": "The agent reports success it never checked.",
+      "module": "S0"
+    },
+    {
+      "id": "confident-lie",
+      "name": "Confident lie",
+      "wire": "verify",
+      "summary": "The model states a result the run does not support.",
+      "module": "A1"
+    }
+  ],
+  "modules": [
+    {
+      "id": "S0",
+      "slug": "same-model-different-harness",
+      "part": "S",
+      "title": "Same model, different harness",
+      "kind": "concept",
+      "wires": [
+        "verify",
+        "loop"
+      ],
+      "prereqs": [],
+      "primers": [],
+      "minutes": 25,
+      "law": "Same model, different harness, different results.",
+      "objectives": [
+        {
+          "id": "S0.o1",
+          "text": "Replay an agent run and describe it as a sequence of steps."
+        },
+        {
+          "id": "S0.o2",
+          "text": "Predict whether a run's done claim is real, then check it."
+        },
+        {
+          "id": "S0.o3",
+          "text": "Change one harness setting and measure a pass rate."
+        }
+      ],
+      "misconceptions": [
+        "A better model is the only way to get better results."
+      ],
+      "terms": [
+        "agent",
+        "harness",
+        "pass rate"
+      ],
+      "interactions": [
+        "hx-replay",
+        "hx-bench",
+        "hx-check",
+        "hx-desk"
+      ],
+      "family": "false-done",
+      "source": [
+        "fixture"
+      ],
+      "volatile": false,
+      "status": "planned"
+    },
+    {
+      "id": "A1",
+      "slug": "the-agent-loop",
+      "part": "A",
+      "title": "The agent loop",
+      "kind": "core",
+      "wires": [
+        "loop"
+      ],
+      "prereqs": [
+        "S0"
+      ],
+      "primers": [],
+      "minutes": 40,
+      "law": "Every tool result answers its call.",
+      "objectives": [
+        {
+          "id": "A1.o1",
+          "text": "Write one iteration of an agent loop in Python."
+        },
+        {
+          "id": "A1.o2",
+          "text": "Name the exits a loop needs besides end of turn."
+        },
+        {
+          "id": "A1.o3",
+          "text": "Return all tool results in one user message, matched by id."
+        },
+        {
+          "id": "A1.o4",
+          "text": "Measure the effect of a turn limit over seeded trials."
+        }
+      ],
+      "misconceptions": [
+        "A loop that ends when the model stops talking is finished."
+      ],
+      "terms": [
+        "stop_reason",
+        "turn limit",
+        "dataclass"
+      ],
+      "interactions": [
+        "hx-replay",
+        "hx-sampler",
+        "hx-kata",
+        "hx-bench",
+        "hx-cards",
+        "hx-say"
+      ],
+      "family": "confident-lie",
+      "source": [
+        "fixture"
+      ],
+      "volatile": false,
+      "status": "planned"
+    },
+    {
+      "id": "T1",
+      "slug": "python-dataclasses",
+      "part": "T",
+      "title": "Python typing and dataclasses",
+      "kind": "primer",
+      "wires": [],
+      "prereqs": [
+        "S0"
+      ],
+      "primers": [],
+      "minutes": 20,
+      "law": "Types are documentation the checker reads.",
+      "objectives": [
+        {
+          "id": "T1.o1",
+          "text": "Annotate functions and variables with types."
+        },
+        {
+          "id": "T1.o2",
+          "text": "Define a dataclass with defaults and use it as a record."
+        },
+        {
+          "id": "T1.o3",
+          "text": "Run mypy and fix the type error it reports."
+        }
+      ],
+      "misconceptions": [
+        "Type hints are enforced at runtime."
+      ],
+      "terms": [
+        "type hint",
+        "mypy"
+      ],
+      "interactions": [
+        "hx-kata"
+      ],
+      "family": null,
+      "source": [],
+      "volatile": false,
+      "status": "planned",
+      "local_terms": [
+        "dataclass"
+      ]
+    }
+  ],
+  "path": [
+    "S0",
+    "A1"
+  ],
+  "counts": {
+    "modules": 3,
+    "modules_by_kind": {
+      "core": 1,
+      "concept": 1,
+      "build": 0,
+      "guide": 0,
+      "career": 0,
+      "primer": 1
+    },
+    "parts": 3,
+    "wires": 2,
+    "objectives": 10,
+    "terms_planned": 8,
+    "failure_families": 2,
+    "minutes_path": 65,
+    "minutes_all": 85
+  }
+}

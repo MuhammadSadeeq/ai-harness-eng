@@ -1,0 +1,5 @@
+- id: A1-c1
+  type: term
+  objective: A1.o2
+  front: "Name one exit a loop needs besides end of turn."
+  back: "A turn limit, so a loop that never ends still stops."

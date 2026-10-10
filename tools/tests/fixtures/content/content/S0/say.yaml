@@ -1,0 +1,9 @@
+- id: S0-s1
+  objectives: [S0.o3]
+  prompt: "Say what one harness setting changes in a pass rate."
+  model_answer: >-
+    A setting changes what the harness allows. The same model then passes more or fewer
+    seeded trials, so the pass rate moves while the model stays the same.
+  rubric:
+    - "Names one harness setting"
+    - "Says the model stayed the same"

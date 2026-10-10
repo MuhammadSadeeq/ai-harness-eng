@@ -1,0 +1,93 @@
+name: CI
+
+# Push/PR triggers are switched on when the Phase 0 skeleton is accepted
+# (until then the checkers it runs are still being built).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Checkers
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install tools
+        run: pip install -r requirements-dev.txt
+      - name: Lint and types
+        run: |
+          ruff check tools site/assets/py
+          mypy
+      - name: Checker tests
+        run: python -m pytest
+      - name: Course, docs and generated data
+        run: |
+          python tools/render_curriculum.py --check
+          python tools/check_content.py
+          python tools/gen_data.py --check
+      - name: Content checkers
+        run: |
+          python tools/check_facts.py
+          python tools/check_snippets.py
+          python tools/check_katas.py
+          python tools/check_steps.py
+          python tools/check_scenarios.py
+          python tools/check_wire.py
+      - name: Wire palette (color-vision thresholds)
+        run: python tools/qa/check_palette.py
+
+  rein:
+    name: Rein (Python ${{ matrix.python }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install
+        run: |
+          pip install pytest==9.1.1 ruff==0.16.9 mypy==2.3.1
+          pip install -e rein
+      - name: Lint, types, tests
+        working-directory: rein
+        run: |
+          ruff check .
+          mypy
+          python -m pytest
+
+  qa:
+    name: Browser QA
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium for the pinned Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Pages, widgets, accessibility, budgets, CVD screenshots
+        run: node tools/qa/run.mjs --cvd
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-screenshots
+          path: tools/qa/out/
+          retention-days: 14

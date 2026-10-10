@@ -1,0 +1,31 @@
+- id: api.link-ok
+  claim: "A source that answers 200."
+  source: https://example.com/ok
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable
+- id: api.link-gone
+  claim: "A source that answers 404."
+  source: https://example.com/gone
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable
+- id: api.link-head-only
+  claim: "A source that refuses HEAD but answers GET."
+  source: https://example.com/head-only
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable
+- id: api.link-down
+  claim: "A source that cannot be reached."
+  source: https://example.com/down
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable
+- id: api.link-alt
+  claim: "A source with a failing alternate."
+  source: https://example.com/ok
+  source_alt: https://example.com/alt
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable

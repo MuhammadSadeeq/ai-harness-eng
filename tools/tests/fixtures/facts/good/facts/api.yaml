@@ -1,0 +1,6 @@
+- id: api.example-stop
+  claim: "The example API reports a stop reason on every response."
+  source: https://example.com/docs/stop
+  quote: "Every response carries a stop reason."
+  verified_on: 2026-10-01
+  volatility: volatile

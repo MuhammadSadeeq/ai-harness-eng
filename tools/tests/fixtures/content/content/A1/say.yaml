@@ -1,0 +1,9 @@
+- id: A1-s1
+  objectives: [A1.o3]
+  prompt: "Walk through one iteration of the loop."
+  model_answer: >-
+    The loop sends the full history to the model, runs only the tools the model asked for,
+    and returns every tool result in one message, each matched by its id.
+  rubric:
+    - "Sends the full history"
+    - "Returns all tool results in one message"

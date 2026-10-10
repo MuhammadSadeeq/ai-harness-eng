@@ -1,0 +1,23 @@
+name: Facts freshness
+
+# Weekly: volatile facts older than 75 days (warning) or 90 days (error when
+# used by a page), and dead source links (FACTS.md §5).
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  freshness:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements-dev.txt
+      - name: Freshness and links
+        run: python tools/check_facts.py --links --warn-days 75

@@ -1,0 +1,10 @@
+id: not-the-folder
+module: B2
+title: Metadata with several mistakes
+objectives:
+  - B2.o9
+minutes: "5"
+hints:
+  - Only two hints here.
+  - Second hint.
+from_memory: "no"

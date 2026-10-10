@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Home · HARNESSED</title>
+<meta name="description" content="An interactive course that takes you from zero to a hireable AI harness engineer.">
+<link rel="stylesheet" href="assets/core/hx.css">
+<script type="module" src="assets/core/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="page">
+  <header>
+    <h1 class="wordmark">HARNESSED</h1>
+    <svg class="connector" viewBox="0 0 48.5 12" role="img" aria-label="Eight wires in turn order" focusable="false">
+      <rect data-wire="control" x="0" y="0" width="3" height="12" rx="1.5"/>
+      <rect data-wire="context" x="6.5" y="0" width="3" height="12" rx="1.5"/>
+      <rect data-wire="loop" x="13" y="0" width="3" height="12" rx="1.5"/>
+      <rect data-wire="errors" x="19.5" y="0" width="3" height="12" rx="1.5"/>
+      <rect data-wire="tools" x="26" y="0" width="3" height="12" rx="1.5"/>
+      <rect data-wire="permissions" x="32.5" y="0" width="3" height="12" rx="1.5"/>
+      <rect data-wire="verify" x="39" y="0" width="3" height="12" rx="1.5"/>
+      <rect data-wire="observe" x="45.5" y="0" width="3" height="12" rx="1.5"/>
+    </svg>
+  </header>
+
+  <p class="lede">An interactive course that takes you from zero to a hireable AI harness engineer.</p>
+
+  <section aria-labelledby="wires-title">
+    <h2 id="wires-title">The eight wires</h2>
+    <p class="plate-label">In turn order, one turn around the clock</p>
+    <ol class="wire-list">
+      <li class="wire-item" data-wire="control">
+        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg>
+        <p class="wire-name">Control plane</p>
+        <p class="wire-q">What is the model told, and which instruction wins?</p>
+        <p class="wire-law">Words guide, code enforces.</p>
+      </li>
+      <li class="wire-item" data-wire="context">
+        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg>
+        <p class="wire-name">Context &amp; memory</p>
+        <p class="wire-q">What is on the desk this call, and what is saved?</p>
+        <p class="wire-law">The smallest window that works.</p>
+      </li>
+      <li class="wire-item" data-wire="loop">
+        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg>
+        <p class="wire-name">Loop &amp; state</p>
+        <p class="wire-q">What happens next, what do we carry, when do we stop?</p>
+        <p class="wire-law">Every run needs more than one exit.</p>
+      </li>
+      <li class="wire-item" data-wire="errors">
+        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg>
+        <p class="wire-name">Errors &amp; recovery</p>
+        <p class="wire-q">When something fails, how do we continue without spinning?</p>
+        <p class="wire-law">Errors are the main path.</p>
+      </li>
+      <li class="wire-item" data-wire="tools">
+        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg>
+        <p class="wire-name">Tools</p>
+        <p class="wire-q">What can the model do, and is each tool easy to use?</p>
+        <p class="wire-law">A tool is a user interface for a model.</p>
+      </li>
+      <li class="wire-item" data-wire="permissions">
+        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg>
+        <p class="wire-name">Permissions &amp; sandbox</p>
+        <p class="wire-q">Which actions are allowed, and how bad can a mistake get?</p>
+        <p class="wire-law">Judge the action and its target.</p>
+      </li>
+      <li class="wire-item" data-wire="verify">
+        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg>
+        <p class="wire-name">Verification &amp; evals</p>
+        <p class="wire-q">How do we know it's really done, and did the change help?</p>
+        <p class="wire-law">“Done” is a claim.</p>
+      </li>
+      <li class="wire-item" data-wire="observe">
+        <svg class="glyph" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg>
+        <p class="wire-name">Observability</p>
+        <p class="wire-q">What exactly happened, and where did time and money go?</p>
+        <p class="wire-law">If it isn't in the trace, it didn't happen.</p>
+      </li>
+    </ol>
+  </section>
+
+  <p><a href="design.html">Design system specimen</a></p>
+</main>
+</body>
+</html>

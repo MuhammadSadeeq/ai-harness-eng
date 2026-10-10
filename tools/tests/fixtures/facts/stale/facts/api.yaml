@@ -1,0 +1,12 @@
+- id: api.stale-used
+  claim: "A volatile claim that is too old and is used by a page."
+  source: https://example.com/a
+  quote: "Old quote."
+  verified_on: 2026-06-01
+  volatility: volatile
+- id: api.stale-unused
+  claim: "A volatile claim that is too old and is not used."
+  source: https://example.com/b
+  quote: "Old quote too."
+  verified_on: 2026-06-01
+  volatility: volatile

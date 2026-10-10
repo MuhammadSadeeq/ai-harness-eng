@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HARNESSED course.json (schema 1)",
+  "description": "The single source of truth for modules, objectives, prerequisites, terms, failure families and counts (docs/CURRICULUM.md).",
+  "type": "object",
+  "required": ["schema", "product", "wires", "parts", "kinds", "failure_families", "modules", "path", "counts"],
+  "properties": {
+    "schema": {"const": 1},
+    "product": {
+      "type": "object",
+      "required": ["name", "build_project", "tagline", "mnemonic"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "build_project": {"type": "string", "minLength": 1},
+        "tagline": {"type": "string"},
+        "mnemonic": {"type": "string"}
+      }
+    },
+    "wires": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/wire"}},
+    "parts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/part"}},
+    "kinds": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/kind"}
+    },
+    "failure_families": {"type": "array", "items": {"$ref": "#/$defs/family"}},
+    "modules": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/module"}},
+    "path": {"type": "array", "items": {"$ref": "#/$defs/moduleId"}},
+    "counts": {"$ref": "#/$defs/counts"}
+  },
+  "$defs": {
+    "kebab": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+    "moduleId": {"type": "string", "pattern": "^[A-Z][0-9]{1,2}$"},
+    "wireId": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "wire": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "n", "name", "short", "clock", "angle", "glyph", "line", "question", "law"],
+      "properties": {
+        "id": {"$ref": "#/$defs/wireId"},
+        "n": {"type": "integer", "minimum": 1},
+        "name": {"type": "string", "minLength": 1},
+        "short": {"type": "string", "minLength": 1},
+        "clock": {"type": "string", "minLength": 1},
+        "angle": {"type": "integer", "minimum": 0, "maximum": 359},
+        "glyph": {"type": "string", "minLength": 1},
+        "line": {"type": "string", "minLength": 1},
+        "question": {"type": "string", "minLength": 1},
+        "law": {"type": "string", "minLength": 1}
+      }
+    },
+    "part": {
+      "type": "object",
+      "required": ["id", "title"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[A-Z]$"},
+        "title": {"type": "string", "minLength": 1}
+      }
+    },
+    "kind": {
+      "type": "object",
+      "required": ["beats", "requires"],
+      "properties": {
+        "beats": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "requires": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "family": {
+      "type": "object",
+      "required": ["id", "name", "wire", "summary", "module"],
+      "properties": {
+        "id": {"$ref": "#/$defs/kebab"},
+        "name": {"type": "string", "minLength": 1},
+        "wire": {"$ref": "#/$defs/wireId"},
+        "summary": {"type": "string", "minLength": 1},
+        "module": {"$ref": "#/$defs/moduleId"}
+      }
+    },
+    "objective": {
+      "type": "object",
+      "required": ["id", "text"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[A-Z][0-9]{1,2}\\.o[0-9]+$"},
+        "text": {"type": "string", "minLength": 1}
+      }
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "slug", "part", "title", "kind", "wires", "prereqs", "primers", "minutes", "law",
+        "objectives", "misconceptions", "terms", "interactions", "family", "source", "volatile",
+        "status"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/moduleId"},
+        "slug": {"$ref": "#/$defs/kebab"},
+        "part": {"type": "string", "pattern": "^[A-Z]$"},
+        "title": {"type": "string", "minLength": 1},
+        "kind": {"type": "string", "minLength": 1},
+        "wires": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/wireId"}},
+        "prereqs": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/moduleId"}},
+        "primers": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/moduleId"}},
+        "minutes": {"type": "integer", "minimum": 1},
+        "law": {"type": "string", "minLength": 1},
+        "objectives": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/objective"}},
+        "misconceptions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "terms": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "interactions": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^hx-[a-z]+$"}
+        },
+        "family": {"type": ["string", "null"], "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+        "source": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "volatile": {"type": "boolean"},
+        "status": {"type": "string", "enum": ["planned", "draft", "review", "done"]},
+        "local_terms": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "counts": {
+      "type": "object",
+      "required": [
+        "modules", "modules_by_kind", "parts", "wires", "objectives", "terms_planned",
+        "failure_families", "minutes_path", "minutes_all"
+      ],
+      "properties": {
+        "modules": {"type": "integer", "minimum": 0},
+        "modules_by_kind": {
+          "type": "object",
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        },
+        "parts": {"type": "integer", "minimum": 0},
+        "wires": {"type": "integer", "minimum": 0},
+        "objectives": {"type": "integer", "minimum": 0},
+        "terms_planned": {"type": "integer", "minimum": 0},
+        "failure_families": {"type": "integer", "minimum": 0},
+        "minutes_path": {"type": "integer", "minimum": 0},
+        "minutes_all": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

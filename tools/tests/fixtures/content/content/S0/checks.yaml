@@ -1,0 +1,11 @@
+- id: S0-k1
+  objective: S0.o2
+  mode: predict
+  question: "The run says it is done. Is it?"
+  options:
+    - "Yes, the run is done."
+    - "No, the run only claims it is done."
+  answer: 1
+  why:
+    - "The run claims success without a check, so it is only a claim."
+    - "A claim is not proof, so this is the right answer."

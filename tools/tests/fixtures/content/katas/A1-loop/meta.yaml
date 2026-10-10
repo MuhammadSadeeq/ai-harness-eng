@@ -1,0 +1,10 @@
+id: A1-loop
+module: A1
+title: One loop iteration
+objectives: [A1.o1]
+minutes: 20
+hints:
+  - Look at the reply's stop reason first.
+  - Run the tools the reply asked for, then append their results.
+  - Return every result in one user message.
+from_memory: false

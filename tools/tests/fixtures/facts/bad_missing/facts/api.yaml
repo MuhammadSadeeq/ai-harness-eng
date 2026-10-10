@@ -1,0 +1,5 @@
+- id: api.no-quote
+  claim: "This entry has no quote."
+  source: https://example.com/a
+  verified_on: 2026-10-01
+  volatility: stable

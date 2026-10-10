@@ -1,0 +1,6 @@
+- id: api.from-the-future
+  claim: "Verified after the checker's today."
+  source: https://example.com/a
+  quote: "Quote."
+  verified_on: 2026-12-01
+  volatility: volatile

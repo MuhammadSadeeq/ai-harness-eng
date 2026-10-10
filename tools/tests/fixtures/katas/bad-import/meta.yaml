@@ -1,0 +1,11 @@
+id: bad-import
+module: B2
+title: Uses a third-party package
+objectives:
+  - B2.o1
+minutes: 5
+hints:
+  - Use only the standard library.
+  - Add the two numbers.
+  - "Return a + b."
+from_memory: false

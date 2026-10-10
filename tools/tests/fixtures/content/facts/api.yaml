@@ -1,0 +1,22 @@
+- id: api.fixture-verified
+  claim: "A verified fixture fact."
+  source: https://example.com/fixture
+  quote: "A verified fixture fact."
+  verified_on: 2026-10-10
+  volatility: volatile
+  status: verified
+- id: api.fixture-unverifiable
+  claim: "An unverifiable fixture fact."
+  source: https://example.com/unverified
+  quote: "An unverifiable fixture fact."
+  verified_on: 2026-10-10
+  volatility: stable
+  status: unverifiable
+  note: "Fixture only."
+- id: api.fixture-default
+  claim: "A fixture fact with no status, which counts as verified."
+  source: https://example.com/default
+  quote: "A fixture fact with no status."
+  verified_on: 2026-10-10
+  volatility: stable
+  kind: docs

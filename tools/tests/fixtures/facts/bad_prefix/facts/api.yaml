@@ -1,0 +1,6 @@
+- id: standards.example
+  claim: "An id with the wrong prefix for its file."
+  source: https://example.com/a
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable

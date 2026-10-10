@@ -1,0 +1,5 @@
+- id: S0-c1
+  type: term
+  objective: S0.o1
+  front: "What is the difference between a model and an agent?"
+  back: "An agent is a model in a loop that calls tools until it stops."

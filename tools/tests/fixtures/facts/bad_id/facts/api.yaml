@@ -1,0 +1,6 @@
+- id: API.Bad-Id
+  claim: "An id with capitals."
+  source: https://example.com/a
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable

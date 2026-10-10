@@ -1,0 +1,6 @@
+- id: api.plain-http
+  claim: "A source that is not https."
+  source: http://example.com/a
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable

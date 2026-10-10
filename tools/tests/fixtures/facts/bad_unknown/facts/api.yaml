@@ -1,0 +1,7 @@
+- id: api.extra-key
+  claim: "This entry has an unknown key."
+  source: https://example.com/a
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable
+  colour: blue

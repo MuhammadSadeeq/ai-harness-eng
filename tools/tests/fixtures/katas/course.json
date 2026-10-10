@@ -1,0 +1,11 @@
+{
+  "modules": [
+    {
+      "id": "B2",
+      "objectives": [
+        {"id": "B2.o1", "text": "Add two numbers."},
+        {"id": "B2.o2", "text": "Compare results exactly."}
+      ]
+    }
+  ]
+}

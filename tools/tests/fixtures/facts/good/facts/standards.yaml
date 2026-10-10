@@ -1,0 +1,15 @@
+- id: standards.example-spec
+  claim: "The example specification defines a version field."
+  source: https://example.com/spec
+  quote: "The version field is required."
+  verified_on: 2026-09-20
+  volatility: stable
+  kind: spec
+- id: standards.example-unverified
+  claim: "The example specification has a second revision."
+  source: https://example.com/spec/revision-2
+  quote: "Revision 2 is in draft."
+  verified_on: 2026-09-20
+  volatility: stable
+  status: unverifiable
+  note: "The example host was blocked in the build environment; not checked."

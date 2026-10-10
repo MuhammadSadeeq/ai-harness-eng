@@ -1,0 +1,7 @@
+- id: stop-reason
+  term: stop_reason
+  aliases: [stop reason, stop reasons]
+  strict: true
+  wire: loop
+  definition: >-
+    The field in every model reply that says why the model stopped.

@@ -1,0 +1,10 @@
+id: T1-typing
+module: T1
+title: Annotate and check a function
+objectives: [T1.o3]
+minutes: 15
+hints:
+  - Give the function parameter and return types.
+  - Run mypy on the file and read the first error.
+  - Fix the annotation the error points at.
+from_memory: false

@@ -1,0 +1,8 @@
+- id: standards.example-unverified
+  claim: "A claim that could not be verified."
+  source: https://example.com/spec/revision-2
+  quote: "Revision 2 is in draft."
+  verified_on: 2026-09-20
+  volatility: stable
+  status: unverifiable
+  note: "The example host was blocked in the build environment."

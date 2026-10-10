@@ -1,0 +1,16 @@
+id: precise-mean
+module: B2
+title: Compute a mean exactly
+objectives:
+  - B2.o2
+minutes: 8
+hints:
+  - Look at how the test compares the result.
+  - Divide the sum by the number of values.
+  - "Return sum(values) / len(values)."
+from_memory: true
+wrong_solutions:
+  - name: rounds-to-four-places
+    code: |
+      def mean(values):
+          return round(sum(values) / len(values), 4)

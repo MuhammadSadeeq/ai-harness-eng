@@ -1,0 +1,14 @@
+- id: agent
+  term: agent
+  aliases: [agent, agents]
+  strict: true
+  wire: loop
+  definition: >-
+    A model that runs in a loop, calling tools until it stops.
+- id: harness
+  term: harness
+  aliases: [harness, harnesses]
+  strict: true
+  wire: loop
+  definition: >-
+    Everything around the model: prompt, tools, limits and checks.
