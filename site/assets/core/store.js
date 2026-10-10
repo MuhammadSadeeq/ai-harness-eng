@@ -103,6 +103,7 @@ export function createStore({ storage = null, key = KEY, now = () => new Date(),
   let doc = defaults();
   let persistent = Boolean(storage);
   let blocked = false;
+  let blockReason = null;
   let noticed = false;
   const listeners = new Set();
 
@@ -153,30 +154,30 @@ export function createStore({ storage = null, key = KEY, now = () => new Date(),
    * Loads the stored document. Data this version cannot read (corrupt, or from a newer schema) is left
    * in storage untouched: the store blocks saves and says why, until the learner resets or imports.
    */
+  function block(reason, message) {
+    blocked = true;
+    blockReason = reason;
+    notice(message);
+    return doc;
+  }
+
   function load() {
     const raw = readRaw();
     doc = defaults();
     blocked = false;
+    blockReason = null;
     if (!raw.available || raw.value === null) return doc;
     let parsed;
     try {
       parsed = JSON.parse(raw.value);
     } catch {
-      blocked = true;
-      notice(UNREADABLE_NOTICE);
-      return doc;
+      return block("unreadable", UNREADABLE_NOTICE);
     }
     if (isObj(parsed) && Number.isInteger(parsed.schema) && parsed.schema > SCHEMA) {
-      blocked = true;
-      notice(NEWER_NOTICE);
-      return doc;
+      return block("newer", NEWER_NOTICE);
     }
     const result = migrateDoc(isObj(parsed) && parsed.schema === 1 ? normalizeLoaded(parsed) : parsed);
-    if (result.error) {
-      blocked = true;
-      notice(UNREADABLE_NOTICE);
-      return doc;
-    }
+    if (result.error) return block("unreadable", UNREADABLE_NOTICE);
     doc = result.doc;
     return doc;
   }
@@ -196,6 +197,10 @@ export function createStore({ storage = null, key = KEY, now = () => new Date(),
     },
     get blocked() {
       return blocked;
+    },
+    /** "unreadable" | "newer" | null: why saves are blocked. */
+    get blockReason() {
+      return blockReason;
     },
     /** Applies fn to a copy of the document (returning the new document, or mutating the copy). */
     update(fn) {
@@ -242,6 +247,7 @@ export function createStore({ storage = null, key = KEY, now = () => new Date(),
       if (result.error) return { ok: false, error: `${result.error} Nothing was changed.` };
       doc = result.doc;
       blocked = false;
+      blockReason = null;
       save();
       emit("import");
       return { ok: true, doc };
@@ -251,6 +257,7 @@ export function createStore({ storage = null, key = KEY, now = () => new Date(),
       const prefs = keepPrefs ? doc.prefs : defaults().prefs;
       doc = { ...defaults(), prefs };
       blocked = false;
+      blockReason = null;
       save();
       emit("reset");
       return doc;
