@@ -4,3 +4,5 @@
 labs/clock.html
 labs/count.html
 labs/wire.html
+labs/bench.html
+labs/check.html

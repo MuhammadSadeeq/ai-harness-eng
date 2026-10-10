@@ -23,14 +23,14 @@
     <p>With a turn limit of <hx-num for="bench1" name="knob" format="int">12</hx-num> turns, <hx-num for="bench1" name="passed.new" format="int">13</hx-num> of <hx-num for="bench1" name="trials" format="int">20</hx-num> runs pass on the new board.</p>
     <hx-bench id="bench1" tape="b2-spiral" old="b2-old" new="b2-new" knob="turn_limit.max_turns" knob-min="4" knob-max="30" par="cheapest-worst-case">
       <p>On the same 20 seeds, the new board passes 13 runs and the old board passes 13 runs. The worst case goes from 60 turns to 12 turns, and from ≈ $0.3988 to ≈ $0.0264.</p>
-      <table>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Results table"><table>
         <caption>Results of the last run, with JavaScript off</caption>
         <thead><tr><th scope="col">Board</th><th scope="col">Pass rate</th><th scope="col">Worst case, turns</th><th scope="col">Worst case, cost</th><th scope="col">Mean cost</th></tr></thead>
         <tbody>
           <tr><th scope="row">Old board</th><td>13/20 pass</td><td>60 turns</td><td>≈ $0.3988</td><td>≈ $0.1457</td></tr>
           <tr><th scope="row">New board</th><td>13/20 pass</td><td>12 turns</td><td>≈ $0.0264</td><td>≈ $0.0154</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </hx-bench>
   </section>
 
@@ -38,14 +38,14 @@
     <h2 id="false-h">The false done</h2>
     <hx-bench id="bench2" tape="s0-false-done" old="s0-old" new="s0-new">
       <p>On the same 20 seeds, the new board passes 20 runs and the old board passes 13 runs. The worst case goes from 3 turns to 6 turns, and from ≈ $0.0039 to ≈ $0.0093.</p>
-      <table>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Results table"><table>
         <caption>Results of the last run, with JavaScript off</caption>
         <thead><tr><th scope="col">Board</th><th scope="col">Pass rate</th><th scope="col">Worst case, turns</th><th scope="col">Worst case, cost</th><th scope="col">Mean cost</th></tr></thead>
         <tbody>
           <tr><th scope="row">Old board</th><td>13/20 pass</td><td>3 turns</td><td>≈ $0.0039</td><td>≈ $0.0038</td></tr>
           <tr><th scope="row">New board</th><td>20/20 pass</td><td>6 turns</td><td>≈ $0.0093</td><td>≈ $0.0058</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </hx-bench>
   </section>
 </main>
