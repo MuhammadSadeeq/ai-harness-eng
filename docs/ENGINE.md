@@ -1,6 +1,6 @@
 # HARNESSED: engine spec (simulator and reference harness)
 
-Status: v1 + amendment A1 (Phase 1). Director-owned. Two implementations follow this file
+Status: v1 + amendments A1–A2 (Phase 1). Director-owned. Two implementations follow this file
 exactly: the **JS simulator** (`site/assets/sim/`, runs in the browser and in
 Node) and the **Python reference harness** (`rein/src/rein/`). For every tape,
 board and seed they must produce **identical traces** (`check_scenarios.py`
@@ -466,3 +466,12 @@ eventually notices; lessons say so).
   (attempt 1) is followed by `model_error(type="invalid_request", ...)` with the
   message shown in §7.1, `t` advances 300 ms, no fault draw and no script step
   are consumed, and the run ends `"error"`. Retry never applies (permanent).
+- **A2 (2026-10-10): the simulated human.** `human` is
+  `{"default": "approve" | "deny", "deny_if": {<input field>: <glob>, ...}, "fatigue": {"after": N, "approve_percent": P}}`
+  (`deny_if` and `fatigue` optional). On each `ask`: `asks += 1`; if `fatigue`
+  is set and `asks > after`, draw `percent()`: below `P` the human answers
+  `"approve"` without looking (rubber-stamp). Otherwise the human is careful:
+  `"deny"` if every `deny_if` field's glob matches the call's input (and
+  `deny_if` is non-empty), else `default`. The `permission` event's `human` is
+  `"approve"` or `"deny"`, and `final` is `"allow"` for approve, `"deny"` for
+  deny. No draw happens before fatigue sets in.
