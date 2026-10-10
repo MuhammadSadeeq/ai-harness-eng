@@ -300,7 +300,8 @@ and `bug_path`; `order-turn` adds `items` (correct order); `name-family` adds
 
 `content/<ID>/checks.yaml`: `id`, `objective`, `mode` (predict | check),
 `question`, `options` (2–5), `answer` (index), and `why` for **every**
-option (why it's right, or why it's tempting and wrong).
+option (why it's right, or why it's tempting and wrong). A predict item also
+has `outcome`: the one line the reveal states after the run (DESIGN §7.3).
 
 ## 11. Proving your work
 
