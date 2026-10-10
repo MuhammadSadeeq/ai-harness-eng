@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" data-module="S0">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Same model, different harness · HARNESSED</title>
+<meta name="description" content="After this module you can replay a run and measure one harness change.">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <!-- gen:module-meta -->
+    <!-- /gen -->
+    <!-- gen:course-map -->
+    <!-- /gen -->
+    <p class="plate-label">S0 · Start here</p>
+    <h1>Same model, different harness</h1>
+    <p class="lede">You replay a run that claims it is done, then change one setting.</p>
+  </header>
+
+  <section class="beat" data-beat="break" id="break">
+    <h2>Break</h2>
+    <hx-incident tape="S0-false-done" family="false-done" data-objective="S0.o2">
+      <figure><img src="../assets/figs/S0-false-done.svg" alt="A run that ends with a claim of success">
+      <figcaption>The agent says it is done. Nothing in the run checked that.</figcaption></figure>
+    </hx-incident>
+    <p>Predict whether the run really finished before you replay it.</p>
+  </section>
+
+  <section class="beat" data-beat="see" id="see">
+    <h2>See</h2>
+    <p>An <dfn data-term="agent">agent</dfn> is a model in a loop with tools. Each model call returns a reply, and the reply says why it stopped.</p>
+    <p>A <dfn data-term="harness">harness</dfn> is everything around the model: the prompt, the tools, the limits and the checks. Change the harness and the same model can score differently.</p>
+    <p>Each run is measured as a <span class="term" data-term="pass-rate">pass rate</span> over many seeded trials.</p>
+    <p>You will meet <span class="fwd" data-term="type-hint">type hints</span> later, when the code gets typed.</p>
+  </section>
+
+  <section class="beat" data-beat="lab" id="lab">
+    <h2>Lab</h2>
+    <hx-desk scenario="S0-lab" data-objective="S0.o3">
+      <table><caption>One setting, scripted seeded runs</caption>
+      <thead><tr><th>Harness</th><th>Pass rate</th></tr></thead>
+      <tbody><tr><td>Old</td><td>0.40</td></tr><tr><td>New</td><td>0.85</td></tr></tbody></table>
+    </hx-desk>
+    <p>Move the setting and watch the pass rate move. The model does not change.</p>
+  </section>
+
+  <section class="beat" data-beat="check" id="check" data-objective="S0.o1">
+    <h2>Check</h2>
+    <p>Predict first, then check your answer.</p>
+    <hx-check src="S0" item="S0-k1" mode="predict" data-objective="S0.o2">
+      <ul><li>Yes, the run is done.</li><li>No, the run only claims it is done.</li></ul>
+    </hx-check>
+  </section>
+
+  <section class="beat" data-beat="keep" id="keep">
+    <h2>Keep</h2>
+    <p class="law">Same model, different harness, different results.</p>
+    <pre><code>print("a long line of code")</code></pre>
+    <hx-cards src="S0"><p>Cards for this module appear here.</p></hx-cards>
+    <hx-say src="S0"><p>Say the thesis out loud in your own words.</p></hx-say>
+    <aside class="portfolio"><p>What to show from this module:</p>
+      <ul><li>A replay with a predicted outcome.</li></ul></aside>
+  </section>
+</main>
+</body>
+</html>

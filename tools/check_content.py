@@ -923,6 +923,15 @@ def _check_hygiene(page: Page, shown: str, report: Report) -> None:
         src = element.attrs.get("src", "").lower()
         if src.startswith(("http:", "https:")):
             report.problem(shown, element.line, f"[B8] src points outside the site: {src}")
+        # A code block can scroll sideways, so keys must reach it; an output wraps instead (hx.css).
+        if element.tag == "pre" and "data-output" not in element.attrs:
+            attrs = element.attrs
+            focusable = (attrs.get("tabindex") == "0" and attrs.get("role") == "region"
+                         and attrs.get("aria-label", "").strip())
+            if not focusable:
+                report.problem(shown, element.line,
+                               '[B8] a <pre> needs tabindex="0", role="region" and an aria-label '
+                               "(or data-output, for an output)")
 
 
 # ---------------------------------------------------------------- driver
