@@ -186,7 +186,6 @@ def _step_json(step: Any, shared: dict[str, str]) -> dict[str, Any]:
             {"id": brk.id, "title": brk.title, "explain": brk.explain, "expected": brk.expected,
              "change": brk.change, "run": {"files": files, "argv": argv}}
         )
-                       "change": brk.change, "run": {"files": files, "argv": argv}})
     chunks = []
     for chunk in step.chunks:
         hunks = [{"where": h.where, "diff": "".join(sign + body + "\n" for sign, body in h.lines)}

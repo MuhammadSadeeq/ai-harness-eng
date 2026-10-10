@@ -5,20 +5,19 @@ Usage: check_steps.py [--steps DIR] [--course PATH|none] [--pyodide]
 For each build module that has steps/<ID>/, in course.json path order:
   1. the chunks, applied to the previous step's rein.py (empty for the first), give
      this step's rein.py byte for byte, with lines_after lines;
-     byte for byte, with lines_after lines;
   2. the checkpoint's stdout under CPython equals `expected` (`error: Name` means
      a traceback of that name);
   3. every break's output equals its `expected` and differs from the checkpoint's.
 With --pyodide, every step that runs in the browser also runs under Pyodide (one
 process for all of them, DECISIONS D-015): the stdout and the error name must equal
 CPython's.
-DECISIONS D-015): the stdout and the error name must equal CPython's.
 A problem prints as path:line: message; the last line is the summary.
 """
 
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import os
 import re
@@ -28,6 +27,7 @@ import sys
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 import yaml
@@ -67,7 +67,6 @@ writeFileSync(request.result, JSON.stringify(results));
 
 # Runs one job under Pyodide the way the CPython runner does: files written, setup scripts
 # run, then rein.py with sys.argv set, stdout captured, and the exception's name as the error.
-# rein.py with sys.argv set, stdout captured, and the exception's name as the error.
 RUNNER = """
 import contextlib, io, json, os, runpy, sys
 
@@ -409,9 +408,8 @@ def first_difference(left: str, right: str) -> str:
 def check_pyodide(
     jobs: list[dict[str, Any]], pyodide_dir: Path, report: list[Problem]
 ) -> list[dict[str, Any]] | None:
-    check_katas = (
-        _katas()
-    )  # the Pyodide setup (node, the pinned install) is shared with check_katas
+    # The Pyodide setup (node, the pinned install) is shared with check_katas.
+    check_katas = _katas()
 
     node = shutil.which("node")
     if node is None:
@@ -458,13 +456,13 @@ def check_pyodide(
                 )
             )
             return None
-        data = json.loads(result_path.read_text(encoding="utf-8"))
+        data: list[dict[str, Any]] = json.loads(result_path.read_text(encoding="utf-8"))
     if len(data) != len(jobs):
         report.append(
             Problem(display(pyodide_dir), 0, "pyodide runner: result count differs from the jobs")
         )
         return None
-    for job, row in zip(jobs, data):
+    for job, row in zip(jobs, data, strict=True):
         if "error_python" in row:
             report.append(
                 Problem(
@@ -586,11 +584,11 @@ def run(
         rows = check_pyodide(jobs, pyodide_dir or check_katas_dir(), problems)
         if rows is not None:
             ran = True
-            for (step, kind, brk), row in zip(meta, rows):
+            for (step, kind, target), row in zip(meta, rows, strict=True):
                 outcome = Outcome(row.get("stdout", ""), row.get("error", ""))
-                cpython = run_cpython_for(step, kind, brk, shared)
+                cpython = run_cpython_for(step, kind, target, shared)
                 if same_output(outcome, cpython) is False:
-                    label = "checkpoint" if kind == "check" else f"break {brk.id}"
+                    label = "checkpoint" if target is None else f"break {target.id}"
                     problems.append(
                         Problem(
                             step.shown,
@@ -612,7 +610,6 @@ def same_output(left: Outcome, right: Outcome) -> bool:
     Pyodide numbers errno differently from CPython ([Errno 44] for a missing file, where
     CPython gives 2), so the number inside [Errno N] is not compared.
     """
-    file, where CPython gives 2), so the number inside [Errno N] is not compared."""
     return (
         ERRNO.sub("[Errno N]", left.stdout) == ERRNO.sub("[Errno N]", right.stdout)
         and left.error == right.error
@@ -648,7 +645,7 @@ def _job(
 
 
 def run_cpython_for(step: Step, kind: str, brk: Break | None, shared: dict[str, str]) -> Outcome:
-    if kind == "check":
+    if kind == "check" or brk is None:
         return run_cpython({"rein.py": step.text, **step.scenarios}, shared, step.setup, step.argv)
     files, argv = apply_change(step, brk.change)
     return run_cpython(files, shared, step.setup, argv)
@@ -673,17 +670,16 @@ def module_order(course: Path | None, steps_dir: Path, problems: list[Problem]) 
     return known + missing
 
 
-def _katas() -> Any:
-    """check_katas, imported either as a script module or as tools.check_katas."""
+def _katas() -> ModuleType:
+    """check_katas, imported as tools.check_katas, or as a script module next to this file."""
     try:
-        from tools import check_katas
+        return importlib.import_module("tools.check_katas")
     except ImportError:
-        import check_katas
-    return check_katas
+        return importlib.import_module("check_katas")
 
 
 def check_katas_dir() -> Path:
-    return _katas().PYODIDE_DIR
+    return Path(_katas().PYODIDE_DIR)
 
 
 def main(argv: list[str] | None = None) -> int:

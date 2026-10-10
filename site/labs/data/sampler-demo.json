@@ -1,0 +1,10 @@
+{
+ "prompt": "The capital of Australia is",
+ "candidates": [
+  {"text": "Sydney", "logit": 2.6, "correct": false},
+  {"text": "Canberra", "logit": 2.1, "correct": true},
+  {"text": "Melbourne", "logit": 1.0, "correct": false},
+  {"text": "Perth", "logit": 0.2, "correct": false}
+ ],
+ "note": "Scripted candidates for teaching; the numbers are illustrative."
+}

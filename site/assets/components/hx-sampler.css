@@ -1,0 +1,31 @@
+/* hx-sampler: tokens only; keys, readouts and the range input come from hx.css. */
+hx-sampler { display: block; margin: var(--sp-5) 0; }
+hx-sampler .hx-ui { display: block; }
+.sampler { display: grid; gap: var(--sp-3); }
+.sampler .fig-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--hx-ink-2); }
+.sampler-prompt { margin: 0; font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }
+.sampler-temp { display: grid; gap: var(--sp-1); }
+.sampler-temp .readout-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); }
+.sampler-temp-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px auto; gap: var(--sp-2); align-items: center; }
+.sampler-temp-row .readout { padding: var(--sp-1) var(--sp-2); }
+.sampler-temp-row .readout-value { margin: 0; }
+.sampler-zero, .sampler-warn { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); }
+.sampler-warn { color: var(--hx-warn); }
+.cands { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.cand { display: grid; gap: var(--sp-1); }
+.cand-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--sp-1) var(--sp-2); }
+.cand-text { font: 600 var(--fs-ui)/1.3 var(--font-mono); }
+.cand-mark { font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink); }
+.cand-mark[hidden] { display: none; }
+.cand-line { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--sp-2); align-items: center; }
+.bar { display: block; height: 18px; border: 1px solid var(--hx-rule-strong); border-radius: 4px; background: var(--hx-panel-2); overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--hx-ink); }
+.cand.is-top .bar-fill { background: var(--hx-ink); }
+.cand-pct { font: 600 var(--fs-ui) var(--font-mono); min-width: 3.5em; text-align: right; }
+.cand-count { font: 600 var(--fs-ui) var(--font-mono); color: var(--hx-ink); }
+.cand-count[hidden] { display: none; }
+.illustrative { margin: 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.sampler-keys { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+.sampler-keys .key[aria-disabled="true"] { opacity: .45; }
+.seed-label { font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); }
+.sampler-last { margin: 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }

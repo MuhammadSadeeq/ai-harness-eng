@@ -73,7 +73,7 @@
     <h2>How the loop works</h2>
     <p>One model call gives one reply. An agent needs many calls, so something has to make them. That something is the <dfn data-term="agent-loop">agent loop</dfn>. It calls the model, runs the tools the model asks for, and calls the model again. Each pass is one <dfn data-term="turn">turn</dfn>: a call, and the results that follow it.</p>
     <p>The pattern has a name from a research paper, <dfn data-term="react">ReAct</dfn>. <span class="fact" data-fact="papers.react-title-id">The authors' repo cites the paper as ReAct: Synergizing Reasoning and Acting in Language Models, ICLR 2023.</span></p>
-    <p>Read the code from the top. Each comment marks one step.</p>
+    <p>Read the code from the top. Each comment marks one step. <span class="fact" data-fact="api.content-multiple-blocks">A response's content is an array of content blocks, each with a type that determines its shape.</span> The loop reads each block by its type.</p>
 
     <pre data-run tabindex="0" role="region" aria-label="Python code"><code class="language-python">from collections.abc import Callable
 from typing import Any
@@ -125,7 +125,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
       <tbody>
         <tr><td><code>tool_use</code></td><td><span class="fact" data-fact="api.stop-reason-tool-use">Claude is calling a tool and expects the application to run it.</span></td><td>Run the tools it asked for. Send all the results back together. Call again.</td></tr>
         <tr><td><code>end_turn</code></td><td><span class="fact" data-fact="api.stop-reason-end-turn">Claude finished its response naturally.</span></td><td>Treat it as a done claim. Check the work before you return.</td></tr>
-        <tr><td><code>max_tokens</code></td><td><span class="fact" data-fact="api.stop-reason-max-tokens">The response reached the request's max_tokens limit.</span></td><td>Do not run a half-written tool call. Ask for the rest, or retry in smaller steps.</td></tr>
+        <tr><td><code>max_tokens</code></td><td><span class="fact" data-fact="api.stop-reason-max-tokens">The response reached the request's max_tokens limit.</span></td><td>Do not run a half-written tool call. Retry with a higher max_tokens, or in smaller steps.</td></tr>
         <tr><td><code>refusal</code></td><td><span class="fact" data-fact="api.stop-reason-refusal">Claude declined to generate a response, returned as a normal HTTP 200 response rather than an error.</span></td><td>Do not retry it unchanged. Stop and report it.</td></tr>
         <tr><td><code>pause_turn</code></td><td><span class="fact" data-fact="api.stop-reason-pause-turn">A server-tool loop reached its iteration limit.</span></td><td>Decide on purpose: continue, or stop and report.</td></tr>
         <tr><td><code>stop_sequence</code></td><td><span class="fact" data-fact="api.stop-reason-stop-sequence">Claude emitted one of the request's stop_sequences.</span></td><td>Treat it as a stop you asked for. Check the reply, then decide.</td></tr>
@@ -134,7 +134,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
     </div>
 
     <h3>What the loop sends</h3>
-    <p>This loop only grows the history. Each turn adds the reply and its results, and each call sends the whole history. <span class="fact" data-fact="api.tool-results-single-user-message">The docs say to return one tool_result for each tool_use block, all together in the next user message.</span> <span class="fact" data-fact="api.tool-result-unrun-call">A tool_use block that is not run still needs a tool_result with is_error true and a brief explanation.</span></p>
+    <p><span class="fact" data-fact="api.messages-stateless">The Messages API is stateless: you send the full conversational history with each request.</span> This loop only grows the history. Each turn adds the reply and its results, and each call sends all of it. <span class="fact" data-fact="api.tool-results-single-user-message">The docs say to return one tool_result for each tool_use block, all together in the next user message.</span> <span class="fact" data-fact="api.tool-result-ids-must-match">A tool_result's tool_use_id is the id of the tool use request that the result answers.</span> <span class="fact" data-fact="api.tool-result-unrun-call">A tool_use block that is not run still needs a tool_result with is_error true and a brief explanation.</span></p>
 
     <figure>
       <hx-wire tape="b2-spiral" board="b2-new" turn="3" diff data-objective="B2.o4">

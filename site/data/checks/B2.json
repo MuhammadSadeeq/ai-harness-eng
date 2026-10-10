@@ -32,8 +32,8 @@
     "why": "Tempting. A half-written tool call has no complete input, so running it can do the wrong thing."
    },
    {
-    "text": "Ask for the rest, or retry in smaller steps. Never run the half-written call.",
-    "why": "Right. The reply was cut off, so the loop has to handle that on purpose."
+    "text": "Retry with a higher max_tokens, so the whole tool call comes back. Never run the half-written call.",
+    "why": "Right. The docs say to retry with a higher max_tokens value to get the full tool use. Running the half-written call is the mistake."
    },
    {
     "text": "Return the partial text as the final answer.",

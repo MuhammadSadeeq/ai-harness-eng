@@ -1,6 +1,5 @@
-"""Tests for tools/check_steps.py: small two-step builds in a temporary folder,
-one failure at a time, then the real steps (CPython; the Pyodide agreement is checked once).
-then the real steps (CPython; the Pyodide agreement is checked once, here and in CI)."""
+"""Tests for tools/check_steps.py: small two-step builds in a temporary folder, one failure
+at a time, then the real steps (CPython; the Pyodide agreement is checked once)."""
 
 from __future__ import annotations
 
@@ -221,10 +220,7 @@ def test_pyodide_disagreement_is_reported(tmp_path: Path, monkeypatch: pytest.Mo
     steps, course = build(tmp_path)
 
     def flipped(jobs: list[Any], pyodide_dir: Path, report: list[Any]) -> list[dict[str, Any]]:
-        rows = []
-        for job in jobs:
-            rows.append({"stdout": "not what cpython printed\n", "error": ""})
-        return rows
+        return [{"stdout": "not what cpython printed\n", "error": ""} for _ in jobs]
 
     monkeypatch.setattr(checker, "check_pyodide", flipped)
     problems, _, _, in_browser, ran = checker.run(steps, course, pyodide=True)

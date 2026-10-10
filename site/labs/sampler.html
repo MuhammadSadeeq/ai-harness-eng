@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sampling and temperature · HARNESSED</title>
+<meta name="description" content="A model picks the next word from probabilities. Temperature reshapes them; the most likely word is not always true.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">
+  import "../assets/components/hx-sampler.js";
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · next word</p>
+    <h1>Pick the next word</h1>
+    <p class="lede">A model scores every possible next word. Sampling picks one. Temperature changes how much the scores count.</p>
+  </header>
+  <section class="row" aria-labelledby="sample-h">
+    <h2 id="sample-h">Sampling</h2>
+    <hx-sampler src="data/sampler-demo.json" seed="1">
+      <p>The next word is drawn from these probabilities. The most likely word is marked.</p>
+      <ol><li>Sydney 26%</li><li>Canberra 21%</li><li>Melbourne 10%</li><li>Perth 2%</li></ol>
+    </hx-sampler>
+    <p class="fact-line"><span class="fact" data-fact="api.temperature-deprecated-after-opus-4-6">On current Claude models you can't change temperature: the API accepts only 1.0.</span></p>
+  </section>
+</main>
+</body>
+</html>
