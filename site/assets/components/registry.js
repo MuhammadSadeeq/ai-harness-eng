@@ -12,6 +12,7 @@ export const REGISTRY = Object.freeze({
   "hx-desk": "../../components/hx-desk.js",
   "hx-dice": "../../components/hx-dice.js",
   "hx-forgetful": "../../components/hx-forgetful.js",
+  "hx-gatekeeper": "../../components/hx-gatekeeper.js",
   "hx-incident": "../../components/hx-incident.js",
   "hx-kata": "../../components/hx-kata.js",
   "hx-num": "../../components/hx-num.js",

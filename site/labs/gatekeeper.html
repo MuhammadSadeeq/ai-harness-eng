@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Allow, ask or deny · HARNESSED</title>
+<meta name="description" content="Decide each tool call by hand, then write a policy and replay the same calls through the rules. See what a tired reviewer lets through.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module" src="../assets/components/hx-gatekeeper.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · permissions under pressure</p>
+    <h1>Allow, ask or deny</h1>
+    <p class="lede">Decide each call by hand, then write a policy and run the same calls through it. Watch what a tired reviewer lets through.</p>
+  </header>
+  <section class="row" aria-labelledby="gk-h">
+    <h2 id="gk-h">Ten calls, two rounds</h2>
+    <hx-gatekeeper src="data/gatekeeper-demo.json" seed="1">
+      <p>The calls the model asks for, one at a time.</p>
+    </hx-gatekeeper>
+  </section>
+</main>
+</body>
+</html>

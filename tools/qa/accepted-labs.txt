@@ -27,3 +27,4 @@ labs/cacheline.html
 labs/placement.html
 labs/scheduler.html
 labs/bugcatch.html
+labs/gatekeeper.html

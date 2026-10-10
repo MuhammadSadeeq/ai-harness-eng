@@ -466,3 +466,21 @@ basis for Phase 1, and answered SPEC §14:
   environment's network policy (BP-3.1-facts: CONNECT 403). Their facts stay
   `unverifiable` until the owner allows those hosts; nothing routes around the
   denial, and pages don't state those claims meanwhile.
+
+## D-053 The gatekeeper's round 2 ties a careful round 1; the lesson is attention, not a better score
+
+- **Context:** BP-3.4 `hx-gatekeeper`. A search over 64,512 policies (the
+  four dangerous templates denied or left out, every decision on the other six,
+  each default mode) found none that beats a careful hand on all four counts
+  (asks, dangerous through, work blocked, risky calls run unreviewed): the
+  best total is 2, and 28 policies give exactly 2 / 0 / 0 / 0, the careful
+  round 1.
+- **Decision:** the tie is the lesson. A good policy gives your most careful
+  answer on every call **without anyone watching the stream**, so it holds
+  when the reviewer is tired or the timer runs out (round 1 with no answers:
+  four dangerous calls get through). The round-2 line says so when round 2 is
+  no worse on any count, and otherwise names each count where it is worse,
+  with both numbers. "Work blocked" counts denied safe and risky calls, so
+  denying all edits to reach 0 asks is not rewarded. Ten templates: rm, a
+  pipe into a shell, force push, reads outside the project, writes, tests,
+  edits, reads, lists, ls.
