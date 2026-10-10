@@ -109,6 +109,21 @@ def bench():
 if __name__ == "__main__":
     data = {"note": "Design exploration fixture. Prices are illustrative relative units.",
             "trace": spiral_events(), "bench": bench(),
+            "incident": {"family": "almost-done-spiral", "family_name": "The \u201calmost done\u201d spiral",
+                         "wire": "loop", "first_bad_seq": 30,
+                         "why": "At turn 6 the model undoes its own turn-4 edit. From here it swaps "
+                                "+ 1 and - 1 forever and never tries removing it, and the loop has "
+                                "no exit except the model saying it is done.",
+                         "fixes": ["Add a turn limit and a token budget to the loop",
+                                   "Tell the model to try harder in the system prompt",
+                                   "Switch to a bigger model", "Retry the run"],
+                         "correct_fix": 0,
+                         "prediction": {"question": "How does this run end?",
+                                        "options": ["It fixes the bug and stops after a few turns.",
+                                                    "It says it is done too early.",
+                                                    "It never stops on its own.",
+                                                    "It crashes on an error."],
+                                        "answer": 2}},
             "puzzle": {"rule": "A trial passes if it fixes the bug and needs <= limit turns; "
                        "otherwise the new board stops it at the limit. Cost of a run with n turns "
                        "is cost_by_turns[n].",
