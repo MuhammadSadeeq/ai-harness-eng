@@ -421,3 +421,15 @@ basis for Phase 1, and answered SPEC §14:
   unanswered `tool_use`) is a fact question, not a simulator choice: those
   behaviors wait for verified facts (wave 3.2's fact-checker) before the
   simulator models them or a page states them.
+
+### D-050 · Temperature is taught as a concept; facts back the API's current rule · *decided*
+- New verified facts (BP-3.0, spot-checked by the director against the
+  fetched pages): `temperature` defaults to 1.0 in 0.0–1.0, and models released
+  after Claude Opus 4.6 accept only 1.0 (other values are rejected with a 400).
+- A1 teaches sampling and temperature as how next-word choice works, in
+  `hx-sampler` with illustrative numbers, and states the current API rule as a
+  fact: on current Claude models you don't tune temperature, which is one more
+  reason a harness can't rely on the model being deterministic.
+- The simulator's missing-result error text equals the API's documented
+  standard error (`api.tool-use-without-result-error`), so lessons may say
+  "the API rejects the request with this error" on that fact.

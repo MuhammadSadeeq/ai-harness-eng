@@ -115,6 +115,16 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.content-multiple-blocks"
+  claim: "A response's content is an array of content blocks, each with a type that determines its shape."
+  source: "https://platform.claude.com/docs/en/api/messages/create"
+  source_alt: "https://platform.claude.com/docs/en/api/messages/create.md"
+  quote: "This is an array of content blocks, each of which has a `type` that determines its shape."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  note: "Response field 'content' on the Create a Message page (Returns section). A text block followed by a tool_use block appears in the handle-tool-calls page's JSON example, which is code rather than a quoted sentence; that page's sentence 'one or more tool_use content blocks' also supports multi-block tool responses."
+
 - id: "api.context-editing-beta-header"
   claim: "Context editing is in beta and is enabled with the context-management-2025-06-27 beta header."
   source: "https://platform.claude.com/docs/en/build-with-claude/context-editing"
@@ -290,6 +300,15 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.max-tokens-incomplete-tool-use"
+  claim: "If a max_tokens response is cut off inside a tool use block, the docs say to retry with a higher max_tokens value to get the full tool use."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "If Claude's response is cut off because it hit the `max_tokens` limit, and the truncated response contains an incomplete tool use block, you'll need to retry the request with a higher `max_tokens` value to get the full tool use."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
 - id: "api.messages-create-endpoint"
   claim: "Creating a message is a POST to /v1/messages."
   source: "https://platform.claude.com/docs/en/api/messages/create"
@@ -298,6 +317,25 @@
   verified_on: 2026-10-10
   volatility: "volatile"
   kind: "docs"
+
+- id: "api.messages-stateless"
+  claim: "The Messages API is stateless: you send the full conversational history with each request."
+  source: "https://platform.claude.com/docs/en/build-with-claude/working-with-messages"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/working-with-messages.md"
+  quote: "The Messages API is stateless, which means that you always send the full conversational history to the API."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.parallel-results-one-message"
+  claim: "For parallel tool use, the docs mark one user message per tool result as Wrong and all tool results together in a single user message as Correct."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md"
+  quote: "* **Wrong:** a separate user message for each tool result\n* **Correct:** all tool results together in a single user message"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  note: "Troubleshooting section 1 of the same page says the most common issue is formatting tool results incorrectly in the conversation history, and that this 'teaches' Claude to avoid parallel calls."
 
 - id: "api.prefill-claude-4-6-and-later"
   claim: "Claude 4.6 and later models and Claude Mythos Preview do not support assistant prefill; a prefilled last assistant message returns HTTP 400 invalid_request_error."
@@ -488,6 +526,26 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.temperature-range"
+  claim: "The temperature parameter defaults to 1.0 and ranges from 0.0 to 1.0."
+  source: "https://platform.claude.com/docs/en/api/messages/create"
+  source_alt: "https://platform.claude.com/docs/en/api/messages/create.md"
+  quote: "Defaults to `1.0`. Ranges from `0.0` to `1.0`."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  note: "The same page marks temperature as Deprecated for models released after Claude Opus 4.6; see api.temperature-deprecated-after-opus-4-6 before teaching it as an adjustable setting."
+
+- id: "api.temperature-deprecated-after-opus-4-6"
+  claim: "On models released after Claude Opus 4.6, temperature is deprecated: 1.0 is accepted for backwards compatibility and any other value is rejected with a 400 error."
+  source: "https://platform.claude.com/docs/en/api/messages/create"
+  source_alt: "https://platform.claude.com/docs/en/api/messages/create.md"
+  quote: "Models released after Claude Opus 4.6 do not support setting temperature. A value of 1.0 will be accepted for backwards compatibility, all other values will be rejected with a 400 error."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  note: "Added beyond the brief because it changes what A1 can teach. The Using the Messages API page (build-with-claude/working-with-messages) says temperature, top_p and top_k are not supported on Claude 4.7 and later models and that non-default values return a 400 error."
+
 - id: "api.thinking-adaptive-recommended"
   claim: "Anthropic says to use adaptive thinking wherever both thinking modes are available."
   source: "https://platform.claude.com/docs/en/build-with-claude/extended-thinking"
@@ -587,6 +645,15 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.tool-result-ids-must-match"
+  claim: "A tool_result's tool_use_id is the id of the tool use request that the result answers."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md"
+  quote: "`tool_use_id`: The `id` of the tool use request this is a result for."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
 - id: "api.tool-result-is-error"
   claim: "is_error is an optional tool_result field that is set to true when the tool execution resulted in an error."
   source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
@@ -622,3 +689,13 @@
   verified_on: 2026-10-10
   volatility: "volatile"
   kind: "docs"
+
+- id: "api.tool-use-without-result-error"
+  claim: "Leaving out the tool_result for a tool_use makes the request fail with the standard error 'tool_use ids were found without tool_result blocks immediately after'."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "Leaving out a `tool_result`, or putting one after other content, fails earlier with the standard `tool_use ids were found without tool_result blocks immediately after` error instead."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  note: "The page gives no status code or error type for this case. The 400 invalid_request_error in the same section applies to a server tool called directly. The handle-tool-calls page quotes the same message ('If you receive an error like ...') and says to check that tool results are formatted correctly."
