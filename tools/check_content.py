@@ -42,7 +42,9 @@ from tools.lib.course import (  # noqa: E402
 )
 from tools.render_curriculum import BEGIN, END, render  # noqa: E402
 
-LAB_EXCLUDED = frozenset({"hx-kata", "hx-cards", "hx-say", "hx-check", "hx-count", "hx-step", "hx-num"})
+LAB_EXCLUDED = frozenset(
+    {"hx-kata", "hx-cards", "hx-say", "hx-check", "hx-count", "hx-step", "hx-num"}
+)
 DRILL_TAGS = frozenset({"hx-say", "hx-design", "hx-kata", "hx-incident"})
 PROSE_TAGS = frozenset({"p", "li", "h2", "h3", "figcaption", "td", "th", "dt", "dd", "blockquote"})
 SKIP_TAGS = frozenset({"pre", "code", "script", "style", "svg"})
