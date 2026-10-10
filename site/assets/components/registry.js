@@ -1,3 +1,10 @@
 // The component registry (director-owned): tag -> module path, relative to site/assets/core/shell/loader.js.
-// The shell imports only the tags a page contains. A tag is listed here once its module exists.
-export const REGISTRY = Object.freeze({});
+// The shell imports only the tags a page contains. A tag is listed here once its component is accepted.
+export const REGISTRY = Object.freeze({
+  "hx-bench": "../../components/hx-bench.js",
+  "hx-check": "../../components/hx-check.js",
+  "hx-clock": "../../components/hx-clock.js",
+  "hx-count": "../../components/hx-count.js",
+  "hx-num": "../../components/hx-num.js",
+  "hx-wire": "../../components/hx-wire.js",
+});
