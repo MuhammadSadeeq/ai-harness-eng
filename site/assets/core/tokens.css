@@ -1,0 +1,157 @@
+/* HARNESSED design tokens. Source of truth: docs/DESIGN.md.
+   tools/qa/check_palette.py parses the wire and surface colors in this file;
+   keep one declaration per line in the form `--name: #RRGGBB;`. */
+
+:root {
+  color-scheme: light;
+  /* surfaces (day) */
+  --hx-paper: #F5F4EE;
+  --hx-grid-minor: rgb(29 78 116 / .055);
+  --hx-grid-major: rgb(29 78 116 / .10);
+  --hx-panel: #FFFFFF;
+  --hx-panel-2: #ECEBE3;
+  --hx-ink: #13202C;
+  --hx-ink-2: #4D5A66;
+  --hx-rule: #CFD3CC;
+  --hx-rule-strong: #7C858C;
+  --hx-focus: #1A56DB;
+  --hx-code-bg: #13202C;
+  --hx-code-ink: #E4EAF0;
+  --hx-pass: #1D6B3F;
+  --hx-fail: #B3261E;
+  --hx-warn: #8A5A00;
+
+  /* wires (day), in turn order */
+  --w-control: #7A62E0;
+  --w-context: #1A3F96;
+  --w-loop: #D8465C;
+  --w-errors: #73290F;
+  --w-tools: #A27F00;
+  --w-permissions: #155C45;
+  --w-verify: #1F8577;
+  --w-observe: #3E4858;
+
+  /* syntax (on --hx-code-bg, all >= 4.5:1) */
+  --syn-kw: #C9B8FF;
+  --syn-str: #A5E3B5;
+  --syn-num: #F5C97A;
+  --syn-com: #9AA8B5;
+  --syn-fn: #8CC4FF;
+  --syn-op: #E4EAF0;
+  --diff-add: rgb(95 208 143 / .20);
+  --diff-del: rgb(255 138 128 / .20);
+
+  /* type */
+  --font-sans: "Harnessed Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-cond: "Harnessed Sans Condensed", "Harnessed Sans", "Arial Narrow", system-ui, sans-serif;
+  --font-mono: "Harnessed Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --fs-small: 0.875rem;
+  --fs-ui: 0.9375rem;
+  --fs-body: 1.0625rem;
+  --fs-lede: 1.1875rem;
+  --fs-h3: 1.1875rem;
+  --fs-h2: 1.5rem;
+  --fs-h1: clamp(2rem, 1.3rem + 3.2vw, 3rem);
+  --fs-code: 0.875rem;
+  --lh-body: 1.6;
+  --lh-head: 1.12;
+  --lh-code: 1.5;
+
+  /* space, radius */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+  --r-chip: 6px; --r-btn: 8px; --r-plate: 10px;
+  --shadow-pop: 0 10px 30px rgb(0 0 0 / .18);
+  --target: 44px;
+  --rail: 288px;
+  --measure: 44rem;
+  --bleed: 60rem;
+
+  /* motion */
+  --dur-fast: 150ms;
+  --dur-base: 300ms;
+  --dur-slow: 600ms;
+  --ease-signal: cubic-bezier(.2, .7, .2, 1);
+  --ease-exit: cubic-bezier(.4, 0, 1, 1);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --fs-body: 1.125rem;
+    --fs-lede: 1.25rem;
+    --fs-h3: 1.25rem;
+    --fs-h2: 1.75rem;
+    --fs-code: 0.9375rem;
+  }
+}
+
+/* night shift: system preference, unless the learner forced day */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --hx-paper: #0F161D;
+    --hx-grid-minor: rgb(120 180 220 / .045);
+    --hx-grid-major: rgb(120 180 220 / .08);
+    --hx-panel: #151F28;
+    --hx-panel-2: #1C2833;
+    --hx-ink: #E4EAF0;
+    --hx-ink-2: #9DABB8;
+    --hx-rule: #2A3946;
+    --hx-rule-strong: #6B7A88;
+    --hx-focus: #7FB2FF;
+    --hx-code-bg: #0A1016;
+    --hx-code-ink: #DCE6EE;
+    --hx-pass: #5FD08F;
+    --hx-fail: #FF8A80;
+    --hx-warn: #F2C35B;
+    --w-control: #C8BEFF;
+    --w-context: #4A86E8;
+    --w-loop: #FF9E94;
+    --w-errors: #C2621E;
+    --w-tools: #F3CB6E;
+    --w-permissions: #4E9A62;
+    --w-verify: #7FE0CF;
+    --w-observe: #7E8A99;
+    --shadow-pop: 0 10px 30px rgb(0 0 0 / .45);
+  }
+}
+
+/* night shift: forced by the learner (keep identical to the block above) */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --hx-paper: #0F161D;
+  --hx-grid-minor: rgb(120 180 220 / .045);
+  --hx-grid-major: rgb(120 180 220 / .08);
+  --hx-panel: #151F28;
+  --hx-panel-2: #1C2833;
+  --hx-ink: #E4EAF0;
+  --hx-ink-2: #9DABB8;
+  --hx-rule: #2A3946;
+  --hx-rule-strong: #6B7A88;
+  --hx-focus: #7FB2FF;
+  --hx-code-bg: #0A1016;
+  --hx-code-ink: #DCE6EE;
+  --hx-pass: #5FD08F;
+  --hx-fail: #FF8A80;
+  --hx-warn: #F2C35B;
+  --w-control: #C8BEFF;
+  --w-context: #4A86E8;
+  --w-loop: #FF9E94;
+  --w-errors: #C2621E;
+  --w-tools: #F3CB6E;
+  --w-permissions: #4E9A62;
+  --w-verify: #7FE0CF;
+  --w-observe: #7E8A99;
+  --shadow-pop: 0 10px 30px rgb(0 0 0 / .45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) {
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+  }
+}
+:root[data-motion="reduced"] {
+  --dur-base: 0ms;
+  --dur-slow: 0ms;
+}

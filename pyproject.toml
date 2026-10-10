@@ -1,0 +1,25 @@
+# Tooling config for the repository's own scripts (tools/). Rein has its own
+# pyproject in rein/.
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["source", "site/vendor", "node_modules"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+files = ["tools"]
+exclude = ["tools/tests/fixtures/"]
+
+[[tool.mypy.overrides]]
+module = ["tools.tests.*"]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tools/tests"]
+addopts = "-q -p no:cacheprovider"
