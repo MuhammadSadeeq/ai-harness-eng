@@ -1,0 +1,7 @@
+{
+ "id": "c5-new",
+ "label": "New board",
+ "modules": {
+  "close_books": {}
+ }
+}

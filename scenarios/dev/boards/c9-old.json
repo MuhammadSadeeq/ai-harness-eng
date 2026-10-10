@@ -1,0 +1,10 @@
+{
+ "id": "c9-old",
+ "label": "Old board",
+ "modules": {
+  "permissions": {
+   "mode": "ask",
+   "rules": []
+  }
+ }
+}

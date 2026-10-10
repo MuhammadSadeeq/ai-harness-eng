@@ -1,0 +1,39 @@
+{
+ "id": "c9-new",
+ "label": "New board",
+ "modules": {
+  "permissions": {
+   "mode": "ask",
+   "rules": [
+    {
+     "decision": "deny",
+     "tool": "delete_path",
+     "match": {
+      "path": "../**"
+     },
+     "reason": "outside the workspace"
+    },
+    {
+     "decision": "allow",
+     "tool": "read_file",
+     "match": {},
+     "reason": "read-only"
+    },
+    {
+     "decision": "allow",
+     "tool": "list_files",
+     "match": {},
+     "reason": "read-only"
+    },
+    {
+     "decision": "allow",
+     "tool": "run_command",
+     "match": {
+      "cmd": "pytest*"
+     },
+     "reason": "running tests is safe"
+    }
+   ]
+  }
+ }
+}
