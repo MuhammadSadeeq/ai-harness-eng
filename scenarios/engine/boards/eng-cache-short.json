@@ -1,0 +1,7 @@
+{
+ "id": "eng-cache-short",
+ "label": "Cache",
+ "modules": {
+  "cache": {}
+ }
+}

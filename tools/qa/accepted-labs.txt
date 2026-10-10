@@ -20,3 +20,5 @@ labs/workbench.html
 labs/costcalc.html
 labs/step.html
 labs/module.html
+labs/stack.html
+labs/outage.html

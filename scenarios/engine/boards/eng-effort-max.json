@@ -1,0 +1,9 @@
+{
+ "id": "eng-effort-max",
+ "label": "Level max",
+ "modules": {
+  "effort": {
+   "level": "max"
+  }
+ }
+}

@@ -1,0 +1,8 @@
+{"agent":"main","board":"h1-old","kind":"run_start","model_id":"claude-sonnet-5-5","run":"h1-first-block:h1-old:0","seed":0,"seq":0,"t":0,"task":"Fix the failing test in calc.py","turn":0,"v":1,"wire":"loop"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"h1-first-block:h1-old:0","seq":1,"t":0,"tokens":376,"turn":1,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":4,"run":"h1-first-block:h1-old:0","seq":2,"t":0,"tokens":376,"turn":1,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"h1-first-block:h1-old:0","seq":3,"t":0,"tokens_in":376,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"h1-first-block:h1-old:0","seq":4,"t":0,"turn":1,"v":1,"wire":"errors"}
+{"agent":"main","cost":1122000,"kind":"model_reply","run":"h1-first-block:h1-old:0","seq":5,"stop_reason":"tool_use","t":1340,"text":"I'll run the tests first.","tool_uses":[{"id":"toolu_1_1","input":{"cmd":"pytest -q"},"name":"run_command"}],"turn":1,"usage":{"input_tokens":376,"output_tokens":37},"v":1,"wire":"loop"}
+{"agent":"main","events":6,"kind":"trace_write","redacted":0,"run":"h1-first-block:h1-old:0","seq":6,"t":1340,"turn":1,"v":1,"wire":"observe"}
+{"agent":"main","cost":1122000,"kind":"run_end","passed":false,"run":"h1-first-block:h1-old:0","seq":7,"status":"done","t":1340,"tokens":{"input":376,"output":37},"turn":1,"turns":1,"v":1,"wire":"loop"}

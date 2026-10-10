@@ -31,7 +31,7 @@ from pydantic import BaseModel, TypeAdapter, ValidationError
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_SCENARIOS = REPO_ROOT / "scenarios"
 DEFAULT_FACTS = REPO_ROOT / "site" / "data" / "facts.json"
-REQUEST_KEYS = ("model", "max_tokens", "messages", "tools", "system")
+REQUEST_KEYS = ("model", "max_tokens", "messages", "tools", "system", "output_config")
 REQUIRED_REQUEST_KEYS = ("model", "max_tokens", "messages", "tools")
 MESSAGE_TYPE = "message"
 
@@ -130,6 +130,14 @@ def _check_message(message: Any, where: str, problems: list[str]) -> None:
 
 def check_request(payload: dict[str, Any], where: str, problems: list[str]) -> None:
     _check_keys(payload, set(REQUEST_KEYS), set(REQUIRED_REQUEST_KEYS), where, problems)
+    if "output_config" in payload:  # A7.3: the effort level (anthropic 1.8.0 OutputConfigParam)
+        _check_keys(
+            payload["output_config"],
+            _hints(sdk.OutputConfigParam),
+            _required(sdk.OutputConfigParam),
+            f"{where}.output_config",
+            problems,
+        )
     try:
         _materialize(_MESSAGE_PARAM.validate_python(payload.get("messages", [])))
         _TOOL_PARAM.validate_python(payload.get("tools", []))
@@ -226,12 +234,18 @@ def live_wire(scenarios_dir: Path, facts_path: Path) -> Iterator[tuple[str, list
     facts: dict[str, Any] | None = None
     if facts_path.is_file():
         facts = json.loads(facts_path.read_text(encoding="utf-8"))
-    for tape_path in sorted(
-        p for p in scenarios_dir.glob("*.json") if not p.name.endswith("schema.json")
-    ):
+    # The incident tapes and the engine tapes (A8.6, scenarios/engine/) each use their own boards.
+    engine = scenarios_dir / "engine"
+    sources = [
+        (tape_path, scenarios_dir / "boards")
+        for tape_path in sorted(
+            p for p in scenarios_dir.glob("*.json") if not p.name.endswith("schema.json")
+        )
+    ] + [(tape_path, engine / "boards") for tape_path in sorted(engine.glob("*.json"))]
+    for tape_path, boards_dir in sources:
         tape = tape_module.load_tape(tape_path)
         for board_id in tape.boards:
-            board_path = scenarios_dir / "boards" / f"{board_id}.json"
+            board_path = boards_dir / f"{board_id}.json"
             board = board_module.load_board(board_path)
             for seed in tape.golden_seeds:
                 trial = sim_module.run_trial(tape, board, seed, facts)

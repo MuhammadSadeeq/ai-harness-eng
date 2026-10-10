@@ -27,6 +27,9 @@ CUSTOM_TOOL_DEFAULT_LATENCY_MS = 100
 MAX_SCRIPT_EXPANSIONS = 100_000
 # A3.19: the facts registry, relative to the working directory.
 DEFAULT_FACTS_PATH = "site/data/facts.json"
+NOTE_KINDS = ("goal", "constraint", "decision", "progress", "file")  # A6.2
+EFFORT_LEVELS = ("low", "medium", "high", "xhigh", "max")  # A7.3, in order
+DEFAULT_EFFORT = "high"  # A7.3: the level when neither the board nor the tape gives one
 ERROR_TYPES = ("overloaded", "rate_limit", "api_error", "timeout", "invalid_request")
 TRANSIENT = frozenset({"overloaded", "rate_limit", "api_error", "timeout"})
 # Section 7.6: the message of the permanent missing-result error (A3.16).
@@ -63,6 +66,14 @@ MODULES = (
     "close_books",
     "rules_file",
     "redact",
+    "history",
+    "first_block_only",
+    "compaction",
+    "system_clock",
+    "cache",
+    "validate_inputs",
+    "split_results",
+    "effort",
 )
 # Section 9: the wire of every event kind.
 KIND_WIRE = {
@@ -83,6 +94,9 @@ KIND_WIRE = {
     "guard": "loop",
     "trace_write": "observe",
     "run_end": "loop",
+    "compaction": "context",
+    "cache": "context",
+    "input_check": "tools",
 }
 ASCII_PATTERN = re.compile(r"[\x20-\x7e\n\t]*")
 CANONICAL_INDEX = re.compile(r"(0|[1-9][0-9]*)")

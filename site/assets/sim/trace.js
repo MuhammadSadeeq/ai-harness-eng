@@ -20,6 +20,9 @@ const WIRE = {
   guard: "loop",
   trace_write: "observe",
   run_end: "loop",
+  compaction: "context",
+  cache: "context",
+  input_check: "tools",
 };
 
 export class Trace {

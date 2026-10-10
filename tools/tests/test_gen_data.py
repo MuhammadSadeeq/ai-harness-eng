@@ -30,8 +30,12 @@ def run(root: Path, *args: str) -> int:
 
 def test_dump_json_is_deterministic_and_turns_dates_into_strings() -> None:
     value = {"b": 1, "a": "é", "when": date(2026, 10, 10)}
-    expected = json.dumps({"a": "é", "b": 1, "when": "2026-10-10"},
-                          indent=1, ensure_ascii=False, sort_keys=True) + "\n"
+    expected = (
+        json.dumps(
+            {"a": "é", "b": 1, "when": "2026-10-10"}, indent=1, ensure_ascii=False, sort_keys=True
+        )
+        + "\n"
+    )
     assert dump_json(value) == expected
 
 
@@ -83,11 +87,17 @@ def test_readme_block_is_rewritten_and_the_rest_is_kept(tmp_path: Path) -> None:
 def test_outputs_are_byte_identical_across_runs(tmp_path: Path) -> None:
     root = copy_root(tmp_path)
     run(root)
-    first = {p.relative_to(root): p.read_bytes() for p in (root / "site" / "data").rglob("*")
-             if p.is_file()}
+    first = {
+        p.relative_to(root): p.read_bytes()
+        for p in (root / "site" / "data").rglob("*")
+        if p.is_file()
+    }
     run(root)
-    second = {p.relative_to(root): p.read_bytes() for p in (root / "site" / "data").rglob("*")
-              if p.is_file()}
+    second = {
+        p.relative_to(root): p.read_bytes()
+        for p in (root / "site" / "data").rglob("*")
+        if p.is_file()
+    }
     assert first == second and len(first) == 10  # README.md is outside site/data
 
 
@@ -127,8 +137,9 @@ def test_check_detects_a_missing_file(tmp_path: Path, capsys: pytest.CaptureFixt
     assert "facts.json:0: missing" in capsys.readouterr().out
 
 
-def test_check_reports_unexpected_files_under_site_data(tmp_path: Path,
-                                                        capsys: pytest.CaptureFixture[str]) -> None:
+def test_check_reports_unexpected_files_under_site_data(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     root = copy_root(tmp_path)
     run(root)
     (root / "site" / "data" / "extra.json").write_text("[]\n", encoding="utf-8")
@@ -166,22 +177,30 @@ def test_yaml_error_skips_that_output_and_names_the_line(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     root = copy_root(tmp_path)
-    (root / "facts" / "api.yaml").write_text("- id: api.bad\n  claim: [unclosed\n",
-                                             encoding="utf-8")
+    (root / "facts" / "api.yaml").write_text(
+        "- id: api.bad\n  claim: [unclosed\n", encoding="utf-8"
+    )
     assert run(root) == 1
     out = capsys.readouterr().out
-    assert any(line.startswith(str(root / "facts" / "api.yaml")) and "invalid YAML" in line
-               and ":0:" not in line for line in out.splitlines())
+    assert any(
+        line.startswith(str(root / "facts" / "api.yaml"))
+        and "invalid YAML" in line
+        and ":0:" not in line
+        for line in out.splitlines()
+    )
     assert not (root / "site" / "data" / "facts.json").exists()
     assert (root / "site" / "data" / "course.json").is_file()
 
 
-def test_duplicate_term_ids_across_files_fail(tmp_path: Path,
-                                              capsys: pytest.CaptureFixture[str]) -> None:
+def test_duplicate_term_ids_across_files_fail(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     root = copy_root(tmp_path)
     (root / "content" / "A1" / "terms.yaml").write_text(
         "- id: agent\n  term: agent\n  aliases: [agent]\n  strict: true\n  wire: loop\n"
-        "  definition: x\n", encoding="utf-8")
+        "  definition: x\n",
+        encoding="utf-8",
+    )
     assert run(root) == 1
     assert "duplicate term id 'agent'" in capsys.readouterr().out
 
@@ -208,8 +227,18 @@ def test_tapes_and_boards_are_copied_byte_for_byte(tmp_path: Path) -> None:
 
 
 KATA_FIXTURES = Path(__file__).resolve().parent / "fixtures" / "katas"
-KATA_FIELDS = {"id", "module", "title", "objectives", "minutes", "hints", "from_memory",
-               "starter", "solution", "tests"}
+KATA_FIELDS = {
+    "id",
+    "module",
+    "title",
+    "objectives",
+    "minutes",
+    "hints",
+    "from_memory",
+    "starter",
+    "solution",
+    "tests",
+}
 
 
 def add_kata(root: Path, name: str) -> Path:
@@ -298,3 +327,25 @@ def test_a_step_that_cannot_be_read_is_named_and_skipped(
     out = capsys.readouterr().out
     assert "invalid YAML" in out
     assert not (root / "site/data/steps/H2.json").exists()
+
+
+ENGINE_SOURCE = Path(__file__).resolve().parents[2] / "scenarios" / "engine"
+
+
+def test_engine_tapes_and_their_boards_are_not_copied_to_the_site(tmp_path: Path) -> None:
+    """A8.6: the engine tapes are checked, not shipped: the generator copies only the top level."""
+    root = copy_root(tmp_path)
+    engine = root / "scenarios" / "engine"
+    (engine / "boards").mkdir(parents=True)
+    shutil.copy(ENGINE_SOURCE / "eng-split.json", engine / "eng-split.json")
+    shutil.copy(
+        ENGINE_SOURCE / "boards" / "eng-split-split.json",
+        engine / "boards" / "eng-split-split.json",
+    )
+    shutil.copy(
+        ENGINE_SOURCE.parent / "b2-spiral.json", root / "scenarios" / "b2-spiral.json"
+    )  # control
+    assert run(root) == 0
+    assert (root / "site" / "data" / "scenarios" / "b2-spiral.json").is_file()
+    copied = [path for path in (root / "site" / "data").rglob("*") if path.name.startswith("eng-")]
+    assert copied == []

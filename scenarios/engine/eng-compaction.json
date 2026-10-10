@@ -1,0 +1,200 @@
+{
+  "schema": 1,
+  "title": "Compaction keeps some notes",
+  "task": "Fix add() in calc.py",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "input_milli_per_mtok": 1000,
+    "output_milli_per_mtok": 2000,
+    "cache_write_milli_per_mtok": 1250,
+    "cache_read_milli_per_mtok": 100
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools to read files and run tests.",
+  "rules": [],
+  "workspace": {
+    "calc.py": "def add(a, b):\n    return a - b\n",
+    "notes.txt": "Check add() first.\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "list_files"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "calc.py",
+      "contains": "a + b"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "seed_base": 20261010,
+  "id": "eng-compaction",
+  "script": [
+    {
+      "say": "Listing the files.",
+      "tools": [
+        [
+          "list_files",
+          {}
+        ]
+      ]
+    },
+    {
+      "say": "Reading calc.py.",
+      "tools": [
+        [
+          "read_file",
+          {
+            "path": "calc.py"
+          }
+        ]
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "sent_lacks:Summary of the work so far",
+          "then": [
+            {
+              "say": "I have no summary yet.",
+              "tools": [
+                [
+                  "read_file",
+                  {
+                    "path": "calc.py"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "I have a summary of the work so far.",
+              "tools": [
+                [
+                  "list_files",
+                  {}
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "context_gte:3",
+          "then": [
+            {
+              "say": "The context is past 3 percent.",
+              "tools": [
+                [
+                  "read_file",
+                  {
+                    "path": "notes.txt"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "The context is still small.",
+              "tools": [
+                [
+                  "list_files",
+                  {}
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "branch": [
+        {
+          "percent": 50,
+          "then": [
+            {
+              "say": "Checking once more.",
+              "tools": [
+                [
+                  "list_files",
+                  {}
+                ]
+              ]
+            },
+            {
+              "say": "Done."
+            }
+          ]
+        },
+        {
+          "percent": 50,
+          "then": [
+            {
+              "say": "Done."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "boards": [
+    "eng-compaction-keep-all",
+    "eng-compaction-keep-progress",
+    "eng-compaction-resend-off"
+  ],
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "notes": [
+    {
+      "id": "n1",
+      "kind": "goal",
+      "turn": 0,
+      "text": "Make add() return the sum"
+    },
+    {
+      "id": "n2",
+      "kind": "progress",
+      "turn": 1,
+      "text": "Listed the workspace"
+    },
+    {
+      "id": "n3",
+      "kind": "decision",
+      "turn": 2,
+      "text": "Read calc.py before editing"
+    },
+    {
+      "id": "n4",
+      "kind": "file",
+      "turn": 3,
+      "text": "calc.py: add() subtracts"
+    },
+    {
+      "id": "n5",
+      "kind": "progress",
+      "turn": 4,
+      "text": "Read notes.txt"
+    }
+  ]
+}

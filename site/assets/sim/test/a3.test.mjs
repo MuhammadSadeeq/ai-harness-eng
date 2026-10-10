@@ -377,7 +377,8 @@ test("A3.19 milli-units are floor(p * 1000 + 0.5)", () => {
   const facts = { f: { value: { input_usd_per_mtok: 0.0034, output_usd_per_mtok: 0.0036 } }, g: { value: { input_usd_per_mtok: 0.0004, output_usd_per_mtok: 2 } } };
   assert.deepEqual(resolvePricing({ fact: "f" }, facts), { input_milli: 3, output_milli: 4 });
   assert.deepEqual(resolvePricing({ fact: "g" }, facts), { input_milli: 0, output_milli: 2000 });
-  assert.deepEqual(resolvePricing({ fact: "models.sonnet-5-5-price" }, FACTS), { input_milli: 2000, output_milli: 10000 });
+  // A6.5: the fact's cache prices resolve too: 5-minute write 2.50 and hit 0.10 USD per MTok (BP-3.3 facts).
+  assert.deepEqual(resolvePricing({ fact: "models.sonnet-5-5-price" }, FACTS), { input_milli: 2000, output_milli: 10000, cache_write_milli: 2500, cache_read_milli: 100 });
 });
 
 test("A3.19 --facts defaults to site/data/facts.json relative to the working directory", () => {

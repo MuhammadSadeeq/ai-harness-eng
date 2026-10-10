@@ -52,6 +52,14 @@
             "output_milli_per_mtok": {
               "type": "integer",
               "minimum": 0
+            },
+            "cache_write_milli_per_mtok": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cache_read_milli_per_mtok": {
+              "type": "integer",
+              "minimum": 0
             }
           },
           "required": [
@@ -489,6 +497,103 @@
         "to_ms",
         "type"
       ]
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+          },
+          "kind": {
+            "enum": [
+              "goal",
+              "constraint",
+              "decision",
+              "progress",
+              "file"
+            ]
+          },
+          "turn": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "turn",
+          "text"
+        ]
+      }
+    },
+    "cache_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ttl_ms": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "min_tokens",
+        "ttl_ms"
+      ]
+    },
+    "effort": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        "thinking_tokens": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "low": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "medium": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "high": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "xhigh": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
     }
   },
   "required": [
@@ -769,12 +874,29 @@
             "last_result_error",
             "last_denied",
             "verify_feedback",
-            "last_truncated"
+            "last_truncated",
+            "results_split"
           ]
         },
         {
           "type": "string",
           "pattern": "^turn_gte:(0|[1-9][0-9]*)$"
+        },
+        {
+          "type": "string",
+          "pattern": "^history_lt:(0|[1-9][0-9]*)$"
+        },
+        {
+          "type": "string",
+          "pattern": "^context_gte:(0|[1-9][0-9]*)$"
+        },
+        {
+          "type": "string",
+          "pattern": "^sent_lacks:.+$"
+        },
+        {
+          "type": "string",
+          "pattern": "^effort_gte:(low|medium|high|xhigh|max)$"
         }
       ]
     },

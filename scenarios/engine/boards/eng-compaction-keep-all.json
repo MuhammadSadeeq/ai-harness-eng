@@ -1,0 +1,15 @@
+{
+ "id": "eng-compaction-keep-all",
+ "label": "Keep all kinds",
+ "modules": {
+  "compaction": {
+   "threshold_percent": 1,
+   "keep": [
+    "goal",
+    "progress",
+    "decision",
+    "file"
+   ]
+  }
+ }
+}

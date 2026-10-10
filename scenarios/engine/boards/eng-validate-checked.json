@@ -1,0 +1,7 @@
+{
+ "id": "eng-validate-checked",
+ "label": "Checked",
+ "modules": {
+  "validate_inputs": {}
+ }
+}

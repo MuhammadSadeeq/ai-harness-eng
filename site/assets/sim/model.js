@@ -4,6 +4,8 @@
 // Every branch choice is recorded in `branches` as [path, option_index], where path
 // is the JSON-pointer-style location of the branch step in the tape's script (A3.22).
 
+import { EFFORT_LEVELS } from "./tape.js";
+
 export const ERROR_MESSAGE = {
   overloaded: "Overloaded",
   rate_limit: "Rate limited",
@@ -18,8 +20,31 @@ function errorOutcome(type, retryAfter, errorMs) {
   return { kind: "error", type, retry_after_ms: retryAfter, error_ms: errorMs };
 }
 
+// Every string value inside a JSON-like value (values, not keys), in order.
+export function stringsIn(v, out = []) {
+  if (typeof v === "string") out.push(v);
+  else if (Array.isArray(v)) for (const x of v) stringsIn(x, out);
+  else if (v !== null && typeof v === "object") for (const k of Object.keys(v)) stringsIn(v[k], out);
+  return out;
+}
+
 function conditionHolds(cond, snap) {
   if (cond.startsWith("turn_gte:")) return snap.turn >= Number(cond.slice("turn_gte:".length));
+  // A5: the request about to be sent has fewer than n messages (snap.sent counts those).
+  if (cond.startsWith("history_lt:")) return snap.sent < Number(cond.slice("history_lt:".length));
+  // A7.3: the level in force is at least the named level (levels are in order, low to max).
+  if (cond.startsWith("effort_gte:")) {
+    return EFFORT_LEVELS.indexOf(snap.effort) >= EFFORT_LEVELS.indexOf(cond.slice("effort_gte:".length));
+  }
+  // A6.1: 100 * tokens(request) >= n * window, for the request about to be sent.
+  if (cond.startsWith("context_gte:")) {
+    return 100 * snap.request_tokens >= Number(cond.slice("context_gte:".length)) * snap.window;
+  }
+  // A6.1: no string value in the request contains the text (everything after the first colon).
+  if (cond.startsWith("sent_lacks:")) {
+    const text = cond.slice("sent_lacks:".length);
+    return !stringsIn(snap.request).some((x) => x.includes(text));
+  }
   return snap[cond] === true;
 }
 
@@ -38,7 +63,7 @@ export class ScriptedModel {
   }
 
   // Outage first, then the faults in order (A3.14); the first failing fault stops the draws.
-  // snap: {turn, last_result_error, last_denied, verify_feedback, last_truncated},
+  // snap: {turn, sent, request, request_tokens, window, last_result_error, last_denied, verify_feedback, last_truncated}, sent = messages in the request (A5), request = the request about to be sent (A6.1),
   // taken just before the call. t is the trial clock in ms.
   call(t, snap) {
     const o = this.outage;

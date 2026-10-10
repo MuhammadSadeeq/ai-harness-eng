@@ -1,0 +1,8 @@
+{
+ "id": "eng-cache-clock",
+ "label": "Cache and clock",
+ "modules": {
+  "cache": {},
+  "system_clock": {}
+ }
+}

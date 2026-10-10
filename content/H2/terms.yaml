@@ -1,0 +1,9 @@
+- id: tool-registry
+  term: tool registry
+  aliases:
+  - tool registry
+  - tool registries
+  strict: true
+  wire: tools
+  definition: A table from each tool name to the Python function that runs it. The loop looks up the name
+    the model asked for. A name that is not in the table gets an error result.

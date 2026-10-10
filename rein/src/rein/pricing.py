@@ -1,4 +1,4 @@
-"""Prices: a tape's pricing resolved to milli-units per million tokens (ENGINE.md sections 5, 8)."""
+"""Prices: a tape's pricing as milli-units per million tokens (ENGINE.md sections 5, 8, A6.5)."""
 
 from __future__ import annotations
 
@@ -15,6 +15,9 @@ class PricingError(ValueError):
 class Prices:
     input_milli: int
     output_milli: int
+    # A6.5: cache prices; None when the pricing gives none (a board with cache then refuses).
+    cache_write_milli: int | None = None
+    cache_read_milli: int | None = None
 
 
 def usd_to_milli(usd: Any) -> int:
@@ -38,6 +41,8 @@ def resolve_prices(pricing: dict[str, Any], facts: dict[str, Any] | None) -> Pri
             return Prices(
                 input_milli=usd_to_milli(value["input_usd_per_mtok"]),
                 output_milli=usd_to_milli(value["output_usd_per_mtok"]),
+                cache_write_milli=_optional_fact(value, "cache_write_usd_per_mtok"),
+                cache_read_milli=_optional_fact(value, "cache_hit_usd_per_mtok"),
             )
         except KeyError as exc:
             raise PricingError(f"fact {fact_id!r} lacks {exc.args[0]!r}") from exc
@@ -45,6 +50,16 @@ def resolve_prices(pricing: dict[str, Any], facts: dict[str, Any] | None) -> Pri
         return Prices(
             input_milli=int(pricing["input_milli_per_mtok"]),
             output_milli=int(pricing["output_milli_per_mtok"]),
+            cache_write_milli=_optional_inline(pricing, "cache_write_milli_per_mtok"),
+            cache_read_milli=_optional_inline(pricing, "cache_read_milli_per_mtok"),
         )
     except KeyError as exc:
         raise PricingError(f"inline pricing lacks {exc.args[0]!r}") from exc
+
+
+def _optional_fact(value: dict[str, Any], key: str) -> int | None:
+    return usd_to_milli(value[key]) if key in value else None
+
+
+def _optional_inline(pricing: dict[str, Any], key: str) -> int | None:
+    return int(pricing[key]) if key in pricing else None

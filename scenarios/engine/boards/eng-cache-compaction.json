@@ -1,0 +1,13 @@
+{
+ "id": "eng-cache-compaction",
+ "label": "Cache and compaction",
+ "modules": {
+  "cache": {},
+  "compaction": {
+   "threshold_percent": 1,
+   "keep": [
+    "goal"
+   ]
+  }
+ }
+}

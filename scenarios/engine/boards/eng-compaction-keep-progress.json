@@ -1,0 +1,12 @@
+{
+ "id": "eng-compaction-keep-progress",
+ "label": "Keep progress only",
+ "modules": {
+  "compaction": {
+   "threshold_percent": 1,
+   "keep": [
+    "progress"
+   ]
+  }
+ }
+}

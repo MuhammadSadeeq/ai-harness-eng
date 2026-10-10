@@ -1,0 +1,36 @@
+- id: H2-k1
+  type: term
+  objective: H2.o1
+  front: What is a tool registry?
+  back: A table from each tool name to the Python function that runs it.
+- id: H2-k2
+  type: term
+  objective: H2.o1
+  front: What does a tool's spec tell the model, and what does its function do?
+  back: The spec describes the tool to the model. The function is the code the harness runs when the model
+    asks for it.
+- id: H2-k3
+  type: term
+  objective: H2.o1
+  front: Where do tool results go?
+  back: All in one user message, one per tool_use, each with the tool_use_id of its request.
+- id: H2-k4
+  type: term
+  objective: H2.o2
+  front: What is a turn limit?
+  back: A cap on the model calls in one run. The loop stops when the count reaches it.
+- id: H2-k5
+  type: term
+  objective: H2.o2
+  front: Why is one exit not enough?
+  back: A loop with one exit stops only when that exit is taken. A model that never takes it runs forever.
+- id: H2-k6
+  type: term
+  objective: H2.o3
+  front: What does an unknown tool name get back?
+  back: A tool_result with is_error set to true and a short reason. The run carries on.
+- id: H2-k7
+  type: term
+  objective: H2.o3
+  front: What does is_error tell the model?
+  back: That the result is a failure, so the model can try again or change its plan.

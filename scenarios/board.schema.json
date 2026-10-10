@@ -223,6 +223,89 @@
           "required": [
             "patterns"
           ]
+        },
+        "history": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "resend": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "resend"
+          ]
+        },
+        "first_block_only": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "compaction": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "threshold_percent": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "keep": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "goal",
+                  "constraint",
+                  "decision",
+                  "progress",
+                  "file"
+                ]
+              }
+            }
+          },
+          "required": [
+            "threshold_percent",
+            "keep"
+          ]
+        },
+        "system_clock": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "cache": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "validate_inputs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "split_results": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "effort": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "level": {
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ]
+            }
+          },
+          "required": [
+            "level"
+          ]
         }
       }
     }

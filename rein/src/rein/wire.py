@@ -8,15 +8,22 @@ from .spec import WIRE_MAX_TOKENS
 
 
 def request_payload(
-    model_id: str, system: str, tools: list[dict[str, Any]], messages: list[dict[str, Any]]
+    model_id: str,
+    system: str,
+    tools: list[dict[str, Any]],
+    messages: list[dict[str, Any]],
+    output_config: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    return {
+    payload: dict[str, Any] = {
         "model": model_id,
         "max_tokens": WIRE_MAX_TOKENS,
         "system": system,
         "tools": tools,
         "messages": messages,
     }
+    if output_config is not None:  # A7.3: the board's effort level (fact api.effort-location)
+        payload["output_config"] = output_config
+    return payload
 
 
 def response_payload(

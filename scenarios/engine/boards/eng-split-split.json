@@ -1,0 +1,7 @@
+{
+ "id": "eng-split-split",
+ "label": "One message per result",
+ "modules": {
+  "split_results": {}
+ }
+}

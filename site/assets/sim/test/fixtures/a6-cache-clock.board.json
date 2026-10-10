@@ -1,0 +1,9 @@
+{
+  "id": "a6-cache-clock",
+  "label": "Cache with system clock",
+  "modules": {
+    "compaction": { "threshold_percent": 5, "keep": ["goal", "constraint", "decision"] },
+    "system_clock": {},
+    "cache": {}
+  }
+}

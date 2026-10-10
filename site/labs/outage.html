@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Retries across a fleet · HARNESSED</title>
+<meta name="description" content="A provider goes down and fifty clients keep retrying. Compare retry policies on the same seed: at once, with backoff and jitter, and with a breaker.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · retries across a fleet</p>
+    <h1>Retries across a fleet</h1>
+    <p class="lede">The provider is down for six seconds and fifty clients keep trying. Choose a retry policy, run it, and pin two to compare.</p>
+  </header>
+  <section class="row" aria-labelledby="ou-h">
+    <h2 id="ou-h">One outage, many clients</h2>
+    <hx-outage src="data/outage-demo.json" seed="1">
+      <p>The requests each slot, the outage, and what the retries do after it ends.</p>
+    </hx-outage>
+  </section>
+</main>
+</body>
+</html>

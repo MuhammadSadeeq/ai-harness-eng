@@ -146,24 +146,53 @@ def _schema_errors(
         report.error(where, 0, f"schema: {error.message} (at {location})")
 
 
+@dataclass(frozen=True)
+class Layout:
+    """Where one group's tapes, boards and goldens live. The engine tapes (A8.6) sit apart from the
+    incident tapes: scenarios/engine/, their boards in scenarios/engine/boards/, goldens in
+    scenarios/golden/engine/. They need no incident block."""
+
+    tapes: Path
+    boards: Path
+    goldens: Path
+    engine: bool
+
+
+def _layouts(scenarios_dir: Path) -> list[Layout]:
+    engine = scenarios_dir / "engine"
+    return [
+        Layout(scenarios_dir, scenarios_dir / "boards", scenarios_dir / "golden", engine=False),
+        Layout(engine, engine / "boards", scenarios_dir / "golden" / "engine", engine=True),
+    ]
+
+
+def _layout_of(tape_path: Path, scenarios_dir: Path) -> Layout:
+    layouts = _layouts(scenarios_dir)
+    in_engine = tape_path.parent.resolve() == layouts[1].tapes.resolve()
+    return layouts[1] if in_engine else layouts[0]
+
+
 def _discover_tapes(scenarios_dir: Path) -> list[Path]:
     return sorted(p for p in scenarios_dir.glob("*.json") if not p.name.endswith("schema.json"))
 
 
-def _board_files(scenarios_dir: Path) -> list[Path]:
-    boards = scenarios_dir / "boards"
+def _board_files(boards: Path) -> list[Path]:
     return sorted(boards.glob("*.json")) if boards.is_dir() else []
 
 
-def _find_board(board_id: str, scenarios_dir: Path) -> Path | None:
-    candidate = scenarios_dir / "boards" / f"{board_id}.json"
+def _find_board(board_id: str, boards: Path) -> Path | None:
+    candidate = boards / f"{board_id}.json"
     return candidate if candidate.is_file() else None
 
 
 def _golden(scenarios_dir: Path, tape_id: str, board_id: str, seed: int, wire: bool) -> Path:
     """Events are golden in full (.jsonl); the wire is golden as its SHA-256 (.wire.sha256)."""
+    return _golden_file(scenarios_dir / "golden", tape_id, board_id, seed, wire)
+
+
+def _golden_file(golden_dir: Path, tape_id: str, board_id: str, seed: int, wire: bool) -> Path:
     suffix = ".wire.sha256" if wire else ".jsonl"
-    return scenarios_dir / "golden" / f"{tape_id}.{board_id}.{seed}{suffix}"
+    return golden_dir / f"{tape_id}.{board_id}.{seed}{suffix}"
 
 
 def wire_digest(lines: list[str]) -> str:
@@ -396,7 +425,7 @@ def check_incident(
         problem(f"correct_fix {correct!r} is not an index into the {len(fixes)} fixes")
     if board_id not in boards or seed not in seeds:
         return
-    board_path = _find_board(board_id, scenarios_dir)
+    board_path = _find_board(board_id, scenarios_dir / "boards")
     if board_path is None:
         problem(f"board file for {board_id!r} is missing")
         return
@@ -440,15 +469,21 @@ def check(
     tape_validator = _validator(scenarios_dir / "schema.json", report)
     board_validator = _validator(scenarios_dir / "board.schema.json", report)
     trace_validator = _validator(scenarios_dir / "trace.schema.json", report)
-    for board_file in _board_files(scenarios_dir):
-        if board_validator is not None:
-            _load_and_validate(board_file, board_validator, report)
+    layouts = _layouts(scenarios_dir)
+    for layout in layouts:
+        for board_file in _board_files(layout.boards):
+            if board_validator is not None:
+                _load_and_validate(board_file, board_validator, report)
     rein = _rein_import()
     facts = _load_facts(facts_path, report)
-    targets = tapes if tapes is not None else _discover_tapes(scenarios_dir)
+    if tapes is not None:
+        targets = tapes
+    else:
+        targets = [path for layout in layouts for path in _discover_tapes(layout.tapes)]
     families = _failure_families(report)
     js_missing = False
     for tape_path in targets:
+        layout = _layout_of(tape_path, scenarios_dir)
         data = _load_and_validate(tape_path, tape_validator, report)
         if data is None:
             continue
@@ -458,10 +493,11 @@ def check(
         if update is not None and update not in (tape_id, tape_path.stem):
             continue
         report.tapes += 1
-        check_incident(tape_path, data, scenarios_dir, rein, facts, families, report)
+        if not layout.engine:  # the engine tapes need no incident block (A8.6)
+            check_incident(tape_path, data, scenarios_dir, rein, facts, families, report)
         taken: dict[str, set[int]] = {}
         for board_id in data.get("boards", []):
-            board_path = _find_board(str(board_id), scenarios_dir)
+            board_path = _find_board(str(board_id), layout.boards)
             if board_path is None:
                 report.error(_display(tape_path), 0, f"board {board_id!r} not found")
                 continue
@@ -476,7 +512,7 @@ def check(
                     int(seed),
                     facts,
                     facts_path,
-                    scenarios_dir,
+                    layout.goldens,
                     trace_validator,
                     report,
                     update,
@@ -501,7 +537,7 @@ def _check_run(
     seed: int,
     facts: dict[str, Any] | None,
     facts_path: Path,
-    scenarios_dir: Path,
+    golden_dir: Path,
     trace_validator: jsonschema.protocols.Validator | None,
     report: Report,
     update: str | None,
@@ -556,24 +592,25 @@ def _check_run(
         _first_difference(where + " (choices)", choice_lines, js_choices, report)
     if update is not None:
         if events_ok and wire_ok:
-            _write_golden(scenarios_dir, tape_id, board_id, seed, events, wire)
+            _write_golden(golden_dir, tape_id, board_id, seed, events, wire)
         else:
             report.error(where, 0, "golden update refused: python and js do not match")
         return js_missing, choices
-    _check_golden(_golden(scenarios_dir, tape_id, board_id, seed, False), events, report, where)
-    _check_golden_digest(_golden(scenarios_dir, tape_id, board_id, seed, True), wire, report, where)
+    _check_golden(_golden_file(golden_dir, tape_id, board_id, seed, False), events, report, where)
+    _check_golden_digest(
+        _golden_file(golden_dir, tape_id, board_id, seed, True), wire, report, where
+    )
     return js_missing, choices
 
 
 def _write_golden(
-    scenarios_dir: Path, tape_id: str, board_id: str, seed: int, events: list[str], wire: list[str]
+    golden_dir: Path, tape_id: str, board_id: str, seed: int, events: list[str], wire: list[str]
 ) -> None:
-    golden_dir = scenarios_dir / "golden"
     golden_dir.mkdir(parents=True, exist_ok=True)
-    _golden(scenarios_dir, tape_id, board_id, seed, False).write_text(
+    _golden_file(golden_dir, tape_id, board_id, seed, False).write_text(
         "".join(line + "\n" for line in events), encoding="utf-8"
     )
-    _golden(scenarios_dir, tape_id, board_id, seed, True).write_text(
+    _golden_file(golden_dir, tape_id, board_id, seed, True).write_text(
         wire_digest(wire) + "\n", encoding="utf-8"
     )
 
@@ -584,11 +621,13 @@ def suggest_seeds(scenarios_dir: Path, n: int, facts_path: Path = DEFAULT_FACTS)
     rein = _rein_import()
     facts = _load_facts(facts_path, Report())
     lines: list[str] = []
-    for tape_path in _discover_tapes(scenarios_dir):
+    tapes = [path for layout in _layouts(scenarios_dir) for path in _discover_tapes(layout.tapes)]
+    for tape_path in tapes:
         tape = rein["tape"].load_tape(tape_path)
         boards = []
+        boards_dir = _layout_of(tape_path, scenarios_dir).boards
         for board_id in tape.boards:
-            board_path = _find_board(board_id, scenarios_dir)
+            board_path = _find_board(board_id, boards_dir)
             if board_path is not None:
                 boards.append(rein["board"].load_board(board_path))
         per_seed: dict[int, set[tuple[str, int]]] = {}

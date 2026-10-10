@@ -1,0 +1,7 @@
+{
+  "id": "a8-cache-no-rules",
+  "label": "Cache, on a tape without its rules",
+  "modules": {
+    "cache": {}
+  }
+}

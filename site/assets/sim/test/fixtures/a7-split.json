@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "title": "A7 fixture",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "input_milli_per_mtok": 2000,
+    "output_milli_per_mtok": 10000
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the tests pass.",
+  "rules": [],
+  "workspace": {
+    "a.txt": "hello\n",
+    "b.txt": "world\n"
+  },
+  "outside": {},
+  "checks": [],
+  "test_output": {
+    "pass": "ok",
+    "fail": "nope"
+  },
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "faults": [],
+  "outage": null,
+  "seed_base": 20261010,
+  "id": "a7-split",
+  "task": "Read both files.",
+  "tools": [
+    "read_file"
+  ],
+  "custom_tools": [],
+  "script": [
+    {
+      "say": "Reading both.",
+      "tools": [
+        [
+          "read_file",
+          {
+            "path": "a.txt"
+          }
+        ],
+        [
+          "read_file",
+          {
+            "path": "b.txt"
+          }
+        ]
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "results_split",
+          "then": [
+            {
+              "say": "One at a time from now.",
+              "tools": [
+                [
+                  "read_file",
+                  {
+                    "path": "a.txt"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "Still in parallel.",
+              "tools": [
+                [
+                  "read_file",
+                  {
+                    "path": "a.txt"
+                  }
+                ],
+                [
+                  "read_file",
+                  {
+                    "path": "b.txt"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "All done.",
+      "stop": "end_turn"
+    }
+  ]
+}

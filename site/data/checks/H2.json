@@ -1,0 +1,100 @@
+[
+ {
+  "answer": 1,
+  "id": "H2-p1",
+  "mode": "predict",
+  "objective": "H2.o2",
+  "options": [
+   {
+    "text": "The model says it is done, and the loop returns.",
+    "why": "Tempting. The model's words sound final. The loop does not check them, so it has no reason to stop."
+   },
+   {
+    "text": "The loop calls the model again and again, until a person stops it.",
+    "why": "Right. The loop has one exit, the model's done claim, and the model never takes it. Nothing counts the turns."
+   },
+   {
+    "text": "The loop stops when the tests pass, because the tests are an exit.",
+    "why": "Tempting. The tests check the work. They are not an exit from the loop."
+   }
+  ],
+  "outcome": "It kept going. A person stopped the run many turns after it went wrong.",
+  "question": "Your loop has no turn limit. The model keeps asking for the tests to run, and it says it is almost done. What happens?"
+ },
+ {
+  "answer": 1,
+  "id": "H2-c1",
+  "mode": "check",
+  "objective": "H2.o1",
+  "options": [
+   {
+    "fact": "api.parallel-results-one-message",
+    "text": "One result per request, each in its own user message.",
+    "why": "Tempting. That is the layout the docs mark as wrong for parallel tool use."
+   },
+   {
+    "fact": "api.tool-results-single-user-message",
+    "text": "One result for each tool_use, all together in the next user message.",
+    "why": "Right. The loop collects every result and sends them in one message."
+   },
+   {
+    "text": "Only the first result, because one tool runs at a time.",
+    "why": "Wrong. Each tool_use block needs its own result."
+   },
+   {
+    "text": "None. The model reads the tool output itself.",
+    "why": "Wrong. The harness runs the tools and returns their results."
+   }
+  ],
+  "question": "The model asks for two tools in one reply. How many results go back, and where?"
+ },
+ {
+  "answer": 1,
+  "id": "H2-c2",
+  "mode": "check",
+  "objective": "H2.o3",
+  "options": [
+   {
+    "text": "An exception that stops the run.",
+    "why": "Tempting. It looks strict. The model asked in good faith, and the run can carry on with an error result."
+   },
+   {
+    "fact": "api.tool-result-unrun-call",
+    "text": "A tool_result with is_error set to true, and a short reason.",
+    "why": "Right. The tool_use still needs an answer, and the error tells the model the name was wrong."
+   },
+   {
+    "fact": "api.tool-result-unrun-call",
+    "text": "Nothing. Skip the call and go on.",
+    "why": "Wrong. The tool_use block still needs a tool_result."
+   },
+   {
+    "text": "The same name again, in a new request.",
+    "why": "Wrong. The same name fails again, and the loop never gets out of the spiral."
+   }
+  ],
+  "question": "The model asks for a tool name that is not in the registry. What should the loop send back?"
+ },
+ {
+  "answer": 1,
+  "id": "H2-c3",
+  "mode": "check",
+  "objective": "H2.o1",
+  "options": [
+   {
+    "text": "A new id that the loop makes up.",
+    "why": "Wrong. The result has to name the request it answers."
+   },
+   {
+    "fact": "api.tool-result-ids-must-match",
+    "text": "The tool_use_id of the request it answers.",
+    "why": "Right. Each result carries the id of the tool_use it answers."
+   },
+   {
+    "text": "The name of the tool.",
+    "why": "Tempting. The name matches the request, but the id is what pairs a result with it."
+   }
+  ],
+  "question": "Which id does a tool_result carry?"
+ }
+]

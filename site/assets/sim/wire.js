@@ -3,14 +3,17 @@
 
 export const WIRE_MAX_TOKENS = 4096;
 
-export function wireRequest(modelId, system, tools, messages) {
-  return {
+// outputConfig (A7.3): {effort: L} when the board sets the effort; absent otherwise.
+export function wireRequest(modelId, system, tools, messages, outputConfig = null) {
+  const req = {
     model: modelId,
     max_tokens: WIRE_MAX_TOKENS,
     system,
     tools: structuredClone(tools),
     messages: structuredClone(messages),
   };
+  if (outputConfig) req.output_config = { ...outputConfig };
+  return req;
 }
 
 export function wireResponse(modelId, turn, content, stopReason, usage) {

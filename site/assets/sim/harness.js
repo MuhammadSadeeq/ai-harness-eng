@@ -10,6 +10,10 @@ import { decide, fieldMatch, egressHost } from "./policy.js";
 import { Trace } from "./trace.js";
 import { wireRequest, wireResponse } from "./wire.js";
 import { resolvePricing } from "./pricing.js";
+import { compactionSummary } from "./compaction.js";
+import { cacheAccount } from "./cache.js";
+import { checkInput } from "./inputs.js";
+import { backoffWait } from "./backoff.js";
 
 const TRANSIENT = new Set(["overloaded", "rate_limit", "api_error", "timeout"]);
 export const SAFETY_TURN = 60;
@@ -27,6 +31,12 @@ const toolResult = (id, content, isError) => ({
   is_error: isError,
 });
 
+// A5.3: the buggy harness reads a tool call only from content[0]; no call when that block is not a tool_use.
+function firstBlockCalls(reply) {
+  const first = reply.content[0];
+  return first && first.type === "tool_use" ? [reply.tool_uses[0]] : [];
+}
+
 function lastResultError(messages) {
   for (let i = messages.length - 1; i >= 0; i -= 1) {
     if (messages[i].role === "user") {
@@ -43,11 +53,20 @@ function hasDanglingToolUse(messages) {
     if (m.role !== "assistant") continue;
     const uses = m.content.filter((b) => b.type === "tool_use");
     if (uses.length === 0) continue;
-    const next = messages[i + 1];
-    const got = new Set(
-      next && next.role === "user" ? next.content.filter((b) => b.type === "tool_result").map((b) => b.tool_use_id) : [],
-    );
+    // A7.2: the results may be split over consecutive user messages; all of the run counts.
+    const got = new Set();
+    for (let j = i + 1; j < messages.length && messages[j].role === "user"; j += 1) {
+      for (const b of messages[j].content) if (b.type === "tool_result") got.add(b.tool_use_id);
+    }
     if (uses.some((u) => !got.has(u.id))) return true;
+  }
+  return false;
+}
+
+// A7.2: two user messages in a row (the results_split condition).
+function hasConsecutiveUsers(msgs) {
+  for (let i = 0; i + 1 < msgs.length; i += 1) {
+    if (msgs[i].role === "user" && msgs[i + 1].role === "user") return true;
   }
   return false;
 }
@@ -57,6 +76,9 @@ export function runCore(tape, board, seed, facts) {
   if (!Number.isInteger(seed)) throw new TypeError(`seed must be an integer, got ${seed}`);
   const price = resolvePricing(tape.pricing, facts);
   const mods = board.modules;
+  if (mods.cache && (!tape.cache_rules || price.cache_write_milli === undefined || price.cache_read_milli === undefined)) {
+    throw new Error("cache needs cache_rules and cache prices on the tape (A6.5)");
+  }
   const st = { t: 0, turn: 0 };
   const run = `${tape.id}:${board.id}:${seed}`;
   const trace = new Trace(run, mods.redact?.patterns ?? [], st);
@@ -68,9 +90,9 @@ export function runCore(tape, board, seed, facts) {
   const human = tape.human;
   const system = tape.system +
     (mods.rules_file && tape.rules.length > 0 ? "\n\nProject rules:\n- " + tape.rules.join("\n- ") : "");
-  const layers = ["system"];
+  const layers = mods.system_clock ? ["clock", "system"] : ["system"];
   if (mods.rules_file && tape.rules.length > 0) layers.push("rules");
-  layers.push("tools", "history");
+  layers.push("tools", mods.history?.resend === false ? "history (not resent)" : "history");
 
   const wire = [];
   const messages = [];
@@ -83,8 +105,31 @@ export function runCore(tape, board, seed, facts) {
   let lastPermission = null;
   let lastTruncated = false;
   let lastIsFeedback = false;
-  let resumePending = false;
   const recent = [];
+  const cacheMap = new Map();
+  // A7.3: the level in force is the board's, else the tape's default, else high. Thinking tokens
+  // come from the tape's table for that level (0 when none). They count as output, not as content.
+  const effortLevel = mods.effort?.level ?? tape.effort?.default ?? "high";
+  const thinking = tape.effort?.thinking_tokens?.[effortLevel] ?? 0;
+  const outputConfig = mods.effort ? { effort: mods.effort.level } : null;
+  let compactedThisTurn = false;
+  // A6.4 and A5.1: the system prompt with the clock on top, and the messages a request sends.
+  const systemNow = () => (mods.system_clock ? `Current time: t=${st.t} ms\n\n` : "") + system;
+  const sentFor = (msgs) => (mods.history?.resend === false ? [user([textBlock(tape.task)])] : msgs);
+  const requestFor = (msgs) => ({ system: systemNow(), tools: defs, messages: sentFor(msgs) });
+  // A6.5: the prefixes P(1..n) of a request: keys (canonical JSON) and token counts.
+  const cachePrefixes = (curSystem, sentMsgs) => {
+    const parts = [{ tools: defs }, { system: curSystem, tools: defs }];
+    for (let j = 1; j <= sentMsgs.length; j += 1) parts.push({ system: curSystem, tools: defs, messages: sentMsgs.slice(0, j) });
+    return parts.map((obj) => ({ key: pyjson(obj), tokens: tokens(obj) }));
+  };
+  // A6.5: the one breakpoint, at the end of the request; in the wire payload only.
+  const withBreakpoint = (msgs) => {
+    const copy = structuredClone(msgs);
+    const last = copy[copy.length - 1];
+    last.content[last.content.length - 1].cache_control = { type: "ephemeral" };
+    return copy;
+  };
 
   const guard = (name, limit, value) => trace.emit("guard", { guard: name, limit, value });
 
@@ -148,16 +193,12 @@ export function runCore(tape, board, seed, facts) {
   };
 
   // Backoff (7.3). Jitter draws only when retry is plugged with "full".
-  const backoff = (attempt, retry, retryAfter) => {
-    const base = Math.min(retry.cap_ms, retry.base_ms * 2 ** (attempt - 1));
-    const wait = retry.jitter === "full" ? prng.below(base + 1) : base;
-    return Math.max(wait, retryAfter);
-  };
+  const backoff = (attempt, retry, retryAfter) => backoffWait(attempt, retry, prng, retryAfter);
 
   // One turn's tool uses (7.1 tool_use branch). Returns nothing; results go to messages.
-  const runToolUses = (reply) => {
+  const runToolUses = (calls) => {
     const results = [];
-    for (const call of reply.tool_uses) {
+    for (const call of calls) {
       const pol = mods.permissions
         ? decide(mods.permissions, call)
         : { decision: "allow", rule: "none", reason: "no permission policy" };
@@ -191,6 +232,15 @@ export function runCore(tape, board, seed, facts) {
           continue;
         }
       }
+      if (mods.validate_inputs) {
+        const def = defs.find((d) => d.name === call.name);
+        const reason = def ? checkInput(def.input_schema, call.input) : "";
+        trace.emit("input_check", { tool: call.name, valid: reason === "", reason, tool_use_id: call.id });
+        if (reason !== "") {
+          results.push(toolResult(call.id, `Invalid input: ${reason}`, true));
+          continue;
+        }
+      }
       const out = tools.run(call);
       const capped = cap(out.output);
       st.t += tools.latency(call.name);
@@ -207,7 +257,11 @@ export function runCore(tape, board, seed, facts) {
       recent.push(`${call.name} ${pyjson(call.input)}`);
       results.push(toolResult(call.id, capped.shown, !out.ok));
     }
-    messages.push(user(results));
+    if (mods.split_results) {
+      for (const r of results) messages.push(user([r]));
+    } else {
+      messages.push(user(results));
+    }
     lastIsFeedback = false;
     trace.flush();
   };
@@ -243,8 +297,29 @@ export function runCore(tape, board, seed, facts) {
       }
       st.turn += 1;
 
+      // compaction (A6.3): harness code, no model call. Once per turn, before the control wire.
+      compactedThisTurn = false;
+      // A8.1: with history resend off the sent request is the task alone, so compaction is inert.
+      if (mods.compaction && mods.history?.resend !== false) {
+        const comp = mods.compaction;
+        const before = tokens(requestFor(messages));
+        if (100 * before > comp.threshold_percent * tape.window && messages.length >= 5 &&
+            messages[messages.length - 1].role === "user") {
+          const summary = compactionSummary(tape.notes, comp.keep, st.turn);
+          const dropped = messages.length - 2;
+          const tail = messages.slice(-2);
+          messages.splice(0, messages.length, user([textBlock(summary.text)]), ...tail);
+          const after = tokens(requestFor(messages));
+          trace.emit("compaction", { tokens_before: before, tokens_after: after, dropped_messages: dropped, kept_notes: summary.kept });
+          compactedThisTurn = true;
+        }
+      }
+
       // control wire
-      const request = { system, tools: defs, messages };
+      // A5.1: without resend the request carries only the task; the harness keeps the full history.
+      const sent = sentFor(messages);
+      const curSystem = systemNow();
+      const request = { system: curSystem, tools: defs, messages: sent };
       const promptTokens = tokens(request);
       trace.emit("prompt_built", { layers, tokens: promptTokens });
 
@@ -254,22 +329,29 @@ export function runCore(tape, board, seed, facts) {
         tokens: promptTokens,
         window: tape.window,
         percent: Math.floor((100 * promptTokens) / tape.window),
-        action: over ? "overflow" : "none",
+        action: over ? "overflow" : compactedThisTurn ? "compacted" : "none",
       });
       if (over) {
         return invalidRequest(promptTokens, `prompt is too long: ${promptTokens} tokens > ${tape.window} maximum`);
       }
-      if (resumePending && hasDanglingToolUse(messages)) {
+      // A5 ruling (a): before every call, on the harness's own history (A3.16).
+      if (hasDanglingToolUse(messages)) {
         return invalidRequest(promptTokens, "tool_use ids were found without tool_result blocks immediately after");
       }
 
       // loop and errors wires: the call, with recovery
       const snap = {
         turn: st.turn,
+        sent: sent.length,
+        request,
+        request_tokens: promptTokens,
+        window: tape.window,
         last_result_error: lastResultError(messages),
         last_denied: lastPermission === "deny",
         verify_feedback: lastIsFeedback,
         last_truncated: lastTruncated,
+        effort: effortLevel,
+        results_split: hasConsecutiveUsers(sent),
       };
       let attempt = 0;
       let reply;
@@ -304,46 +386,76 @@ export function runCore(tape, board, seed, facts) {
       }
       trace.emit("recovery_check", { attempts: attempt, breaker: mods.breaker ? "closed" : "none" });
 
-      const outTokens = tokens(reply.content);
+      // cache (A6.5): consulted for a call that returned a reply, at t_call = st.t here.
+      let cacheAcc = null;
+      if (mods.cache) {
+        cacheAcc = cacheAccount(cacheMap, cachePrefixes(curSystem, sent), promptTokens, st.t, tape.cache_rules);
+        const i = cacheAcc.matchedIndex;
+        const matched = i === 0 ? "none" : i === 1 ? "tools" : i === 2 ? "system" : `messages[${i - 3}]`;
+        trace.emit("cache", {
+          read: cacheAcc.read,
+          write: cacheAcc.write,
+          uncached: cacheAcc.uncached,
+          matched,
+          hit_percent: Math.floor((100 * cacheAcc.read) / promptTokens),
+        });
+      }
+
+      const outTokens = tokens(reply.content) + thinking;
       st.t += reply.latency_ms ?? (600 + 20 * outTokens);
       tokensIn += promptTokens;
       tokensOut += outTokens;
-      cost += promptTokens * price.input_milli + outTokens * price.output_milli;
-      const reqWire = wireRequest(tape.model_id, system, defs, messages);
+      if (cacheAcc) {
+        cost += cacheAcc.uncached * price.input_milli + cacheAcc.write * price.cache_write_milli +
+          cacheAcc.read * price.cache_read_milli + outTokens * price.output_milli;
+      } else {
+        cost += promptTokens * price.input_milli + outTokens * price.output_milli;
+      }
+      const usage = cacheAcc
+        ? {
+          input_tokens: cacheAcc.uncached,
+          cache_creation_input_tokens: cacheAcc.write,
+          cache_read_input_tokens: cacheAcc.read,
+          output_tokens: outTokens,
+        }
+        : { input_tokens: promptTokens, output_tokens: outTokens };
+      // A7.3: the thinking tokens are reported when the tape has an effort block.
+      const usageOut = tape.effort ? { ...usage, output_tokens_details: { thinking_tokens: thinking } } : usage;
+      const reqWire = wireRequest(tape.model_id, curSystem, defs, mods.cache ? withBreakpoint(sent) : sent, outputConfig);
       messages.push({ role: "assistant", content: reply.content });
       wire.push(reqWire);
-      wire.push(wireResponse(tape.model_id, st.turn, reply.content, reply.stop_reason, {
-        input_tokens: promptTokens,
-        output_tokens: outTokens,
-      }));
+      wire.push(wireResponse(tape.model_id, st.turn, reply.content, reply.stop_reason, usageOut));
       trace.emit("model_reply", {
         stop_reason: reply.stop_reason,
         text: reply.say ?? "",
         tool_uses: reply.tool_uses.map((u) => ({ id: u.id, name: u.name, input: u.input })),
-        usage: { input_tokens: promptTokens, output_tokens: outTokens },
+        usage: usageOut,
         cost,
       });
 
+      const calls = mods.first_block_only ? firstBlockCalls(reply) : reply.tool_uses;
+
       // interrupts (7.6): before any tool runs
       const iv = tape.interrupt;
-      if (iv && iv.turn === st.turn && reply.tool_uses.length > 0) {
-        const pending = reply.tool_uses.map((u) => u.id);
+      // A5 ruling (b): "the reply asked for tools" means the harness read a call (calls is that list).
+      if (iv && iv.turn === st.turn && calls.length > 0) {
+        const pending = calls.map((u) => u.id);
         trace.emit("interrupt", { by: "human", pending });
         if (mods.close_books) {
           messages.push(user(pending.map((id) => toolResult(id, INTERRUPTED_RESULT, true))));
           lastIsFeedback = false;
         }
         if (!iv.resume) return "interrupted";
-        resumePending = true;
         trace.flush();
         continue;
       }
 
-      if (reply.stop_reason === "tool_use") {
-        runToolUses(reply);
+      if (reply.stop_reason === "tool_use" && calls.length > 0) {
+        runToolUses(calls);
         continue;
       }
-      if (reply.stop_reason === "end_turn") {
+      // end_turn, and tool_use with no call read (A5.3): the end_turn branch, verify gate included
+      if (reply.stop_reason === "end_turn" || reply.stop_reason === "tool_use") {
         if (mods.verify_gate) {
           const passed = checksHold(vfs, tape.checks);
           trace.emit("verify", {

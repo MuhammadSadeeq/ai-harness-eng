@@ -1,0 +1,50 @@
+{
+  "id": "a6-compact-cache",
+  "schema": 1,
+  "title": "A6 fixture: compaction and cache",
+  "task": "Fix calc.py so the tests pass.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "input_milli_per_mtok": 2000,
+    "output_milli_per_mtok": 10000,
+    "cache_write_milli_per_mtok": 2500,
+    "cache_read_milli_per_mtok": 200
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the tests pass.",
+  "rules": [],
+  "workspace": {
+    "calc.py": "def add(a, b):\n    return a - b\n\ndef total(xs):\n    return sum(xs)\n",
+    "test_calc.py": "from calc import add, total\n\ndef test_add():\n    assert add(2, 3) == 5\n\ndef test_total():\n    assert total([1, 2, 3]) == 6\n"
+  },
+  "outside": {},
+  "tools": ["read_file", "edit_file", "run_command"],
+  "custom_tools": [],
+  "checks": [
+    { "file": "calc.py", "contains": "a + b" }
+  ],
+  "test_output": {
+    "pass": "2 passed",
+    "fail": "1 failed, 1 passed: test_add expected 5"
+  },
+  "notes": [
+    { "id": "n1", "kind": "goal", "turn": 0, "text": "Make the tests in test_calc.py pass." },
+    { "id": "n2", "kind": "constraint", "turn": 0, "text": "Do not change test_calc.py." },
+    { "id": "n3", "kind": "decision", "turn": 1, "text": "The bug is in add()." },
+    { "id": "n4", "kind": "progress", "turn": 2, "text": "add() is fixed; the tests are next." },
+    { "id": "n5", "kind": "file", "turn": 2, "text": "calc.py holds add and total." }
+  ],
+  "cache_rules": { "min_tokens": 50, "ttl_ms": 60000 },
+  "script": [
+    { "say": "I'll read calc.py.", "tools": [["read_file", { "path": "calc.py" }]] },
+    { "say": "Reading the tests.", "tools": [["read_file", { "path": "test_calc.py" }]] },
+    { "say": "The bug is in add(). Fixing it.", "tools": [["edit_file", { "path": "calc.py", "old_text": "a - b", "new_text": "a + b" }]] },
+    { "say": "Running the tests.", "tools": [["run_command", { "cmd": "pytest -q" }]] },
+    { "say": "All tests pass. Done.", "stop": "end_turn" }
+  ],
+  "human": { "default": "approve" },
+  "interrupt": null,
+  "faults": [],
+  "outage": null,
+  "seed_base": 20261010
+}

@@ -1,0 +1,28 @@
+- id: H1-s1
+  objectives:
+  - H1.o1
+  - H1.o2
+  prompt: Show me the one interface your code calls for a reply. What changes when the model is scripted?
+  model_answer: Rein calls one function for a reply, and the rest of the code never asks which model is
+    behind it. A scripted model answers from a fixed list, so every run repeats exactly, and no key is
+    needed. A real model makes the same call and returns the same kind of reply. I keep the raw content
+    blocks, because a tool request can come after text. Then the loop reads the stop reason and the blocks,
+    not just the first one.
+  rubric:
+  - Names one model interface that both implementations sit behind
+  - Says a scripted model repeats exactly and needs no key
+  - Notes that the reply's content is a list of blocks, so the first block is not always the tool request
+  - Names stop_reason as the field that says why the model stopped
+- id: H1-s2
+  objectives:
+  - H1.o3
+  prompt: Three runs of one script never remember each other. Why, and what would change that?
+  model_answer: The API is stateless. Each request carries only the messages I send in it, so a second
+    run knows nothing about the first unless its request includes those messages. To make a run remember,
+    the harness has to send the history with every call. That costs input tokens, because the whole history
+    is sent again each time.
+  rubric:
+  - Says the API is stateless and each request carries only what it sends
+  - Says a run remembers only if its request includes the earlier messages
+  - Mentions that resending the history costs input tokens
+  - Says each run is a new request, not a continued session

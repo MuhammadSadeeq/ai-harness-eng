@@ -1,0 +1,15 @@
+{
+ "id": "eng-compaction-resend-off",
+ "label": "Resend off: compaction is inert",
+ "modules": {
+  "history": {
+   "resend": false
+  },
+  "compaction": {
+   "threshold_percent": 1,
+   "keep": [
+    "goal"
+   ]
+  }
+ }
+}

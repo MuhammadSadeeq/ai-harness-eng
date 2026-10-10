@@ -1,0 +1,65 @@
+- id: H1-p1
+  objective: H1.o2
+  mode: predict
+  question: 'The reply starts with text: "I''ll run the tests first." Then it asks for run_command. What
+    does the harness do next?'
+  options:
+  - text: It runs the tests, reads the output and keeps going.
+    why: Tempting. The reply does ask for a tool, so this looks like the next step. A harness that reads
+      every block would run it.
+  - text: It asks the model again, because text before a tool request is not valid.
+    why: Wrong. A reply's content is a list of blocks, each with a type. Text can come before a tool request.
+    fact: api.content-multiple-blocks
+  - text: It ends the run as done. The tests never ran.
+    why: Right. This harness reads only the first block, which is text. It finds no call, so it takes
+      the end of the run, and the done claim is wrong.
+  answer: 2
+  outcome: It ended as done on turn 1. The tests never ran, and the checks still fail.
+- id: H1-c1
+  objective: H1.o1
+  mode: check
+  question: Rein's scripted model and its real model both answer one call. What does the rest of Rein
+    call?
+  options:
+  - text: The scripted class, because it runs without a key.
+    why: Tempting. A key decides which class answers, not what the rest of Rein should call.
+  - text: 'The model interface: one call method that both classes implement.'
+    why: Right. The loop calls one method. Which model answers is chosen once, at the start.
+  - text: The real class directly, so every reply is real.
+    why: Wrong. Scripted runs would need a key, and they would stop repeating exactly.
+  - text: Whichever class the step names.
+    why: Tempting. The step names one class to start with, but the loop should not depend on that choice.
+  answer: 1
+- id: H1-c2
+  objective: H1.o2
+  mode: check
+  question: A reply comes back with stop_reason tool_use. What does it tell the harness?
+  options:
+  - text: The run is finished.
+    why: Tempting. end_turn says the model finished. tool_use says it wants a tool run first.
+  - text: Claude is calling a tool and expects the application to run it.
+    why: Right. The harness runs the tools the reply asks for, then calls the model again.
+    fact: api.stop-reason-tool-use
+  - text: The reply was cut off at the token limit.
+    why: Tempting. That is max_tokens, a different stop reason.
+  - text: The model refused to answer.
+    why: Wrong. That is refusal, another stop reason, and it is not what tool_use means.
+  answer: 1
+- id: H1-c3
+  objective: H1.o3
+  mode: check
+  question: Three runs of the same script each send a new request. Does the third run know what the first
+    one said?
+  options:
+  - text: Yes. The API keeps a session for each key.
+    why: Tempting. It sounds like a service that remembers. The API keeps no conversation between requests.
+    fact: api.messages-stateless
+  - text: No. Each request carries only the messages you send in it.
+    why: Right. The Messages API is stateless, so a run knows only what its own request includes.
+    fact: api.messages-stateless
+  - text: Only if the system prompt says so.
+    why: Tempting. The system prompt sets behavior, not memory. The request still holds only what you
+      send.
+  - text: Only when the runs share a process.
+    why: Wrong. Each run is a separate request. Sharing a process does not join their history.
+  answer: 1

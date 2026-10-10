@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from .plain import check_plain, loads_strict
-from .spec import BUILTIN_TOOLS, ERROR_TYPES
+from .spec import BUILTIN_TOOLS, CANONICAL_INDEX, EFFORT_LEVELS, ERROR_TYPES, NOTE_KINDS
 from .vfs import is_outside, normalize
 
 REPLY_STOPS = ("end_turn", "tool_use", "max_tokens", "refusal")
@@ -47,6 +47,9 @@ class Tape:
     faults: list[dict[str, Any]] = field(default_factory=list)
     outage: dict[str, Any] | None = None
     incident: dict[str, Any] | None = None  # A4: the incident block, shape-checked here
+    notes: list[dict[str, Any]] = field(default_factory=list)  # A6.2: the commitments a run builds
+    cache_rules: dict[str, int] | None = None  # A6.5: min_tokens and ttl_ms of the model
+    effort: dict[str, Any] | None = None  # A7.3: default and thinking_tokens, when given
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -126,6 +129,9 @@ def _build(raw: dict[str, Any]) -> Tape:
         faults=faults,
         outage=outage,
         incident=_check_incident(raw.get("incident")),
+        notes=_check_notes(raw.get("notes", [])),
+        cache_rules=_check_cache_rules(raw.get("cache_rules")),
+        effort=_check_effort(raw.get("effort")),
         raw=raw,
     )
 
@@ -152,6 +158,8 @@ def _check_steps(steps: list[Any], where: str) -> None:
                 _check_steps(list(option["then"]), f"{here}.then")
         elif "when" in step:
             for item in step["when"]:
+                if "if" in item:
+                    _check_condition(str(item["if"]), f"{here}.when")
                 _check_steps(list(item.get("then", item.get("else", []))), f"{here}.when")
         elif "repeat" in step:
             body = step["repeat"]
@@ -282,3 +290,72 @@ def _check_incident(raw: Any) -> dict[str, Any] | None:
     _int(raw["correct_fix"], "incident.correct_fix", minimum=0)
     _int(raw["par_s"], "incident.par_s", minimum=0)
     return dict(raw)
+
+
+def _check_condition(condition: str, where: str) -> None:
+    """The arguments of the A6 and A7 conditions, refused at load (A6.7)."""
+    argument = condition.split(":", 1)[1] if ":" in condition else ""
+    if condition.startswith("context_gte:") and not CANONICAL_INDEX.fullmatch(argument):
+        raise TapeError(f"{where}: context_gte needs a canonical integer, got {condition!r}")
+    if condition.startswith("sent_lacks:") and argument == "":
+        raise TapeError(f"{where}: sent_lacks needs text after the colon")
+    if condition.startswith("effort_gte:") and argument not in EFFORT_LEVELS:
+        raise TapeError(f"{where}: effort_gte needs one of {', '.join(EFFORT_LEVELS)}")
+
+
+def _check_notes(raw: Any) -> list[dict[str, Any]]:
+    """A6.2: the notes, with unique ids and known kinds."""
+    if not isinstance(raw, list):
+        raise TapeError("notes must be a list")
+    seen: set[str] = set()
+    notes: list[dict[str, Any]] = []
+    for index, note in enumerate(raw):
+        where = f"notes[{index}]"
+        if not isinstance(note, dict) or set(note) != {"id", "kind", "turn", "text"}:
+            raise TapeError(f"{where} must have exactly id, kind, turn and text")
+        note_id = _text(note["id"], f"{where}.id")
+        if note_id in seen:
+            raise TapeError(f"{where}: duplicate id {note_id!r}")
+        seen.add(note_id)
+        if note["kind"] not in NOTE_KINDS:
+            raise TapeError(f"{where}: unknown kind {note['kind']!r}")
+        _int(note["turn"], f"{where}.turn", minimum=0)
+        _text(note["text"], f"{where}.text")
+        notes.append(dict(note))
+    return notes
+
+
+def _check_cache_rules(raw: Any) -> dict[str, int] | None:
+    """A6.5: the API's rules for the model: the minimum cacheable size and the lifetime."""
+    if raw is None:
+        return None
+    if not isinstance(raw, dict) or set(raw) != {"min_tokens", "ttl_ms"}:
+        raise TapeError("cache_rules must have exactly min_tokens and ttl_ms")
+    return {
+        "min_tokens": _int(raw["min_tokens"], "cache_rules.min_tokens", minimum=0),
+        "ttl_ms": _int(raw["ttl_ms"], "cache_rules.ttl_ms", minimum=0),
+    }
+
+
+def _check_effort(raw: Any) -> dict[str, Any] | None:
+    """A7.3 and A8.3: the tape's effort block (default level, optional, and thinking tokens)."""
+    if raw is None:
+        return None
+    if not isinstance(raw, dict) or set(raw) - {"default", "thinking_tokens"}:
+        raise TapeError("effort takes only default and thinking_tokens")
+    effort: dict[str, Any] = {}
+    if "default" in raw:
+        if raw["default"] not in EFFORT_LEVELS:
+            raise TapeError(f"effort.default must be one of {', '.join(EFFORT_LEVELS)}")
+        effort["default"] = raw["default"]
+    if "thinking_tokens" in raw:
+        table = raw["thinking_tokens"]
+        if not isinstance(table, dict) or set(table) - set(EFFORT_LEVELS):
+            raise TapeError("effort.thinking_tokens may list only the five levels")
+        # A8.3: any of the levels; a level left out adds 0.
+        effort["thinking_tokens"] = {
+            level: _int(table[level], f"effort.thinking_tokens.{level}", minimum=0)
+            for level in EFFORT_LEVELS
+            if level in table
+        }
+    return effort

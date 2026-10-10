@@ -1,0 +1,9 @@
+{
+  "id": "a7-effort-max",
+  "label": "Effort max",
+  "modules": {
+    "effort": {
+      "level": "max"
+    }
+  }
+}

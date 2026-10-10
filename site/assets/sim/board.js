@@ -1,5 +1,5 @@
 // Board loader (docs/ENGINE.md section 7). Absent module = not plugged.
-import { checkPlain, fail, isObj, noExtraKeys, reqInt, reqStr } from "./tape.js";
+import { EFFORT_LEVELS, NOTE_KINDS, checkPlain, fail, isObj, noExtraKeys, reqInt, reqStr } from "./tape.js";
 
 const MODULE_PARAMS = {
   turn_limit: ["max_turns"],
@@ -14,6 +14,14 @@ const MODULE_PARAMS = {
   close_books: [],
   rules_file: [],
   redact: ["patterns"],
+  history: ["resend"],
+  first_block_only: [],
+  compaction: ["threshold_percent", "keep"],
+  system_clock: [],
+  cache: [],
+  validate_inputs: [],
+  split_results: [],
+  effort: ["level"],
 };
 const DECISIONS = ["allow", "ask", "deny"];
 
@@ -71,6 +79,33 @@ function loadModule(name, p, where) {
     case "close_books":
     case "rules_file":
       return {};
+    case "history":
+      // A5 ruling (c): {"resend": false} forgets; {"resend": true} is the same as absent. Any other shape is refused.
+      if (p.resend !== false && p.resend !== true) fail(where, 'resend must be true or false (A5: the forgetful harness)');
+      return { resend: p.resend };
+    case "first_block_only":
+      return {};
+    case "compaction": {
+      // A6.3: P is 1-100; keep is a list of distinct note kinds, possibly empty.
+      const P = reqInt(p, "threshold_percent", where, 1);
+      if (P > 100) fail(where, "threshold_percent must be 1-100");
+      if (!Array.isArray(p.keep)) fail(where, "keep must be a list of note kinds");
+      for (const k of p.keep) {
+        if (!NOTE_KINDS.includes(k)) fail(where, `keep has unknown kind "${k}"`);
+      }
+      if (new Set(p.keep).size !== p.keep.length) fail(where, "keep must not repeat a kind");
+      return { threshold_percent: P, keep: [...p.keep] };
+    }
+    case "system_clock":
+    case "cache":
+    case "validate_inputs":
+    case "split_results":
+      return {};
+    case "effort": {
+      // A7.3: the board sets the level in force (the tape default is used when absent).
+      if (!EFFORT_LEVELS.includes(p.level)) fail(where, `level must be one of: ${EFFORT_LEVELS.join(", ")}`);
+      return { level: p.level };
+    }
     case "redact": {
       const patterns = p.patterns ?? [];
       if (!Array.isArray(patterns) || patterns.some((s) => typeof s !== "string" || s === "")) {

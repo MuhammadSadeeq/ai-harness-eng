@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from .plain import check_plain, loads_strict
-from .spec import MODULES
+from .spec import EFFORT_LEVELS, MODULES, NOTE_KINDS
 
 
 class BoardError(ValueError):
@@ -51,6 +51,7 @@ def board_from_dict(raw: Any) -> Board:
         if not isinstance(params, dict):
             raise BoardError(f"module {name!r} must be an object")
         _check_module(name, params)
+        _check_a6_a7(name, params)
     return Board(
         id=str(raw.get("id", "")),
         label=str(raw.get("label", "")),
@@ -92,6 +93,8 @@ def _check_module(name: str, params: dict[str, Any]) -> None:
         patterns = params.get("patterns")
         if not isinstance(patterns, list) or any(not isinstance(p, str) or not p for p in patterns):
             raise BoardError("redact.patterns must be a list of non-empty strings")
+    if name == "history" and (set(params) != {"resend"} or not isinstance(params["resend"], bool)):
+        raise BoardError('history must be {"resend": true} or {"resend": false} (A5)')
 
 
 def _check_rule(rule: Any) -> None:
@@ -106,3 +109,21 @@ def _check_rule(rule: Any) -> None:
     match = rule.get("match", {})
     if not isinstance(match, dict) or any(not isinstance(v, str) for v in match.values()):
         raise BoardError("rule.match must map input fields to glob strings")
+
+
+def _check_a6_a7(name: str, params: dict[str, Any]) -> None:
+    """A6 and A7 modules: the parameters the engine reads."""
+    if name == "compaction":
+        percent = params.get("threshold_percent")
+        if isinstance(percent, bool) or not isinstance(percent, int) or not 1 <= percent <= 100:
+            raise BoardError("compaction.threshold_percent must be an integer from 1 to 100")
+        keep = params.get("keep")
+        if not isinstance(keep, list) or len(set(keep)) != len(keep):
+            raise BoardError("compaction.keep must be a list of distinct note kinds")
+        for kind in keep:
+            if kind not in NOTE_KINDS:
+                raise BoardError(f"compaction.keep has an unknown kind {kind!r}")
+    if name == "effort" and params.get("level") not in EFFORT_LEVELS:
+        raise BoardError("effort.level must be one of " + ", ".join(EFFORT_LEVELS))
+    if name in ("system_clock", "cache", "validate_inputs", "split_results") and params:
+        raise BoardError(f"{name} takes no parameters")

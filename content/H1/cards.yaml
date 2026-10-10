@@ -1,0 +1,37 @@
+- id: H1-k1
+  type: term
+  objective: H1.o1
+  front: What is a model interface?
+  back: One function the rest of Rein calls for a reply. A scripted model and a real model sit behind
+    it.
+- id: H1-k2
+  type: term
+  objective: H1.o1
+  front: What is a dataclass?
+  back: A Python class with named fields. Rein uses one to hold a reply, so each field has a name.
+- id: H1-k3
+  type: term
+  objective: H1.o2
+  front: What does stop_reason tell the harness?
+  back: Why the model stopped, such as tool_use or end_turn. The harness decides its next step from it.
+- id: H1-k4
+  type: term
+  objective: H1.o2
+  front: Why does Reply keep the raw content blocks?
+  back: A reply's content is a list of blocks. A tool request can come after text, so the harness reads
+    the blocks, not only the first.
+- id: H1-k5
+  type: term
+  objective: H1.o2
+  front: What does Rein print with each reply?
+  back: The stop reason and the input and output token counts, so you can see what each call used.
+- id: H1-k6
+  type: term
+  objective: H1.o3
+  front: Is the API stateless?
+  back: Yes. You send the full history with each request, and the API keeps nothing between requests.
+- id: H1-k7
+  type: term
+  objective: H1.o3
+  front: Three runs of one script. What does run three know about run one?
+  back: Only what its own request includes. Nothing carries over by itself.

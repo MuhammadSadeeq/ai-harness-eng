@@ -1,0 +1,28 @@
+- id: H2-s1
+  objectives:
+  - H2.o1
+  - H2.o2
+  prompt: Walk me through one pass of your loop, from the model's reply to the next call.
+  model_answer: I call the model with the history so far, and I read the stop reason. If it is tool_use,
+    I look up each requested name in the registry and run its function. Each result carries the tool_use_id
+    of its request. I send all the results in one user message, then call the model again. If the reply
+    is end_turn, the loop stops. Every pass also counts against the turn limit, so the loop has an exit
+    that does not depend on the model.
+  rubric:
+  - Calls the model with the history so far on every pass
+  - Looks up each requested tool in the registry and runs it
+  - Returns all results in one user message, each with its tool_use_id
+  - Names the turn limit as an exit that does not depend on the model
+- id: H2-s2
+  objectives:
+  - H2.o3
+  prompt: The model asks for a tool that does not exist. What does your loop send back, and why?
+  model_answer: It sends a tool_result for that tool_use, with is_error set to true and a short reason,
+    such as that no tool has that name. The request still needs an answer, and the model can see the error
+    and change its plan. Raising an exception would stop the whole run for a mistake the model can recover
+    from.
+  rubric:
+  - Sends a tool_result for the unknown tool_use, not nothing
+  - Sets is_error to true and gives a short reason
+  - Says the model can recover from the error, so the run should continue
+  - Says the loop keeps going after the error, rather than stopping the run

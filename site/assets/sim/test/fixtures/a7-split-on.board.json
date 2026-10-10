@@ -1,0 +1,7 @@
+{
+  "id": "a7-split-on",
+  "label": "Results split",
+  "modules": {
+    "split_results": {}
+  }
+}

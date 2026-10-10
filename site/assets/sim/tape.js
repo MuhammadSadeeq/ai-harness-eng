@@ -7,7 +7,7 @@ export const ASCII = /^[\x20-\x7E\n\t]*$/;
 export const BUILTIN_TOOLS = ["read_file", "write_file", "edit_file", "list_files", "run_command"];
 export const ERROR_TYPES = ["overloaded", "rate_limit", "api_error", "timeout", "invalid_request"];
 const STOPS = ["end_turn", "tool_use", "max_tokens", "refusal"];
-const CONDITIONS = ["last_result_error", "last_denied", "verify_feedback", "last_truncated"];
+const CONDITIONS = ["last_result_error", "last_denied", "verify_feedback", "last_truncated", "results_split"];
 
 export const isObj = (x) => x !== null && typeof x === "object" && !Array.isArray(x);
 
@@ -105,6 +105,12 @@ export function checkError(step, where) {
 function checkCondition(cond, where) {
   if (CONDITIONS.includes(cond)) return;
   if (typeof cond === "string" && /^turn_gte:\d+$/.test(cond)) return;
+  if (typeof cond === "string" && /^history_lt:(0|[1-9][0-9]*)$/.test(cond)) return;
+  // A6.1: context_gte:<n>; sent_lacks:<text> where <text> is everything after the first colon.
+  if (typeof cond === "string" && /^context_gte:(0|[1-9][0-9]*)$/.test(cond)) return;
+  if (typeof cond === "string" && /^sent_lacks:[\s\S]+$/.test(cond)) return;
+  // A7.3: effort_gte:<level>, the level in force compared with a level name.
+  if (typeof cond === "string" && /^effort_gte:(low|medium|high|xhigh|max)$/.test(cond)) return;
   fail(where, `unknown condition "${cond}"`);
 }
 
@@ -199,6 +205,57 @@ function loadCustomTool(c, i, seen) {
 }
 
 // Returns a new, validated tape object. The input is not modified.
+// A6.2: the commitments a run builds up. The kinds are shared with the board's compaction.keep.
+export const NOTE_KINDS = ["goal", "constraint", "decision", "progress", "file"];
+
+function loadNotes(raw, where) {
+  if (raw === undefined) return [];
+  if (!Array.isArray(raw)) fail(where, "notes must be a list");
+  const ids = new Set();
+  return raw.map((n, i) => {
+    const w = `${where}.notes[${i}]`;
+    if (!isObj(n)) fail(w, "a note is an object");
+    noExtraKeys(n, ["id", "kind", "turn", "text"], w);
+    const id = reqStr(n, "id", w);
+    if (ids.has(id)) fail(w, `duplicate note id "${id}"`);
+    ids.add(id);
+    if (!NOTE_KINDS.includes(n.kind)) fail(w, `kind must be one of ${NOTE_KINDS.join(", ")}`);
+    const turn = reqInt(n, "turn", w, 0);
+    if (typeof n.text !== "string") fail(w, "text must be a string");
+    return { id, kind: n.kind, turn, text: n.text };
+  });
+}
+
+// A7.3: the effort levels, in order (low to max).
+export const EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max"];
+
+// A7.3: the tape's effort block: {default?, thinking_tokens?} (null when absent).
+function loadEffort(raw, where) {
+  if (raw === undefined || raw === null) return null;
+  if (!isObj(raw)) fail(where, "effort must be an object");
+  noExtraKeys(raw, ["default", "thinking_tokens"], `${where}.effort`);
+  // null is what a loaded tape stores for an absent default, so loading a loaded tape is the same tape.
+  if (raw.default !== undefined && raw.default !== null && !EFFORT_LEVELS.includes(raw.default)) {
+    fail(where, `effort default must be one of: ${EFFORT_LEVELS.join(", ")}`);
+  }
+  const tt = raw.thinking_tokens ?? {};
+  if (!isObj(tt)) fail(where, "effort thinking_tokens must be an object");
+  noExtraKeys(tt, EFFORT_LEVELS, `${where}.effort.thinking_tokens`);
+  for (const level of Object.keys(tt)) reqInt(tt, level, `${where}.effort.thinking_tokens`, 0);
+  return { default: raw.default ?? null, thinking_tokens: { ...tt } };
+}
+
+// A6.5: the API's caching rules for this model, given by the tape (null when absent).
+function loadCacheRules(raw, where) {
+  if (raw === undefined || raw === null) return null;
+  if (!isObj(raw)) fail(where, "cache_rules must be an object");
+  noExtraKeys(raw, ["min_tokens", "ttl_ms"], `${where}.cache_rules`);
+  return {
+    min_tokens: reqInt(raw, "min_tokens", `${where}.cache_rules`, 0),
+    ttl_ms: reqInt(raw, "ttl_ms", `${where}.cache_rules`, 0),
+  };
+}
+
 export function loadTape(raw) {
   if (!isObj(raw)) fail("tape", "must be an object");
   checkPlain(raw, "tape");
@@ -239,6 +296,9 @@ export function loadTape(raw) {
   reqStr(raw.test_output, "fail", `${where}.test_output`);
   checkSteps(raw.script, `${where}.script`);
   t.human = loadHuman(raw.human ?? { default: "deny" }, where);
+  t.notes = loadNotes(raw.notes, where);
+  t.cache_rules = loadCacheRules(raw.cache_rules, where);
+  t.effort = loadEffort(raw.effort, where);
   if (raw.interrupt === undefined || raw.interrupt === null) {
     t.interrupt = null;
   } else {

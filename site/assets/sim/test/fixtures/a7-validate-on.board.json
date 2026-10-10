@@ -1,0 +1,7 @@
+{
+  "id": "a7-validate-on",
+  "label": "Schema checks",
+  "modules": {
+    "validate_inputs": {}
+  }
+}

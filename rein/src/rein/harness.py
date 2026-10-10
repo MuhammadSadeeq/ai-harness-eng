@@ -10,13 +10,15 @@ import copy
 from dataclasses import dataclass
 from typing import Any
 
-from .board import Board
+from .board import Board, BoardError
+from .inputs import check_input
 from .model import CallContext, ErrorOutcome, Reply, ScriptedModel, ToolUse, missing_results
 from .policy import NO_POLICY, Approver, Policy
 from .pricing import Prices
 from .prng import Mulberry32
 from .pyjson import pyjson
 from .spec import (
+    DEFAULT_EFFORT,
     ERROR_MESSAGES,
     MISSING_RESULT_MESSAGE,
     MODEL_ERROR_MS,
@@ -115,6 +117,40 @@ class Harness:
         self.last_truncated = False
         self.feedback_pending = False
         self.wire: list[dict[str, Any]] = []
+        # A5: history {"resend": false} sends only the task; first_block_only reads content[0] only.
+        self.resend = bool(board.param("history", "resend")) if board.has("history") else True
+        self.first_block_only = board.has("first_block_only")
+        # A6 and A7: absent modules change nothing.
+        self.notes = list(tape.notes)
+        self.has_compaction = board.has("compaction")
+        self.compaction_percent = (
+            int(board.param("compaction", "threshold_percent")) if self.has_compaction else 0
+        )
+        self.compaction_keep = (
+            frozenset(board.param("compaction", "keep")) if self.has_compaction else frozenset()
+        )
+        self.has_clock = board.has("system_clock")
+        self.has_cache = board.has("cache")
+        if self.has_cache and (
+            tape.cache_rules is None
+            or prices.cache_write_milli is None
+            or prices.cache_read_milli is None
+        ):
+            raise BoardError(
+                "the cache module needs cache_rules and cache prices on the tape (A6.5)"
+            )
+        self.cache_rules = tape.cache_rules
+        self.cache_map: dict[str, int] = {}
+        self.has_validate = board.has("validate_inputs")
+        self.has_split = board.has("split_results")
+        self.has_effort_board = board.has("effort")
+        board_level = board.param("effort", "level") if self.has_effort_board else None
+        tape_default = tape.effort.get("default") if tape.effort is not None else None
+        self.level = str(board_level or tape_default or DEFAULT_EFFORT)  # A7.3
+        table = tape.effort.get("thinking_tokens") if tape.effort is not None else None
+        # A8.3: a level the table leaves out adds 0.
+        self.thinking = int(table.get(self.level, 0)) if table is not None else 0
+        self.compacted = False
 
     # ---- the run -------------------------------------------------------------------------
 
@@ -147,6 +183,9 @@ class Harness:
             if stop is not None:
                 return stop
             self.turn += 1
+            self.compacted = False
+            if self.has_compaction:  # A6.3: after the guards and turn += 1, before the control wire
+                self._compact()
 
             request = self._request()
             prompt_tokens = tokens(request)
@@ -159,7 +198,7 @@ class Harness:
                 tokens=prompt_tokens,
                 window=window,
                 percent=(100 * prompt_tokens) // window,
-                action="overflow" if over else "none",
+                action="overflow" if over else ("compacted" if self.compacted else "none"),
             )
             if over:  # A1: a permanent error, before any call
                 self._permanent_error(
@@ -172,45 +211,63 @@ class Harness:
             if isinstance(result, str):
                 return result
             reply = result
+            read, write, uncached = 0, 0, prompt_tokens
+            if self.has_cache:  # A6.5: after recovery_check, before model_reply
+                read, write, uncached, matched, hit = self._cache_step(prompt_tokens, request)
+                self._emit(
+                    "cache",
+                    read=read,
+                    write=write,
+                    uncached=uncached,
+                    matched=matched,
+                    hit_percent=hit,
+                )
             self.t += reply.latency_ms
             self.tokens_in += prompt_tokens
             self.tokens_out += reply.output_tokens
             self.cost += (
-                prompt_tokens * self.prices.input_milli
+                uncached * self.prices.input_milli
+                + write * (self.prices.cache_write_milli or 0)
+                + read * (self.prices.cache_read_milli or 0)
                 + reply.output_tokens * self.prices.output_milli
             )
             self.messages.append({"role": "assistant", "content": reply.content})
-            self.wire.append(
-                response_payload(
-                    self.turn,
-                    self.tape.model_id,
-                    reply.content,
-                    reply.stop_reason,
-                    prompt_tokens,
-                    reply.output_tokens,
-                )
+            payload = response_payload(
+                self.turn,
+                self.tape.model_id,
+                reply.content,
+                reply.stop_reason,
+                prompt_tokens,
+                reply.output_tokens,
             )
+            # A8.4: the response usage has exactly the fields of model_reply.usage.
+            payload["usage"] = self._usage(prompt_tokens, reply, read, write, uncached)
+            self.wire.append(payload)
             self._emit(
                 "model_reply",
                 stop_reason=reply.stop_reason,
                 text=reply.say if reply.say is not None else "",
                 tool_uses=[{"id": u.id, "name": u.name, "input": u.input} for u in reply.tool_uses],
-                usage={"input_tokens": prompt_tokens, "output_tokens": reply.output_tokens},
+                usage=self._usage(prompt_tokens, reply, read, write, uncached),
                 cost=self.cost,
             )
 
+            calls = self._read_calls(reply)  # A5.5(b): an interrupt needs a call the harness read
             interrupt = self.tape.interrupt
-            if interrupt is not None and int(interrupt["turn"]) == self.turn and reply.tool_uses:
+            if interrupt is not None and int(interrupt["turn"]) == self.turn and calls:
                 stop = self._interrupt(reply, bool(interrupt.get("resume", False)))
                 if stop == _CONTINUE:
                     continue
                 return stop
 
-            if reply.stop_reason == "tool_use":
-                self._run_tools(reply)
+            if reply.stop_reason == "tool_use" and (calls or not self.first_block_only):
+                self._run_tools(calls)
                 continue
 
-            if reply.stop_reason == "end_turn":
+            # A5: a tool_use reply with no call found takes the end_turn branch, as the bug does.
+            if reply.stop_reason == "end_turn" or (
+                reply.stop_reason == "tool_use" and self.first_block_only
+            ):
                 if self.has_verify:
                     passed = self.toolbox.checks_hold()
                     output = self.tape.test_output["pass" if passed else "fail"]
@@ -274,24 +331,149 @@ class Harness:
 
     # ---- control wire ----------------------------------------------------------------------
 
+    def _sent(self) -> list[dict[str, Any]]:
+        """A5: without resend, every request carries the first message only (the task)."""
+        return list(self.messages) if self.resend else self.messages[:1]
+
+    def _read_calls(self, reply: Reply) -> list[ToolUse]:
+        """A5 first_block_only: the harness reads a tool call only from content[0]."""
+        if not self.first_block_only:
+            return list(reply.tool_uses)
+        if reply.content and reply.content[0].get("type") == "tool_use":
+            return [reply.tool_uses[0]]
+        return []
+
+    # ---- A6 and A7 (absent modules change nothing) -----------------------------------------
+
+    def _compact(self) -> None:
+        """A6.3: the compactor. No model call and no cost; it changes the harness's own history.
+
+        A8.1: with history resend false it is inert, whatever its threshold.
+        """
+        if not self.resend:
+            return
+        before = tokens(self._request())
+        if not (
+            100 * before > self.compaction_percent * self.tape.window
+            and len(self.messages) >= 5
+            and self.messages[-1]["role"] == "user"
+        ):
+            return
+        kept = [
+            note
+            for note in self.notes
+            if note["turn"] < self.turn and note["kind"] in self.compaction_keep
+        ]
+        lines = ["\n- " + note["kind"] + ": " + note["text"] for note in kept] or [
+            "\n- (nothing kept)"
+        ]
+        summary = "Summary of the work so far:" + "".join(lines)
+        dropped = len(self.messages) - 2
+        self.messages = [user_message([text_block(summary)])] + self.messages[-2:]
+        self.compacted = True
+        self._emit(
+            "compaction",
+            tokens_before=before,
+            tokens_after=tokens(self._request()),
+            dropped_messages=dropped,
+            kept_notes=[note["id"] for note in kept],
+        )
+
+    def _cache_step(
+        self, prompt_tokens: int, request: dict[str, Any]
+    ) -> tuple[int, int, int, str, int]:
+        """A6.5: this call's cache read and write, the cached part's label, and the hit percent."""
+        rules = self.cache_rules
+        assert rules is not None  # the constructor refuses cache without cache_rules
+        if prompt_tokens < rules["min_tokens"]:
+            return 0, 0, prompt_tokens, "none", 0  # too short to cache: the map is not touched
+        t_call = self.t
+        system, tools, sent = request["system"], request["tools"], request["messages"]
+        prefixes: list[dict[str, Any]] = [{"tools": tools}, {"system": system, "tools": tools}]
+        for j in range(1, len(sent) + 1):
+            prefixes.append({"system": system, "tools": tools, "messages": sent[0:j]})
+        keys = [pyjson(prefix) for prefix in prefixes]  # keys[k - 1] is key(k)
+        found = 0
+        for k in range(len(keys), 0, -1):
+            written = self.cache_map.get(keys[k - 1])
+            if written is not None and t_call - written < rules["ttl_ms"]:
+                found = k
+                break
+        read = tokens(prefixes[found - 1]) if found > 0 else 0
+        write = prompt_tokens - read
+        if found > 0:
+            self.cache_map[keys[found - 1]] = t_call
+        self.cache_map[keys[-1]] = t_call
+        if found == 0:
+            matched = "none"
+        elif found == 1:
+            matched = "tools"
+        elif found == 2:
+            matched = "system"
+        else:
+            matched = f"messages[{found - 3}]"
+        return read, write, prompt_tokens - read - write, matched, (100 * read) // prompt_tokens
+
+    def _usage(
+        self, prompt_tokens: int, reply: Reply, read: int, write: int, uncached: int
+    ) -> dict[str, Any]:
+        """model_reply.usage: cache fields with cache plugged, thinking with an effort block."""
+        if self.has_cache:
+            usage: dict[str, Any] = {
+                "input_tokens": uncached,
+                "cache_creation_input_tokens": write,
+                "cache_read_input_tokens": read,
+                "output_tokens": reply.output_tokens,
+            }
+        else:
+            usage = {"input_tokens": prompt_tokens, "output_tokens": reply.output_tokens}
+        if self.tape.effort is not None:  # A7.3
+            usage["output_tokens_details"] = {"thinking_tokens": self.thinking}
+        return usage
+
+    def _wire_request(self, request: dict[str, Any]) -> dict[str, Any]:
+        """The request payload. The breakpoint (A6.5) and output_config (A7.3): wire only."""
+        output_config = {"effort": self.level} if self.has_effort_board else None
+        payload = copy.deepcopy(
+            request_payload(
+                self.tape.model_id,
+                str(request["system"]),
+                list(request["tools"]),
+                list(request["messages"]),
+                output_config=output_config,
+            )
+        )
+        if self.has_cache and payload["messages"]:
+            payload["messages"][-1]["content"][-1]["cache_control"] = {"type": "ephemeral"}
+        return payload
+
+    def _input_reason(self, call: ToolUse) -> str:
+        """A7.1: the reason the call's input is invalid, or "" (an unknown tool is not checked)."""
+        for definition in self.toolbox.definitions():
+            if definition["name"] == call.name:
+                return check_input(call.input, definition["input_schema"])
+        return ""
+
     def _layers(self) -> list[str]:
-        layers = ["system"]
+        layers = ["clock", "system"] if self.has_clock else ["system"]
         if self.has_rules_file and self.tape.rules:
             layers.append("rules")
-        layers.extend(["tools", "history"])
+        layers.extend(["tools", "history" if self.resend else "history (not resent)"])
         return layers
 
     def _system(self) -> str:
         system = self.tape.system
         if self.has_rules_file and self.tape.rules:
             system += "\n\nProject rules:\n- " + "\n- ".join(self.tape.rules)
+        if self.has_clock:  # A6.4: the time at the top of the prompt, a bug on purpose
+            system = "Current time: t=" + str(self.t) + " ms\n\n" + system
         return system
 
     def _request(self) -> dict[str, Any]:
         return {
             "system": self._system(),
             "tools": self.toolbox.definitions(),
-            "messages": self.messages,
+            "messages": self._sent(),
         }
 
     # ---- permanent errors (A1, A3.16) -------------------------------------------------------
@@ -319,7 +501,7 @@ class Harness:
         while True:
             attempt += 1
             self._emit("model_call", attempt=attempt, tokens_in=prompt_tokens)
-            outcome = self.model.call(self._context())
+            outcome = self.model.call(self._context(prompt_tokens, request))
             if isinstance(outcome, ErrorOutcome):
                 self.t += outcome.error_ms
                 self.consecutive_failures += 1
@@ -349,16 +531,7 @@ class Harness:
                 attempts=attempt,
                 breaker="closed" if self.has_breaker else "none",
             )
-            self.wire.append(
-                copy.deepcopy(
-                    request_payload(
-                        self.tape.model_id,
-                        str(request["system"]),
-                        list(request["tools"]),
-                        list(request["messages"]),
-                    )
-                )
-            )
+            self.wire.append(self._wire_request(request))
             return outcome
 
     def _backoff(self, attempt: int, retry_after_ms: int) -> int:
@@ -368,7 +541,7 @@ class Harness:
         wait = self.rng.below(base + 1) if self.board.param("retry", "jitter") == "full" else base
         return max(wait, retry_after_ms)
 
-    def _context(self) -> CallContext:
+    def _context(self, prompt_tokens: int, request: dict[str, Any]) -> CallContext:
         return CallContext(
             turn=self.turn,
             t=self.t,
@@ -376,12 +549,18 @@ class Harness:
             last_permission=self.last_permission,
             last_truncated=self.last_truncated,
             feedback_pending=self.feedback_pending,
+            sent=self._sent(),
+            request=request,
+            prompt_tokens=prompt_tokens,
+            window=self.tape.window,
+            level=self.level,
+            thinking=self.thinking,
         )
 
     # ---- interrupts (section 7.6, A3.17) ----------------------------------------------------
 
     def _interrupt(self, reply: Reply, resume: bool) -> str:
-        pending = [call.id for call in reply.tool_uses]
+        pending = [call.id for call in self._read_calls(reply)]
         self._emit("interrupt", by="human", pending=pending)
         if self.has_close_books:
             self.messages.append(
@@ -400,11 +579,15 @@ class Harness:
 
     # ---- tools and permissions (section 7.1, tool turns) ------------------------------------
 
-    def _run_tools(self, reply: Reply) -> None:
+    def _run_tools(self, calls: list[ToolUse]) -> None:
         results: list[dict[str, Any]] = []
-        for call in reply.tool_uses:
+        for call in calls:
             results.append(self._one_tool(call))
-        self.messages.append(user_message(results))
+        if self.has_split:  # A7.2: one user message per result, in call order (a bug on purpose)
+            for result in results:
+                self.messages.append(user_message([result]))
+        else:
+            self.messages.append(user_message(results))
         self.feedback_pending = False
         self._trace_write()
 
@@ -437,6 +620,17 @@ class Harness:
             self._emit("sandbox", tool=call.name, allowed=allowed, reason=why, tool_use_id=call.id)
             if not allowed:
                 return tool_result(call.id, "Blocked by the sandbox: " + why, True)
+        if self.has_validate:  # A7.1: the input against the tool's schema, before the run
+            reason = self._input_reason(call)
+            self._emit(
+                "input_check",
+                tool=call.name,
+                valid=reason == "",
+                reason=reason,
+                tool_use_id=call.id,
+            )
+            if reason:
+                return tool_result(call.id, "Invalid input: " + reason, True)
         ok, output, latency = self.toolbox.run(call.name, call.input)
         shown, truncated = self._cap(output)
         self.t += latency

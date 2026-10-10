@@ -1,0 +1,51 @@
+[
+ {
+  "back": "One function the rest of Rein calls for a reply. A scripted model and a real model sit behind it.",
+  "front": "What is a model interface?",
+  "id": "H1-k1",
+  "objective": "H1.o1",
+  "type": "term"
+ },
+ {
+  "back": "A Python class with named fields. Rein uses one to hold a reply, so each field has a name.",
+  "front": "What is a dataclass?",
+  "id": "H1-k2",
+  "objective": "H1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Why the model stopped, such as tool_use or end_turn. The harness decides its next step from it.",
+  "front": "What does stop_reason tell the harness?",
+  "id": "H1-k3",
+  "objective": "H1.o2",
+  "type": "term"
+ },
+ {
+  "back": "A reply's content is a list of blocks. A tool request can come after text, so the harness reads the blocks, not only the first.",
+  "front": "Why does Reply keep the raw content blocks?",
+  "id": "H1-k4",
+  "objective": "H1.o2",
+  "type": "term"
+ },
+ {
+  "back": "The stop reason and the input and output token counts, so you can see what each call used.",
+  "front": "What does Rein print with each reply?",
+  "id": "H1-k5",
+  "objective": "H1.o2",
+  "type": "term"
+ },
+ {
+  "back": "Yes. You send the full history with each request, and the API keeps nothing between requests.",
+  "front": "Is the API stateless?",
+  "id": "H1-k6",
+  "objective": "H1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Only what its own request includes. Nothing carries over by itself.",
+  "front": "Three runs of one script. What does run three know about run one?",
+  "id": "H1-k7",
+  "objective": "H1.o3",
+  "type": "term"
+ }
+]

@@ -1,0 +1,7 @@
+{
+ "id": "eng-cache-ttl",
+ "label": "Cache with a short lifetime",
+ "modules": {
+  "cache": {}
+ }
+}

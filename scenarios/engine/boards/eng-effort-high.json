@@ -1,0 +1,9 @@
+{
+ "id": "eng-effort-high",
+ "label": "Level high, not in the table",
+ "modules": {
+  "effort": {
+   "level": "high"
+  }
+ }
+}

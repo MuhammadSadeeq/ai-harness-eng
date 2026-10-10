@@ -1,0 +1,18 @@
+- id: model-interface
+  term: model interface
+  aliases:
+  - model interface
+  - model interfaces
+  strict: true
+  wire: loop
+  definition: One function that Rein calls to get a reply. A scripted model and a real model both sit
+    behind it, with the same inputs and the same kind of result.
+- id: dataclass
+  term: dataclass
+  aliases:
+  - dataclass
+  - dataclasses
+  strict: true
+  wire: loop
+  definition: A Python class that holds named fields. The @dataclass decorator writes the __init__ method,
+    so Rein can build a reply with named fields.

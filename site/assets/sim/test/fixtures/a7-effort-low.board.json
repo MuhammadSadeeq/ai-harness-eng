@@ -1,0 +1,9 @@
+{
+  "id": "a7-effort-low",
+  "label": "Effort low",
+  "modules": {
+    "effort": {
+      "level": "low"
+    }
+  }
+}

@@ -9,11 +9,18 @@ from __future__ import annotations
 
 import copy
 from collections import deque
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from typing import Any
 
 from .prng import Mulberry32
-from .spec import MAX_SCRIPT_EXPANSIONS, MODEL_BASE_MS, MODEL_ERROR_MS, MODEL_PER_TOKEN_MS
+from .spec import (
+    EFFORT_LEVELS,
+    MAX_SCRIPT_EXPANSIONS,
+    MODEL_BASE_MS,
+    MODEL_ERROR_MS,
+    MODEL_PER_TOKEN_MS,
+)
 from .tape import Tape
 from .tokens import tokens
 
@@ -54,6 +61,14 @@ class CallContext:
     last_permission: str | None  # the last permission's final decision
     last_truncated: bool  # the last tool_call of the run was truncated
     feedback_pending: bool  # the last user message is the gate's feedback
+    sent: list[dict[str, Any]] | None = None  # A5: the messages this request sends (None: messages)
+    request: dict[str, Any] | None = (
+        None  # A6.1: the request about to be sent (None: messages only)
+    )
+    prompt_tokens: int = 0  # A6.1: tokens(request)
+    window: int = 0  # A6.1: the tape window
+    level: str = "high"  # A7.3: the effort level in force
+    thinking: int = 0  # A7.3: thinking tokens this reply adds to its output
 
 
 Entry = tuple[dict[str, Any], str]
@@ -164,7 +179,7 @@ class ScriptedModel:
             content.append({"type": "tool_use", "id": tool_id, "name": name, "input": tool_input})
         default_stop = "tool_use" if tool_uses else "end_turn"
         stop = str(step["stop"]) if "stop" in step else default_stop
-        output_tokens = tokens(content)
+        output_tokens = tokens(content) + ctx.thinking  # A7.3: thinking is billed as output
         if "latency_ms" in step:
             latency = int(step["latency_ms"])
         else:
@@ -205,7 +220,37 @@ def condition_holds(condition: str, ctx: CallContext) -> bool:
         return ctx.last_truncated
     if condition.startswith("turn_gte:"):
         return ctx.turn >= int(condition.split(":", 1)[1])
+    if condition.startswith(
+        "history_lt:"
+    ):  # A5: the request about to be sent has fewer than n messages
+        sent = ctx.messages if ctx.sent is None else ctx.sent
+        return len(sent) < int(condition.split(":", 1)[1])
+    if condition.startswith("context_gte:"):  # A6.1: 100 * tokens(request) >= n * window
+        return 100 * ctx.prompt_tokens >= int(condition.split(":", 1)[1]) * ctx.window
+    if condition.startswith("sent_lacks:"):  # A6.1: no string value of the request contains text
+        text = condition.split(":", 1)[1]
+        request = ctx.request if ctx.request is not None else {"messages": ctx.messages}
+        return not any(text in value for value in _string_values(request))
+    if condition.startswith("effort_gte:"):  # A7.3: the level in force, in EFFORT_LEVELS order
+        wanted = condition.split(":", 1)[1]
+        return EFFORT_LEVELS.index(ctx.level) >= EFFORT_LEVELS.index(wanted)
+    if condition == "results_split":  # A7.2: two user messages in a row in the request
+        sent = ctx.messages if ctx.sent is None else ctx.sent
+        roles = [message.get("role") for message in sent]
+        return any(a == "user" and b == "user" for a, b in zip(roles, roles[1:], strict=False))
     raise ScriptError(f"unknown condition {condition!r}")
+
+
+def _string_values(value: Any) -> Iterator[str]:
+    """Every string value inside a JSON value, recursively: values, not keys (A6.1)."""
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for item in value.values():
+            yield from _string_values(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from _string_values(item)
 
 
 def _last_user_content(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -217,13 +262,23 @@ def _last_user_content(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def missing_results(messages: list[dict[str, Any]]) -> list[str]:
-    """tool_use ids anywhere in the messages that have no matching tool_result (section 7.6)."""
-    used: list[str] = []
-    answered: set[str] = set()
-    for message in messages:
-        for block in message.get("content", []):
-            if block.get("type") == "tool_use":
-                used.append(str(block["id"]))
-            elif block.get("type") == "tool_result":
-                answered.add(str(block["tool_use_id"]))
-    return [tool_id for tool_id in used if tool_id not in answered]
+    """tool_use ids (A3.16, A5.5(a), A7.2) with no tool_result in the user messages after
+    their assistant message: the harness's own history, checked before every model call."""
+    missing: list[str] = []
+    for index, message in enumerate(messages):
+        if message.get("role") != "assistant":
+            continue
+        used = [str(b["id"]) for b in message.get("content", []) if b.get("type") == "tool_use"]
+        if not used:
+            continue
+        answered: set[str] = set()
+        follow = index + 1
+        while follow < len(messages) and messages[follow].get("role") == "user":
+            answered.update(
+                str(b["tool_use_id"])
+                for b in messages[follow].get("content", [])
+                if b.get("type") == "tool_result"
+            )
+            follow += 1
+        missing.extend(tool_id for tool_id in used if tool_id not in answered)
+    return missing

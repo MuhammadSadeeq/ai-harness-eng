@@ -1,0 +1,9 @@
+{
+ "id": "eng-effort-low",
+ "label": "Level low",
+ "modules": {
+  "effort": {
+   "level": "low"
+  }
+ }
+}
