@@ -1,0 +1,27 @@
+/* hx-workbench: tokens only; keys, inputs and the glyphs come from hx.css and the sprite. */
+hx-workbench { display: block; margin: var(--sp-5) 0; }
+hx-workbench .hx-ui { display: block; }
+.wb { display: grid; gap: var(--sp-3); }
+.wb-field { display: grid; gap: var(--sp-1); }
+.wb-field > span { font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink-2); }
+.wb input, .wb textarea { width: 100%; padding: var(--sp-2) var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 400 var(--fs-ui)/1.45 var(--font-mono); }
+.wb input { min-height: 48px; font-family: var(--font-sans); }
+.wb textarea { resize: vertical; }
+.wb-error { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-fail); }
+.wb-error[hidden] { display: none; }
+.wb-h { margin: var(--sp-2) 0 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+.wb-rules { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-1); }
+.wb-rule { display: grid; gap: var(--sp-1); font: 400 var(--fs-ui)/1.4 var(--font-sans); }
+@media (min-width: 700px) { .wb-rule { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); } }
+.wb-mark { display: inline-flex; align-items: center; gap: var(--sp-1); font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink-2); }
+.wb-rule.is-held .wb-mark { color: var(--hx-pass); }
+.wb-rule:not(.is-held) .wb-mark { color: var(--hx-fail); }
+.wb-mark .glyph { width: 16px; height: 16px; }
+.wb-misuse { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-mono); }
+.wb-formula, .wb-disclaimer, .wb-counts { margin: 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.wb-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.wb-stale { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.wb-stale[hidden] { display: none; }
+.wb-result { display: grid; gap: var(--sp-1); padding: var(--sp-3); border: 1px solid var(--hx-rule); border-radius: var(--r-btn); background: var(--hx-panel); }
+.wb-result[hidden] { display: none; }
+.wb-honest { margin: 0; font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }

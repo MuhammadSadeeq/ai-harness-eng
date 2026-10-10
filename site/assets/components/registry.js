@@ -5,6 +5,7 @@ export const REGISTRY = Object.freeze({
   "hx-cards": "../../components/hx-cards.js",
   "hx-check": "../../components/hx-check.js",
   "hx-clock": "../../components/hx-clock.js",
+  "hx-costcalc": "../../components/hx-costcalc.js",
   "hx-count": "../../components/hx-count.js",
   "hx-dice": "../../components/hx-dice.js",
   "hx-forgetful": "../../components/hx-forgetful.js",
@@ -14,6 +15,9 @@ export const REGISTRY = Object.freeze({
   "hx-replay": "../../components/hx-replay.js",
   "hx-sampler": "../../components/hx-sampler.js",
   "hx-say": "../../components/hx-say.js",
+  "hx-sort": "../../components/hx-sort.js",
+  "hx-step": "../../components/hx-step.js",
   "hx-tokenizer": "../../components/hx-tokenizer.js",
   "hx-wire": "../../components/hx-wire.js",
+  "hx-workbench": "../../components/hx-workbench.js",
 });

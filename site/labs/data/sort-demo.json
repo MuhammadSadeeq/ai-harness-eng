@@ -1,0 +1,13 @@
+{
+ "prompt": "Sort each part of a run by who decides it.",
+ "buckets": [
+  {"id": "harness", "label": "The harness decides", "hint": "Code outside the model that sets the rules."},
+  {"id": "model", "label": "The model decides", "hint": "The next choice the model makes."}
+ ],
+ "items": [
+  {"id": "turn-limit", "text": "The run stops after a set number of turns", "bucket": "harness", "why": "A turn limit is a rule the harness enforces, whatever the model believes."},
+  {"id": "next-word", "text": "Which word comes next in a reply", "bucket": "model", "why": "The model scores the next word. The harness only samples from its scores."},
+  {"id": "permission", "text": "Whether a tool call is allowed to run", "bucket": "harness", "why": "The permission check runs in the harness before the tool does."},
+  {"id": "say-done", "text": "Saying the task is finished", "bucket": "model", "why": "That is the model's claim. The harness has to check it before it is accepted."}
+ ]
+}

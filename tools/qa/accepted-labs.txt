@@ -15,3 +15,7 @@ labs/dice.html
 labs/forgetful.html
 labs/sampler.html
 labs/tokenizer.html
+labs/sort.html
+labs/workbench.html
+labs/costcalc.html
+labs/step.html

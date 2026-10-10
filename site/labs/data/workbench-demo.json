@@ -1,0 +1,55 @@
+{
+ "tool": {
+  "name": "search",
+  "description": "Search files.",
+  "input_schema": {
+   "type": "object",
+   "properties": {
+    "query": {
+     "type": "string"
+    },
+    "path": {
+     "type": "string"
+    }
+   }
+  }
+ },
+ "task": "Find where the tests import calc.py",
+ "checks": [
+  {
+   "id": "when",
+   "label": "The description says when to use it",
+   "test": {
+    "kind": "contains",
+    "field": "description",
+    "text": "when"
+   },
+   "weight": 15
+  },
+  {
+   "id": "params",
+   "label": "Every parameter is described",
+   "test": {
+    "kind": "has_description_for_every_property"
+   },
+   "weight": 20
+  },
+  {
+   "id": "name",
+   "label": "The name says what it acts on (a verb and a noun, like search_files)",
+   "test": {
+    "kind": "contains",
+    "field": "name",
+    "text": "_"
+   },
+   "weight": 10
+  }
+ ],
+ "base_misuse_percent": 40,
+ "tape": "b2-spiral",
+ "board": "b2-new",
+ "misuse": {
+  "branch": "/script/3",
+  "option": 1
+ }
+}

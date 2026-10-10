@@ -31,6 +31,7 @@ const CHECK_HINT = "Paste your rein.py here. Run my file runs it with the same s
 const NORMAL = "Normal";
 const BROKEN = "Broken";
 const YOUR_FILE_OUTPUT = "Your output";
+const SCROLL_HINT = "Long lines scroll sideways.";
 const COPY_CONFIRM_MS = 2000;
 
 const cache = new Map();
@@ -248,8 +249,8 @@ export class HxStep extends HxElement {
       copy.addEventListener("click", () => this.copyText(addedLines(chunk).join("\n") + "\n", key));
       const hunks = chunk.hunks.map((hunk) => el("div", { class: "hunk" },
         el("p", { class: "hunk-where", text: hunk.where }),
-        el("ol", { class: "diff", "aria-label": hunk.where },
-          ...diffRows(hunk.diff).map((row) => el("li", { class: `dl dl-${row.kind}` },
+        el("div", { class: "diff", role: "region", tabindex: "0", "aria-label": hunk.where },
+          ...diffRows(hunk.diff).map((row) => el("div", { class: `dl dl-${row.kind}` },
             el("span", { class: "dl-mark", "aria-hidden": "true", text: row.mark }),
             el("span", { class: "dl-text", text: row.text }))))));
       const explain = el("div", { class: "chunk-explain" },
@@ -260,16 +261,17 @@ export class HxStep extends HxElement {
         el("h4", { class: "chunk-title" }, el("span", { class: "chunk-id", text: chunk.id }), ` ${chunk.title}`),
         explain, ...hunks, el("div", { class: "keys" }, copy)));
     }
+    dom.chunks[0]?.querySelector(".hunk")?.append(el("p", { class: "step-scroll-hint", text: SCROLL_HINT }));
 
     const scriptNames = Object.keys(step.scenarios ?? {});
     dom.script = el("details", { class: "step-script" },
       el("summary", { text: "The script for this step" }),
-      ...scriptNames.map((name) => el("pre", { class: "code", "aria-label": name, tabindex: "0" },
+      ...scriptNames.map((name) => el("pre", { class: "code", "aria-label": name, role: "region", tabindex: "0" },
         el("code", { text: prettyScript(step.scenarios[name]) }))));
 
-    dom.command = el("pre", { class: "code step-command", tabindex: "0", "aria-label": "The command" },
+    dom.command = el("pre", { class: "code step-command", role: "region", tabindex: "0", "aria-label": "The command" },
       el("code", { text: step.checkpoint.command }));
-    dom.expected = el("pre", { class: "code term", tabindex: "0", "aria-label": "The expected output" },
+    dom.expected = el("pre", { class: "code term", role: "region", tabindex: "0", "aria-label": "The expected output" },
       el("code", { text: step.checkpoint.expected }));
     dom.setupNote = el("p", { class: "step-note", text: (step.checkpoint.setup ?? []).length ? "This checkpoint starts with reset_demo.py, so the practice project is ready." : "" });
     dom.run = el("button", { class: "key key-primary", type: "button", "data-key": "run-here", text: RUN_HERE });
@@ -277,7 +279,7 @@ export class HxStep extends HxElement {
     dom.check = el("button", { class: "key", type: "button", "data-key": "check", text: CHECK_MINE });
     dom.check.addEventListener("click", () => this.openCheck());
     dom.runVerdict = el("p", { class: "step-verdict" });
-    dom.output = el("pre", { class: "code step-output", tabindex: "0", "aria-label": `Output of the reference run` });
+    dom.output = el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": `Output of the reference run` });
     dom.explain = el("div", { class: "step-explain" },
       el("h5", { text: "What just happened" }),
       ...step.checkpoint.explain.split("\n\n").map((para) => el("p", { text: para })));
@@ -293,8 +295,8 @@ export class HxStep extends HxElement {
     dom.runMine.addEventListener("click", () => this.checkMine());
     dom.mineVerdict = el("p", { class: "step-verdict" });
     dom.mineFirst = el("p", { class: "step-note" });
-    dom.mineOutput = el("pre", { class: "code step-output", tabindex: "0", "aria-label": "Your output" });
-    dom.expectedOutput = el("pre", { class: "code step-output", tabindex: "0", "aria-label": "The expected output" });
+    dom.mineOutput = el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": "Your output" });
+    dom.expectedOutput = el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": "The expected output" });
     dom.checkBlock.append(dom.checkHint, dom.host, el("div", { class: "keys" }, dom.runMine), dom.mineVerdict,
       dom.mineFirst, el("div", { class: "step-pair" },
         el("div", {}, el("p", { class: "step-label", text: YOUR_FILE_OUTPUT }), dom.mineOutput),
@@ -304,13 +306,13 @@ export class HxStep extends HxElement {
       const toggle = el("button", { class: "key step-toggle", type: "button", "data-key": `break-${brk.id}`, text: brk.title, "aria-pressed": "false" });
       toggle.addEventListener("click", () => this.toggleBreak(brk));
       const outputs = el("div", { class: "step-pair", hidden: "" },
-        el("div", {}, el("p", { class: "step-label", text: NORMAL }), el("pre", { class: "code step-output", tabindex: "0", "aria-label": `Normal output for ${brk.title}` })),
-        el("div", {}, el("p", { class: "step-label", text: BROKEN }), el("pre", { class: "code step-output", tabindex: "0", "aria-label": `Broken output for ${brk.title}` })));
+        el("div", {}, el("p", { class: "step-label", text: NORMAL }), el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": `Normal output for ${brk.title}` })),
+        el("div", {}, el("p", { class: "step-label", text: BROKEN }), el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": `Broken output for ${brk.title}` })));
       dom.breaks.push({ brk, toggle, outputs, explain: el("p", { class: "step-note", text: brk.explain }) });
     }
 
     dom.fullTitle = el("summary", { text: `The whole rein.py after step ${step.number} (${step.lines_after} lines)` });
-    dom.fullCode = el("pre", { class: "code step-file", tabindex: "0", "aria-label": "The whole rein.py" }, el("code", { text: step.rein }));
+    dom.fullCode = el("pre", { class: "code step-file", role: "region", tabindex: "0", "aria-label": "The whole rein.py" }, el("code", { text: step.rein }));
     dom.copyFile = el("button", { class: "key", type: "button", "data-key": "copy-file", text: COPY_FILE });
     dom.copyFile.addEventListener("click", () => this.copyText(step.rein, "copy-file"));
     dom.fullfile = el("details", { class: "step-fullfile" }, dom.fullTitle, dom.fullCode, el("div", { class: "keys" }, dom.copyFile));

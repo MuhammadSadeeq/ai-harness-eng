@@ -1,0 +1,19 @@
+/* hx-costcalc: tokens only; keys, selects and readout windows come from hx.css. */
+hx-costcalc { display: block; margin: var(--sp-5) 0; }
+hx-costcalc .hx-ui { display: block; }
+.cc { display: grid; gap: var(--sp-3); }
+.cc-field { display: grid; gap: var(--sp-1); }
+.cc-field > span, .cc-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink-2); }
+.cc select { min-height: 48px; padding: 0 var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 400 var(--fs-ui) var(--font-sans); }
+.cc-note, .cc-illustrative, .cc-compare { margin: 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.cc-row { display: grid; gap: var(--sp-1); }
+.cc-stepper { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; gap: var(--sp-2); align-items: center; }
+.cc-readout { padding: var(--sp-1) var(--sp-2); }
+.cc-readout .readout-value { margin: 0; }
+.cc-prices { margin: 0; font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink); }
+.cc-prices .fact { font-weight: 600; }
+.cc-readouts { display: grid; gap: var(--sp-2); }
+@media (min-width: 700px) { .cc-readouts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cc-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.cc-actions .key[aria-disabled="true"] { opacity: .45; cursor: not-allowed; transform: none; }
+.cc-pins { margin: 0; padding-left: var(--sp-5); font: 400 var(--fs-ui)/1.45 var(--font-sans); }

@@ -1,0 +1,24 @@
+/* hx-sort: tokens only; keys, selects and the glyphs come from hx.css and the sprite. */
+hx-sort { display: block; margin: var(--sp-5) 0; }
+hx-sort .hx-ui { display: block; }
+.sort { display: grid; gap: var(--sp-4); }
+.sort-prompt { margin: 0; font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }
+.sort-tray, .sort-zone { list-style: none; margin: 0; padding: var(--sp-2); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-2); min-height: 4.5rem; border: 1px dashed var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); }
+.sort-buckets { display: grid; gap: var(--sp-3); }
+@media (min-width: 700px) { .sort-buckets { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sort-bucket { display: grid; gap: var(--sp-1); }
+.sort-bucket-title { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+.sort-hint { margin: 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.sort-item { display: grid; gap: var(--sp-1); width: 100%; min-width: 0; padding: var(--sp-2) var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel-2); cursor: grab; }
+.sort-item.is-right { border-color: var(--hx-pass); border-width: 2px; }
+.sort-item.is-wrong { border-color: var(--hx-fail); border-style: dashed; border-width: 2px; }
+.sort-text { font: 400 var(--fs-ui)/1.4 var(--font-serif); }
+.sort-mark { display: inline-flex; align-items: center; gap: var(--sp-1); font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink); }
+.sort-mark .glyph { width: 16px; height: 16px; }
+.sort-why { font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.sort-why:empty { display: none; }
+.sort-menu { display: grid; gap: var(--sp-1); font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink-2); }
+.sort-move { min-height: 44px; max-width: 100%; padding: 0 var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 400 var(--fs-ui) var(--font-sans); }
+.sort-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.sort-actions .key[aria-disabled="true"] { opacity: .45; cursor: not-allowed; transform: none; }
+.sort-line { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }

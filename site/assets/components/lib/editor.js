@@ -38,7 +38,6 @@ export async function mountEditor(host, { doc, label, onChange }) {
       cm.syntaxHighlighting(cm.classHighlighter),
       cm.python(),
       cm.keymap.of([...cm.defaultKeymap, ...cm.historyKeymap]),
-      cm.EditorView.lineWrapping,
       cm.EditorView.contentAttributes.of({ "aria-label": label }),
       cm.EditorView.updateListener.of((update) => {
         if (!update.docChanged) return;

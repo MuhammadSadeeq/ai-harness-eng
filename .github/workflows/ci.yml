@@ -52,6 +52,7 @@ jobs:
           python tools/check_katas.py
           python tools/check_katas.py --pyodide
           python tools/check_steps.py
+          python tools/check_steps.py --pyodide
           python tools/check_scenarios.py
           python tools/check_wire.py
       - name: Wire palette (color-vision thresholds)

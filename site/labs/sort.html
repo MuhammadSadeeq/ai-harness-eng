@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sort it · HARNESSED</title>
+<meta name="description" content="Sort each part of an agent run into the harness or the model, then check it.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · sort it</p>
+    <h1>Harness or model</h1>
+    <p class="lede">Some decisions belong to the model. Others belong to the code around it. Sort each one, then check.</p>
+  </header>
+  <section class="row" aria-labelledby="sort-h">
+    <h2 id="sort-h">Sort the parts of a run</h2>
+    <hx-sort src="data/sort-demo.json">
+      <ol><li>The run stops after a set number of turns: the harness decides.</li><li>Which word comes next: the model decides.</li><li>Whether a tool call may run: the harness decides.</li><li>Saying the task is finished: the model decides.</li></ol>
+    </hx-sort>
+  </section>
+</main>
+</body>
+</html>

@@ -8,9 +8,6 @@
 <link rel="stylesheet" href="../assets/core/tokens.css">
 <link rel="stylesheet" href="../assets/core/hx.css">
 <script type="module" src="../assets/core/app.js"></script>
-<script type="module">
-  import "../assets/components/hx-step.js";
-</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -26,9 +23,9 @@
     <hx-step step="H1">
       <p>Send one message to a model and print its reply, with a scripted model and a real one behind the same interface.</p>
       <p>rein.py starts at 105 lines.</p>
-      <pre class="code"><code>python rein.py &quot;Say hello&quot; --fake scenarios/01_hello.json</code></pre>
+      <pre class="code" role="region" tabindex="0" aria-label="The command"><code>python rein.py &quot;Say hello&quot; --fake scenarios/01_hello.json</code></pre>
       <p>You should see exactly this:</p>
-      <pre class="code"><code>you      Say hello
+      <pre class="code" role="region" tabindex="0" aria-label="The expected output"><code>you      Say hello
 model    Hello! I am a scripted stand-in for Claude. I say what my script says.
          stop_reason=end_turn tokens_in=10 tokens_out=25</code></pre>
     </hx-step>
@@ -39,9 +36,9 @@ model    Hello! I am a scripted stand-in for Claude. I say what my script says.
     <hx-step step="H2">
       <p>Give the model one tool, and a loop that keeps calling the model until it stops asking for tools.</p>
       <p>rein.py grows to 172 lines.</p>
-      <pre class="code"><code>python rein.py &quot;Find the bug in demo/calc.py&quot; --fake scenarios/02_read.json</code></pre>
+      <pre class="code" role="region" tabindex="0" aria-label="The command"><code>python rein.py &quot;Find the bug in demo/calc.py&quot; --fake scenarios/02_read.json</code></pre>
       <p>You should see exactly this:</p>
-      <pre class="code"><code>task     Find the bug in demo/calc.py
+      <pre class="code" role="region" tabindex="0" aria-label="The expected output"><code>task     Find the bug in demo/calc.py
 turn 1   model: I will read the code first.
          tool   read_file {&quot;path&quot;: &quot;demo/calc.py&quot;}
          result def add(a, b): | return a - b
