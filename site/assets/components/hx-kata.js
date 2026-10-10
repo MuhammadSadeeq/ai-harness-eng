@@ -578,6 +578,8 @@ export class HxKata extends HxElement {
     await this.#editorReady;
     const codeBefore = this.code();
     const draftBefore = this.readDraft();
+    const shown = { results: this.state.results, passedMs: this.state.passedMs, hintsShown: this.state.hintsShown, ran: this.state.ran };
+    const clockBefore = { ...this.#clock };
     try {
       const starter = await this.runAndWait();
       if (!starter || starter.total === 0 || starter.passed === starter.total) return false;
@@ -591,6 +593,8 @@ export class HxKata extends HxElement {
       clearTimeout(this.#draftTimer);
       if (draftBefore === null) this.dropDraft();
       else this.saveDraft(codeBefore);
+      this.#clock = clockBefore;
+      this.patch({ ...shown, running: false });
     }
   }
 
