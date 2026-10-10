@@ -327,6 +327,13 @@ def _check_references(course: Course, text: str, shown: str, report: Report) -> 
             if objective["id"] != expected:
                 report.problem(shown, line, f"[A2] {mid}: objective {index} is "
                                             f"'{objective['id']}', expected '{expected}'")
+        tag = module.get("tag")
+        if module["kind"] == "core" and tag is None:
+            report.problem(shown, line, f"[A2] {mid}: a core module needs a board tag "
+                                        "(the module it plugs into the Harness Board)")
+        if tag is not None and tag["wire"] not in module["wires"]:
+            report.problem(shown, line, f"[A2] {mid}: board tag wire '{tag['wire']}' is not "
+                                        "one of the module's wires")
         count = len(module["objectives"])
         if module["kind"] == "primer":
             if count != 3:

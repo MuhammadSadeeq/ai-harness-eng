@@ -686,6 +686,10 @@
       "primers": [],
       "minutes": 40,
       "law": "The messages array is the memory.",
+      "tag": {
+        "wire": "context",
+        "label": "history resend"
+      },
       "objectives": [
         {
           "id": "A3.o1",
@@ -748,6 +752,10 @@
       ],
       "minutes": 50,
       "law": "Read the whole reply: every block, every stop reason.",
+      "tag": {
+        "wire": "loop",
+        "label": "block-aware reply parser"
+      },
       "objectives": [
         {
           "id": "A4.o1",
@@ -822,6 +830,10 @@
       ],
       "minutes": 45,
       "law": "Valid isn't true: check the shape, then the meaning.",
+      "tag": {
+        "wire": "tools",
+        "label": "schema checks"
+      },
       "objectives": [
         {
           "id": "A5.o1",
@@ -997,6 +1009,10 @@
       "primers": [],
       "minutes": 50,
       "law": "The model asks; the harness acts.",
+      "tag": {
+        "wire": "tools",
+        "label": "tool runner"
+      },
       "objectives": [
         {
           "id": "B1.o1",
@@ -1059,6 +1075,10 @@
       "primers": [],
       "minutes": 60,
       "law": "Every run needs more than one exit.",
+      "tag": {
+        "wire": "loop",
+        "label": "turn limit and budget"
+      },
       "objectives": [
         {
           "id": "B2.o1",
@@ -1262,6 +1282,10 @@
       "primers": [],
       "minutes": 55,
       "law": "Words guide, code enforces.",
+      "tag": {
+        "wire": "control",
+        "label": "rules in code"
+      },
       "objectives": [
         {
           "id": "C1.o1",
@@ -1330,6 +1354,10 @@
       "primers": [],
       "minutes": 50,
       "law": "The smallest window that works.",
+      "tag": {
+        "wire": "context",
+        "label": "context budget"
+      },
       "objectives": [
         {
           "id": "C2.o1",
@@ -1393,6 +1421,10 @@
       "primers": [],
       "minutes": 50,
       "law": "Summarize the story, keep the commitments.",
+      "tag": {
+        "wire": "context",
+        "label": "compaction"
+      },
       "objectives": [
         {
           "id": "C3.o1",
@@ -1454,6 +1486,10 @@
       "primers": [],
       "minutes": 45,
       "law": "Stable first, changing last.",
+      "tag": {
+        "wire": "context",
+        "label": "cache-friendly prefix"
+      },
       "objectives": [
         {
           "id": "C4.o1",
@@ -1518,6 +1554,10 @@
       ],
       "minutes": 55,
       "law": "Close the books before you stop.",
+      "tag": {
+        "wire": "loop",
+        "label": "close the books"
+      },
       "objectives": [
         {
           "id": "C5.o1",
@@ -1583,6 +1623,10 @@
       "primers": [],
       "minutes": 55,
       "law": "Errors are the main path.",
+      "tag": {
+        "wire": "errors",
+        "label": "backoff and breaker"
+      },
       "objectives": [
         {
           "id": "C6.o1",
@@ -1653,6 +1697,10 @@
       ],
       "minutes": 55,
       "law": "A tool is a user interface for a model.",
+      "tag": {
+        "wire": "tools",
+        "label": "clear tool design"
+      },
       "objectives": [
         {
           "id": "C7.o1",
@@ -1720,6 +1768,10 @@
       "primers": [],
       "minutes": 50,
       "law": "Load the menu, not the kitchen.",
+      "tag": {
+        "wire": "tools",
+        "label": "tools on demand"
+      },
       "objectives": [
         {
           "id": "C8.o1",
@@ -1789,6 +1841,10 @@
       "primers": [],
       "minutes": 55,
       "law": "Judge the action and its target.",
+      "tag": {
+        "wire": "permissions",
+        "label": "allow, ask, deny rules"
+      },
       "objectives": [
         {
           "id": "C9.o1",
@@ -1859,6 +1915,10 @@
       ],
       "minutes": 50,
       "law": "Assume the wall will be tested.",
+      "tag": {
+        "wire": "permissions",
+        "label": "sandbox"
+      },
       "objectives": [
         {
           "id": "C10.o1",
@@ -1926,6 +1986,10 @@
       "primers": [],
       "minutes": 55,
       "law": "“Done” is a claim.",
+      "tag": {
+        "wire": "verify",
+        "label": "verify gate"
+      },
       "objectives": [
         {
           "id": "C11.o1",
@@ -1993,6 +2057,10 @@
       "primers": [],
       "minutes": 50,
       "law": "If it isn't in the trace, it didn't happen.",
+      "tag": {
+        "wire": "observe",
+        "label": "readable trace"
+      },
       "objectives": [
         {
           "id": "C12.o1",
@@ -2059,6 +2127,10 @@
       ],
       "minutes": 50,
       "law": "No number, no claim.",
+      "tag": {
+        "wire": "verify",
+        "label": "eval suite"
+      },
       "objectives": [
         {
           "id": "D1.o1",
@@ -2124,6 +2196,10 @@
       "primers": [],
       "minutes": 55,
       "law": "One run is an anecdote.",
+      "tag": {
+        "wire": "verify",
+        "label": "trials and intervals"
+      },
       "objectives": [
         {
           "id": "D2.o1",
@@ -2185,6 +2261,10 @@
       "primers": [],
       "minutes": 55,
       "law": "Grade the grader.",
+      "tag": {
+        "wire": "verify",
+        "label": "checked grader"
+      },
       "objectives": [
         {
           "id": "D3.o1",
@@ -2244,6 +2324,10 @@
       "primers": [],
       "minutes": 55,
       "law": "Remove a leg; don't ask nicely.",
+      "tag": {
+        "wire": "permissions",
+        "label": "trifecta check"
+      },
       "objectives": [
         {
           "id": "E1.o1",
@@ -2305,6 +2389,10 @@
       "primers": [],
       "minutes": 50,
       "law": "Every layer fails sometimes; stack them.",
+      "tag": {
+        "wire": "permissions",
+        "label": "layered defenses"
+      },
       "objectives": [
         {
           "id": "E2.o1",
@@ -2368,6 +2456,10 @@
       "primers": [],
       "minutes": 55,
       "law": "Add agents for a reason, not for a picture.",
+      "tag": {
+        "wire": "loop",
+        "label": "sub-agents with roles"
+      },
       "objectives": [
         {
           "id": "F1.o1",
@@ -2435,6 +2527,10 @@
       "primers": [],
       "minutes": 50,
       "law": "Leave the desk ready for the next shift.",
+      "tag": {
+        "wire": "context",
+        "label": "handoff notes"
+      },
       "objectives": [
         {
           "id": "F2.o1",
@@ -2558,6 +2654,10 @@
       "primers": [],
       "minutes": 50,
       "law": "Price the outcome, not the call.",
+      "tag": {
+        "wire": "observe",
+        "label": "cost per task"
+      },
       "objectives": [
         {
           "id": "F4.o1",
@@ -2620,6 +2720,10 @@
       ],
       "minutes": 55,
       "law": "Assume the process dies mid-step.",
+      "tag": {
+        "wire": "errors",
+        "label": "idempotent steps"
+      },
       "objectives": [
         {
           "id": "F5.o1",
@@ -2681,6 +2785,10 @@
       "primers": [],
       "minutes": 60,
       "law": "The grader is the spec.",
+      "tag": {
+        "wire": "verify",
+        "label": "sealed grader"
+      },
       "objectives": [
         {
           "id": "F6.o1",
@@ -2747,6 +2855,10 @@
       "primers": [],
       "minutes": 50,
       "law": "New model, old assumptions: test them again.",
+      "tag": {
+        "wire": "loop",
+        "label": "migration checks"
+      },
       "objectives": [
         {
           "id": "F7.o1",
@@ -2978,6 +3090,10 @@
       ],
       "minutes": 50,
       "law": "Name the failure before you fix it.",
+      "tag": {
+        "wire": "observe",
+        "label": "named failures"
+      },
       "objectives": [
         {
           "id": "G4.o1",

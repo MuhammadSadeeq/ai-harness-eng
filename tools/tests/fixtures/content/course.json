@@ -210,6 +210,10 @@
       "primers": [],
       "minutes": 40,
       "law": "Every tool result answers its call.",
+      "tag": {
+        "wire": "loop",
+        "label": "fixture tag"
+      },
       "objectives": [
         {
           "id": "A1.o1",

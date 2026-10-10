@@ -582,6 +582,10 @@
     "c3"
    ],
    "status": "planned",
+   "tag": {
+    "label": "history resend",
+    "wire": "context"
+   },
    "terms": [
     "stateless",
     "messages array",
@@ -649,6 +653,10 @@
     "c6"
    ],
    "status": "planned",
+   "tag": {
+    "label": "block-aware reply parser",
+    "wire": "loop"
+   },
    "terms": [
     "Messages API",
     "request",
@@ -717,6 +725,10 @@
    "slug": "structured-outputs",
    "source": [],
    "status": "planned",
+   "tag": {
+    "label": "schema checks",
+    "wire": "tools"
+   },
    "terms": [
     "JSON Schema",
     "additionalProperties",
@@ -894,6 +906,10 @@
     "c5"
    ],
    "status": "planned",
+   "tag": {
+    "label": "tool runner",
+    "wire": "tools"
+   },
    "terms": [
     "tool definition",
     "input_schema",
@@ -962,6 +978,10 @@
     "c6"
    ],
    "status": "planned",
+   "tag": {
+    "label": "turn limit and budget",
+    "wire": "loop"
+   },
    "terms": [
     "agent loop",
     "turn",
@@ -1164,6 +1184,10 @@
     "c9"
    ],
    "status": "planned",
+   "tag": {
+    "label": "rules in code",
+    "wire": "control"
+   },
    "terms": [
     "instruction layer",
     "instruction hierarchy",
@@ -1232,6 +1256,10 @@
     "c13"
    ],
    "status": "planned",
+   "tag": {
+    "label": "context budget",
+    "wire": "context"
+   },
    "terms": [
     "context rot",
     "context budget",
@@ -1291,6 +1319,10 @@
     "c14"
    ],
    "status": "planned",
+   "tag": {
+    "label": "compaction",
+    "wire": "context"
+   },
    "terms": [
     "compaction",
     "compaction threshold",
@@ -1352,6 +1384,10 @@
     "c14"
    ],
    "status": "planned",
+   "tag": {
+    "label": "cache-friendly prefix",
+    "wire": "context"
+   },
    "terms": [
     "prompt caching",
     "cache prefix",
@@ -1420,6 +1456,10 @@
     "c10"
    ],
    "status": "planned",
+   "tag": {
+    "label": "close the books",
+    "wire": "loop"
+   },
    "terms": [
     "run state",
     "final status",
@@ -1485,6 +1525,10 @@
     "c15"
    ],
    "status": "planned",
+   "tag": {
+    "label": "backoff and breaker",
+    "wire": "errors"
+   },
    "terms": [
     "transient error",
     "permanent error",
@@ -1556,6 +1600,10 @@
     "c12"
    ],
    "status": "planned",
+   "tag": {
+    "label": "clear tool design",
+    "wire": "tools"
+   },
    "terms": [
     "agent-computer interface",
     "tool description",
@@ -1620,6 +1668,10 @@
     "c11"
    ],
    "status": "planned",
+   "tag": {
+    "label": "tools on demand",
+    "wire": "tools"
+   },
    "terms": [
     "Model Context Protocol",
     "MCP server",
@@ -1691,6 +1743,10 @@
     "c12"
    ],
    "status": "planned",
+   "tag": {
+    "label": "allow, ask, deny rules",
+    "wire": "permissions"
+   },
    "terms": [
     "permission policy",
     "allow",
@@ -1760,6 +1816,10 @@
     "c12"
    ],
    "status": "planned",
+   "tag": {
+    "label": "sandbox",
+    "wire": "permissions"
+   },
    "terms": [
     "blast radius",
     "workspace root",
@@ -1828,6 +1888,10 @@
     "c16"
    ],
    "status": "planned",
+   "tag": {
+    "label": "verify gate",
+    "wire": "verify"
+   },
    "terms": [
     "verification gate",
     "computational check",
@@ -1894,6 +1958,10 @@
     "c18"
    ],
    "status": "planned",
+   "tag": {
+    "label": "readable trace",
+    "wire": "observe"
+   },
    "terms": [
     "span",
     "event",
@@ -1956,6 +2024,10 @@
     "c19"
    ],
    "status": "planned",
+   "tag": {
+    "label": "eval suite",
+    "wire": "verify"
+   },
    "terms": [
     "eval",
     "task",
@@ -2021,6 +2093,10 @@
     "c19"
    ],
    "status": "planned",
+   "tag": {
+    "label": "trials and intervals",
+    "wire": "verify"
+   },
    "terms": [
     "pass@k",
     "pass^k",
@@ -2081,6 +2157,10 @@
     "c19"
    ],
    "status": "planned",
+   "tag": {
+    "label": "checked grader",
+    "wire": "verify"
+   },
    "terms": [
     "LLM judge",
     "calibration",
@@ -2142,6 +2222,10 @@
     "c20"
    ],
    "status": "planned",
+   "tag": {
+    "label": "trifecta check",
+    "wire": "permissions"
+   },
    "terms": [
     "prompt injection",
     "indirect prompt injection",
@@ -2201,6 +2285,10 @@
     "c20"
    ],
    "status": "planned",
+   "tag": {
+    "label": "layered defenses",
+    "wire": "permissions"
+   },
    "terms": [
     "defense in depth",
     "least privilege",
@@ -2268,6 +2356,10 @@
     "c17"
    ],
    "status": "planned",
+   "tag": {
+    "label": "sub-agents with roles",
+    "wire": "loop"
+   },
    "terms": [
     "orchestrator",
     "topology",
@@ -2330,6 +2422,10 @@
     "c23"
    ],
    "status": "planned",
+   "tag": {
+    "label": "handoff notes",
+    "wire": "context"
+   },
    "terms": [
     "long-running agent",
     "session",
@@ -2452,6 +2548,10 @@
    "slug": "cost-and-latency",
    "source": [],
    "status": "planned",
+   "tag": {
+    "label": "cost per task",
+    "wire": "observe"
+   },
    "terms": [
     "batch processing",
     "model routing",
@@ -2513,6 +2613,10 @@
    "slug": "production",
    "source": [],
    "status": "planned",
+   "tag": {
+    "label": "idempotent steps",
+    "wire": "errors"
+   },
    "terms": [
     "token bucket",
     "queue",
@@ -2579,6 +2683,10 @@
    "slug": "environments",
    "source": [],
    "status": "planned",
+   "tag": {
+    "label": "sealed grader",
+    "wire": "verify"
+   },
    "terms": [
     "reward",
     "policy",
@@ -2640,6 +2748,10 @@
    "slug": "model-migrations",
    "source": [],
    "status": "planned",
+   "tag": {
+    "label": "migration checks",
+    "wire": "loop"
+   },
    "terms": [
     "model migration",
     "breaking change",
@@ -2876,6 +2988,10 @@
     "c24"
    ],
    "status": "planned",
+   "tag": {
+    "label": "named failures",
+    "wire": "observe"
+   },
    "terms": [
     "steering loop",
     "build to delete",

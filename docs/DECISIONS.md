@@ -337,3 +337,12 @@ basis for Phase 1, and answered SPEC §14:
   runtimes, events and wire output were identical on all six tapes × 5 seeds
   × both boards (the Rein builder's run of `check_scenarios`, confirmed by the
   director after the JS `--choices` flag lands).
+
+### D-043 · Board tags live in course.json · *decided*
+- Each core module has a `tag` `{wire, label}`: what it plugs into the
+  learner's Harness Board ("A3 · history resend"). An empty spoke's
+  "comes in …" is the first module on the default path whose tag is on that
+  wire: control C1, context A3, loop A4, errors C6, tools A5,
+  permissions C9, verify C11, observe C12. `check_content` requires a tag on
+  every core module, on one of its wires. Build modules raise a wire's level
+  (L2) on the readiness radar later; they carry no tag.
