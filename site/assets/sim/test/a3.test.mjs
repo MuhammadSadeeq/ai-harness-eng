@@ -482,3 +482,18 @@ test("A3.13 an outside key whose normal form is inside the root is refused", () 
   assert.equal(tapeWith({ outside: { "../x": "x" } }).outside["../x"], "x");
   assert.equal(tapeWith({ outside: { "/etc/passwd": "x" } }).outside["/etc/passwd"], "x");
 });
+
+// A3.13 (settled, director): two paths with the same normal form are refused, within
+// workspace, within outside, or across both.
+test("A3.13 two workspace paths with the same normal form are refused", () => {
+  assert.throws(() => tapeWith({ workspace: { a: "x", "./a": "y" } }), /paths "a" and "\.\/a" are the same file/);
+});
+
+test("A3.13 two outside paths with the same normal form are refused", () => {
+  assert.throws(() => tapeWith({ outside: { "../x": "x", "../y/../x": "y" } }), /are the same file/);
+});
+
+test("A3.13 distinct paths are fine", () => {
+  const t = tapeWith({ workspace: { a: "x", "b/a": "y" }, outside: { "../x": "x", "/x": "y" } });
+  assert.equal(Object.keys(t.workspace).length, 2);
+});

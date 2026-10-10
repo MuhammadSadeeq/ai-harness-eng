@@ -76,6 +76,18 @@ function checkFileKeys(map, where, inside) {
   }
 }
 
+// A3.13 (settled): two paths across workspace and outside with the same normal form are refused.
+function checkDuplicatePaths(workspace, outside, where) {
+  const seen = new Map();
+  for (const map of [workspace, outside]) {
+    for (const k of Object.keys(map)) {
+      const norm = normalizePath(k);
+      if (seen.has(norm)) fail(where, `paths "${seen.get(norm)}" and "${k}" are the same file`);
+      seen.set(norm, k);
+    }
+  }
+}
+
 function checkFileMap(map, where) {
   if (!isObj(map)) fail(where, "must be an object");
   for (const [path, v] of Object.entries(map)) {
@@ -206,6 +218,7 @@ export function loadTape(raw) {
   checkFileKeys(t.workspace, `${where}.workspace`, true);
   t.outside = checkFileMap(raw.outside ?? {}, `${where}.outside`);
   checkFileKeys(t.outside, `${where}.outside`, false);
+  checkDuplicatePaths(t.workspace, t.outside, where);
   t.tools = raw.tools ?? [];
   if (!Array.isArray(t.tools)) fail(where, "tools must be a list");
   for (const name of t.tools) {
@@ -255,9 +268,74 @@ export function loadTape(raw) {
     };
   }
   t.seed_base = optInt(raw, "seed_base", where, 0);
+  if (raw.incident === undefined) delete t.incident;
+  else t.incident = loadIncident(raw.incident, `${where}.incident`);
   t.boards = raw.boards ?? [];
   t.golden_seeds = raw.golden_seeds ?? [];
   return t;
+}
+
+// A4: the incident block. Shape only; references to course.json and traces are
+// checked by check_scenarios. Absent means the tape has no incident.
+const INCIDENT_KEYS = ["family", "wire", "board", "seed", "first_bad_seq", "accept_seqs", "why", "hint", "notes", "fixes", "correct_fix", "par_s"];
+const INCIDENT_REQUIRED = ["family", "wire", "board", "seed", "first_bad_seq", "why", "hint", "fixes", "correct_fix", "par_s"];
+const INCIDENT_WIRES = ["control", "context", "loop", "errors", "tools", "permissions", "verify", "observe"];
+
+function nonEmpty(obj, key, where) {
+  if (typeof obj[key] !== "string" || obj[key] === "") fail(where, `${key} must be a non-empty string`);
+  return obj[key];
+}
+
+function nonNegInt(obj, key, where) {
+  if (!Number.isInteger(obj[key]) || obj[key] < 0) fail(where, `${key} must be an integer >= 0`);
+  return obj[key];
+}
+
+function loadIncident(inc, where) {
+  if (!isObj(inc)) fail(where, "incident must be an object");
+  noExtraKeys(inc, INCIDENT_KEYS, where);
+  for (const k of INCIDENT_REQUIRED) {
+    if (!(k in inc)) fail(where, `incident is missing "${k}"`);
+  }
+  if (!INCIDENT_WIRES.includes(inc.wire)) fail(where, `wire "${inc.wire}" is not a wire category`);
+  const accept_seqs = inc.accept_seqs ?? [];
+  if (!Array.isArray(accept_seqs)) fail(where, "accept_seqs must be a list of seqs");
+  accept_seqs.forEach((s, i) => {
+    if (!Number.isInteger(s) || s < 0) fail(where, `accept_seqs[${i}] must be an integer >= 0`);
+  });
+  const notes = inc.notes ?? [];
+  if (!Array.isArray(notes)) fail(where, "notes must be a list of {seq, text}");
+  const noteList = notes.map((n, i) => {
+    const w = `${where}.notes[${i}]`;
+    if (!isObj(n)) fail(w, "must be {seq, text}");
+    noExtraKeys(n, ["seq", "text"], w);
+    return { seq: nonNegInt(n, "seq", w), text: nonEmpty(n, "text", w) };
+  });
+  if (!Array.isArray(inc.fixes) || inc.fixes.length < 2 || inc.fixes.length > 4) {
+    fail(where, "fixes must be a list of 2 to 4 {text, why}");
+  }
+  const fixes = inc.fixes.map((f, i) => {
+    const w = `${where}.fixes[${i}]`;
+    if (!isObj(f)) fail(w, "must be {text, why}");
+    noExtraKeys(f, ["text", "why"], w);
+    return { text: nonEmpty(f, "text", w), why: nonEmpty(f, "why", w) };
+  });
+  const correct_fix = nonNegInt(inc, "correct_fix", where);
+  if (correct_fix >= fixes.length) fail(where, `correct_fix ${correct_fix} is not an index of fixes`);
+  return {
+    family: nonEmpty(inc, "family", where),
+    wire: inc.wire,
+    board: nonEmpty(inc, "board", where),
+    seed: nonNegInt(inc, "seed", where),
+    first_bad_seq: nonNegInt(inc, "first_bad_seq", where),
+    accept_seqs,
+    why: nonEmpty(inc, "why", where),
+    hint: nonEmpty(inc, "hint", where),
+    notes: noteList,
+    fixes,
+    correct_fix,
+    par_s: nonNegInt(inc, "par_s", where),
+  };
 }
 
 function loadHuman(h, where) {
