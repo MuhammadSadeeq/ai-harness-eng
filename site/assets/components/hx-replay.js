@@ -13,7 +13,15 @@ import {
 
 const DELAY_MS = { 1: 700, 2: 350, 4: 175 };
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
-const NEVER = Symbol("never");
+/** event indexes per wire, in step order */
+function indexByWire(events) {
+  const byWire = new Map();
+  events.forEach((e, i) => {
+    if (!byWire.has(e.wire)) byWire.set(e.wire, []);
+    byWire.get(e.wire).push(i);
+  });
+  return byWire;
+}
 
 export class HxReplay extends HxElement {
   static observedAttributes = ["tape", "board", "seed", "start", "detail", "wire", "locked"];
@@ -45,12 +53,14 @@ export class HxReplay extends HxElement {
     this.model = {
       tape, board, seed, events, result: run.result, desk, cost,
       repeatMap: repeats(events), pricedByFact: Boolean(tape.pricing?.fact), tapeId, boardId,
+      byWire: indexByWire(events),
     };
     const start = clamp(Number(this.getAttribute("start") ?? 0) || 0, 0, Math.max(0, n - 1));
+    const wire = WIRES.some((w) => w.id === this.getAttribute("wire")) ? this.getAttribute("wire") : null;
     this.state = {
       index: start,
       detail: this.getAttribute("detail") === "full" ? "full" : "story",
-      wire: WIRES.some((w) => w.id === this.getAttribute("wire")) ? this.getAttribute("wire") : null,
+      wire,
       view: "friendly",
       speed: 1,
       playing: false,
@@ -59,6 +69,9 @@ export class HxReplay extends HxElement {
       expanded: new Set(),
       ver: 0,
     };
+    // With a filter, the playhead starts on an event of that wire (item 5).
+    const onWire = this.snap(start, 0, wire);
+    if (onWire >= 0) this.state.index = onWire;
     this.lastValues = {};
     this.built = null;
   }
@@ -97,17 +110,38 @@ export class HxReplay extends HxElement {
     const vis = this.visible();
     if (dir > 0) {
       const next = vis.find((i) => i > this.state.index);
-      if (next !== undefined) this.go(next);
+      if (next !== undefined) this.go(next, { dir: 1 });
     } else {
       const row = this.rowOf(this.state.index);
       const prev = vis.filter((i) => i < (row >= 0 ? row : this.state.index)).pop();
-      if (prev !== undefined) this.go(prev);
+      if (prev !== undefined) this.go(prev, { dir: -1 });
     }
   }
 
-  go(index, { moved = true } = {}) {
+  /**
+   * The event the playhead may stand on: the index itself, or with a filter the nearest event of that wire
+   * (in the direction of the key when there is one). -1 when the wire has no events in this run.
+   */
+  snap(index, dir = 0, wire = this.state.wire) {
+    if (wire === null || this.events[index]?.wire === wire) return index;
+    const list = this.model.byWire.get(wire) ?? [];
+    let prev;
+    let next;
+    for (const i of list) {
+      if (i < index) prev = i;
+      else if (i > index) { next = i; break; }
+    }
+    if (dir > 0) return next ?? prev ?? -1;
+    if (dir < 0) return prev ?? next ?? -1;
+    if (prev === undefined) return next ?? -1;
+    if (next === undefined) return prev;
+    return index - prev <= next - index ? prev : next;
+  }
+
+  go(index, { moved = true, dir = 0 } = {}) {
     const last = this.events.length - 1;
-    const i = clamp(index, 0, last);
+    const i = this.snap(clamp(index, 0, last), dir);
+    if (i < 0) return;
     this.setState({ index: i, moved });
     if (i === last && !this.state.finished) this.finish();
   }
@@ -176,7 +210,7 @@ export class HxReplay extends HxElement {
     r.bar = el("p", { class: "bar", "aria-hidden": "true" });
     r.readouts = el("div", { class: "readouts" });
     r.readoutValues = {};
-    for (const [name, label] of [["turn", "Turn"], ["desk", "Desk"], ["cost", "Cost"]]) {
+    for (const [name, label] of [["turn", "Turn"], ["desk", "Window used"], ["cost", "Cost"]]) {
       const value = el("p", { class: "readout-value", "data-readout": name });
       r.readoutValues[name] = value;
       r.readouts.append(el("div", { class: "readout" }, el("p", { class: "readout-label", text: label }), value));
@@ -211,7 +245,7 @@ export class HxReplay extends HxElement {
     // Phones: one native select labelled "Wire" (BP-1.4 notes, item 2). Desktop uses the lane labels.
     r.wireSelect = el("select", { class: "wire-select-input", "data-key": "wire-select" }, el("option", { value: "", text: "All wires" }),
       ...WIRES.map((w) => el("option", { value: w.id, text: w.name })));
-    r.wireSelect.addEventListener("change", () => this.setState({ wire: r.wireSelect.value || null }));
+    r.wireSelect.addEventListener("change", () => this.setWire(r.wireSelect.value || null));
     r.wireLabel = el("label", { class: "wire-select" }, el("span", { text: "Wire" }), r.wireSelect);
     r.filterLine = el("p", { class: "filter-state", "aria-live": "off" });
     r.showAll = el("button", { class: "btn btn-quiet", type: "button", "data-key": "show-all", text: "Show all" });
@@ -255,6 +289,7 @@ export class HxReplay extends HxElement {
         r.readouts,
         r.gate,
         r.scrubRow,
+        el("p", { class: "strip-caption" }, el("span", { class: "cap-phone", text: "Tap or drag to jump" }), el("span", { class: "cap-desk", text: "Click or drag to jump. Arrow keys step." })),
         el("div", { class: "filter-bar" }, r.wireLabel, el("p", { class: "filter-line" }, r.filterLine, " ", r.showAll)),
         r.transcriptRegion,
         r.transport),
@@ -286,7 +321,14 @@ export class HxReplay extends HxElement {
   }
 
   toggleWire(id) {
-    this.setState({ wire: this.state.wire === id ? null : id });
+    this.setWire(this.state.wire === id ? null : id);
+  }
+
+  /** Sets the wire filter, and moves the playhead to the nearest event of that wire (item 5). */
+  setWire(id) {
+    const wire = id ?? null;
+    const index = wire === null ? this.state.index : this.snap(this.state.index, 0, wire);
+    this.setState({ wire, index: index >= 0 ? index : this.state.index });
   }
 
   onScrubKey(e) {
@@ -330,7 +372,7 @@ export class HxReplay extends HxElement {
     setPlayhead(r.strip, i);
     r.empty.hidden = this.visible().length > 0;
 
-    r.bar.textContent = `Turn ${turn}/${m.result.turns} · Desk ${m.desk[i]}% · ${this.costText()}`;
+    r.bar.textContent = `Turn ${turn}/${m.result.turns} · Window ${m.desk[i]}% · ${this.costText()}`;
     r.readoutValues.turn.textContent = `${turn} / ${m.result.turns}`;
     r.readoutValues.desk.textContent = `${m.desk[i]}%`;
     r.readoutValues.cost.textContent = this.costText();
@@ -355,7 +397,7 @@ export class HxReplay extends HxElement {
     for (const [id, lane] of r.strip.lanes) lane.classList.toggle("is-off", s.wire !== null && s.wire !== id);
     r.labelsCol.querySelectorAll("button.lane-label").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.wire === s.wire)));
     const shown = WIRES.find((w) => w.id === s.wire);
-    r.filterLine.textContent = shown ? `Showing: ${shown.short} only ·` : "Showing: all eight wires.";
+    r.filterLine.textContent = shown ? `Showing: ${shown.short} only` : "Showing: all eight wires.";
     r.showAll.hidden = !shown;
 
     r.viewFriendly.setAttribute("aria-pressed", String(s.view === "friendly"));
@@ -366,7 +408,9 @@ export class HxReplay extends HxElement {
     json.hidden = s.view !== "wire";
     // Friendly: the inline callout already has the sentence, so the detail adds the time and the wire.
     const wireShort = WIRES.find((w) => w.id === events[i].wire)?.short ?? events[i].wire;
-    sentence.textContent = `t = ${formatMs(events[i].t)} · ${wireShort}`;
+    sentence.textContent = s.wire !== null && events[i].wire !== s.wire
+      ? `No ${shown.short} events in this run.`
+      : `t = ${formatMs(events[i].t)} · ${wireShort}`;
     json.textContent = sortedJson(events[i]);
 
     if (s.moved) {
@@ -426,6 +470,10 @@ export class HxReplay extends HxElement {
       // A locked replay can't be stepped: the test checks that the lock holds (DESIGN §7.3, COMPONENTS §10).
       return r.step.disabled && r.strip.getAttribute("aria-disabled") === "true" && !r.gate.hidden;
     }
+    // The check walks the whole run, so it clears any wire filter and restores it after: with a filter, End
+    // stops on the last event of that wire, and the run's result only fires at the true end.
+    const wire = this.state.wire;
+    this.setWire(null);
     const start = this.state.index;
     this.state.finished = false;
     this.go(0);
@@ -440,7 +488,9 @@ export class HxReplay extends HxElement {
     this.removeEventListener("hx-result", onResult);
     const last = this.events[this.events.length - 1];
     const liveOk = this.liveRegion.textContent === explain(last).text;
-    return moved && readoutOk && counterOk && fired?.source === "replay" && this.state.index === this.events.length - 1 && liveOk;
+    const ok = moved && readoutOk && counterOk && fired?.source === "replay" && this.state.index === this.events.length - 1 && liveOk;
+    this.setWire(wire);
+    return ok;
   }
 }
 

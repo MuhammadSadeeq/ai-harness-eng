@@ -55,3 +55,6 @@ legend.card-front { margin: 0 0 var(--sp-3); }
   margin: 0; padding: var(--sp-3); overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere;
   border-radius: 6px; background: var(--hx-code-bg); color: var(--hx-code-ink); font: 400 15px/1.5 var(--font-mono);
 }
+
+/* a card that comes back after a miss */
+.card-tag { display: inline-block; margin-left: var(--sp-2); padding: 0 var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: 999px; font: 600 var(--fs-small)/1.6 var(--font-sans); letter-spacing: .02em; text-transform: none; color: var(--hx-ink); }

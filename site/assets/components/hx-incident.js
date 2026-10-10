@@ -25,10 +25,13 @@ export function familyOptions(tapeId, correctId, families) {
 }
 
 const reduced = () => globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+let uidCount = 0;
 
 export class HxIncident extends HxElement {
   static observedAttributes = ["tape", "locked"];
   static styles = new URL("./hx-incident.css", import.meta.url).href;
+  // A radio group is named per instance, so two incidents on one page never share a group (item 1).
+  uid = `hxi${++uidCount}`;
 
   async setup() {
     const tapeId = this.getAttribute("tape");
@@ -222,7 +225,7 @@ export class HxIncident extends HxElement {
       const verdict = s.named && (right || chosen)
         ? el("span", { class: "why verdict-line", text: right ? "Right." : "Not this one." })
         : null;
-      const input = el("input", { type: "radio", name: "family", value: f.id, "data-key": `family-${f.id}`, checked: chosen || null, disabled: s.named || null });
+      const input = el("input", { type: "radio", name: `${this.uid}-family`, value: f.id, "data-key": `family-${f.id}`, checked: chosen || null, disabled: s.named || null });
       input.addEventListener("change", () => this.setState({ familyPick: f.id }));
       return el("label", { class: `choice${s.named && right ? " is-right" : ""}`, "data-key": `family-row-${f.id}` },
         input,
@@ -234,7 +237,7 @@ export class HxIncident extends HxElement {
       let verdict = null;
       if (s.named && right) verdict = el("span", { class: "why verdict-line", text: `Right. The trouble is on the ${w.name} wire.` });
       else if (s.named && chosen) verdict = el("span", { class: "why verdict-line", text: "Not this one." });
-      const input = el("input", { type: "radio", name: "wire", value: w.id, "data-key": `wire-${w.id}`, checked: chosen || null, disabled: s.named || null });
+      const input = el("input", { type: "radio", name: `${this.uid}-wire`, value: w.id, "data-key": `wire-${w.id}`, checked: chosen || null, disabled: s.named || null });
       input.addEventListener("change", () => this.setState({ wirePick: w.id }));
       return el("label", { class: `choice w-${w.id}${s.named && right ? " is-right" : ""}`, "data-key": `wire-row-${w.id}` },
         input,
@@ -253,16 +256,18 @@ export class HxIncident extends HxElement {
     const { inc } = this.model;
     const rows = inc.fixes.map((f, i) => {
       const right = i === inc.correct_fix;
-      const input = el("input", { type: "radio", name: "fix", value: String(i), "data-key": `fix-${i}`, checked: s.fixPick === i || null, disabled: s.fixed || null });
+      const input = el("input", { type: "radio", name: `${this.uid}-fix`, value: String(i), "data-key": `fix-${i}`, checked: s.fixPick === i || null, disabled: s.fixed || null });
       input.addEventListener("change", () => this.setState({ fixPick: i }));
       const why = s.fixed ? el("span", { class: "why", text: f.why }) : null;
       const mark = s.fixed && right ? el("span", { class: "choice-mark", text: "The one that works" }) : null;
       return el("label", { class: `choice${s.fixed && right ? " is-right" : ""}`, "data-key": `fix-row-${i}` },
-        input, el("span", { class: "choice-text" }, el("span", { text: f.text }), why), mark);
+        input, el("span", { class: "choice-text" }, mark, el("span", { text: f.text }), why));
     });
     const commit = el("button", { class: "key key-primary", type: "button", "data-key": "commit-fix", disabled: s.fixed || null, text: "Commit fix" });
     commit.addEventListener("click", () => this.commitFix());
+    const pickLine = s.fixed ? null : el("p", { class: "pick-line", text: "Pick one. Every option's reason shows after you commit." });
     return el("div", { class: "fixing" },
+      pickLine,
       el("fieldset", { class: "choices" }, el("legend", { text: "Which fix?" }), ...rows),
       el("div", { class: "row-commit" }, commit));
   }
@@ -289,13 +294,17 @@ export class HxIncident extends HxElement {
   roveFocus(list) {
     const picks = list.picks ?? [];
     picks.forEach((b, k) => b.setAttribute("tabindex", k === 0 ? "0" : "-1"));
+    const steps = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1, PageDown: 10, PageUp: -10 };
     list.addEventListener("keydown", (e) => {
-      const keys = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
-      if (!(e.key in keys)) return;
       const cur = picks.indexOf(document.activeElement);
       if (cur < 0) return;
+      let next;
+      if (e.key === "Home") next = 0;
+      else if (e.key === "End") next = picks.length - 1;
+      else if (e.key in steps) next = cur + steps[e.key];
+      else return;
       e.preventDefault();
-      const next = Math.min(picks.length - 1, Math.max(0, cur + keys[e.key]));
+      next = Math.min(picks.length - 1, Math.max(0, next));
       picks.forEach((b, k) => b.setAttribute("tabindex", k === next ? "0" : "-1"));
       picks[next].focus();
     });
@@ -356,6 +365,7 @@ export class HxIncident extends HxElement {
     await this.settleScroll(foundHeading);
     const foundOk = this.state.found === inc.first_bad_seq && document.activeElement === foundHeading && this.inWindow(foundHeading);
 
+    const groupsOk = ["family", "wire"].every((g) => document.querySelectorAll(`input[name="${this.uid}-${g}"]`).length === (g === "family" ? this.model.familyChoices.length : 8));
     this.ui.querySelector(`[data-key="family-${inc.family}"]`)?.click();
     this.ui.querySelector(`[data-key="wire-${inc.wire}"]`)?.click();
     this.ui.querySelector('[data-key="commit-name"]')?.click();
@@ -363,7 +373,7 @@ export class HxIncident extends HxElement {
     this.ui.querySelector('[data-key="commit-fix"]')?.click();
     this.removeEventListener("hx-result", onResult);
     const resultOk = Boolean(this.ui.querySelector(".result-time")?.textContent.startsWith("Found in "));
-    return Boolean(earlyOk && lateOk && foundOk && resultOk && fired?.source === "incident" && fired.fix_ok === true);
+    return Boolean(groupsOk && earlyOk && lateOk && foundOk && resultOk && fired?.source === "incident" && fired.fix_ok === true);
   }
 
   /** Resolves when the node has reached the top of the window (within 2 px), or after 3 seconds. */

@@ -1,12 +1,14 @@
 // hx-kata: a Python kata in the page (BP-1.6 §2; AUTHORING §8; D-014, D-015, D-016).
 //   <hx-kata kata="lab-turn-limit" mode="practice">…no-JS fallback…</hx-kata>
-// mode="memory" needs a kata with from_memory: true. Python (about 13 MB, the first time only) starts when
-// the kata comes near the viewport or its editor gets focus; one Web Worker serves the whole page
-// (lib/py-worker.js), one run at a time, and a run that takes more than 10 s stops the worker, which
-// restarts. Evidence: "kata" on every run (COMPONENTS §5). Drafts live under drafts[<kata id>]
-// (drafts[<kata id>:memory] in memory mode, so the two modes do not overwrite each other).
+// mode="memory" needs a kata with from_memory: true, and has no hints. Python (about 13 MB, the first time
+// only) starts when the kata comes near the viewport or its editor gets focus. One Python per page
+// (lib/py-host.js): a load that fails or takes longer than 45 s shows the failure and keeps the code; a run
+// that takes more than 10 s is stopped. Evidence: "kata" on every run (COMPONENTS §5). Drafts live under
+// drafts[<kata id>] (drafts[<kata id>:memory] in memory mode, with the elapsed time), and are flushed at once
+// on pagehide, when the page becomes hidden, and when the editor loses focus.
 import { HxElement } from "./lib/hx-element.js";
 import { mountEditor } from "./lib/editor.js";
+import { createPythonHost } from "./lib/py-host.js";
 import { getKata, getCourse } from "./lib/data.js";
 
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
@@ -15,7 +17,6 @@ const WORKER_URL = new URL("./lib/py-worker.js", import.meta.url).href;
 const PYODIDE_BASE = new URL("../../vendor/pyodide/", import.meta.url).href;
 const HXTEST_URL = new URL("../py/hxtest.py", import.meta.url).href;
 const SW_URL = new URL("../../sw.js", import.meta.url).href;
-const RUN_LIMIT_MS = 10000;
 const DRAFT_DELAY_MS = 500;
 const SAFE_ID = /^[a-z0-9][a-z0-9-]*$/;
 const HINT_COUNT = 3;
@@ -23,13 +24,23 @@ const HINT_COUNT = 3;
 const TIMEOUT_MESSAGE = "Your code ran for more than 10 seconds and was stopped. Is there a loop without an exit?";
 const LOADING_COPY = "Loading Python (about 13 MB, the first time only)…";
 const FAILED_COPY = "Python could not load in this browser. Your code is still here, but the tests cannot run.";
-const CRASH_COPY = "Python could not run this code.";
 const RUNNING_COPY = "Running…";
 const TIMER_IDLE_COPY = "The timer starts when you type.";
+const UNSAVED_COPY = "Your code is not saved in this browser. Copy it before you leave.";
 const SOLUTION_NOTE = "Compare it with yours; the tests are the judge, not the text.";
-const RESET_ASK = "Replace your code with the starter? Your draft will be lost.";
 const MEMORY_BLANK = "# Write it from memory.\n";
 const WORDS = { passed: "pass", failed: "fail", error: "error" };
+
+const python = createPythonHost({
+  createWorker: () => {
+    if (!python.registered) {
+      python.registered = true;
+      navigator.serviceWorker?.register(SW_URL, { scope: "/" })?.catch(() => {});
+    }
+    return new Worker(WORKER_URL, { type: "module" });
+  },
+  initMessage: { type: "init", base: PYODIDE_BASE, hxtest: HXTEST_URL },
+});
 
 const el = (tag, attrs = {}, ...children) => {
   const node = document.createElement(tag);
@@ -60,132 +71,26 @@ export function formatClock(ms) {
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
 }
 
-// ---- one Python per page: a shared worker and a queue of runs (runs are sequential in the worker) ----
-const python = {
-  worker: null,
-  state: "idle", // idle | loading | ready | failed
-  waiters: [],
-  listeners: new Set(),
-  queue: [],
-  current: null,
-  seq: 0,
-  registered: false,
-};
-
-function announce(state) {
-  python.state = state;
-  for (const listener of python.listeners) listener(state);
-}
-
-function settle(state) {
-  announce(state);
-  const waiters = python.waiters;
-  python.waiters = [];
-  for (const wake of waiters) wake(state === "ready");
-  if (state === "ready") pump();
-  if (state === "failed") {
-    for (const job of python.queue.splice(0)) job.resolve({ error: CRASH_COPY });
-  }
-}
-
-function pump() {
-  if (python.current || python.state !== "ready" || python.queue.length === 0) return;
-  const job = python.queue.shift();
-  python.current = job;
-  job.timer = setTimeout(() => {
-    if (python.current !== job) return;
-    python.current = null;
-    job.resolve({ timedOut: true });
-    startWorker();
-  }, RUN_LIMIT_MS);
-  python.worker.postMessage({ type: "run", id: job.id, code: job.code, tests: job.tests });
-}
-
-function onWorkerMessage(worker, message) {
-  if (worker !== python.worker) return;
-  if (message.type === "ready") {
-    settle("ready");
-    return;
-  }
-  if (message.type === "error") {
-    settle("failed");
-    return;
-  }
-  const job = python.current;
-  if (!job || job.id !== message.id) return;
-  clearTimeout(job.timer);
-  python.current = null;
-  job.resolve(message.type === "result" ? { result: message.result } : { error: message.message });
-  pump();
-}
-
-function startWorker() {
-  python.worker?.terminate();
-  if (!python.registered) {
-    python.registered = true;
-    navigator.serviceWorker?.register(SW_URL, { scope: "/" })?.catch(() => {});
-  }
-  const worker = new Worker(WORKER_URL, { type: "module" });
-  python.worker = worker;
-  worker.onmessage = (event) => onWorkerMessage(worker, event.data);
-  worker.onerror = (event) => {
-    if (python.worker !== worker) return;
-    event.preventDefault();
-    const job = python.current;
-    if (job) {
-      clearTimeout(job.timer);
-      python.current = null;
-      job.resolve({ error: CRASH_COPY });
-    }
-    settle("failed");
-  };
-  announce("loading");
-  worker.postMessage({ type: "init", base: PYODIDE_BASE, hxtest: HXTEST_URL });
-}
-
-function ensurePython() {
-  if (python.state === "idle") startWorker();
-}
-
-function whenPython() {
-  if (python.state === "ready") return Promise.resolve(true);
-  if (python.state === "failed") return Promise.resolve(false);
-  return new Promise((resolve) => python.waiters.push(resolve));
-}
-
-function runKata(code, tests) {
-  return new Promise((resolve) => {
-    if (python.state === "failed") {
-      resolve({ error: CRASH_COPY });
-      return;
-    }
-    python.queue.push({ id: ++python.seq, code, tests, resolve, timer: 0 });
-    ensurePython();
-    pump();
-  });
-}
-
-/** Calls back with the Python state now and on every change. Returns the unsubscribe. */
-function subscribePython(listener) {
-  python.listeners.add(listener);
-  listener(python.state === "idle" ? "loading" : python.state);
-  return () => python.listeners.delete(listener);
-}
-
 let uidCount = 0;
 
 export class HxKata extends HxElement {
   static styles = new URL("./hx-kata.css", import.meta.url).href;
 
-  #clock = { banked: 0, since: null, paused: false };
+  #clock = { started: false, banked: 0, since: null, paused: false };
   #tick = 0;
   #draftTimer = 0;
+  #pending = false;
   #lastRun = null;
   #editor = null;
   #editorReady = null;
   #unsubscribe = () => {};
   #observer = null;
   #testCount = null;
+  #saveFailed = false;
+  #onPageHide = () => this.flushDraft();
+  #onVisibility = () => {
+    if (document.visibilityState === "hidden") this.flushDraft();
+  };
 
   async setup() {
     const id = this.getAttribute("kata") ?? "";
@@ -208,8 +113,12 @@ export class HxKata extends HxElement {
     this.draftKey = mode === "memory" ? `${id}:memory` : id;
     this.objectives = kata.objectives.map((objectiveId) => texts.get(objectiveId) ?? objectiveId);
     this.uid = `hxk${++uidCount}`;
-    this.startCode = this.readDraft() ?? (mode === "memory" ? MEMORY_BLANK : kata.starter);
-    this.#clock = { banked: 0, since: null, paused: false };
+    const draft = this.readDraft();
+    this.startCode = draft?.code ?? (mode === "memory" ? MEMORY_BLANK : kata.starter);
+    if (mode === "memory" && Number.isFinite(draft?.elapsed_ms)) {
+      // The timer resumes at the stored time; it runs again from the next keystroke.
+      this.#clock = { started: false, banked: draft.elapsed_ms, since: null, paused: false };
+    }
     this.state = {
       running: false,
       results: null,
@@ -218,13 +127,16 @@ export class HxKata extends HxElement {
       solutionShown: false,
       confirmReset: false,
       passedMs: null,
+      unsaved: !this.storageOk(),
     };
-    this.#unsubscribe = subscribePython((py) => this.patch({ py }));
-    // Python starts when the kata nears the viewport, or when its editor gets focus, whichever comes first.
+    this.#unsubscribe = python.subscribe(() => this.patch({}));
     this.addEventListener("focusin", (event) => {
       const target = event.target;
       if (target instanceof Element && (target.matches("textarea") || target.closest(".cm-editor"))) this.startPython();
     });
+    window.addEventListener("pagehide", this.#onPageHide);
+    document.addEventListener("visibilitychange", this.#onVisibility);
+    // Python starts when the kata nears the viewport, or when its editor gets focus, whichever comes first.
     if (typeof IntersectionObserver === "function") {
       this.#observer = new IntersectionObserver((entries) => {
         if (entries.some((entry) => entry.isIntersecting)) this.startPython();
@@ -236,16 +148,18 @@ export class HxKata extends HxElement {
   }
 
   startPython() {
-    ensurePython();
+    python.start();
     this.#observer?.disconnect();
     this.#observer = null;
   }
 
   disconnectedCallback() {
+    this.flushDraft();
     this.#unsubscribe();
     this.#observer?.disconnect();
     clearInterval(this.#tick);
-    clearTimeout(this.#draftTimer);
+    window.removeEventListener("pagehide", this.#onPageHide);
+    document.removeEventListener("visibilitychange", this.#onVisibility);
   }
 
   /** Merges a patch and re-renders once the UI exists (state set before the first render is kept). */
@@ -262,20 +176,31 @@ export class HxKata extends HxElement {
     }
   }
 
+  /** The stored draft record for this kata and mode, or null. */
   readDraft() {
     const draft = this.store?.state?.drafts?.[this.draftKey];
-    return typeof draft?.code === "string" ? draft.code : null;
+    return draft && typeof draft.code === "string" ? draft : null;
+  }
+
+  /** False when the store cannot persist (blocked or unavailable) or a save has failed. */
+  storageOk() {
+    const store = this.store;
+    if (!store || store.persistent === false || store.blocked || this.#saveFailed) return false;
+    return true;
   }
 
   saveDraft(code) {
+    const record = { code, at: new Date().toISOString() };
+    if (this.mode === "memory") record.elapsed_ms = Math.round(this.elapsedMs());
     try {
       this.store?.update((doc) => {
         doc.drafts ??= {};
-        doc.drafts[this.draftKey] = { code, at: new Date().toISOString() };
+        doc.drafts[this.draftKey] = record;
       });
     } catch {
-      // Storage is blocked: the draft lives in this page only, and the code still runs.
+      this.#saveFailed = true;
     }
+    this.patch({ unsaved: !this.storageOk() });
   }
 
   dropDraft() {
@@ -284,15 +209,30 @@ export class HxKata extends HxElement {
         if (doc.drafts) delete doc.drafts[this.draftKey];
       });
     } catch {
-      // Nothing was saved, so there is nothing to drop.
+      this.#saveFailed = true;
     }
+    this.patch({ unsaved: !this.storageOk() });
+  }
+
+  /** Saves at once what is pending: a keystroke not yet saved, or a memory timer that is running. */
+  flushDraft() {
+    if (!this.dom) return;
+    const running = this.mode === "memory" && this.clockStarted() && !this.#clock.paused;
+    if (!this.#pending && !running) return;
+    clearTimeout(this.#draftTimer);
+    this.#pending = false;
+    this.saveDraft(this.code());
   }
 
   /** typed is true for keystrokes: the first one starts the clock, and every one schedules the draft. */
   onCode(code, typed = false) {
     if (typed) this.startClock();
+    this.#pending = true;
     clearTimeout(this.#draftTimer);
-    this.#draftTimer = setTimeout(() => this.saveDraft(code), DRAFT_DELAY_MS);
+    this.#draftTimer = setTimeout(() => {
+      this.#pending = false;
+      this.saveDraft(code);
+    }, DRAFT_DELAY_MS);
   }
 
   code() {
@@ -305,22 +245,24 @@ export class HxKata extends HxElement {
   }
 
   clockStarted() {
-    return this.#clock.since !== null;
+    return this.#clock.started;
   }
 
   startClock() {
-    if (this.clockStarted()) return;
+    if (this.#clock.started) return;
+    this.#clock.started = true;
     this.#clock.since = Date.now();
     this.patch({});
   }
 
   elapsedMs() {
     const clock = this.#clock;
-    return clock.banked + (clock.since === null || clock.paused ? 0 : Date.now() - clock.since);
+    return clock.banked + (clock.started && !clock.paused ? Date.now() - clock.since : 0);
   }
 
   togglePause() {
     const clock = this.#clock;
+    if (!clock.started) return;
     if (clock.paused) {
       clock.since = Date.now();
       clock.paused = false;
@@ -342,6 +284,7 @@ export class HxKata extends HxElement {
 
   build() {
     const { kata, uid } = this;
+    const memory = this.mode === "memory";
     const dom = {};
     this.dom = dom;
     dom.title = el("h3", { class: "kata-title", text: kata.title });
@@ -361,6 +304,7 @@ export class HxKata extends HxElement {
     dom.textarea.value = this.startCode;
     dom.textarea.addEventListener("input", () => this.onCode(dom.textarea.value, true));
     dom.host = el("div", { class: "kata-editor" }, dom.textarea);
+    dom.host.addEventListener("focusout", () => this.flushDraft());
     dom.clockValue = el("span", { class: "readout-value", text: formatClock(this.elapsedMs()) });
     dom.timerNote = el("p", { class: "kata-clock-note", text: TIMER_IDLE_COPY });
     dom.pause = el("button", { class: "key", type: "button", "data-key": "pause", text: "Pause" });
@@ -368,13 +312,14 @@ export class HxKata extends HxElement {
       el("p", { class: "readout kata-timer" }, el("span", { class: "readout-label", text: "Time" }), dom.clockValue),
       dom.pause);
     dom.clockBlock = el("div", { class: "kata-clock-block" }, dom.clock, dom.timerNote);
+    dom.unsaved = el("p", { class: "kata-unsaved status-warn", text: UNSAVED_COPY });
     dom.run = el("button", { class: "key key-primary", type: "button", "data-key": "run", text: "Run the tests" });
-    dom.reset = el("button", { class: "key", type: "button", "data-key": "reset", text: "Reset to starter" });
+    dom.reset = el("button", { class: "key", type: "button", "data-key": "reset", text: memory ? "Clear the file" : "Reset to starter" });
     dom.keys = el("div", { class: "kata-keys" }, dom.run, dom.reset);
     dom.confirm = el("div", { class: "kata-confirm" },
-      el("p", { text: RESET_ASK }),
+      el("p", { text: memory ? "Clear your code? Your draft will be lost." : "Replace your code with the starter? Your draft will be lost." }),
       el("div", { class: "kata-keys" },
-        el("button", { class: "key key-primary", type: "button", "data-key": "reset-yes", text: "Replace my code" }),
+        el("button", { class: "key key-primary", type: "button", "data-key": "reset-yes", text: memory ? "Clear my code" : "Replace my code" }),
         el("button", { class: "key", type: "button", "data-key": "reset-no", text: "Keep my code" })));
     dom.status = el("p", { class: "kata-status" });
     dom.count = el("p", { class: "kata-count" });
@@ -418,13 +363,14 @@ export class HxKata extends HxElement {
     dom.error.hidden = true;
     dom.message.hidden = true;
     dom.passed.hidden = true;
-    dom.clockBlock.hidden = this.mode !== "memory";
+    dom.clockBlock.hidden = !memory;
     dom.status.hidden = true;
     this.ui.append(el("div", { class: "kata" },
       el("header", { class: "kata-head" }, dom.title, dom.meta, dom.objectives),
       dom.loading,
       dom.label,
       dom.host,
+      dom.unsaved,
       dom.clockBlock,
       dom.keys,
       dom.status,
@@ -446,7 +392,7 @@ export class HxKata extends HxElement {
       dom.textarea.disabled = true;
       return editor;
     }).catch(() => null);
-    if (this.mode === "memory") {
+    if (memory) {
       this.#tick = setInterval(() => this.paintClock(), 1000);
     }
   }
@@ -454,6 +400,7 @@ export class HxKata extends HxElement {
   render() {
     if (!this.dom) this.build();
     const { dom, kata, state: s } = this;
+    const memory = this.mode === "memory";
     const py = python.state;
     dom.loading.hidden = py === "ready";
     dom.loadingText.textContent = py === "failed" ? FAILED_COPY : LOADING_COPY;
@@ -464,10 +411,11 @@ export class HxKata extends HxElement {
     dom.status.hidden = !s.running;
     dom.results.setAttribute("aria-busy", String(s.running));
     dom.confirm.hidden = !s.confirmReset;
+    dom.unsaved.hidden = !s.unsaved;
     dom.pause.textContent = this.#clock.paused ? "Resume" : "Pause";
     dom.pause.hidden = s.passedMs !== null || !this.clockStarted();
     dom.timerNote.hidden = this.clockStarted();
-    dom.clockBlock.hidden = this.mode !== "memory";
+    dom.clockBlock.hidden = !memory;
     this.paintClock();
 
     const r = s.results;
@@ -488,9 +436,10 @@ export class HxKata extends HxElement {
       dom.passed.hidden = s.passedMs === null;
     }
 
+    // From memory there are no hints.
     dom.hintList.replaceChildren(...kata.hints.slice(0, s.hintsShown).map((text) => el("li", { text })));
-    dom.hintList.hidden = s.hintsShown === 0;
-    dom.hint.hidden = s.hintsShown >= HINT_COUNT;
+    dom.hintList.hidden = memory || s.hintsShown === 0;
+    dom.hint.hidden = memory || s.hintsShown >= HINT_COUNT;
     dom.hint.textContent = `Show hint ${s.hintsShown + 1}`;
     dom.solutionButton.hidden = s.ran === 0 || s.solutionShown;
     dom.solutionBlock.hidden = !s.solutionShown;
@@ -500,9 +449,10 @@ export class HxKata extends HxElement {
     const text = this.mode === "memory" ? MEMORY_BLANK : this.kata.starter;
     this.setCode(text);
     clearTimeout(this.#draftTimer);
+    this.#pending = false;
     this.dropDraft();
     if (this.mode === "memory") {
-      this.#clock = { banked: 0, since: null, paused: false };
+      this.#clock = { started: false, banked: 0, since: null, paused: false };
     }
     this.patch({ confirmReset: false, results: null, passedMs: null });
     this.ui.querySelector('[data-key="run"]')?.focus({ preventScroll: true });
@@ -512,7 +462,7 @@ export class HxKata extends HxElement {
   run() {
     if (python.state !== "ready" || this.state.running) return null;
     this.patch({ running: true });
-    const job = runKata(this.code(), this.kata.tests).then((outcome) => this.finish(outcome));
+    const job = python.run(this.code(), this.kata.tests).then((outcome) => this.finish(outcome));
     this.#lastRun = job;
     return job;
   }
@@ -569,12 +519,12 @@ export class HxKata extends HxElement {
 
   /**
    * Answers through the real UI: starts Python, runs the starter (it must fail), puts the solution into the
-   * editor as typing would (it must pass), and reveals hint 1. The learner's draft is kept: it is restored
-   * afterwards, so a QA run leaves no solution in it.
+   * editor as typing would (it must pass), and in practice reveals hint 1. The learner's draft and visible
+   * state are restored afterwards, so a QA run leaves nothing of the solution behind.
    */
   async selfTest() {
     this.startPython();
-    if (!(await whenPython())) return false;
+    if (!(await python.whenReady())) return false;
     await this.#editorReady;
     const codeBefore = this.code();
     const draftBefore = this.readDraft();
@@ -586,11 +536,13 @@ export class HxKata extends HxElement {
       this.setCode(this.kata.solution, true);
       const solved = await this.runAndWait();
       if (!solved || solved.total === 0 || solved.passed !== solved.total) return false;
+      if (this.mode === "memory") return true;
       this.dom.hint.click();
       return this.state.hintsShown === 1;
     } finally {
       this.setCode(codeBefore);
       clearTimeout(this.#draftTimer);
+      this.#pending = false;
       if (draftBefore === null) this.dropDraft();
       else this.saveDraft(codeBefore);
       this.#clock = clockBefore;

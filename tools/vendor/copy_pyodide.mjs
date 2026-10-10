@@ -1,6 +1,7 @@
 // Copies the Pyodide core that the browser needs from node_modules/pyodide to site/vendor/pyodide/
 // (D-015). The copy is never committed (.gitignore); the Pages workflow runs this script at deploy.
 // Only the core is copied: no packages. The version must be the D-018 pin.
+// Hosts must serve .wasm as application/wasm: WebAssembly.instantiateStreaming needs that type.
 import { copyFile, mkdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

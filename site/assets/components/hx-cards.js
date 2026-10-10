@@ -96,6 +96,8 @@ export class HxCards extends HxElement {
     this.today = localToday();
     this.queue = sessionQueue(this.cardsNow(), this.allIds, this.today);
     this.queueStart = this.queue.length;
+    this.seen = new Set();
+    this.missed = new Set();
     this.#finished = false;
     this.state = {
       index: 0,
@@ -142,7 +144,10 @@ export class HxCards extends HxElement {
     } catch {
       // Storage is blocked: the boxes last for this page only.
     }
-    if (!correct) this.queue.push(id);
+    if (!correct) {
+      this.missed.add(id);
+      this.queue.push(id);
+    }
     const s = this.state;
     this.setState({
       reviewed: s.reviewed + 1,
@@ -308,7 +313,11 @@ export class HxCards extends HxElement {
         body.append(el("div", { class: "card-keys" }, check));
       }
     }
-    return { screen: el("div", { class: "cards" }, el("p", { class: "cards-progress", text: `${s.index + 1} of ${this.queue.length}` }), body), primary };
+    // The counter counts unique cards: a card that comes back after a miss is not a new step.
+    this.seen.add(this.currentId());
+    const again = this.missed.has(this.currentId()) ? el("span", { class: "card-tag", text: "Again" }) : null;
+    const progress = el("p", { class: "cards-progress" }, `${this.seen.size} of ${this.queueStart}`, again);
+    return { screen: el("div", { class: "cards" }, progress, body), primary };
   }
 
   /** The answer controls for an auto-graded card, the right answer as a node, and the first control. */

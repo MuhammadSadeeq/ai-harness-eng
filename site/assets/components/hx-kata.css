@@ -78,3 +78,6 @@ hx-kata [hidden] { display: none !important; }
   margin: 0; padding: var(--sp-3); overflow-x: auto; border-radius: 6px;
   background: var(--hx-code-bg); color: var(--hx-code-ink); font: 400 15px/1.5 var(--font-mono);
 }
+
+/* the blocked-storage line: a warning in words, not colour alone */
+.kata-unsaved { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); }

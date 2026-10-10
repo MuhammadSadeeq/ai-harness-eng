@@ -30,6 +30,15 @@ function run({ id, code, tests }) {
   }
 }
 
+// A failure outside init's own catch (a script error, an unhandled rejection) is also reported as an
+// error message, so the page never waits on a worker that has already failed (lib/py-host.js).
+self.addEventListener("error", (event) => {
+  self.postMessage({ type: "error", message: String(event.message || "worker error").slice(0, 300) });
+});
+self.addEventListener("unhandledrejection", (event) => {
+  self.postMessage({ type: "error", message: String(event.reason?.message ?? event.reason).slice(0, 300) });
+});
+
 self.onmessage = (event) => {
   const message = event.data;
   if (message?.type === "init") {

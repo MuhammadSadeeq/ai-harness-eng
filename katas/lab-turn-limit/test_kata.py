@@ -14,7 +14,7 @@ class Steps:
     def __call__(self):
         self.calls += 1
         if self.calls > GUARD:
-            raise RuntimeError("step was called more than 50 times")
+            raise RuntimeError("step() was called more than 50 times: the loop has no second exit yet.")
         return self.answers[min(self.calls, len(self.answers)) - 1]
 
 

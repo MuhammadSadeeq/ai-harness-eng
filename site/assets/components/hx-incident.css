@@ -28,3 +28,6 @@
 @media (prefers-reduced-motion: reduce) {
   .incident * { transition: none !important; animation: none !important; }
 }
+
+.pick-line { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.incident .choice-text .choice-mark { display: block; margin: 0 0 var(--sp-1); }
