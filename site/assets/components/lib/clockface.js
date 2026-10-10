@@ -93,30 +93,93 @@ function warningMark(x, y) {
   return mark;
 }
 
-function tagBox(group, x, y, parts, cls, added, W) {
+const TAG_GAP = 4; // clear space between two tag boxes, and between a box and the hub or a node
+const MARK_ROOM = 14; // the warning mark's room at a bug tag's left edge
+
+/** The box a tag needs: its width from its longest line (plus the mark's room), its height from its line count. */
+export function tagSize(parts) {
+  const widest = Math.max(...parts.lines.map((l) => l.length));
+  const pad = parts.bug ? 22 : 16; // a bug tag's text sits beside its mark: 6 px more than an ordinary tag's padding
+  return { w: Math.max(36, Math.round(widest * CHAR_TAG + pad)), h: parts.lines.length * 17 + 8 };
+}
+
+/** The box centred on (x, y), moved inside the face by 4 px at each side (as tags have always been kept). */
+function boxAt(x, y, size, W) {
+  const left = Math.min(W - 4 - size.w, Math.max(4, x - size.w / 2));
+  return { left, top: y - size.h / 2, w: size.w, h: size.h };
+}
+
+function boxesTooClose(a, b) {
+  const dx = Math.abs(a.left + a.w / 2 - (b.left + b.w / 2));
+  const dy = Math.abs(a.top + a.h / 2 - (b.top + b.h / 2));
+  return dx < (a.w + b.w) / 2 + TAG_GAP && dy < (a.h + b.h) / 2 + TAG_GAP;
+}
+
+function boxNearCircle(box, circle) {
+  const nx = Math.min(Math.max(circle.x, box.left), box.left + box.w);
+  const ny = Math.min(Math.max(circle.y, box.top), box.top + box.h);
+  return Math.hypot(circle.x - nx, circle.y - ny) < circle.r + TAG_GAP;
+}
+
+/**
+ * Places the tag boxes (BP-3.1b §2): no two boxes overlap, and no box covers the hub or a node. Each item is
+ * {key, angle, size}. It slides along its spoke from `preferred` (px from the centre) to the nearest free radius in
+ * [from, to], outer side first. Items are placed in order, so earlier items keep their places. Returns a Map of
+ * key -> box; an item with no free place is left out of the map (its word is still in the sub-line or the legend).
+ */
+export function placeTags({ W, centre, items, circles, preferred, from, to, step = 2 }) {
+  const placed = new Map();
+  const taken = [];
+  const radii = [];
+  for (let d = 0; preferred + d <= to || preferred - d >= from; d += step) {
+    if (preferred + d <= to) radii.push(preferred + d);
+    if (d > 0 && preferred - d >= from) radii.push(preferred - d);
+  }
+  // On the spoke first (every radius); then sideways, at most 30 px off the spoke, nearer offsets first.
+  const sideways = [0];
+  for (let k = 1; k <= 10; k += 1) sideways.push(3 * k, -3 * k);
+  for (const item of items) {
+    const rad = item.angle * DEG;
+    const sin = Math.sin(rad);
+    const cos = Math.cos(rad);
+    let found = null;
+    for (const side of sideways) {
+      for (const r of radii) {
+        const box = boxAt(centre + r * sin + side * cos, centre - r * cos + side * sin, item.size, W);
+        if (taken.some((other) => boxesTooClose(other, box))) continue;
+        if (circles.some((circle) => boxNearCircle(box, circle))) continue;
+        found = box;
+        break;
+      }
+      if (found) break;
+    }
+    if (found) {
+      taken.push(found);
+      placed.set(item.key, found);
+    }
+  }
+  return placed;
+}
+
+/** One tag drawn in its placed box: the code (narrow) or the label (wide), with the warning mark on a bug tag. */
+function tagBox(group, box, parts, cls, added) {
   const lines = parts.lines;
-  const widest = Math.max(...lines.map((l) => l.length));
-  const room = parts.bug ? 14 : 0; // the warning mark sits at the box's left edge
-  const w = Math.max(36, Math.round(widest * CHAR_TAG + 16)) + room;
-  const h = lines.length * 17 + 8;
-  const left = Math.min(W - 4 - w, Math.max(4, x - w / 2));
-  const top = y - h / 2;
+  const room = parts.bug ? MARK_ROOM : 0;
   const tag = svgEl("g", { class: `tag-group ${cls}`, "data-tag": parts.code, "data-added": added ? "true" : "false" });
   if (parts.bug) {
     tag.setAttribute("role", "img");
     tag.setAttribute("aria-label", `bug: ${parts.label ?? lines.join(" ")}`);
   }
-  tag.append(svgEl("rect", { class: "tag-box", x: left, y: top, width: w, height: h, rx: 6 }));
-  if (parts.bug) tag.append(warningMark(left + 3, top + (h - 10) / 2));
+  tag.append(svgEl("rect", { class: "tag-box", x: box.left, y: box.top, width: box.w, height: box.h, rx: 6 }));
+  if (parts.bug) tag.append(warningMark(box.left + 3, box.top + (box.h - 10) / 2));
   lines.forEach((line, i) => {
     const text = svgEl("text", {
-      class: "tag-text", x: left + room + (w - room) / 2, y: top + 15 + i * 17, "text-anchor": "middle", "font-size": 14,
+      class: "tag-text", x: box.left + room + (box.w - room) / 2, y: box.top + 15 + i * 17, "text-anchor": "middle", "font-size": 14,
     });
     text.textContent = line;
     tag.append(text);
   });
   group.append(tag);
-  return h;
 }
 
 /**
@@ -145,6 +208,47 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
   const groups = {};
   const codes = [];
 
+  // The tags of every spoke are placed together, so no two boxes overlap (BP-3.1b §2). Narrow faces: each spoke's
+  // first two codes; wide faces: the first tag's label (its code when the label does not fit the room by the hub).
+  const hubR = Math.max(7, R * 0.12);
+  const room = R - nodeR - hubR - 8;
+  const circles = [{ x: c, y: c, r: hubR }];
+  for (const wire of wires) {
+    const [x, y] = pos(wire.angle, R);
+    circles.push({ x, y, r: nodeR });
+  }
+  const items = [];
+  for (const wire of wires) {
+    const tags = (spokes[wire.id] ?? { tags: [] }).tags;
+    if (narrow) {
+      tags.slice(0, 2).forEach((tag, i) => {
+        const parts = { code: tag.code, lines: [tag.code], bug: tag.bug === true, label: tag.label ?? tag.text };
+        codes.push({ code: tag.code, name: tag.name ?? tag.code });
+        items.push({ key: `${wire.id}:${i}`, wire, tag, parts, angle: wire.angle, size: tagSize(parts), wide: false });
+      });
+    } else if (tags.length > 0) {
+      const tag = tags[0];
+      const lines = wrapLines(tag.text ?? tag.code, LABEL_CHARS, 2);
+      const labelWidth = Math.max(...lines.map((l) => l.length)) * CHAR_TAG + 16;
+      const fits = labelWidth <= room;
+      const parts = { code: tag.code, lines: fits ? lines : [tag.code], bug: tag.bug === true, label: tag.label ?? tag.text };
+      items.push({ key: `${wire.id}:0`, wire, tag, parts, angle: wire.angle, size: tagSize(parts), wide: true, fits });
+    }
+  }
+  const placed = placeTags({
+    W,
+    centre: c,
+    items: items.map(({ key, angle, size }) => ({ key, angle, size })),
+    circles,
+    preferred: narrow ? R * 0.36 : hubR + 4 + room / 2,
+    from: hubR + 4,
+    to: R - nodeR - 4,
+  });
+  for (const item of items) {
+    // A wide label that does not fit, or finds no free place, shows its code; the legend carries the word.
+    if (item.wide && (!item.fits || !placed.has(item.key))) codes.push({ code: item.tag.code, name: item.tag.name ?? item.tag.code });
+  }
+
   for (const wire of wires) {
     const spoke = spokes[wire.id] ?? { tags: [] };
     const style = lineStyle(wire.line);
@@ -166,29 +270,14 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
     if (spoke.empty || spoke.muted) node.setAttribute("stroke-dasharray", "3 3");
     group.append(node, glyphUse(wire.glyph, nx, ny, narrow ? 16 : 18));
 
-    if (narrow) {
-      // Narrow faces: the short codes, stacked outward from the hub (the legend carries the words).
-      let along = R * 0.36;
-      spoke.tags.slice(0, 2).forEach((tag) => {
-        const [tx, ty] = pos(wire.angle, along);
-        codes.push({ code: tag.code, name: tag.name ?? tag.code });
-        const parts = { code: tag.code, lines: [tag.code], bug: tag.bug === true, label: tag.label ?? tag.text };
-        const height = tagBox(group, tx, ty, parts, group.querySelector(".tag-group") ? "tag-extra" : "tag-main", Boolean(tag.added), W);
-        along += height + 6;
-      });
-    } else if (spoke.tags.length > 0) {
-      // Wide faces: the first tag sits between the hub and the node, with its label when the label fits there,
-      // else its code. Every label is in the sub-line below the wire name, so no tag is lost.
-      const tag = spoke.tags[0];
-      const hubR = Math.max(7, R * 0.12);
-      const room = R - nodeR - hubR - 8;
-      const lines = wrapLines(tag.text ?? tag.code, LABEL_CHARS, 2);
-      const labelWidth = Math.max(...lines.map((l) => l.length)) * CHAR_TAG + 16;
-      const fits = labelWidth <= room;
-      if (!fits) codes.push({ code: tag.code, name: tag.name ?? tag.code });
-      const parts = { code: tag.code, lines: fits ? lines : [tag.code], bug: tag.bug === true, label: tag.label ?? tag.text };
-      const [tx, ty] = pos(wire.angle, hubR + 4 + room / 2);
-      tagBox(group, tx, ty, parts, "tag-main", Boolean(tag.added), W);
+    // This spoke's tags, in the boxes placeTags found. An item with no free place is not drawn: the sub-line or the
+    // legend still names it.
+    let shown = 0;
+    for (const item of items) {
+      const box = item.wire === wire ? placed.get(item.key) : null;
+      if (!box) continue;
+      tagBox(group, box, item.parts, shown === 0 ? "tag-main" : "tag-extra", Boolean(item.tag.added));
+      shown += 1;
     }
 
     if (!narrow) {

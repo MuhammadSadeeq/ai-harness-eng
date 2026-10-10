@@ -56,7 +56,7 @@
                   "write_file",
                   {
                     "path": "calc.py",
-                    "content": "def add(a, b):\\n    return a\\n"
+                    "content": "def add(a, b):\n    return a\n"
                   }
                 ]
               ]

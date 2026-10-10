@@ -1,0 +1,10 @@
+{
+ "id": "a5-a7-bugs",
+ "label": "Harness bugs on purpose",
+ "modules": {
+  "history": {"resend": false},
+  "first_block_only": {},
+  "system_clock": {},
+  "split_results": {}
+ }
+}

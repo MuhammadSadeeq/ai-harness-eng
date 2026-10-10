@@ -480,11 +480,28 @@ export class HxClock extends HxElement {
 
   async selfTest() {
     const saved = { plugged: this.state.plugged, turn: this.state.turn, step: this.state.step, card: this.state.card };
+    // The tags of the face as it is first drawn must not overlap (BP-3.1b §2): QA runs this on every clock.
+    const clear = this.tagsClear();
     try {
-      return await this.#runSelfTest();
+      return (await this.#runSelfTest()) && clear;
     } finally {
       this.setState({ plugged: saved.plugged, turn: saved.turn, step: saved.step, card: saved.card });
     }
+  }
+
+  /** True when no two tag boxes on this face overlap. Boxes with no size (a hidden face) are not compared. */
+  tagsClear() {
+    const boxes = [...(this.ui?.querySelectorAll(".tag-group .tag-box") ?? [])]
+      .map((node) => node.getBoundingClientRect())
+      .filter((r) => r.width > 0 && r.height > 0);
+    for (let i = 0; i < boxes.length; i += 1) {
+      for (let j = i + 1; j < boxes.length; j += 1) {
+        const a = boxes[i];
+        const b = boxes[j];
+        if (a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5) return false;
+      }
+    }
+    return true;
   }
 
   async #runSelfTest() {
