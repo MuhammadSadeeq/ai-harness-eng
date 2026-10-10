@@ -2,6 +2,7 @@
 // The shell imports only the tags a page contains. A tag is listed here once its component is accepted.
 export const REGISTRY = Object.freeze({
   "hx-bench": "../../components/hx-bench.js",
+  "hx-bugcatch": "../../components/hx-bugcatch.js",
   "hx-cacheline": "../../components/hx-cacheline.js",
   "hx-cards": "../../components/hx-cards.js",
   "hx-check": "../../components/hx-check.js",
@@ -19,6 +20,7 @@ export const REGISTRY = Object.freeze({
   "hx-replay": "../../components/hx-replay.js",
   "hx-sampler": "../../components/hx-sampler.js",
   "hx-say": "../../components/hx-say.js",
+  "hx-scheduler": "../../components/hx-scheduler.js",
   "hx-sort": "../../components/hx-sort.js",
   "hx-stack": "../../components/hx-stack.js",
   "hx-step": "../../components/hx-step.js",

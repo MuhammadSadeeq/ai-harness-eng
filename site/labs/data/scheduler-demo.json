@@ -1,0 +1,12 @@
+{
+  "note": "Illustrative: the calls, their reads, writes and times are an example, not a captured trace.",
+  "calls": [
+    { "id": "read-calc", "tool": "read_file", "label": "Read calc.py", "reads": ["calc.py"], "writes": [], "ms": 300, "annotations": { "readOnlyHint": true, "idempotentHint": true } },
+    { "id": "edit-calc", "tool": "edit_file", "label": "Edit calc.py", "reads": ["calc.py"], "writes": ["calc.py"], "ms": 500, "annotations": { "destructiveHint": true } },
+    { "id": "pytest", "tool": "run_command", "label": "Run the tests", "reads": ["calc.py", "tests/test_calc.py"], "writes": [".pytest_cache"], "ms": 2000, "annotations": { "readOnlyHint": true } },
+    { "id": "list-files", "tool": "list_files", "label": "List the files", "reads": ["."], "writes": [], "ms": 100, "annotations": { "readOnlyHint": true, "idempotentHint": true } },
+    { "id": "read-readme", "tool": "read_file", "label": "Read README.md", "reads": ["README.md"], "writes": [], "ms": 200, "annotations": { "readOnlyHint": true, "idempotentHint": true } },
+    { "id": "write-notes", "tool": "write_file", "label": "Write NOTES.md", "reads": [], "writes": ["NOTES.md"], "ms": 400 },
+    { "id": "fetch-docs", "tool": "fetch_url", "label": "Fetch the API docs", "reads": ["web"], "writes": [], "ms": 900, "annotations": { "readOnlyHint": true, "openWorldHint": true } }
+  ]
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Which check catches which bug · HARNESSED</title>
+<meta name="description" content="Predict which checks catch which bugs, reveal the real answers, then choose checks within a budget and see what stays uncaught.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · checks and bugs</p>
+    <h1>Which check catches which bug</h1>
+    <p class="lede">No single check catches everything. Predict the cells, reveal the real answers, then choose checks within a budget.</p>
+  </header>
+  <section class="row" aria-labelledby="bc-h">
+    <h2 id="bc-h">Bugs and checks</h2>
+    <hx-bugcatch src="data/bugcatch-demo.json">
+      <p>Four bugs and seven checks. Some checks steer the work; others check it afterwards.</p>
+    </hx-bugcatch>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "budget": 6,
+  "bugs": [
+    { "id": "test-edited", "label": "A test was edited to pass", "detail": "The assertion was changed to match the wrong output, so the suite is green for the wrong reason." },
+    { "id": "special-case", "label": "The answer is special-cased", "detail": "The function returns the expected value for the visible inputs and nothing else." },
+    { "id": "wrong-type", "label": "A wrong type", "detail": "The function returns a string where the caller expects a number, and a loose comparison in the test lets it pass." },
+    { "id": "says-done", "label": "It says it is done, but the tests fail", "detail": "The final message claims success, and no run backs it." }
+  ],
+  "checks": [
+    { "id": "rules", "label": "Rules file: never edit a test to make it pass", "kind": "guide", "cost": 0 },
+    { "id": "general", "label": "Prompt: a general solution, not special cases", "kind": "guide", "cost": 0 },
+    { "id": "self-report", "label": "The model says it is done", "kind": "sensor", "cost": 0 },
+    { "id": "unit", "label": "Unit tests (the visible suite)", "kind": "sensor", "cost": 2 },
+    { "id": "types", "label": "Type check", "kind": "sensor", "cost": 2 },
+    { "id": "pristine", "label": "Tests from a pristine copy", "kind": "sensor", "cost": 3 },
+    { "id": "reviewer", "label": "Independent reviewer: sees the task and the diff", "kind": "sensor", "cost": 4 }
+  ],
+  "catches": {
+    "test-edited": ["rules", "pristine", "reviewer"],
+    "special-case": ["general", "pristine", "reviewer"],
+    "wrong-type": ["types", "reviewer"],
+    "says-done": ["unit", "pristine"]
+  }
+}

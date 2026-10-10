@@ -25,3 +25,5 @@ labs/outage.html
 labs/desk.html
 labs/cacheline.html
 labs/placement.html
+labs/scheduler.html
+labs/bugcatch.html
