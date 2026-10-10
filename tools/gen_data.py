@@ -3,9 +3,11 @@
 
 Usage: python tools/gen_data.py [--check]
 
-Writes (D-020): site/data/course.json, facts.json (verified facts only), terms.json, and
-site/data/{cards,say,checks}/<ID>.json. Rewrites only the text between the counts markers in
-README.md. JSON is written as json.dumps(obj, indent=1, ensure_ascii=False, sort_keys=True).
+Writes (D-020): site/data/course.json, facts.json (verified facts only), terms.json,
+site/data/{cards,say,checks}/<ID>.json, and byte-for-byte copies of the scenario tapes and boards
+(site/data/scenarios/<id>.json, site/data/scenarios/boards/<id>.json). Rewrites only the text
+between the counts markers in README.md. Generated JSON is written as
+json.dumps(obj, indent=1, ensure_ascii=False, sort_keys=True).
 With --check nothing is written: stale or missing outputs and unexpected files under site/data
 are reported. A source with a problem is not compiled; its problem is reported and the rest
 still runs. The last line is the summary.
@@ -168,6 +170,21 @@ def _readme(root: Path, course: dict[str, Any] | None, plan: Plan) -> str | None
     return f"{head}{BEGIN_COUNTS}\n{_counts_block(course)}\n{END_COUNTS}{tail}"
 
 
+def _scenarios(root: Path, plan: Plan) -> None:
+    """Tapes and boards are copied byte for byte: key order is part of the prompt the simulator
+    builds (tokens are counted over json.dumps without sorting), so they are never re-serialized."""
+    folder = root / "scenarios"
+    sources = [p for p in sorted(folder.glob("*.json")) if not p.name.endswith("schema.json")]
+    sources += sorted((folder / "boards").glob("*.json"))
+    for path in sources:
+        rel = "site/data/" + path.relative_to(root).as_posix()
+        try:
+            plan.outputs.append(Output(rel, path.read_text(encoding="utf-8")))
+        except OSError as exc:
+            plan.problems.append(Problem(display_path(path), 0, f"cannot read: {exc.strerror}"))
+            plan.skipped.add(rel)
+
+
 def build_plan(root: Path) -> Plan:
     """Compile every output in memory. Writes nothing."""
     plan = Plan()
@@ -200,6 +217,7 @@ def build_plan(root: Path) -> Plan:
                     plan.skipped.add(rel)
                 else:
                     plan.outputs.append(Output(rel, dump_json(entries)))
+    _scenarios(root, plan)
     readme = _readme(root, course, plan)
     if readme is not None:
         plan.outputs.append(Output("README.md", readme))

@@ -1,0 +1,15 @@
+{
+ "id": "c6-new",
+ "label": "New board",
+ "modules": {
+  "retry": {
+   "max_attempts": 10,
+   "base_ms": 1000,
+   "cap_ms": 8000,
+   "jitter": "full"
+  },
+  "breaker": {
+   "threshold": 8
+  }
+ }
+}

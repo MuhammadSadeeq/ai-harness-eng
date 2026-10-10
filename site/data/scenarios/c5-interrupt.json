@@ -1,0 +1,125 @@
+{
+ "schema": 1,
+ "model_id": "claude-sonnet-5-5",
+ "pricing": {
+  "fact": "models.sonnet-5-5-price"
+ },
+ "window": 8000,
+ "rules": [],
+ "outside": {},
+ "custom_tools": [],
+ "human": {
+  "default": "approve"
+ },
+ "interrupt": {
+  "turn": 2,
+  "resume": true
+ },
+ "golden_seeds": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "seed_base": 20261010,
+ "id": "c5-interrupt",
+ "title": "The orphaned tool call",
+ "task": "Rename the function get_user to fetch_user in users.py",
+ "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the work is finished.",
+ "workspace": {
+  "users.py": "def get_user(user_id):\n    return {\"id\": user_id}\n"
+ },
+ "tools": [
+  "read_file",
+  "edit_file"
+ ],
+ "checks": [
+  {
+   "file": "users.py",
+   "contains": "def fetch_user"
+  },
+  {
+   "file": "users.py",
+   "not_contains": "def get_user"
+  }
+ ],
+ "test_output": {
+  "pass": "renamed",
+  "fail": "get_user still defined"
+ },
+ "script": [
+  {
+   "say": "Reading users.py.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "users.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Renaming the function.",
+   "tools": [
+    [
+     "edit_file",
+     {
+      "path": "users.py",
+      "old_text": "def get_user",
+      "new_text": "def fetch_user"
+     }
+    ]
+   ]
+  },
+  {
+   "when": [
+    {
+     "if": "last_result_error",
+     "then": [
+      {
+       "say": "The edit was interrupted before it ran. Doing it again.",
+       "tools": [
+        [
+         "edit_file",
+         {
+          "path": "users.py",
+          "old_text": "def get_user",
+          "new_text": "def fetch_user"
+         }
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "else": [
+      {
+       "say": "Checking the file.",
+       "tools": [
+        [
+         "read_file",
+         {
+          "path": "users.py"
+         }
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "say": "Renamed. Done."
+  }
+ ],
+ "boards": [
+  "c5-old",
+  "c5-new"
+ ],
+ "incident": {
+  "family": "orphaned-tool-call",
+  "wire": "loop"
+ }
+}

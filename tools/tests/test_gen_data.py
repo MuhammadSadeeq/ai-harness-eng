@@ -189,3 +189,17 @@ def test_facts_with_no_verified_entries_still_write_an_empty_object(tmp_path: Pa
     (root / "facts" / "api.yaml").unlink()
     assert run(root) == 0
     assert json.loads((root / "site" / "data" / "facts.json").read_text(encoding="utf-8")) == {}
+
+
+def test_tapes_and_boards_are_copied_byte_for_byte(tmp_path: Path) -> None:
+    root = copy_root(tmp_path)
+    (root / "scenarios" / "boards").mkdir(parents=True, exist_ok=True)
+    tape = '{"id": "t1", "b": 1, "a": [2, 1]}\n'  # unsorted keys and spacing must survive
+    (root / "scenarios" / "t1.json").write_text(tape, encoding="utf-8")
+    (root / "scenarios" / "schema.json").write_text("{}\n", encoding="utf-8")
+    (root / "scenarios" / "boards" / "x.json").write_text('{"id": "x"}', encoding="utf-8")
+    assert run(root) == 0
+    assert (root / "site/data/scenarios/t1.json").read_text(encoding="utf-8") == tape
+    assert (root / "site/data/scenarios/boards/x.json").read_text(encoding="utf-8") == '{"id": "x"}'
+    assert not (root / "site/data/scenarios/schema.json").exists()
+    assert run(root, "--check") == 0

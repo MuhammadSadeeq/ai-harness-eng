@@ -1,0 +1,86 @@
+{
+ "schema": 1,
+ "model_id": "claude-sonnet-5-5",
+ "pricing": {
+  "fact": "models.sonnet-5-5-price"
+ },
+ "window": 8000,
+ "rules": [],
+ "outside": {},
+ "custom_tools": [],
+ "human": {
+  "default": "approve"
+ },
+ "interrupt": null,
+ "golden_seeds": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "seed_base": 20261010,
+ "id": "c6-outage",
+ "title": "The outage",
+ "task": "Summarize the open issues in issues.md into summary.md",
+ "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the work is finished.",
+ "workspace": {
+  "issues.md": "- login fails on Safari\n- export drops the last row\n- docs link is broken\n"
+ },
+ "tools": [
+  "read_file",
+  "write_file"
+ ],
+ "outage": {
+  "from_ms": 0,
+  "to_ms": 20000,
+  "type": "overloaded",
+  "retry_after_ms": 0
+ },
+ "checks": [
+  {
+   "file": "summary.md",
+   "contains": "3 open issues"
+  }
+ ],
+ "test_output": {
+  "pass": "summary present",
+  "fail": "summary.md missing"
+ },
+ "script": [
+  {
+   "say": "Reading issues.md.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "issues.md"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Writing the summary.",
+   "tools": [
+    [
+     "write_file",
+     {
+      "path": "summary.md",
+      "content": "3 open issues: login on Safari, export last row, broken docs link\n"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Summary written. Done."
+  }
+ ],
+ "boards": [
+  "c6-old",
+  "c6-new"
+ ],
+ "incident": {
+  "family": "retry-storm",
+  "wire": "errors"
+ }
+}
