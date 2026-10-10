@@ -533,7 +533,8 @@ eventually notices; lessons say so).
       is fine), a reply step with an explicit `stop: "tool_use"` and no tools, or
       with tools and an explicit other `stop` (no `stop` key with tools means
       `tool_use`), a `workspace` key whose normal form is not a relative path
-      inside the root, or an `outside` key whose normal form is inside it. A call that expands
+      inside the root, an `outside` key whose normal form is inside it, or two
+      keys (across `workspace` and `outside`) with the same normal form. A call that expands
       100000 steps without a reply raises a script error (a tape bug, not a run
       outcome; no event).
   14. *Script:* reply steps take an optional `latency_ms` (§4). Error steps
@@ -574,3 +575,18 @@ eventually notices; lessons say so).
       every option of every `branch` step that the run reaches at least once;
       `check_scenarios` reports an option no golden seed takes (Rein records the
       choices; they are not events).
+- **A4 (2026-10-10): the incident block** (replaces the sketch in §5 and
+  AUTHORING §9). An incident tape's `incident` is
+  `{"family", "wire", "board", "seed", "first_bad_seq", "accept_seqs", "why", "hint", "notes", "fixes", "correct_fix", "par_s"}`:
+  `family` is a `failure_families` id in `course.json` whose `wire` equals
+  `wire`; the hunt replays `board` (one of the tape's `boards`) at `seed` (one of
+  its `golden_seeds`, so a golden trace exists); `first_bad_seq` is the seq of
+  the first event where things went wrong and `accept_seqs` (optional, default
+  `[]`) lists other seqs that also count as found; `why` (one or two sentences)
+  is shown on success; `hint` is the pointer shown after the second wrong tap;
+  `notes` (optional) is a list of `{"seq", "text"}` shown when that seq is
+  tapped (a tempting wrong answer gets a specific reply); `fixes` is a list of
+  2–4 `{"text", "why"}` and `correct_fix` the index of the right one; `par_s` is
+  the par time to diagnose, in seconds. `check_scenarios` checks every
+  reference: the family and its wire, the board and seed, and that every seq
+  named exists in that golden trace. A tape without an incident omits the block.
