@@ -3225,7 +3225,7 @@
         },
         {
           "id": "H1.o3",
-          "text": "Show statelessness on your own machine: three separate runs don't remember each other."
+          "text": "Show statelessness: three separate runs of one script don't remember each other."
         }
       ],
       "misconceptions": [

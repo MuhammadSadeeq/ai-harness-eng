@@ -106,3 +106,40 @@ Estimate, not measured. Sam: Break 8–10 min; See 10–12 min; Fix 25–30 min 
 Findings: 0 blockers, 1 major (the tool_use_id find is buried in a 416 px box), 4 minors open; 8 of the coordinator's items fixed, 1 open (late reveal), 1 partly (tool_use_id).
 Most important: a learner must scroll about 2,250 px inside a Wire JSON box to see a tool_use_id; the probe is bp26/probeTid3.mjs.
 Score: 370 / 500 against the reference 470; the hunt, the bench and the kata work on phone, desk and keyboard, and the four passes exited with no page errors on touch and pointer.
+
+## Re-score after fixes (HEAD 782d9e5)
+Reviewer rerun on HEAD 782d9e5, same persona and tasks. Logs in the scratch folder: bp26/log-m375.jsonl and bp26/log-k1280.jsonl (rerun; the driver now logs the hunt-start verdict and steps the Wire "Next tool_use_id" button); before-fix logs: bp26/log-m375-before-782d9e5.jsonl and bp26/log-k1280-before-782d9e5.jsonl. Probes: bp26/probeRetest.mjs (early keypress; 5-turn boundary) and bp26/probePar6.mjs (6-turn boundary).
+
+### Per-item retest
+| Item (from this report) | Was | Now | Evidence |
+|---|---|---|---|
+| Major 1: Wire find (tool_use_id buried in a 416 px box) | partly | FIXED | The Wire view has a "Next tool_use_id" button. Three presses on m375 and k1280 give "tool_use_id 1 of 3: result for toolu_1_1, answered by the call on line 87 of the request", "2 of 3 ... line 115", "3 of 3: call toolu_3_1 in the response". No scrolling needed. |
+| Minor 2: prediction verdict only after the fix | open | FIXED | verdict-at-hunt-start on m375 and k1280: "Not this time." is visible when the hunt starts, before the fix. After Lock in and before the hunt, no verdict (gate-after-commit). |
+| Minor 3: hx-cards keydown error before the cards load | open | FIXED | probeRetest: 60 Tab presses and 10 Space presses from body focus before the cards load: 0 page errors. Also 0 after the cards load. The earlier repro logged the TypeError. |
+| Minor 4: incident has no keyboard hint | open | FIXED | verdict-at-hunt-start keyline on k1280: "With a keyboard: arrow keys move between events, Enter picks one." Roving rows reached with ArrowDown (rows 9, 20, 29). |
+| Minor 5: "The loop above has two" then three exits | open | FIXED | Page text now: "The loop above has two ... The second belongs to the harness: a turn limit ... A third exit you can add is a token budget." |
+| Reload resets the Break (fixed on the uncommitted tree last time) | committed | FIXED | After reload on m375 and k1280: gate shows "Not this time. It kept going..." (verdict kept); objectives stay 5 of 5. |
+| Par boundary and numbers (not captured on the final tree last time) | open | FIXED (verified) | At 6 turns: "With a turn limit of 6 turns, the new board passes 13 of 20 runs."; 20 cells: 13 checks pass, 7 stopped. At 5 turns: "With a turn limit of 5 turns, the new board passes 0 of 20 runs."; 20 cells stopped. Matches. |
+| Other earlier fixes (term popovers, kata credit, fact chips, copy, ⊘ key) | fixed | still fixed | Logs: dfn role=button, expanded true, one popover; fact-chip navigated_away false; starter 0 of 9 leaves 4 of 5; typed 9 of 9 gives 5 of 5. |
+| Cards via arrow keys (k1280) | works | still works | k1280 t5: "Spot the bug: /messages/2" reached with 24 ArrowDown steps; 9 of 9 cards right. |
+
+Open items from the earlier list: none. The margin-note blocker on k1280 is a driver assumption (the desktop note is always visible), not a product finding.
+
+### Re-score (same criteria and weights as the first pass)
+| Criterion | Weight | First pass | Now | Evidence |
+|---|---|---|---|---|
+| Learning clarity | 20 | 4 | 4 | Reveal at hunt start, exits copy, seed and bench copy now match what Sam sees. Not 5: the kata's first-run struggle was not re-measured. |
+| Intuitive | 20 | 3 | 4 | Reload keeps the Break; the verdict appears at the hunt start; "Next tool_use_id" finds each id in one press. |
+| Fun | 15 | 4 | 4 | Unchanged: the hunt, the bench puzzle, the kata. |
+| Phone ergonomics at 375 px | 15 | 4 | 4 | Unchanged. The 3,460 px JSON box remains, but the Next key avoids scrolling it. Target sizes were not re-measured. |
+| Accessibility | 10 | 3 | 4 | Keyboard line on the incident; roving groups reached with arrows; the hx-cards error is gone. Target sizes and focus were not re-audited on this pass. |
+| Identity and memory | 10 | 4 | 4 | Unchanged. |
+| Credibility | 5 | 4 | 4 | Unchanged; the numbers match the cells at 6, 5 and 12 turns. |
+| Consistency | 5 | 4 | 4 | Unchanged. |
+
+Weighted total: 4×20 + 4×20 + 4×15 + 4×15 + 4×10 + 4×10 + 4×5 + 4×5 = **400 / 500** (first pass 370 / 500; reference v2 prototype 470).
+
+### Summary (3 lines, re-score)
+Findings: 0 blockers and 0 open items from the first pass; the 5 retested items (major 1 and minors 2 to 5) are FIXED.
+Most important: the Wire view finds each tool_use_id in one press, and the prediction verdict arrives when the hunt starts.
+Score: 400 / 500 (first pass 370), against the reference 470; what is not re-audited is target sizes, focus, and the kata's first-run struggle.

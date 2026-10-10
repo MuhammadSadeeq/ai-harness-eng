@@ -1002,7 +1002,7 @@ By the end you can:
 
 - `H1.o1` Define one model interface with a scripted and a real implementation behind it.
 - `H1.o2` Print a reply with its stop_reason and token usage.
-- `H1.o3` Show statelessness on your own machine: three separate runs don't remember each other.
+- `H1.o3` Show statelessness: three separate runs of one script don't remember each other.
 
 Misconceptions to confront: “The fake and real models need different code paths.”
 

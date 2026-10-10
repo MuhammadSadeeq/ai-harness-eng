@@ -26,7 +26,7 @@
       <ol class="objectives" data-objective-list data-objectives-total="3">
         <li data-objective="H1.o1">Define one model interface with a scripted and a real implementation behind it.</li>
         <li data-objective="H1.o2">Print a reply with its stop_reason and token usage.</li>
-        <li data-objective="H1.o3">Show statelessness on your own machine: three separate runs don&#x27;t remember each other.</li>
+        <li data-objective="H1.o3">Show statelessness: three separate runs of one script don&#x27;t remember each other.</li>
       </ol>
       <p class="progress-line" data-progress><span data-progress-text>0 of 3 objectives done</span></p>
       <p class="prereqs">Before this: <span>H0 · Rein setup <span class="soon">soon</span></span>, <span>A4 · The API call on the wire <span class="soon">soon</span></span></p>
@@ -92,7 +92,27 @@ class ClaudeModel:
 
     <p>A <dfn data-term="dataclass">dataclass</dfn> holds each reply. The text, the stop reason and the token counts are named fields, so the code reads each one by name. <span class="fact" data-fact="api.content-multiple-blocks">A response's content is an array of content blocks, each with a type that determines its shape.</span> Rein keeps those raw blocks too, because a tool request can come after the text, and the harness has to read the blocks, not only the first one.</p>
 
+    <hx-check mode="check" src="H1" item="H1-c1" data-objective="H1.o1">
+      <p>Without JavaScript, the question is: Rein's scripted model and its real model both answer one call. What does the rest of Rein call?</p>
+      <ol>
+        <li>The scripted class, because it runs without a key.</li>
+        <li>The model interface: one call method that both classes implement.</li>
+        <li>The real class directly, so every reply is real.</li>
+        <li>Whichever class the step names.</li>
+      </ol>
+    </hx-check>
+
     <p>The stop reason says why the model stopped. When the model asks for a tool, <span class="fact" data-fact="api.stop-reason-tool-use">Claude is calling a tool and expects the application to run it.</span></p>
+
+    <hx-check mode="check" src="H1" item="H1-c2" data-objective="H1.o2">
+      <p>Without JavaScript, the question is: A reply comes back with stop_reason tool_use. What does it tell the harness?</p>
+      <ol>
+        <li>The run is finished.</li>
+        <li>Claude is calling a tool and expects the application to run it.</li>
+        <li>The reply was cut off at the token limit.</li>
+        <li>The model refused to answer.</li>
+      </ol>
+    </hx-check>
 
     <figure>
       <hx-wire tape="h1-first-block" board="h1-new" turn="1" data-objective="H1.o2">
@@ -106,6 +126,15 @@ class ClaudeModel:
     <aside class="note">
       <p>The second run is a new request. If you want it to know the first run, the first run's messages have to go in the request again.</p>
     </aside>
+    <hx-check mode="check" src="H1" item="H1-c3" data-objective="H1.o3">
+      <p>Without JavaScript, the question is: Three runs of the same script each send a new request. Does the third run know what the first one said?</p>
+      <ol>
+        <li>Yes. The API keeps a session for each key.</li>
+        <li>No. Each request carries only the messages you send in it.</li>
+        <li>Only if the system prompt says so.</li>
+        <li>Only when the runs share a process.</li>
+      </ol>
+    </hx-check>
   </section>
 
   <section class="beat" data-beat="fix" id="fix">

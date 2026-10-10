@@ -58,7 +58,7 @@
       </ol>
     </hx-check>
 
-    <hx-replay id="spiral" tape="b2-spiral" board="b2-old" predict locked data-objective="H2.o2">
+    <hx-replay id="spiral" tape="b2-spiral" board="b2-old" seed="1" predict locked data-objective="H2.o2">
       <figure>
         <p>Without JavaScript, you see a summary instead of the replay: the run edits the file, runs the tests and reads the result, again and again.</p>
         <figcaption>FIG H2.0 · The loop that never exits.</figcaption>
@@ -108,6 +108,15 @@
 
     <h3>Results go back together, matched by id</h3>
     <p><span class="fact" data-fact="api.tool-results-single-user-message">The docs say to return one tool_result for each tool_use block, all together in the next user message.</span> <span class="fact" data-fact="api.tool-result-ids-must-match">A tool_result's tool_use_id is the id of the tool use request that the result answers.</span> The loop appends one message with every result, so the next call sees all of them.</p>
+
+    <hx-check mode="check" src="H2" item="H2-c3" data-objective="H2.o1">
+      <p>Without JavaScript, the question is: Which id does a tool_result carry?</p>
+      <ol>
+        <li>A new id that the loop makes up.</li>
+        <li>The tool_use_id of the request it answers.</li>
+        <li>The name of the tool.</li>
+      </ol>
+    </hx-check>
 
     <figure>
       <hx-wire tape="b2-spiral" board="b2-new" turn="2" diff data-objective="H2.o1">
