@@ -492,7 +492,8 @@ eventually notices; lessons say so).
      `new_text` reads as `""`. Messages echo the path as the model wrote it. An
      empty `old_text` is "not found". `edit_file` on a missing file gives
      `read_file`'s error. `list_files` lists every workspace key (links
-     included), sorted, joined by `"\n"`, no trailing newline.
+     included), sorted, joined by `"\n"`, no trailing newline. `write_file` to
+     the root (`""` or `.`) writes nothing: `ok` false, `Is a directory: <path>`.
   5. *Checks:* a check on a missing file fails (`contains` and `not_contains`
      alike); deleting the file never passes a check.
   6. *Paths:* normalized lexically. A path starting with `/` is absolute: it is
@@ -509,8 +510,9 @@ eventually notices; lessons say so).
      last `@`; drop a trailing `:<digits>`; lowercase (no `://` gives `""`).
      Reason `host not in egress: <host>`. An allowed call has reason `""`. The
      check applies only to custom tools with `"effect": "network"` and a string
-     `url`. The `sandbox` event is emitted for every tool call when the module
-     is plugged; a blocked call emits no `tool_call`.
+     `url`. The `sandbox` event is emitted for every tool call that reaches the
+     sandbox check when the module is plugged (a call denied by permissions
+     never does, §7.1 order); a blocked call emits no `tool_call`.
   9. *Permissions:* a matched rule is named `rules[<i>]`, its 0-based index in
      the board's `rules` list as written. Every rule must have a non-empty
      `reason` (the schema requires it). No match: rule `default`, reason
@@ -526,9 +528,12 @@ eventually notices; lessons say so).
   12. *Tape defaults:* `human` absent means `{"default": "deny"}`; `seed_base`
       0; `faults` `[]`; `outage` none; `interrupt` null; `rules` `[]`.
   13. *Tape validity (the loader rejects the tape):* a non-integer number, a
-      non-ASCII string, an object key that is a canonical integer (`"0"`,
-      `"12"`: JS reorders such keys), a reply step with `stop: "tool_use"` and
-      no tools, or with tools and any other `stop`. A call that expands
+      non-ASCII string, an object key that is a non-negative canonical integer
+      (`0|[1-9][0-9]*`, such as `"0"` or `"12"`: JS reorders those keys; `"-3"`
+      is fine), a reply step with an explicit `stop: "tool_use"` and no tools, or
+      with tools and an explicit other `stop` (no `stop` key with tools means
+      `tool_use`), a `workspace` key whose normal form is not a relative path
+      inside the root, or an `outside` key whose normal form is inside it. A call that expands
       100000 steps without a reply raises a script error (a tape bug, not a run
       outcome; no event).
   14. *Script:* reply steps take an optional `latency_ms` (§4). Error steps
