@@ -57,6 +57,9 @@
       "$ref": "#/$defs/input_check"
     },
     {
+      "$ref": "#/$defs/cost"
+    },
+    {
       "$ref": "#/$defs/compaction"
     },
     {
@@ -1531,6 +1534,80 @@
         "valid",
         "reason",
         "tool_use_id"
+      ]
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "const": "main"
+        },
+        "kind": {
+          "const": "cost"
+        },
+        "wire": {
+          "const": "observe"
+        },
+        "call_cost": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "input_cost": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_cost": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cache_cost": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "top_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "top_part": {
+          "type": "string",
+          "pattern": "^(system|tools|messages\\[(0|[1-9][0-9]*)\\])$"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "call_cost",
+        "input_cost",
+        "output_cost",
+        "cache_cost",
+        "top_part",
+        "top_tokens"
       ]
     }
   }

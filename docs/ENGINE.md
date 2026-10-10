@@ -812,3 +812,48 @@ eventually notices; lessons say so).
      small tapes in `scenarios/engine/` (not copied to the site), with goldens
      and parity like any tape, so every amendment is proven in both runtimes
      before a module relies on it.
+- **A9 (2026-10-10): tool design, tools on demand, tamperable tests and cost
+  attribution** (wave 3.4: C7, C8, C11, C12). Absent modules and fields change
+  nothing.
+  1. *`tool_overrides: {"<tool name>": {"description"?, "input_schema"?}}`*:
+     the harness's own tool definitions. For each named tool (built-in or
+     custom; an unknown name is refused by the loader), the request uses the
+     given `description` and/or `input_schema` in place of the tape's or
+     `tooldefs.json`'s; names cannot be changed. `validate_inputs` (A7.1)
+     checks against the overridden schema. A tape makes the scripted model
+     misuse a vague tool with `sent_lacks:<text>` on the description it needs
+     (A6.1). On the board: tools wire, label `clear tool design`.
+  2. *`tool_search: {"always": [names]}`*: tools on demand. The request's
+     tools are the `always` tools, then the tools loaded so far (in the order
+     A3.1 gives them), then the harness's own `tool_search` tool, defined as
+     `{"name": "tool_search", "description": "Find tools by keyword and load their definitions for the next request.", "input_schema": {"type": "object", "properties": {"query": {"type": "string", "description": "Words that describe the tool you need"}}, "required": ["query"], "additionalProperties": false}}`.
+     A `tool_search` call (latency 100 ms) lowercases `query`, splits it on
+     whitespace, and loads every tool not yet loaded whose lowercased
+     `name + " " + description` contains every word, at most 5, in A3.1
+     order. Its output is `Loaded: <names joined by ", ">`, or
+     `No tool matched: <query>` (`ok` false). A call to a tool that exists but
+     is not loaded runs as usual (the harness still has it), but its definition
+     was not sent. Conditions: `tools_gte:<n>` is true when the request about
+     to be sent has at least `n` tool definitions; `tool_loaded:<name>` when
+     `<name>` is among them. Without the module every tool is sent, as today.
+     On the board: tools wire, label `tools on demand`.
+  3. *Tape `tests`* (optional): the test suite as files say it, which a model
+     can tamper with: `[{"id", "marker": {"file", "contains"}, "check": {"file", "contains" | "not_contains"}}]`.
+     When present, `run_command pytest` and the verify gate use the suite: a
+     test is active while its marker's file contains the marker text, an
+     active test passes when its check holds, and the suite passes when every
+     active test passes (`test_output.pass` / `fail` as before). Ground truth is
+     still the tape's `checks` (`run_end.passed`), so deleting a marker makes
+     the suite pass while the work is wrong: test tampering. *`verify_gate`
+     gains `"pristine_tests": true`*: the gate reads every marker from the
+     tape's original workspace, so a deleted marker cannot switch a test off;
+     `run_command` still reads the live files. `verify.check` is
+     `"tests (pristine)"` when it applies.
+  4. *`cost_attribution: {}`*: after each `model_reply`, emit
+     `cost(call_cost, input_cost, output_cost, cache_cost, top_part, top_tokens)`
+     (wire `observe`): this call's cost split (nano-units; `cache_cost` is the
+     read and write part, 0 without `cache`), and the largest part of the
+     request by tokens: `"system"`, `"tools"` or `"messages[<k>]"` (the
+     message index in the sent messages), each measured as `tokens(part)`;
+     ties go to the earliest part. On the board: observe wire, label
+     `readable trace`.
