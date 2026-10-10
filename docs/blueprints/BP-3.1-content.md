@@ -1,14 +1,15 @@
 # BLUEPRINT BP-3.1-content: wave 3.1 modules S0, A1, A2, A3, T1–T3
 
 Phase 3, wave 3.1 content. Builder rules: `.claude/agents/hx-builder.md`. You
-never commit. Starts only after the Phase 2 gate (B2 signed off, AUTHORING.md
-final).
+never commit. The Phase 2 gate has passed (docs/PHASE2-GATE.md): B2 is the bar
+and AUTHORING.md v1 is final.
 
 ## Read first (everyone)
 `docs/AUTHORING.md` (all; it is final), the B2 page
 `site/modules/the-agent-loop.html` and `content/B2/*.yaml` (**the bar**: match
-its structure, voice and quality), `docs/gate/phase2-walkthrough-B2.md` (what a
-learner tripped on, so you don't repeat it), `course.json` (your modules:
+its structure, voice and quality), `docs/gate/phase2-walkthrough-B2.md` and
+`docs/gate/phase2-walkthrough-H1-H2.md` (what a learner tripped on, so you
+don't repeat it), `course.json` (your modules:
 `kind`, objectives, terms, family, law, prerequisites), `docs/ENGINE.md` (tapes
 and boards; A4 incident blocks; A5 for A3), `docs/COMPONENTS.md` (the labs you
 use), and the book's chapters for your modules (scratch `book.txt`; the book
