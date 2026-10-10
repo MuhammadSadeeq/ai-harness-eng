@@ -1,6 +1,6 @@
 # HARNESSED: component contract
 
-Status: v1 (Phase 1). Director-owned. Every `hx-*` element follows these
+Status: v1.1 (Phase 1). Director-owned. Every `hx-*` element follows these
 rules; each component's blueprint adds its own API. DESIGN v2 is the visual
 spec; ENGINE.md is the behavior spec for anything that runs a tape.
 
@@ -8,6 +8,12 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
 - One module per component: `site/assets/components/hx-<name>.js`, which
   defines the element with `customElements.define("hx-<name>", ...)` and
   exports its class. Shared helpers live in `site/assets/components/lib/`.
+- Every component **extends `HxElement`** (`lib/hx-element.js`, director-owned),
+  which implements §2, §4 (focus kept across renders by `data-key`), §5
+  (`this.evidence(kind, detail)`), the live region (`this.live(text)`), motion
+  (`this.reducedMotion`) and §7 (`__test.run` calls your `selfTest()`). A
+  component writes `setup()`, `render()` and `selfTest()`; it never re-implements
+  these.
 - The shell's loader (`site/assets/core/app.js`) imports a component only if
   it is listed in the loader registry and present on the page (BP-1.1).
 - Components render in the **light DOM** (no shadow DOM) so `hx.css` applies.
@@ -28,7 +34,9 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
   `site/data/course.json`; cards, say-it prompts and checks from
   `site/data/{cards,say,checks}/<module>.json`.
 - Components fetch data with `lib/data.js` (`getTape(id)`, `getBoard(id)`,
-  `getFacts()`, …), which caches each URL once per page.
+  `getFacts()`, `getCourse()`, `getTerms()`, `getContent(kind, moduleId)`), which
+  caches each URL once per page. The store and the announcer come from
+  `hxContext()` (`core/context.js`), set by the shell.
 - Simulations call only `site/assets/sim/index.js` (`runTrial`, `runBench`).
   Components never reimplement harness logic.
 
