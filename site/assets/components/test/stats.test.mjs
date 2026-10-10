@@ -1,28 +1,34 @@
 // Pure statistics for hx-bench (lib/stats.js). Run: node --test "site/assets/components/test/*.test.mjs"
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import {
-  summarize, wilson, percent, histogram, sweepPar, formatInt, usdText, costText, costValue, formatValue, TURN_EDGES,
-} from "../lib/stats.js";
+import { summarize, wilson, percent, histogram, sweepPar, formatValue, TURN_EDGES } from "../lib/stats.js";
+import { formatCost, formatInt, plural, isPass } from "../lib/format.js";
 
 const close = (actual, expected, tol = 0.0002) => assert.ok(Math.abs(actual - expected) <= tol, `${actual} vs ${expected}`);
 
-test("summarize: pass count, worst case and floored mean cost", () => {
+test("isPass (D-045): only a true done counts", () => {
+  assert.equal(isPass("done", true), true);
+  assert.equal(isPass("done", false), false, "a false done is not a pass");
+  assert.equal(isPass("max_turns", true), false, "a guard stop with the checks right is not a pass");
+});
+
+test("summarize: passes are true dones, worst case, floored mean cost", () => {
   const trials = [
-    { passed: true, turns: 6, cost: 9466000 },
-    { passed: false, turns: 60, cost: 398846000 },
-    { passed: true, turns: 6, cost: 9466001 },
+    { status: "done", passed: true, turns: 6, cost: 9466000 },
+    { status: "max_turns", passed: true, turns: 4, cost: 5836000 },
+    { status: "interrupted", passed: false, turns: 60, cost: 398846000 },
   ];
   assert.deepEqual(summarize(trials), {
-    n: 3, passed: 2, worst_turns: 60, worst_cost: 398846000, mean_cost: Math.floor((9466000 + 398846000 + 9466001) / 3),
+    n: 3, passed: 1, worst_turns: 60, worst_cost: 398846000,
+    mean_cost: Math.floor((9466000 + 5836000 + 398846000) / 3),
   });
   assert.deepEqual(summarize([]), { n: 0, passed: 0, worst_turns: 0, worst_cost: 0, mean_cost: 0 });
 });
 
 test("wilson: 13 of 20 matches the hand calculation (centre 0.6258, half-width 0.1930)", () => {
   // p = 0.65, z = 1.959964, n = 20: denominator 1.192073, centre 0.746036 / 1.192073 = 0.625831,
-  // half-width 0.230053 / 1.192073 = 0.193000, so the interval is 0.432831 to 0.818831 (to the
-  // precision of this hand sum; the exact value is 0.432854 to 0.818808).
+  // half-width 0.230053 / 1.192073 = 0.193000, so the interval is 0.432831 to 0.818831 by hand;
+  // the exact value is 0.432854 to 0.818808. The test tolerance covers the difference.
   const w = wilson(13, 20);
   close(w.lo, 0.4329, 0.0002);
   close(w.hi, 0.8188, 0.0002);
@@ -81,20 +87,17 @@ test("sweepPar: a tie goes to the smallest value; no feasible value gives null",
   assert.equal(none.par, null);
 });
 
-test("text: thousands separators, truncated four-decimal costs, priced and unpriced", () => {
+test("shared wording (format.js): costs round half up, counts get thousands separators and plurals", () => {
   assert.equal(formatInt(60000), "60,000");
-  assert.equal(formatInt(12), "12");
-  assert.equal(usdText(26438000), "$0.0264");
-  assert.equal(usdText(9466000), "$0.0094");
-  assert.equal(usdText(398846000), "$0.3988");
-  assert.equal(costText(26438000, true), "≈ $0.0264");
-  assert.equal(costText(26438000, false), "≈ 0.0264 units");
-  assert.equal(costText(0, true), "≈ $0.0000");
-  assert.equal(costValue(398846000, true), "$0.3988");
-  assert.equal(costValue(398846000, false), "0.3988");
+  assert.equal(formatCost(26438000), "≈ $0.0264");
+  assert.equal(formatCost(9466000), "≈ $0.0095", "rounded half up, not truncated");
+  assert.equal(formatCost(398846000), "≈ $0.3988");
+  assert.equal(formatCost(26438000, { usd: false }), "≈ 0.0264 units");
+  assert.equal(plural(1, "run"), "1 run");
+  assert.equal(plural(13, "run"), "13 runs");
 });
 
-test("formatValue: int, usd, percent, and an em dash for no value yet", () => {
+test("formatValue: int, usd (no mark), percent, and an em dash for no value yet", () => {
   assert.equal(formatValue(60000, "int"), "60,000");
   assert.equal(formatValue(26438000, "usd"), "$0.0264");
   assert.equal(formatValue(65, "percent"), "65%");

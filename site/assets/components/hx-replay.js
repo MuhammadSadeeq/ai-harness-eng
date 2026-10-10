@@ -5,9 +5,10 @@ import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFacts } from "./lib/data.js";
 import { runTrial } from "../sim/index.js";
 import { explain, turnSummary } from "./lib/explain.js";
+import { formatCost } from "./lib/format.js";
 import {
   el, glyph, WIRES, visibleIndexes, repeats, transcriptList, laneStrip, setPlayhead, setCurrentRow,
-  nearestIndex, sortedJson, ensureSprite,
+  nearestIndex, sortedJson, ensureSprite, fitAxis,
 } from "./lib/transcript.js";
 
 const DELAY_MS = { 1: 700, 2: 350, 4: 175 };
@@ -87,8 +88,7 @@ export class HxReplay extends HxElement {
   }
 
   costText() {
-    const units = this.model.cost[this.state.index] / 1e9;
-    return this.model.pricedByFact ? `≈ $${units.toFixed(4)}` : `≈ ${units.toFixed(4)} units`;
+    return formatCost(this.model.cost[this.state.index], { usd: this.model.pricedByFact });
   }
 
   // ---------- movement ----------
@@ -208,14 +208,11 @@ export class HxReplay extends HxElement {
     r.minus.addEventListener("click", () => this.go(this.state.index - 1));
     r.plus.addEventListener("click", () => this.go(this.state.index + 1));
     r.scrubRow = el("div", { class: "scrub-row" }, r.minus, lanes, r.plus);
-    r.chips = el("ul", { class: "chips wire-chips", "aria-label": "Show one wire" });
-    r.chipButtons = new Map();
-    for (const w of WIRES) {
-      const b = el("button", { class: `chip w-${w.id}`, type: "button", "data-key": `wire-${w.id}`, "aria-pressed": "false" }, glyph(w.glyph), el("span", { text: w.short }));
-      b.addEventListener("click", () => this.toggleWire(w.id));
-      r.chipButtons.set(w.id, b);
-      r.chips.append(el("li", {}, b));
-    }
+    // Phones: one native select labelled "Wire" (BP-1.4 notes, item 2). Desktop uses the lane labels.
+    r.wireSelect = el("select", { class: "wire-select-input", "data-key": "wire-select" }, el("option", { value: "", text: "All wires" }),
+      ...WIRES.map((w) => el("option", { value: w.id, text: w.name })));
+    r.wireSelect.addEventListener("change", () => this.setState({ wire: r.wireSelect.value || null }));
+    r.wireLabel = el("label", { class: "wire-select" }, el("span", { text: "Wire" }), r.wireSelect);
     r.filterLine = el("p", { class: "filter-state", "aria-live": "off" });
     r.showAll = el("button", { class: "btn btn-quiet", type: "button", "data-key": "show-all", text: "Show all" });
     r.showAll.addEventListener("click", () => this.toggleWire(null));
@@ -249,15 +246,16 @@ export class HxReplay extends HxElement {
     this.refs = r;
     // Row offsets are read once per transcript build and again after a resize (not on every step).
     this.resizeObserver?.disconnect();
-    this.resizeObserver = new ResizeObserver(() => { this.offsets = null; });
+    this.resizeObserver = new ResizeObserver(() => { this.offsets = null; fitAxis(r.strip); });
     this.resizeObserver.observe(r.transcriptWrap);
+    this.resizeObserver.observe(r.strip);
     this.ui.replaceChildren(
       el("div", { class: "replay" },
         r.bar,
         r.readouts,
         r.gate,
         r.scrubRow,
-        el("div", { class: "filter-bar" }, r.chips, el("p", { class: "filter-line" }, r.filterLine, " ", r.showAll)),
+        el("div", { class: "filter-bar" }, r.wireLabel, el("p", { class: "filter-line" }, r.filterLine, " ", r.showAll)),
         r.transcriptRegion,
         r.transport),
     );
@@ -309,7 +307,10 @@ export class HxReplay extends HxElement {
 
   render() {
     if (!this.model) return;
-    if (!this.refs) this.build();
+    if (!this.refs) {
+      this.build();
+      fitAxis(this.refs.strip);
+    }
     const { refs: r, state: s, model: m } = this;
     const events = this.events;
     const last = events.length - 1;
@@ -349,7 +350,7 @@ export class HxReplay extends HxElement {
     r.counter.textContent = counterText;
     r.counterSr.textContent = `Event ${i + 1} of ${events.length}`;
 
-    r.chipButtons.forEach((b, id) => b.setAttribute("aria-pressed", String(s.wire === id)));
+    r.wireSelect.value = s.wire ?? "";
     r.strip.classList.toggle("has-filter", s.wire !== null);
     for (const [id, lane] of r.strip.lanes) lane.classList.toggle("is-off", s.wire !== null && s.wire !== id);
     r.labelsCol.querySelectorAll("button.lane-label").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.wire === s.wire)));

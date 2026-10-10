@@ -7,28 +7,6 @@ const SPRITE_URL = new URL("../../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
 let spriteReady = null;
 
-/**
- * Copies the glyph symbols into one hidden sprite in the page, once. A <use> that points at the page is far
- * cheaper to restyle than one that points into a file (replay steps restyle many marks).
- */
-export function ensureSprite() {
-  if (!spriteReady) {
-    spriteReady = (async () => {
-      if (document.getElementById("hx-glyph-sprite")) return true;
-      const text = await (await fetch(SPRITE_URL)).text();
-      const doc = new DOMParser().parseFromString(text, "image/svg+xml");
-      const svg = document.createElementNS(SVG_NS, "svg");
-      svg.setAttribute("id", "hx-glyph-sprite");
-      svg.setAttribute("class", "hx-sprite");
-      svg.setAttribute("aria-hidden", "true");
-      for (const symbol of doc.querySelectorAll("symbol")) svg.append(document.importNode(symbol, true));
-      document.body.append(svg);
-      return true;
-    })();
-  }
-  return spriteReady;
-}
-
 // The eight wires in turn order (DESIGN §3); the same ids, names and glyphs as course.json `wires`.
 export const WIRES = Object.freeze([
   { id: "control", short: "Control", name: "Control plane", glyph: "layers" },
@@ -118,6 +96,19 @@ export function turnStarts(events) {
   return out;
 }
 
+/**
+ * The turn labels of the lane axis: [{index, turn, x}] for turns from 1 (turn 0 is the run start, with no
+ * label). Every turn up to 8 is labelled; past that, every k-th turn, so the labels thin as runs grow.
+ */
+export function axisTurns(events) {
+  const starts = turnStarts(events).filter((s) => s.turn >= 1);
+  const step = Math.max(1, Math.ceil(starts.length / 8));
+  const n = events.length;
+  return starts
+    .filter((s) => s.turn === 1 || s.turn % step === 0)
+    .map((s) => ({ index: s.index, turn: s.turn, x: frac(s.index, n) }));
+}
+
 /** JSON with keys sorted at every depth (the Wire view). */
 export function sortedJson(x) {
   const sort = (v) => {
@@ -143,6 +134,7 @@ export function cardLines(output, limit = 6) {
 
 // ---------- DOM builders (run in a browser only) ----------
 
+/** Creates an element; `text` sets its text, `class` its class, other attributes are set as given. */
 export function el(tag, attrs = {}, ...kids) {
   const node = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -153,6 +145,28 @@ export function el(tag, attrs = {}, ...kids) {
   }
   node.append(...kids.filter((k) => k !== null && k !== undefined));
   return node;
+}
+
+/**
+ * Copies the glyph symbols into one hidden sprite in the page, once. A <use> that points at the page is far
+ * cheaper to restyle than one that points into a file (replay steps restyle many marks).
+ */
+export function ensureSprite() {
+  if (!spriteReady) {
+    spriteReady = (async () => {
+      if (document.getElementById("hx-glyph-sprite")) return true;
+      const text = await (await fetch(SPRITE_URL)).text();
+      const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+      const svg = document.createElementNS(SVG_NS, "svg");
+      svg.setAttribute("id", "hx-glyph-sprite");
+      svg.setAttribute("class", "hx-sprite");
+      svg.setAttribute("aria-hidden", "true");
+      for (const symbol of doc.querySelectorAll("symbol")) svg.append(document.importNode(symbol, true));
+      document.body.append(svg);
+      return true;
+    })();
+  }
+  return spriteReady;
 }
 
 /** An instrument glyph: the sprite symbol, at the size the class sets (DESIGN §4). */
@@ -171,7 +185,7 @@ export function glyph(id, cls = "glyph") {
 const wireOf = (id) => WIRES.find((w) => w.id === id);
 
 /** One transcript row's body (the quote, the card, or the one-line harness sentence). */
-function rowBody(event, index, opts, expanded) {
+function rowBody(event, expanded) {
   const text = explain(event).text;
   if (event.kind === "model_reply" && event.text) {
     return { body: el("blockquote", { class: "ev-text quote", text: `“${event.text}”` }), callout: text };
@@ -189,18 +203,19 @@ function rowBody(event, index, opts, expanded) {
 
 /**
  * The transcript list: one <li> per visible row. opts:
- *   events, detail, wire, current (event index), expanded (Set of indexes), repeatMap (from repeats()),
- *   pickable (rows are buttons: the incident hunt), onPick(index), onExpand(index), marks (Map index -> word),
- *   callouts (show the explanation under quote and card rows when current).
+ *   events, detail, wire, expanded (Set of indexes), repeatMap (from repeats()), pickable (rows are buttons:
+ *   the incident hunt), onPick(index), onExpand(index), marks (Map index -> {kind, word}),
+ *   feedback (Map index -> [lines], shown under that row: the hunt's answers), callouts (the explanation under
+ *   quote and card rows, shown when the row is current), locked.
  */
 export function transcriptList(opts) {
-  const { events, detail = "story", wire = null, current = null, expanded = new Set(), repeatMap = [], pickable = false, marks = new Map(), callouts = true, locked = false } = opts;
-  const list = el("ol", { class: "transcript", role: "list", "aria-label": "Transcript" });
+  const { events, detail = "story", wire = null, expanded = new Set(), repeatMap = [], pickable = false, marks = new Map(), feedback = new Map(), callouts = true, locked = false } = opts;
+  const list = el("ol", { class: "transcript", "aria-label": "Transcript" });
   const rowsByIndex = new Map();
   const picks = [];
   for (const { index, event } of rows(events, { detail }).filter((r) => wire === null || r.event.wire === wire)) {
     const w = wireOf(event.wire);
-    const { body, callout, more } = rowBody(event, index, opts, expanded.has(index));
+    const { body, callout, more } = rowBody(event, expanded.has(index));
     const seen = repeatMap[index] !== null && repeatMap[index] !== undefined
       ? el("span", { class: "ev-seen", text: `seen at turn ${repeatMap[index]}` })
       : null;
@@ -215,12 +230,16 @@ export function transcriptList(opts) {
     } else {
       main = el("div", { class: "ev-main", "data-index": index }, head);
     }
-    const more_ = more && (pickable || !expanded.has(index))
+    const moreEl = more
       ? el("button", { class: "ev-more", type: "button", "aria-expanded": expanded.has(index) ? "true" : "false", text: expanded.has(index) ? "Show less" : "Show all" })
       : null;
-    if (more_) more_.addEventListener("click", () => opts.onExpand?.(index));
+    if (moreEl) moreEl.addEventListener("click", () => opts.onExpand?.(index));
     const callEl = callouts && callout ? el("p", { class: "ev-callout", text: callout }) : null;
-    const li = el("li", { class: `ev w-${event.wire}`, "data-index": index, "data-wire": event.wire }, main, more_, callEl, markEl);
+    const lines = feedback.get(index) ?? [];
+    const feedEl = lines.length > 0
+      ? el("div", { class: "hunt-feedback", role: "status" }, ...lines.map((line) => el("p", { class: "hunt-line", text: line })))
+      : null;
+    const li = el("li", { class: `ev w-${event.wire}`, "data-index": index, "data-wire": event.wire }, main, moreEl, feedEl, callEl, markEl);
     rowsByIndex.set(index, li);
     list.append(li);
   }
@@ -229,7 +248,7 @@ export function transcriptList(opts) {
   return list;
 }
 
-/** Marks the current row (replay). The row for an index is found through its list. */
+/** Marks the current row (replay). Only the previous and the new row change. */
 export function setCurrentRow(list, index) {
   if (list.current !== undefined && list.current !== index) {
     list.rowsByIndex.get(list.current)?.classList.remove("is-current");
@@ -241,9 +260,10 @@ export function setCurrentRow(list, index) {
 }
 
 /**
- * The 8-lane strip (DESIGN §3, §7.2). Returns a wrapper with two parts side by side: `labelsCol` (the wire
- * labels; buttons when `labels` is true, so the wire filter works) and `strip`, the track area that holds
- * the marks and the playhead. The strip is the scrubber, so it never contains a focusable control.
+ * The 8-lane strip (DESIGN §3, §7.2). Returns a wrapper with two parts side by side: `labelsCol` (one tag per
+ * wire: a glyph, and on desktop a button with the wire's name when `labels` is true, so the wire filter works)
+ * and `strip`, the track area that holds the marks, the turn rules and the playhead. The strip is the scrubber,
+ * so it never contains a focusable control.
  */
 export function laneStrip({ events, wires = WIRES, compact = false, labels = false, onWire = null, onPick = null }) {
   const n = events.length;
@@ -254,21 +274,17 @@ export function laneStrip({ events, wires = WIRES, compact = false, labels = fal
   strip.marks = new Map();
   strip.lanes = new Map();
   const axis = el("div", { class: "lane-axis", "aria-hidden": "true" });
-  // Turn numbers are thinned so they never collide: every turn up to 8, then every k-th.
-  const starts = turnStarts(events);
-  const step = Math.max(1, Math.ceil(starts.length / 8));
-  for (const { index, turn } of starts) {
-    if (turn !== 1 && turn % step !== 0) continue;
-    const label = el("span", { class: "turn-num", text: String(turn) });
-    label.style.setProperty("--x", frac(index, n));
-    axis.append(label);
-  }
-  strip.append(axis);
   for (const { index, turn } of turnStarts(events)) {
     const rule = el("span", { class: "turn-rule", "data-turn": turn, "aria-hidden": "true" });
     rule.style.setProperty("--x", frac(index, n));
     strip.append(rule);
   }
+  for (const t of axisTurns(events)) {
+    const label = el("span", { class: "turn-num", "data-x": String(t.x), text: String(t.turn) });
+    label.style.setProperty("--x", t.x);
+    axis.append(label);
+  }
+  strip.append(axis);
   for (const w of wires) {
     const used = events.some((e) => e.wire === w.id);
     const track = el("div", { class: `lane w-${w.id}${used ? "" : " is-empty"}`, "data-lane": w.id });
@@ -281,14 +297,14 @@ export function laneStrip({ events, wires = WIRES, compact = false, labels = fal
     });
     strip.lanes.set(w.id, track);
     strip.append(track);
-    let label;
+    const glyphEl = glyph(w.glyph, "glyph lane-glyph");
+    const tag = el("div", { class: `lane-tag w-${w.id}${labels ? " has-button" : ""}` }, glyphEl);
     if (labels) {
-      label = el("button", { class: `lane-label w-${w.id}`, type: "button", "aria-pressed": "false", "data-wire": w.id, title: w.name }, glyph(w.glyph), el("span", { text: w.short }));
-      label.addEventListener("click", () => onWire?.(w.id));
-    } else {
-      label = el("span", { class: `lane-label w-${w.id}`, title: w.name }, glyph(w.glyph));
+      const button = el("button", { class: "lane-label", type: "button", "aria-pressed": "false", "data-wire": w.id, title: w.name }, glyph(w.glyph, "glyph"), el("span", { text: w.short }));
+      button.addEventListener("click", () => onWire?.(w.id));
+      tag.append(button);
     }
-    labelsCol.append(label);
+    labelsCol.append(tag);
   }
   strip.append(el("span", { class: "playhead", "aria-hidden": "true" }));
   if (onPick && n > 0) {
@@ -298,6 +314,21 @@ export function laneStrip({ events, wires = WIRES, compact = false, labels = fal
   wrap.labelsCol = labelsCol;
   wrap.append(labelsCol, strip);
   return wrap;
+}
+
+/**
+ * Hides the turn labels that would touch (closer than 22 px) so none overlaps at any width. Reads the layout,
+ * so call it on build and on resize, not on every step.
+ */
+export function fitAxis(strip) {
+  const width = strip.clientWidth || 0;
+  let lastX = -Infinity;
+  for (const label of strip.querySelectorAll(".turn-num")) {
+    label.hidden = false;
+    const x = 14 + (width - 28) * Number(label.dataset.x);
+    if (x - lastX < 22) label.hidden = true;
+    else lastX = x;
+  }
 }
 
 /** The nearest event index to a pointer x inside a strip (the whole strip is one scrubber). */
@@ -318,3 +349,4 @@ export function setPlayhead(strip, index) {
   const head = strip.querySelector(".playhead");
   if (head) head.style.left = `calc(14px + (100% - 28px) * ${frac(index, n)})`;
 }
+

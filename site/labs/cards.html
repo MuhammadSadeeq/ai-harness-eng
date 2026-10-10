@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spaced review · HARNESSED</title>
+<meta name="description" content="Review six demo cards, one of each type. A right answer waits longer in the Leitner boxes; a miss comes back in the same session.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">
+  import "../assets/components/hx-cards.js";
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · spaced review</p>
+    <h1>Review the cards</h1>
+    <p class="lede">Six cards, one of each type. A right answer waits longer; a miss comes back today.</p>
+  </header>
+
+  <section class="row" aria-labelledby="cards-h">
+    <h2 id="cards-h">Demo cards</h2>
+    <hx-cards src="data/cards-demo.json">
+      <p>The fronts and backs of the six demo cards. With JavaScript on, you answer each one here.</p>
+      <ol>
+        <li><p><strong>What is the almost-done spiral?</strong></p><p>A run that keeps calling tools and never reaches an exit. The loop has one way out, and the model never takes it. A second exit, such as a turn limit, stops the run.</p></li>
+        <li><p><strong>The agent says the bug is fixed. Nobody ran the tests. Which wire is that?</strong></p><p>Verification and evals. A done claim is only a claim until a check runs, and this run never ran one.</p></li>
+        <li><p><strong>A tool returns 200 KB of log text, and the next model call carries all of it. The task is now buried. Which wire holds this problem?</strong></p><p>Context and memory. One giant tool output fills the window. Cap it, keep the full text outside the window, and send a short summary.</p></li>
+        <li><p><strong>The model asked for read_file with the id toolu_1. The next message answers with the id toolu_2. Pick the row that breaks the pair.</strong></p><p>The result names toolu_2, so the call toolu_1 has no result. That is an orphaned tool call, and the API rejects the next request. Every tool_use needs a tool_result with the same id in the next user message.</p></li>
+        <li><p><strong>Put one turn of the loop in order. The results go back in the next message, matched by id.</strong></p><p>Call the model, read why it stopped, run the tools after the permission check, then send every result back in one message, matched by id. Then the loop repeats or exits.</p></li>
+        <li><p><strong>Read the trace. Which failure family is it?</strong></p><p>Approval fatigue. So many prompts arrive that the dangerous one, rm -rf data/cache, is approved in a second without a look. Fewer, clearer prompts give each one a real look.</p></li>
+      </ol>
+    </hx-cards>
+  </section>
+</main>
+</body>
+</html>

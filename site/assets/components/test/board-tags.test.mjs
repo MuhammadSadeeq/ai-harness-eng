@@ -5,9 +5,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
-  comesIn, learnerBoard, dueByWire, wireLevel, tagLabel, scenarioBoard, boardChanges, turnCount, turnEvents,
-  stepText, taggedModules, groupThousands,
+  comesIn, learnerBoard, dueByWire, wireLevel, tagLabel, scenarioBoard, boardChanges, boardRows, changeText,
+  turnCount, turnEvents, stepText, taggedModules,
 } from "../lib/board-tags.js";
+import { formatInt } from "../lib/format.js";
 
 const load = (rel) => JSON.parse(readFileSync(fileURLToPath(new URL(rel, import.meta.url)), "utf8"));
 const course = load("../../../data/course.json");
@@ -36,16 +37,18 @@ test("an empty board has no earned tags; done modules plug onto their wires", ()
   assert.equal(wireLevel(course, "context", { modules: {} }), "Not started");
 });
 
-test("cards due count toward the tag wire, or the first wire of an untagged module", () => {
+test("a card belongs to the module named by its id's prefix before the first dash", () => {
   const today = "2026-10-10";
   const cards = {
-    a: { module: "A3", due: "2026-10-09" }, // context
-    b: { module: "A3", due: "2026-10-12" }, // not yet due
-    c: { module: "S0", due: "2026-10-10" }, // S0 has no tag: its first wire
+    "a3-c1": { due: "2026-10-09" }, // A3 is a context module
+    "a3-c2": { due: "2026-10-12" }, // not yet due
+    "s0-c1": { due: "2026-10-10" }, // S0 has no tag: its first wire
+    "lab-c1": { due: "2026-10-09" }, // not a course module: no wire
   };
   const counts = dueByWire(course, cards, today);
   assert.equal(counts.context, 1);
   assert.equal(counts.verify, 1, "S0's first wire");
+  assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 2);
 });
 
 test("scenario labels are exact and numbers carry separators", () => {
@@ -56,12 +59,14 @@ test("scenario labels are exact and numbers carry separators", () => {
   assert.equal(tagLabel("output_cap", { max_tokens: 2000 }), "output cap 2,000");
   assert.equal(tagLabel("retry", { max_attempts: 3 }), "retry ×3");
   assert.equal(tagLabel("breaker", { threshold: 3 }), "breaker 3");
-  assert.equal(tagLabel("permissions", { mode: "ask" }), "ask by default");
+  assert.equal(tagLabel("permissions", { mode: "ask", rules: [] }), "ask by default");
+  assert.equal(tagLabel("permissions", { mode: "ask", rules: [{}, {}, {}, {}] }), "4 rules, ask by default");
+  assert.equal(tagLabel("permissions", { mode: "ask", rules: [{}] }), "1 rule, ask by default");
   assert.equal(tagLabel("sandbox", {}), "sandbox");
   assert.equal(tagLabel("verify_gate", { max_feedback: 2 }), "verify gate");
   assert.equal(tagLabel("rules_file", {}), "rules file");
   assert.equal(tagLabel("redact", { patterns: ["x"] }), "redact");
-  assert.equal(groupThousands(1234567), "1,234,567");
+  assert.equal(formatInt(1234567), "1,234,567");
   assert.throws(() => tagLabel("nope", {}), /unknown board module/);
 });
 
@@ -75,7 +80,17 @@ test("a scenario board puts each module on its wire", () => {
 test("Plug it in adds the modules that are new or changed on the new board", () => {
   const changed = boardChanges(boardFile("c9-old"), boardFile("c9-new"));
   assert.deepEqual(changed, ["permissions"]);
+  assert.deepEqual(boardChanges(boardFile("b2-old"), boardFile("b2-new")), ["turn_limit", "token_budget"]);
   assert.deepEqual(boardChanges({ modules: { a: { x: 1 } } }, { modules: { a: { x: 1 }, b: { y: 2 } } }), ["b"]);
+});
+
+test("the compare rows: one per wire that differs, in clock order, with the words of each side", () => {
+  const rows = boardRows(course, boardFile("b2-old"), boardFile("b2-new"));
+  assert.deepEqual(rows.map((r) => r.wire.id), ["loop"]);
+  assert.equal(changeText(rows[0]), "Loop: nothing → turn limit 12, budget 60,000");
+  const c9 = boardRows(course, boardFile("c9-old"), boardFile("c9-new"));
+  assert.equal(changeText(c9[0]), "Permissions: ask by default → 4 rules, ask by default");
+  assert.deepEqual(boardRows(course, boardFile("c9-new"), boardFile("c9-new")), []);
 });
 
 test("turn events and their step text", () => {

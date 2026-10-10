@@ -1,0 +1,82 @@
+[
+  {
+    "id": "lab-c1",
+    "type": "term",
+    "front": "What is the almost-done spiral?",
+    "back": "A run that keeps calling tools and never reaches an exit. The loop has one way out, and the model never takes it. A second exit, such as a turn limit, stops the run."
+  },
+  {
+    "id": "lab-c2",
+    "type": "wire-question",
+    "front": "The agent says the bug is fixed. Nobody ran the tests. Which wire is that?",
+    "back": "Verification and evals. A done claim is only a claim until a check runs, and this run never ran one."
+  },
+  {
+    "id": "lab-c3",
+    "type": "which-wire",
+    "wire": "context",
+    "front": "A tool returns 200 KB of log text, and the next model call carries all of it. The task is now buried. Which wire holds this problem?",
+    "back": "Context and memory. One giant tool output fills the window. Cap it, keep the full text outside the window, and send a short summary."
+  },
+  {
+    "id": "lab-c4",
+    "type": "spot-bug-json",
+    "front": "The model asked for read_file with the id toolu_1. The next message answers with the id toolu_2. Pick the row that breaks the pair.",
+    "json": {
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "toolu_1",
+              "name": "read_file",
+              "input": {
+                "path": "app.py"
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "tool_result",
+              "tool_use_id": "toolu_2",
+              "content": "def main(): ..."
+            }
+          ]
+        }
+      ]
+    },
+    "bug_path": "/messages/1/content/0/tool_use_id",
+    "back": "The result names toolu_2, so the call toolu_1 has no result. That is an orphaned tool call, and the API rejects the next request. Every tool_use needs a tool_result with the same id in the next user message."
+  },
+  {
+    "id": "lab-c5",
+    "type": "order-turn",
+    "front": "Put one turn of the loop in order. The results go back in the next message, matched by id.",
+    "items": [
+      "Call the model with the full history.",
+      "Read the stop reason.",
+      "Run each requested tool after a permission check.",
+      "Append every result in one user message, matched by id."
+    ],
+    "back": "Call the model, read why it stopped, run the tools after the permission check, then send every result back in one message, matched by id. Then the loop repeats or exits."
+  },
+  {
+    "id": "lab-c6",
+    "type": "name-family",
+    "front": "Read the trace. Which failure family is it?",
+    "trace": [
+      "turn 14: write_file app/config.py (ask)",
+      "turn 15: run_shell rm -rf build/ (ask)",
+      "turn 16: write_file app/config.py (ask)",
+      "turn 17: run_shell pip install -r requirements.txt (ask)",
+      "turn 18: run_shell rm -rf data/cache (ask)",
+      "turn 19: approved in 1.2 s, no diff opened"
+    ],
+    "family": "approval-fatigue",
+    "back": "Approval fatigue. So many prompts arrive that the dangerous one, rm -rf data/cache, is approved in a second without a look. Fewer, clearer prompts give each one a real look."
+  }
+]

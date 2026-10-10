@@ -2,6 +2,7 @@
 // each empty spoke, the tag labels of scenario boards, the learner's board and the turn steps. Pure: no DOM, no
 // fetch, no store I/O. The Python side (tools/gen_pages.py) derives the same comes-in values.
 import { pyjson } from "../../sim/pyjson.js";
+import { formatInt, plural } from "./format.js";
 
 /** Scenario board module -> the wire its tag sits on (BP-1.5 §1). */
 export const SCENARIO_WIRE = Object.freeze({
@@ -40,11 +41,6 @@ export const EVENT_LABELS = Object.freeze({
   run_end: "run end",
 });
 
-/** Thousands separators, as in "60,000". */
-export function groupThousands(value) {
-  return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
 const byId = (course) => Object.fromEntries(course.modules.map((m) => [m.id, m]));
 
 /** The wires in clock order: the order of the spokes, starting at 12 o'clock. */
@@ -80,13 +76,21 @@ export function learnerBoard(course, doc) {
   return { byWire, earned, total: taggedModules(course).length };
 }
 
-/** Cards due by wire. A card counts toward its module's tag wire, or the module's first wire if it has no tag. */
+/** The module a card belongs to: its id's prefix before the first dash (AUTHORING ids are <module>-c<n>). */
+export function cardModule(cardId) {
+  return String(cardId).split("-")[0].toUpperCase();
+}
+
+/**
+ * Cards due by wire. A card counts toward its module's tag wire, or the module's first wire if it has no tag.
+ * A card whose prefix is not a course module (lab cards) counts toward no wire.
+ */
 export function dueByWire(course, cards, today) {
   const modules = byId(course);
   const counts = Object.fromEntries(course.wires.map((w) => [w.id, 0]));
-  for (const card of Object.values(cards || {})) {
+  for (const [cardId, card] of Object.entries(cards || {})) {
     if (!card || typeof card.due !== "string" || card.due > today) continue;
-    const mod = modules[card.module];
+    const mod = modules[cardModule(cardId)];
     const wire = mod?.tag?.wire ?? mod?.wires?.[0] ?? null;
     if (wire && wire in counts) counts[wire] += 1;
   }
@@ -102,14 +106,17 @@ export function wireLevel(course, wireId, doc) {
 /** The tag label of one scenario board module, exactly as BP-1.5 §1 gives it. */
 export function tagLabel(name, params) {
   switch (name) {
-    case "turn_limit": return `turn limit ${groupThousands(params.max_turns)}`;
-    case "token_budget": return `budget ${groupThousands(params.max_tokens)}`;
+    case "turn_limit": return `turn limit ${formatInt(params.max_turns)}`;
+    case "token_budget": return `budget ${formatInt(params.max_tokens)}`;
     case "loop_detect": return `loop guard ${params.window}`;
     case "close_books": return "close the books";
-    case "output_cap": return `output cap ${groupThousands(params.max_tokens)}`;
+    case "output_cap": return `output cap ${formatInt(params.max_tokens)}`;
     case "retry": return `retry ×${params.max_attempts}`;
     case "breaker": return `breaker ${params.threshold}`;
-    case "permissions": return `${params.mode} by default`;
+    case "permissions": {
+      const rules = Array.isArray(params.rules) ? params.rules.length : 0;
+      return rules > 0 ? `${plural(rules, "rule")}, ${params.mode} by default` : `${params.mode} by default`;
+    }
     case "sandbox": return "sandbox";
     case "verify_gate": return "verify gate";
     case "rules_file": return "rules file";
@@ -134,6 +141,29 @@ export function boardChanges(oldBoard, newBoard) {
   const before = oldBoard.modules ?? {};
   const after = newBoard.modules ?? {};
   return Object.keys(after).filter((name) => !(name in before) || pyjson(before[name]) !== pyjson(after[name]));
+}
+
+/**
+ * One row per wire whose tags differ between two boards (BP-1.5 §1, compare): the labels before and after.
+ * Wires come in clock order.
+ */
+export function boardRows(course, oldBoard, newBoard) {
+  const before = scenarioBoard(oldBoard).byWire;
+  const after = scenarioBoard(newBoard).byWire;
+  const rows = [];
+  for (const wire of wiresInOrder(course)) {
+    const was = (before[wire.id] ?? []).map((t) => t.label);
+    const now = (after[wire.id] ?? []).map((t) => t.label);
+    if (was.join("\u0001") === now.join("\u0001")) continue;
+    rows.push({ wire, before: was, after: now });
+  }
+  return rows;
+}
+
+/** "Loop: nothing → turn limit 12, budget 60,000" (BP-1.5 §1, compare). */
+export function changeText(row) {
+  const side = (labels) => (labels.length ? labels.join(", ") : "nothing");
+  return `${row.wire.short}: ${side(row.before)} → ${side(row.after)}`;
 }
 
 /** The turn number of an event (the run start is turn 0). */

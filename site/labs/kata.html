@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Katas in the page · HARNESSED</title>
+<meta name="description" content="Run a Python kata in the page, check it with the tests, then write the same kata from memory with a timer.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">
+  import "../assets/components/hx-kata.js";
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · katas in the page</p>
+    <h1>Give the loop a second exit</h1>
+    <p class="lede">Write the code, then run the tests. The tests are the judge; the reference solution is there for comparison.</p>
+  </header>
+
+  <section class="row" aria-labelledby="practice-h">
+    <h2 id="practice-h">Practice</h2>
+    <hx-kata kata="lab-turn-limit" mode="practice">
+      <p>The starter code for this kata. It fails the tests until a limit is added. With JavaScript on, you can run it here.</p>
+      <pre><code>def run_turns(step, max_turns):
+    &quot;&quot;&quot;Call step() until it returns &quot;done&quot;, then return &quot;done&quot;.
+
+    Add a second exit: after max_turns calls without &quot;done&quot;, return &quot;max_turns&quot;.
+    &quot;&quot;&quot;
+    while True:
+        if step() == &quot;done&quot;:
+            return &quot;done&quot;</code></pre>
+    </hx-kata>
+  </section>
+
+  <section class="row" aria-labelledby="memory-h">
+    <h2 id="memory-h">From memory</h2>
+    <hx-kata kata="lab-turn-limit" mode="memory">
+      <p>The same kata from a blank file, with a timer. Write the function from memory, then run the tests. This part needs JavaScript.</p>
+    </hx-kata>
+  </section>
+</main>
+</body>
+</html>

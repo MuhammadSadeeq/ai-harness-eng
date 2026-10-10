@@ -1,33 +1,15 @@
-// Event -> plain sentence (BP-1.4 §1). The templates are the blueprint's table, word for word.
-// explain(event, ctx) -> {text, terms}: terms names the course terms the sentence uses.
-// Plurals follow the count. Numbers carry thousands separators.
+// Event -> plain sentence (BP-1.4 §1). The templates are the blueprint's table, with the permission rows
+// replaced by the director's templates (BP-1.4 notes, item 3). Numbers, counts and durations come from the
+// shared lib/format.js. explain(event, ctx) -> {text, terms}: terms names the course terms the sentence uses.
+import { formatInt, plural, formatMs } from "./format.js";
 
 const TERM_TOOL = "tool call";
-
-/** 1234567 -> "1,234,567" */
-export function grouped(x) {
-  const sign = x < 0 ? "-" : "";
-  return sign + String(Math.abs(Math.trunc(x))).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
 
 /** A list of names: "a", "a and b", "a, b and c". */
 export function listJoin(items) {
   if (items.length <= 1) return items.join("");
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }
-
-/** Milliseconds as seconds with one decimal at most: 2000 -> "2", 1200 -> "1.2". */
-export function secsNum(ms) {
-  return String(Math.round(ms / 100) / 10);
-}
-
-/** A wait: "800 ms" below one second, "1.2 s" from one second. */
-export function formatWait(ms) {
-  return ms < 1000 ? `${ms} ms` : `${secsNum(ms)} s`;
-}
-
-const plural = (count, one, many) => (count === 1 ? one : many);
-const callsOf = (count) => `${count} ${plural(count, "tool call", "tool calls")}`;
 
 function firstLine(output) {
   return String(output ?? "").split("\n")[0].slice(0, 80);
@@ -37,7 +19,7 @@ function explainModelReply(e) {
   switch (e.stop_reason) {
     case "tool_use": {
       const names = (e.tool_uses ?? []).map((u) => u.name);
-      return { text: `The model asks for ${callsOf(names.length)}: ${listJoin(names)}.`, terms: [TERM_TOOL] };
+      return { text: `The model asks for ${plural(names.length, "tool call", "tool calls")}: ${listJoin(names)}.`, terms: [TERM_TOOL] };
     }
     case "end_turn":
       return { text: "The model says it is done.", terms: [] };
@@ -50,18 +32,21 @@ function explainModelReply(e) {
   }
 }
 
+// The permission templates (BP-1.4 notes, item 3): a matched rule is named by its reason, not by its index;
+// "default" is the mode's fallback when no rule matches.
 function explainPermission(e) {
-  if (e.rule === "none") return { text: `No permission policy: ${e.tool} runs.`, terms: ["permission"] };
+  const terms = ["permission"];
+  if (e.rule === "none") return { text: `No permission policy: ${e.tool} runs.`, terms };
+  if (e.rule === "default") {
+    if (e.decision === "ask") {
+      return { text: `No rule matches ${e.tool}, so the policy asks a person. They ${e.human}.`, terms };
+    }
+    return { text: `No rule matches ${e.tool}; the default is to ${e.decision} it.`, terms };
+  }
   if (e.decision === "ask") {
-    return {
-      text: `The policy asks a person about ${e.tool} (${e.reason}). They ${e.human}.`,
-      terms: ["permission"],
-    };
+    return { text: `A rule says to ask a person about ${e.tool}: ${e.reason}. They ${e.human}.`, terms };
   }
-  if (e.decision === "deny") {
-    return { text: `${e.tool} is denied by ${e.rule}: ${e.reason}.`, terms: ["permission"] };
-  }
-  return { text: `${e.tool} is allowed by ${e.rule}: ${e.reason}.`, terms: ["permission"] };
+  return { text: `${e.tool} is ${e.decision === "deny" ? "denied" : "allowed"} by a rule: ${e.reason}.`, terms };
 }
 
 function explainRunEnd(e) {
@@ -99,44 +84,31 @@ export function explain(e, ctx = {}) { // eslint-disable-line no-unused-vars
     case "run_start":
       return { text: `The run starts. Task: "${e.task}".`, terms: [] };
     case "prompt_built":
-      return {
-        text: `The harness builds the prompt from ${listJoin(e.layers)}: ${grouped(e.tokens)} tokens.`,
-        terms: ["prompt"],
-      };
+      return { text: `The harness builds the prompt from ${listJoin(e.layers)}: ${formatInt(e.tokens)} tokens.`, terms: ["prompt"] };
     case "context_check":
       if (e.action === "overflow") {
         return {
-          text: `The prompt is ${grouped(e.tokens)} tokens, but the window holds ${grouped(e.window)}. It can't be sent.`,
+          text: `The prompt is ${formatInt(e.tokens)} tokens, but the window holds ${formatInt(e.window)}. It can't be sent.`,
           terms: ["context window"],
         };
       }
-      return {
-        text: `The prompt fills ${e.percent}% of the ${grouped(e.window)}-token window.`,
-        terms: ["context window"],
-      };
+      return { text: `The prompt fills ${e.percent}% of the ${formatInt(e.window)}-token window.`, terms: ["context window"] };
     case "model_call":
       return {
-        text: e.attempt === 1
-          ? "The harness sends the prompt to the model."
-          : `Attempt ${e.attempt}: the harness sends the same prompt again.`,
+        text: e.attempt === 1 ? "The harness sends the prompt to the model." : `Attempt ${e.attempt}: the harness sends the same prompt again.`,
         terms: [],
       };
     case "model_error": {
-      const wait = e.retry_after_ms > 0 ? ` The server asks for a wait of ${secsNum(e.retry_after_ms)} s.` : "";
+      const wait = e.retry_after_ms > 0 ? ` The server asks for a wait of ${formatMs(e.retry_after_ms)}.` : "";
       return { text: `The call fails: ${e.message}.${wait}`, terms: [] };
     }
     case "retry_wait":
-      return { text: `The harness waits ${formatWait(e.wait_ms)} before trying again.`, terms: ["retry"] };
+      return { text: `The harness waits ${formatMs(e.wait_ms)} before trying again.`, terms: ["retry"] };
     case "breaker":
-      return {
-        text: `${grouped(e.failures)} ${plural(e.failures, "failure", "failures")} in a row: the breaker opens and the run stops.`,
-        terms: ["breaker"],
-      };
+      return { text: `${plural(e.failures, "failure", "failures")} in a row: the breaker opens and the run stops.`, terms: ["breaker"] };
     case "recovery_check":
       return {
-        text: e.attempts === 1
-          ? "The call went through on the first try."
-          : `The call went through after ${e.attempts} attempts.`,
+        text: e.attempts === 1 ? "The call went through on the first try." : `The call went through after ${e.attempts} attempts.`,
         terms: [],
       };
     case "model_reply":
@@ -146,7 +118,7 @@ export function explain(e, ctx = {}) { // eslint-disable-line no-unused-vars
         return { text: "Turn 60: an operator notices the run and stops it.", terms: ["interrupt"] };
       }
       return {
-        text: `You stop the run. ${callsOf(e.pending.length)} ${plural(e.pending.length, "was", "were")} still waiting to run.`,
+        text: `You stop the run. ${plural(e.pending.length, "tool call", "tool calls")} ${e.pending.length === 1 ? "was" : "were"} still waiting to run.`,
         terms: ["interrupt"],
       };
     case "permission":
@@ -158,35 +130,24 @@ export function explain(e, ctx = {}) { // eslint-disable-line no-unused-vars
     case "tool_call":
       if (e.ok) {
         const cut = e.truncated ? " The result is cut to fit." : "";
-        return {
-          text: `${e.tool} runs and returns ${grouped(e.output_tokens)} ${plural(e.output_tokens, "token", "tokens")}.${cut}`,
-          terms: [TERM_TOOL],
-        };
+        return { text: `${e.tool} runs and returns ${plural(e.output_tokens, "token", "tokens")}.${cut}`, terms: [TERM_TOOL] };
       }
       return { text: `${e.tool} fails: ${firstLine(e.output)}.`, terms: [TERM_TOOL] };
     case "verify":
       return e.passed
         ? { text: "The harness checks the work: the tests pass.", terms: ["verify"] }
-        : {
-          text: "The harness checks the work: the tests fail, so it sends the failure back.",
-          terms: ["verify"],
-        };
+        : { text: "The harness checks the work: the tests fail, so it sends the failure back.", terms: ["verify"] };
     case "guard":
       if (e.guard === "budget") {
-        return { text: `The token budget (${grouped(e.limit)}) is spent, so the harness stops the run.`, terms: ["token budget"] };
+        return { text: `The token budget (${formatInt(e.limit)}) is spent, so the harness stops the run.`, terms: ["token budget"] };
       }
       if (e.guard === "loop") {
-        return {
-          text: `The last ${e.limit} tool calls were identical, so the loop guard stops the run.`,
-          terms: ["loop guard"],
-        };
+        return { text: `The last ${e.limit} tool calls were identical, so the loop guard stops the run.`, terms: ["loop guard"] };
       }
       return { text: `The turn limit (${e.limit}) is reached, so the harness stops the run.`, terms: ["turn limit"] };
     case "trace_write": {
-      const records = `The trace records ${grouped(e.events)} ${plural(e.events, "event", "events")}.`;
-      const hidden = e.redacted > 0
-        ? ` ${grouped(e.redacted)} ${plural(e.redacted, "secret is", "secrets are")} hidden.`
-        : "";
+      const records = `The trace records ${plural(e.events, "event", "events")}.`;
+      const hidden = e.redacted > 0 ? ` ${plural(e.redacted, "secret", "secrets")} ${e.redacted === 1 ? "is" : "are"} hidden.` : "";
       return { text: records + hidden, terms: ["trace"] };
     }
     case "run_end":

@@ -5,12 +5,11 @@ import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFacts } from "./lib/data.js";
 import { runTrial, tokens, pyjson } from "../sim/index.js";
 import { diffMessages } from "./lib/wirediff.js";
-import { groupThousands } from "./lib/board-tags.js";
+import { formatInt, plural } from "./lib/format.js";
 
 const MARK_PLUS = "M12 5v14M5 12h14";
 const MARK_BANG = "M12 4.5v10M12 19v.5";
 const lines = (text, n) => String(text).split("\n").slice(0, n);
-const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 /** The text of a content value: a string, or the text blocks of a list. */
 function textOf(content) {
@@ -106,7 +105,7 @@ export class HxWire extends HxElement {
     root.append(this.#controls());
     if (this.state.view === "wire") root.append(this.#wireView(request, response));
     else root.append(this.#friendly(request, response, previous));
-    root.append(el("p", "wire-total", `Prompt: ${groupThousands(this.promptTokens(request))} tokens of a ${groupThousands(this.tape.window)}-token window.`));
+    root.append(el("p", "wire-total", `Prompt: ${formatInt(this.promptTokens(request))} tokens of a ${formatInt(this.tape.window)}-token window.`));
     this.ui.replaceChildren(root);
   }
 
@@ -171,7 +170,7 @@ export class HxWire extends HxElement {
     const head = el("p", "wire-message-head");
     if (status === "new") head.append(svgMark(MARK_PLUS), el("span", "wire-status", "new this turn"));
     if (status === "changed") head.append(svgMark(MARK_BANG), el("span", "wire-status", "changed"));
-    head.append(el("span", "wire-role", message.role), el("span", "wire-tokens", `${groupThousands(tokens(message))} tokens`));
+    head.append(el("span", "wire-role", message.role), el("span", "wire-tokens", `${formatInt(tokens(message))} tokens`));
     card.append(head);
     const blocks = typeof message.content === "string" ? [{ type: "text", text: message.content }] : message.content ?? [];
     const list = el("ul", "wire-blocks");
@@ -187,7 +186,7 @@ export class HxWire extends HxElement {
     const system = el("section", "wire-system");
     const sysLines = String(request.system ?? "").split("\n");
     const shown = this.state.showSystem ? sysLines : sysLines.slice(0, 3);
-    system.append(el("h4", null, `System · ${groupThousands(tokens(request.system))} tokens`));
+    system.append(el("h4", null, `System · ${formatInt(tokens(request.system))} tokens`));
     system.append(el("pre", "wire-code", shown.join("\n")));
     if (sysLines.length > 3) {
       const toggle = el("button", "key", this.state.showSystem ? "Show less" : "Show all");
@@ -198,7 +197,7 @@ export class HxWire extends HxElement {
     }
     reqSection.append(system);
     const tools = el("section", "wire-tools");
-    tools.append(el("h4", null, `Tools · ${plural(request.tools.length, "tool", "tools")} · ${groupThousands(tokens(request.tools))} tokens`));
+    tools.append(el("h4", null, `Tools · ${plural(request.tools.length, "tool", "tools")} · ${formatInt(tokens(request.tools))} tokens`));
     const names = el("ul", "wire-tool-names");
     for (const tool of request.tools) names.append(el("li", null, tool.name));
     tools.append(names);
@@ -237,7 +236,7 @@ export class HxWire extends HxElement {
     const list = el("ul", "wire-blocks");
     for (const block of response.content ?? []) list.append(this.#block(block));
     section.append(list);
-    section.append(el("p", "wire-usage", `Usage: ${groupThousands(response.usage.input_tokens)} input tokens, ${groupThousands(response.usage.output_tokens)} output tokens.`));
+    section.append(el("p", "wire-usage", `Usage: ${formatInt(response.usage.input_tokens)} input tokens, ${formatInt(response.usage.output_tokens)} output tokens.`));
     return section;
   }
 

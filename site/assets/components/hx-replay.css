@@ -9,8 +9,8 @@
 .scrub-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; gap: var(--sp-2); align-items: stretch; min-width: 0; }
 .scrub-row .key-icon { align-self: center; }
 .replay .filter-bar { display: grid; gap: var(--sp-2); min-width: 0; }
-.replay .filter-bar .chips { flex-wrap: wrap; }
-.replay .filter-bar .chip { min-height: 44px; }
+.replay .wire-select { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--sp-2); font: 600 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink); }
+.replay .wire-select-input { min-height: 48px; padding: 0 var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 500 var(--fs-ui)/1.2 var(--font-sans); }
 .replay .filter-line { margin: 0; font: 500 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }
 .replay .filter-line .btn-quiet { min-height: 44px; margin-left: var(--sp-1); }
 .replay .empty { margin: 0; font: 500 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }
@@ -24,6 +24,7 @@
 .replay .counter-wrap { margin-left: auto; }
 .replay .speed button { min-width: 44px; min-height: 44px; }
 @media (min-width: 700px) {
+  .replay .wire-select { display: none; }
   .replay .bar { display: none; }
   .replay .readouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
 }

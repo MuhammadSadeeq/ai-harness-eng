@@ -104,9 +104,46 @@ def test_course_none_skips_the_module_checks() -> None:
     assert any("must equal the folder name" in message for message in messages)
 
 
-def test_pyodide_flag_fails_when_katas_exist() -> None:
-    report = checker.run(["good-add"], FIXTURES, None, pyodide=True)
-    assert "pyodide runner not implemented (Phase 1)" in _messages(report)
+def test_lab_kata_with_no_module_and_no_objectives_passes() -> None:
+    report = _run("lab-ok")
+    assert report.problems == [], _messages(report)
+    assert report.last_line() == "check_katas: 1 katas OK (3 candidates, runners agree)"
+
+
+def test_lab_kata_may_not_name_a_module() -> None:
+    assert _messages(_run("lab-bad-module")) == ["a lab- kata has module: null"]
+
+
+def test_a_kata_that_is_not_a_lab_kata_needs_a_module() -> None:
+    assert _messages(_run("null-module")) == [
+        "module must name a course module (only lab- katas have module: null)"
+    ]
+
+
+def test_pyodide_agrees_with_cpython_on_the_fixtures() -> None:
+    report = checker.run(["good-add"], FIXTURES, COURSE, pyodide=True)
+    assert report.problems == [], _messages(report)
+    assert report.last_line() == "check_katas: 1 katas OK (3 candidates, CPython and Pyodide agree)"
+
+
+def test_pyodide_disagreement_is_reported(monkeypatch: pytest.MonkeyPatch) -> None:
+    def flipped_first_test(jobs: list[Any], pyodide_dir: Path) -> list[Any]:
+        rows: list[Any] = []
+        for job in jobs:
+            outcomes = dict(job.outcomes or {})
+            first = next(iter(outcomes))
+            outcomes[first] = not outcomes[first]
+            rows.append((outcomes, None))
+        return rows
+
+    monkeypatch.setattr(checker, "_run_pyodide", flipped_first_test)
+    messages = _messages(checker.run(["good-add"], FIXTURES, COURSE, pyodide=True))
+    assert any("pyodide disagrees on test_adds_small_numbers" in m for m in messages), messages
+
+
+def test_missing_pyodide_is_a_runner_error(tmp_path: Path) -> None:
+    report = checker.run(["good-add"], FIXTURES, COURSE, pyodide=True, pyodide_dir=tmp_path)
+    assert any("Pyodide is not installed" in m for m in _messages(report)), _messages(report)
     assert report.last_line().startswith("check_katas: FAILED (")
 
 

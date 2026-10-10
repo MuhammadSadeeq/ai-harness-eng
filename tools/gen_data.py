@@ -4,8 +4,9 @@
 Usage: python tools/gen_data.py [--check]
 
 Writes (D-020): site/data/course.json, facts.json (verified facts only), terms.json,
-site/data/{cards,say,checks}/<ID>.json, and byte-for-byte copies of the scenario tapes and boards
-(site/data/scenarios/<id>.json, site/data/scenarios/boards/<id>.json). Rewrites only the text
+site/data/{cards,say,checks}/<ID>.json, site/data/katas/<id>.json (from katas/<id>/), and
+byte-for-byte copies of the scenario tapes and boards (site/data/scenarios/<id>.json,
+site/data/scenarios/boards/<id>.json). Rewrites only the text
 between the counts markers in README.md. Generated JSON is written as
 json.dumps(obj, indent=1, ensure_ascii=False, sort_keys=True).
 With --check nothing is written: stale or missing outputs and unexpected files under site/data
@@ -185,6 +186,59 @@ def _scenarios(root: Path, plan: Plan) -> None:
             plan.skipped.add(rel)
 
 
+KATA_FILES = ("starter.py", "solution.py", "test_kata.py")
+KATA_KEYS = ("id", "module", "title", "objectives", "minutes", "hints", "from_memory")
+
+
+def _katas(root: Path, plan: Plan) -> None:
+    """katas/<id>/ compiles to site/data/katas/<id>.json (AUTHORING §8). The rules about the
+    contents are check_katas.py's; this reads the files and names any it cannot read."""
+    folder = root / "katas"
+    if not folder.is_dir():
+        return
+    dirs = [p for p in folder.iterdir() if p.is_dir() and not p.name.startswith(".")]
+    for kata_dir in sorted(dirs):
+        rel = f"site/data/katas/{kata_dir.name}.json"
+        kata = _kata(kata_dir, plan)
+        if kata is None:
+            plan.skipped.add(rel)
+        else:
+            plan.outputs.append(Output(rel, dump_json(kata)))
+
+
+def _kata(kata_dir: Path, plan: Plan) -> dict[str, Any] | None:
+    meta_path = kata_dir / "meta.yaml"
+    shown = display_path(meta_path)
+    if not meta_path.is_file():
+        plan.problems.append(Problem(display_path(kata_dir), 0, "meta.yaml is missing"))
+        return None
+    data, problems = load_yaml_file(meta_path, shown)
+    if problems:
+        plan.problems.extend(problems)
+        return None
+    if not isinstance(data, dict):
+        plan.problems.append(Problem(shown, 0, "meta.yaml must be a mapping"))
+        return None
+    missing = [key for key in KATA_KEYS if key not in data]
+    for key in missing:
+        plan.problems.append(Problem(shown, 0, f"missing key '{key}'"))
+    texts: dict[str, str] = {}
+    for name in KATA_FILES:
+        path = kata_dir / name
+        try:
+            texts[name] = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            plan.problems.append(Problem(display_path(path), 0, f"cannot read: {exc.strerror}"))
+    if missing or len(texts) < len(KATA_FILES):
+        return None
+    return {
+        **{key: data[key] for key in KATA_KEYS},
+        "starter": texts["starter.py"],
+        "solution": texts["solution.py"],
+        "tests": texts["test_kata.py"],
+    }
+
+
 def build_plan(root: Path) -> Plan:
     """Compile every output in memory. Writes nothing."""
     plan = Plan()
@@ -217,6 +271,7 @@ def build_plan(root: Path) -> Plan:
                     plan.skipped.add(rel)
                 else:
                     plan.outputs.append(Output(rel, dump_json(entries)))
+    _katas(root, plan)
     _scenarios(root, plan)
     readme = _readme(root, course, plan)
     if readme is not None:

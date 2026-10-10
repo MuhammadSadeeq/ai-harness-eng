@@ -1,4 +1,4 @@
-/* hx-bench: the Knob Bench. Tokens only (DESIGN §2); shared keys, readouts and plates come from hx.css. */
+/* hx-bench: tokens only; keys, readouts and plates come from hx.css. */
 hx-bench { display: block; margin: var(--sp-5) 0; }
 hx-bench .hx-ui { display: grid; gap: var(--sp-5); }
 
@@ -38,8 +38,9 @@ hx-bench .hx-ui { display: grid; gap: var(--sp-5); }
 .cell .cell-status { display: inline-flex; align-items: center; gap: 2px; font-size: var(--fs-small); }
 .cell .glyph { width: 14px; height: 14px; }
 .trial-detail { margin: var(--sp-3) 0 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink); }
+.pass-legend { margin: var(--sp-3) 0 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
 
-/* readout windows: computed values, one window per measure, old and new on separate lines */
+/* readout windows */
 .readout-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-2); margin: 0; }
 @media (min-width: 700px) { .readout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .readout-line { display: flex; align-items: baseline; gap: var(--sp-2); margin: 0; min-width: 0; }
@@ -62,7 +63,7 @@ hx-bench .hx-ui { display: grid; gap: var(--sp-5); }
 .par-readouts .readout { border: 1px solid transparent; }
 .par-readouts .readout.is-par { border-color: var(--hx-pass); }
 
-/* chart ink: every colour from a token; no inline colours (dark theme follows the tokens) */
+/* chart ink from tokens (no inline colours) */
 .hist text, .solution text { fill: var(--hx-ink-2); font-family: var(--font-sans); font-size: 14px; }
 .hist .series-label, .hist .axis-title, .solution .axis-title { fill: var(--hx-ink); }
 .hist .axis, .solution .axis { stroke: var(--hx-ink-2); stroke-width: 1; }

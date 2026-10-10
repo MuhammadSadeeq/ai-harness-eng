@@ -38,7 +38,7 @@ def test_dump_json_is_deterministic_and_turns_dates_into_strings() -> None:
 def test_write_creates_every_output(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     root = copy_root(tmp_path)
     assert run(root) == 0
-    assert capsys.readouterr().out.strip().splitlines()[-1] == "gen_data: wrote 9 files"
+    assert capsys.readouterr().out.strip().splitlines()[-1] == "gen_data: wrote 11 files"
 
     course = json.loads((root / "site" / "data" / "course.json").read_text(encoding="utf-8"))
     assert course == json.loads((root / "course.json").read_text(encoding="utf-8"))
@@ -65,6 +65,8 @@ def test_write_creates_every_output(tmp_path: Path, capsys: pytest.CaptureFixtur
     assert cards[0]["id"] == "S0-c1"
     assert (root / "site" / "data" / "checks" / "S0.json").is_file()
     assert (root / "site" / "data" / "say" / "A1.json").is_file()
+    assert (root / "site" / "data" / "katas" / "A1-loop.json").is_file()
+    assert (root / "site" / "data" / "katas" / "T1-typing.json").is_file()
     assert not (root / "site" / "data" / "checks" / "A1.json").exists()
 
 
@@ -86,7 +88,7 @@ def test_outputs_are_byte_identical_across_runs(tmp_path: Path) -> None:
     run(root)
     second = {p.relative_to(root): p.read_bytes() for p in (root / "site" / "data").rglob("*")
               if p.is_file()}
-    assert first == second and len(first) == 8  # README.md is outside site/data
+    assert first == second and len(first) == 10  # README.md is outside site/data
 
 
 def test_check_passes_right_after_a_write(
@@ -96,7 +98,7 @@ def test_check_passes_right_after_a_write(
     run(root)
     capsys.readouterr()
     assert run(root, "--check") == 0
-    assert capsys.readouterr().out.strip().splitlines()[-1] == "gen_data: 9 files up to date"
+    assert capsys.readouterr().out.strip().splitlines()[-1] == "gen_data: 11 files up to date"
 
 
 def test_check_writes_nothing(tmp_path: Path) -> None:
@@ -146,7 +148,7 @@ def test_missing_readme_markers_are_reported_and_the_readme_is_left_alone(
     assert "README.md:0: README.md is missing the counts markers" in out
     assert readme.read_text(encoding="utf-8") == "# No markers here\n"
     assert (root / "site" / "data" / "course.json").is_file()
-    assert out.strip().splitlines()[-1].startswith("gen_data: FAILED (1 problems); wrote 8 files")
+    assert out.strip().splitlines()[-1].startswith("gen_data: FAILED (1 problems); wrote 10 files")
 
 
 def test_missing_readme_file_is_reported_and_not_created(
@@ -203,3 +205,66 @@ def test_tapes_and_boards_are_copied_byte_for_byte(tmp_path: Path) -> None:
     assert (root / "site/data/scenarios/boards/x.json").read_text(encoding="utf-8") == '{"id": "x"}'
     assert not (root / "site/data/scenarios/schema.json").exists()
     assert run(root, "--check") == 0
+
+
+KATA_FIXTURES = Path(__file__).resolve().parent / "fixtures" / "katas"
+KATA_FIELDS = {"id", "module", "title", "objectives", "minutes", "hints", "from_memory",
+               "starter", "solution", "tests"}
+
+
+def add_kata(root: Path, name: str) -> Path:
+    target = root / "katas" / name
+    shutil.copytree(KATA_FIXTURES / name, target)
+    return target
+
+
+def test_a_kata_compiles_to_one_json_file_with_the_listed_fields(tmp_path: Path) -> None:
+    root = copy_root(tmp_path)
+    add_kata(root, "good-add")
+    assert run(root) == 0
+    text = (root / "site/data/katas/good-add.json").read_text(encoding="utf-8")
+    data = json.loads(text)
+    assert set(data) == KATA_FIELDS, "wrong_solutions must not reach the browser"
+    assert text == dump_json(data), "the file uses the same deterministic form as every output"
+    assert data["id"] == "good-add" and data["module"] == "B2" and data["from_memory"] is False
+    source = KATA_FIXTURES / "good-add"
+    assert data["starter"] == (source / "starter.py").read_text(encoding="utf-8")
+    assert data["tests"] == (source / "test_kata.py").read_text(encoding="utf-8")
+    assert run(root, "--check") == 0
+
+
+def test_a_lab_kata_compiles_with_a_null_module_and_no_objectives(tmp_path: Path) -> None:
+    root = copy_root(tmp_path)
+    add_kata(root, "lab-ok")
+    assert run(root) == 0
+    data = json.loads((root / "site/data/katas/lab-ok.json").read_text(encoding="utf-8"))
+    assert data["module"] is None and data["objectives"] == []
+
+
+def test_a_kata_missing_a_key_is_reported_and_its_json_is_not_written(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = copy_root(tmp_path)
+    target = add_kata(root, "good-add")
+    (target / "meta.yaml").write_text(
+        "id: good-add\nmodule: B2\ntitle: Add two numbers\nobjectives:\n  - B2.o1\n"
+        "minutes: 5\nfrom_memory: false\n",
+        encoding="utf-8",
+    )
+    assert run(root) == 1
+    assert "missing key 'hints'" in capsys.readouterr().out
+    assert not (root / "site/data/katas/good-add.json").exists()
+    assert run(root, "--check") == 1
+    assert "not produced" not in capsys.readouterr().out
+
+
+def test_check_detects_a_stale_kata_file(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = copy_root(tmp_path)
+    target = add_kata(root, "good-add")
+    assert run(root) == 0
+    (target / "starter.py").write_text("def add(a, b):\n    return 1\n", encoding="utf-8")
+    assert run(root, "--check") == 1
+    out = capsys.readouterr().out
+    assert "good-add.json" in out and "stale" in out

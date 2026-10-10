@@ -1,0 +1,15 @@
+id: lab-ok
+module: null
+title: Add two numbers
+objectives: []
+minutes: 5
+hints:
+  - Look at the function signature.
+  - Return the sum of the two arguments.
+  - "Write return a + b."
+from_memory: false
+wrong_solutions:
+  - name: subtracts
+    code: |
+      def add(a, b):
+          return a - b

@@ -2,7 +2,7 @@
 // fallback. An unknown key sets data-hx-error and keeps the fallback (the base does that when setup() throws).
 import { HxElement } from "./lib/hx-element.js";
 import { getCourse } from "./lib/data.js";
-import { groupThousands } from "./lib/board-tags.js";
+import { formatInt, plural } from "./lib/format.js";
 
 /** The count named by `key`: a course.json counts key, or modules.<kind>. Throws on an unknown key. */
 export function countOf(course, key) {
@@ -28,13 +28,13 @@ export class HxCount extends HxElement {
   render() {
     const text = document.createElement("span");
     text.className = "hx-count";
-    text.textContent = groupThousands(this.value);
+    text.textContent = formatInt(this.value);
     this.ui.replaceChildren(text);
   }
 
   async selfTest() {
     const shown = this.ui?.textContent ?? "";
-    return shown === groupThousands(countOf(this.course, this.key));
+    return shown === formatInt(countOf(this.course, this.key));
   }
 }
 

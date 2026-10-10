@@ -1,0 +1,18 @@
+import { chromium } from "playwright";
+import http from "node:http"; import fs from "node:fs"; import path from "node:path";
+const root = path.resolve("site");
+const types = {".html":"text/html",".js":"text/javascript",".mjs":"text/javascript",".css":"text/css",".json":"application/json",".svg":"image/svg+xml",".woff2":"font/woff2"};
+const srv = http.createServer((q,r)=>{ let p = path.join(root, decodeURIComponent(q.url.split("?")[0])); if (p.endsWith("/")) p += "index.html"; fs.readFile(p,(e,d)=>{ if(e){r.writeHead(404);r.end();return;} r.writeHead(200,{"content-type":types[path.extname(p)]||"application/octet-stream"}); r.end(d);});}).listen(0);
+const port = srv.address().port; const out = process.argv[2]; const page_ = process.argv[3]; const theme = process.argv[4] || "light";
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 375, height: 812 }, colorScheme: theme, deviceScaleFactor: 1 });
+await p.goto(`http://localhost:${port}/labs/${page_}.html`); await p.waitForLoadState("networkidle");
+await p.evaluate(() => Promise.all([...document.querySelectorAll("[data-hx-ready], hx-replay, hx-incident, hx-bench, hx-clock, hx-check")].map(e => e.ready)));
+const first = await p.$(process.argv[5] || "hx-replay, hx-incident, hx-bench");
+await first.scrollIntoViewIfNeeded(); await p.evaluate(() => window.scrollBy(0, -10));
+await p.screenshot({ path: `${out}/${page_}-vp-0.png` });
+const steps = Number(process.argv[6] || 0);
+const btn = await first.$("button:has-text('Step')");
+for (let i = 0; i < steps && btn; i++) await btn.click();
+if (steps) await p.screenshot({ path: `${out}/${page_}-vp-1.png` });
+await b.close(); srv.close();

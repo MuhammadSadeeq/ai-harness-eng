@@ -1,7 +1,7 @@
 // The explanation copy (BP-1.4 §1): every row of the blueprint table, word for word.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { explain, turnSummary, grouped, listJoin, formatWait, secsNum } from "../lib/explain.js";
+import { explain, turnSummary, listJoin } from "../lib/explain.js";
 
 const T = (e) => explain(e).text;
 const ev = (over) => ({ v: 1, run: "r", seq: 0, t: 0, turn: 1, agent: "main", wire: "control", ...over });
@@ -62,12 +62,17 @@ test("interrupt: a person, and the operator at turn 60", () => {
   assert.equal(T(ev({ kind: "interrupt", by: "operator", pending: [] })), "Turn 60: an operator notices the run and stops it.");
 });
 
-test("permission: none, allow, ask (approve and deny), deny", () => {
-  assert.equal(T(ev({ kind: "permission", tool: "list_files", decision: "allow", rule: "none", reason: "no permission policy", human: null, final: "allow" })), "No permission policy: list_files runs.");
-  assert.equal(T(ev({ kind: "permission", tool: "read_file", decision: "allow", rule: "rules[1]", reason: "read-only", human: null, final: "allow" })), "read_file is allowed by rules[1]: read-only.");
-  assert.equal(T(ev({ kind: "permission", tool: "delete_path", decision: "ask", rule: "default", reason: "no rule matched (mode ask)", human: "approve", final: "allow" })), "The policy asks a person about delete_path (no rule matched (mode ask)). They approve.");
-  assert.equal(T(ev({ kind: "permission", tool: "delete_path", decision: "ask", rule: "default", reason: "no rule matched (mode ask)", human: "deny", final: "deny" })), "The policy asks a person about delete_path (no rule matched (mode ask)). They deny.");
-  assert.equal(T(ev({ kind: "permission", tool: "run_command", decision: "deny", rule: "rules[0]", reason: "no deleting", human: null, final: "deny" })), "run_command is denied by rules[0]: no deleting.");
+test("permission: no policy, the default (allow, deny, ask), a matched rule (allow, deny, ask)", () => {
+  const base = { kind: "permission", tool: "read_file", reason: "read-only", human: null, final: "allow" };
+  assert.equal(T(ev({ ...base, tool: "list_files", decision: "allow", rule: "none", reason: "no permission policy" })), "No permission policy: list_files runs.");
+  assert.equal(T(ev({ ...base, decision: "allow", rule: "default", reason: "no rule matched (mode allow)" })), "No rule matches read_file; the default is to allow it.");
+  assert.equal(T(ev({ ...base, decision: "deny", rule: "default", reason: "no rule matched (mode deny)", final: "deny" })), "No rule matches read_file; the default is to deny it.");
+  assert.equal(T(ev({ ...base, tool: "delete_path", decision: "ask", rule: "default", reason: "no rule matched (mode ask)", human: "approve" })), "No rule matches delete_path, so the policy asks a person. They approve.");
+  assert.equal(T(ev({ ...base, tool: "delete_path", decision: "ask", rule: "default", reason: "no rule matched (mode ask)", human: "deny", final: "deny" })), "No rule matches delete_path, so the policy asks a person. They deny.");
+  assert.equal(T(ev({ ...base, decision: "allow", rule: "rules[1]", reason: "read-only" })), "read_file is allowed by a rule: read-only.");
+  assert.equal(T(ev({ ...base, decision: "deny", rule: "rules[0]", reason: "no deleting", final: "deny" })), "read_file is denied by a rule: no deleting.");
+  assert.equal(T(ev({ ...base, tool: "delete_path", decision: "ask", rule: "rules[2]", reason: "outside", human: "approve" })), "A rule says to ask a person about delete_path: outside. They approve.");
+  assert.equal(T(ev({ ...base, tool: "delete_path", decision: "ask", rule: "rules[2]", reason: "outside", human: "deny", final: "deny" })), "A rule says to ask a person about delete_path: outside. They deny.");
 });
 
 test("sandbox: allowed and blocked", () => {
@@ -123,13 +128,10 @@ test("every event kind has a sentence, and the terms it uses are listed", () => 
   assert.equal(typeof T(ev({ kind: "future_kind" })), "string");
 });
 
-test("helpers: thousands separators, list joining, waits", () => {
-  assert.equal(grouped(10991), "10,991");
-  assert.equal(grouped(999), "999");
+test("listJoin: one, two and three or more names", () => {
   assert.equal(listJoin(["a"]), "a");
-  assert.equal(formatWait(999), "999 ms");
-  assert.equal(formatWait(1000), "1 s");
-  assert.equal(secsNum(2500), "2.5");
+  assert.equal(listJoin(["a", "b"]), "a and b");
+  assert.equal(listJoin(["a", "b", "c"]), "a, b and c");
 });
 
 test("turnSummary: the turn's model reply, prefixed with the turn", () => {

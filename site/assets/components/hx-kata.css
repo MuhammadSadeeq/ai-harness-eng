@@ -1,0 +1,77 @@
+/* hx-kata: a Python kata. Tokens only; keys, readouts and glyphs come from hx.css. */
+hx-kata { display: block; margin: var(--sp-5) 0; }
+hx-kata .hx-ui { display: block; }
+hx-kata [hidden] { display: none !important; }
+
+.kata { display: grid; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--plate-edge); border-radius: var(--r-plate); background: var(--hx-panel); min-width: 0; }
+@media (min-width: 700px) { .kata { padding: var(--sp-5); } }
+.kata-head { display: grid; gap: var(--sp-1); }
+.kata-title { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+.kata-meta { margin: 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.kata-objectives { margin: 0; padding-left: var(--sp-4); font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+
+.kata-loading { display: grid; gap: var(--sp-1); }
+.kata-loading-line, .kata-status, .kata-note { margin: 0; font: 500 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink-2); }
+.kata-progress { width: 100%; height: 6px; accent-color: var(--hx-ink); }
+
+.kata-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--hx-ink-2); }
+.kata-code {
+  display: block; width: 100%; min-height: 12rem; box-sizing: border-box; padding: var(--sp-3);
+  border: 1px solid var(--hx-rule-strong); border-radius: 6px; background: var(--hx-code-bg); color: var(--hx-code-ink);
+  font: 400 15px/1.5 var(--font-mono); tab-size: 4; resize: vertical;
+}
+.kata-code:focus-visible { outline: 3px solid var(--hx-focus); outline-offset: 2px; }
+.kata-editor .cm-editor {
+  border: 1px solid var(--hx-rule-strong); border-radius: 6px; background: var(--hx-code-bg); color: var(--hx-code-ink);
+  font: 400 15px/1.5 var(--font-mono);
+}
+.kata-editor .cm-editor.cm-focused { outline: 3px solid var(--hx-focus); outline-offset: 2px; }
+.kata-editor .cm-scroller { font-family: var(--font-mono); line-height: 1.5; }
+.kata-editor .cm-content { caret-color: var(--hx-ink); padding: var(--sp-2) 0; }
+.kata-editor .cm-gutters { background: var(--hx-panel-2); color: var(--hx-ink-2); border-right: 1px solid var(--hx-rule); }
+.kata-editor .cm-activeLine { background: color-mix(in srgb, var(--hx-ink) 6%, transparent); }
+.kata-editor .cm-activeLineGutter { background: color-mix(in srgb, var(--hx-ink) 10%, transparent); }
+.kata-editor .cm-selectionBackground, .kata-editor .cm-content ::selection { background: var(--hx-scrub); }
+.kata-editor .tok-keyword { color: var(--syn-kw); font-weight: 600; }
+.kata-editor .tok-comment { color: var(--syn-com); font-style: italic; }
+.kata-editor .tok-string { color: var(--syn-str); }
+.kata-editor .tok-number { color: var(--syn-num); }
+.kata-editor .tok-operator { color: var(--syn-op); }
+.kata-editor .tok-function { color: var(--syn-fn); }
+
+.kata-clock { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.kata-timer { margin: 0; }
+.kata-keys { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.kata-confirm { display: grid; gap: var(--sp-2); padding: var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel-2); }
+.kata-confirm p { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); }
+
+.kata-results { display: grid; gap: var(--sp-2); min-width: 0; }
+.kata-results[aria-busy="true"] { opacity: .7; }
+.kata-count { margin: 0; font: 600 var(--fs-ui)/1.35 var(--font-sans); color: var(--hx-ink); }
+.kata-error { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-fail); }
+.kata-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.kata-row {
+  display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: var(--sp-2);
+  min-height: 44px; padding: 0 var(--sp-3); border: 1px solid var(--hx-rule); border-radius: 6px;
+  font: 400 15px/1.3 var(--font-mono);
+}
+.kata-row .kata-mark .glyph { width: 20px; height: 20px; }
+.kata-row[data-outcome="passed"] .kata-mark { color: var(--hx-pass); }
+.kata-row:not([data-outcome="passed"]) .kata-mark { color: var(--hx-fail); }
+.kata-name { min-width: 0; overflow-wrap: anywhere; }
+.kata-word { font: 600 var(--fs-small)/1.3 var(--font-sans); }
+.kata-message {
+  margin: 0; padding: var(--sp-3); overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere;
+  border-radius: 6px; background: var(--hx-code-bg); color: var(--hx-code-ink);
+  font: 400 15px/1.5 var(--font-mono);
+}
+.kata-passed { margin: 0; font: 600 var(--fs-ui)/1.35 var(--font-sans); color: var(--hx-pass); }
+
+.kata-hints { margin: 0; padding-left: var(--sp-5); display: grid; gap: var(--sp-2); font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }
+.kata-hints:focus-visible, .kata-note:focus-visible { outline: 3px solid var(--hx-focus); outline-offset: 2px; }
+.kata-solution { display: grid; gap: var(--sp-2); min-width: 0; }
+.kata-note { font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.kata-code-view {
+  margin: 0; padding: var(--sp-3); overflow-x: auto; border-radius: 6px;
+  background: var(--hx-code-bg); color: var(--hx-code-ink); font: 400 15px/1.5 var(--font-mono);
+}

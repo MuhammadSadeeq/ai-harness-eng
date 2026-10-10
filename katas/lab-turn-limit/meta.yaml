@@ -1,0 +1,26 @@
+id: lab-turn-limit
+module: null
+title: Give the loop a second exit.
+objectives: []
+minutes: 5
+hints:
+  - 'Look at the while loop. Its only way out is the check for "done".'
+  - 'Count the calls to step(). After max_turns calls without "done", return "max_turns".'
+  - 'Use for _ in range(max_turns): call step(), and if it returns "done", return "done". After the loop, return "max_turns".'
+from_memory: true
+wrong_solutions:
+  - name: off-by-one
+    code: |
+      def run_turns(step, max_turns):
+          turns = 0
+          while turns <= max_turns:
+              turns += 1
+              if step() == "done":
+                  return "done"
+          return "max_turns"
+  - name: limit-never-checked
+    code: |
+      def run_turns(step, max_turns):
+          while True:
+              if step() == "done":
+                  return "done"
