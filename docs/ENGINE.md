@@ -1081,3 +1081,47 @@ eventually notices; lessons say so).
      `subagent_end` (loop), `session_start` (context), `crash`, `resume`
      (loop), `capability` (control); `tool_call` gains `attempt` (1 unless
      retried) only when `tool_retry` is plugged.
+- **A15 (2026-10-10): rulings on A14** (from writing its fixtures). Binding
+  for both runtimes.
+  1. *Inside a sub-agent* only these board modules apply: `permissions`,
+     `sandbox`, `validate_inputs`, `tool_overrides`, `output_cap`, `retry`,
+     `breaker` (its own failure count), `effort`, `redact`,
+     `cost_attribution`, `tool_retry`, `idempotency`; plus its own turn limit
+     `max_turns`, which replaces the board's `turn_limit` there. Every other
+     module (`verify_gate`, `token_budget`, `loop_detect`, `compaction`,
+     `cache`, `tool_search`, `rules_file`, `system_clock`, `progress_file`,
+     `subagents`) is the parent's alone: a sub-agent's status is taken as it
+     ends, and checking its result is the parent's job.
+  2. A sub-agent shares the parent's workspace (only its messages are its
+     own). Its system prompt has no layers: `prompt_built.layers` is
+     `["system", "tools", "history"]`.
+  3. *Forked context:* the parent's sent messages up to the last user message
+     before the reply that holds the call, with `text(brief)` appended to that
+     user message's content (one user message, never two in a row).
+  4. Every event the sub-agent loop emits carries its `agent` name,
+     `trace_write` included; only `subagent_start` and `subagent_end` carry
+     `"main"`.
+  5. *Sessions:* the loop-detect window, the breaker's count and the verify
+     feedback count reset at each session; `token_budget` spans the run. The
+     run's status is the last session's; `run_end.turns` counts every turn of
+     every session. `progress_file` is read once, at the start of each
+     session from the second on.
+  6. *Crash:* it fires after turn n's reply and its tool results, if any,
+     are recorded, before the next model call; if the run ends on turn n, it
+     never fires. `resume.from_turn` is n + 1, the next turn to run.
+  7. *Ledgers:* `lose_reply` counts the tool's real applications in the run
+     (a repeated key that does not apply is not counted), and the count
+     survives a crash restart (the tool is outside the harness). A ledger
+     file that does not exist is created on the first append. Idempotency
+     keys are kept by the tool, so they survive a restart too; a restarted run
+     makes new `tool_use_id`s, so its keys are new.
+  8. *Tool retries* repeat only the tool's run (a new `tool_call` with its
+     `attempt`), not the permission, sandbox or input checks. Any tool result
+     starting `Timed out` is retried. A repeated key returns the first
+     application's own output with `ok` true.
+  9. *Models:* profiles apply only when the `model` module selects one.
+     `capability(dropped)` is emitted once per run whenever
+     `capability_check` is plugged, `dropped` being the list of names (empty
+     when nothing is dropped).
+  10. *Tool order* with both: the tape's tools, then `tool_search`, then
+     `run_agent`.
