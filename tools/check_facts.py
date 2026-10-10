@@ -53,6 +53,11 @@ AREAS = frozenset(
         "evals",
         "papers",
         "careers",
+        "jsonschema",
+        "web",
+        "pytest",
+        "docker",
+        "git",
     }
 )
 ID_PATTERN = re.compile(r"^[a-z0-9]+(\.[a-z0-9-]+)+$")

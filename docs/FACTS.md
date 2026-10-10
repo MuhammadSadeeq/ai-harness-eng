@@ -34,8 +34,10 @@ prices), `harnesses` (Claude Code, Codex, open harnesses, managed agents),
 `mcp`, `otel`, `owasp`, `skills`, `agentsmd`, `a2a`, `aaif` (standards and
 their stewards), `anthropic` and `openai` (the vendors' engineering and
 research posts), `security`, `evals`, `papers`, `careers`, `python` (the
-language and its standard library, from docs.python.org; D-052). A new area
-needs a director decision.
+language and its standard library, from docs.python.org; D-052), and for the
+primers `jsonschema` (json-schema.org), `web` (HTTP and server-sent events:
+the RFCs and the WHATWG HTML standard), `pytest` (docs.pytest.org),
+`docker` (docs.docker.com) and `git` (git-scm.com) (D-055). A new area needs a director decision.
 
 ```yaml
 - id: api.parallel-tool-results          # <area>.<kebab-case>, unique, never reused

@@ -495,3 +495,17 @@ basis for Phase 1, and answered SPEC §14:
   switching it on opens its note. Keys and touch work alike; the design is
   still the eight-wire checklist the SPEC asks for, and the reveal sets each
   note beside that wire's model answer (BP-5.1-design-room).
+
+## D-055 Five fact areas for the primers: jsonschema, web, pytest, docker, git
+
+- **Context:** the primers T4 (JSON Schema), T5 (HTTP and SSE), T6 (pytest)
+  and T7 (containers) state behaviour of standards and tools that are not
+  Anthropic's or Python's. Their pages hold back those claims until a
+  primary source backs them.
+- **Decision:** four areas, each with one kind of primary source:
+  `jsonschema` (the specification and its own guide at json-schema.org),
+  `web` (the HTTP RFCs at rfc-editor.org and the server-sent events section
+  of the WHATWG HTML standard), `pytest` (docs.pytest.org), `docker`
+  (docs.docker.com) and `git` (git-scm.com, for T8). As with D-052, a host the network policy denies leaves
+  its facts `unverifiable`, and the page says no more than a checked snippet
+  shows.
