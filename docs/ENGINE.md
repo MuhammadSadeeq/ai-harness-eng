@@ -871,8 +871,10 @@ eventually notices; lessons say so).
   4. Matching reads each tool's definition as sent (with `tool_overrides`
      applied).
   5. A query with no words (empty or blank) loads nothing: `No tool matched: <query>`,
-     `ok` false. When every match is already loaded: `Already loaded: <names joined by ", ">`,
-     `ok` true. A non-string query reads as `""`.
+     `ok` false. When every match is already loaded: `Already loaded: <names joined by ", ">`
+     (every match, A3.1 order, no cap), `ok` true. When some matches are
+     loaded and some are not, only the unloaded ones load (at most 5). A
+     non-string query reads as `""`.
   6. `tools_gte` counts every definition in the request, `tool_search`
      included. `tool_loaded:<name>` with an unknown name never holds.
   7. `pristine_tests` without a tape `tests` suite has no effect (`verify.check`
