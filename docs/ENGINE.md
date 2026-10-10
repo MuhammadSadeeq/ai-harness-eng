@@ -1125,3 +1125,22 @@ eventually notices; lessons say so).
      when nothing is dropped).
   10. *Tool order* with both: the tape's tools, then `tool_search`, then
      `run_agent`.
+- **A16 (2026-10-10): rulings from A14 parity.** Binding for both runtimes;
+  where A15.1 lists the modules inside a sub-agent, item 4 below adds to it.
+  1. A repeated idempotency key returns the tool's own output from its first
+     application (for a lost reply, the output the tool produced, such as
+     `Paid.`, not the timeout text), with `ok` true, and the call is not
+     retried.
+  2. `request_params` travel on the wire request only; prompt tokens are
+     `tokens` of system, tools and messages, as before.
+  3. *Ids inside a sub-agent:* tool use ids are `toolu_a<k>_<turn>_<j>`
+     (k the sub-agent's number in the run, turn its own turn, j the block's
+     number), so no id repeats in a run; wire response ids are
+     `msg_a<k>_<turn>`, and the sub-agent's requests and responses appear in
+     the `--wire` output in the order they happen.
+  4. `tool_pins`, `model`, `request_params` and `capability_check` apply
+     inside a sub-agent too: a tool the harness rejected stays rejected, and
+     the sub-agent's requests use the board's model and pricing (its script is
+     still the agent's own).
+  5. `run_agent`'s 100 ms is paid on every call, refusals included, before
+     the sub-agent's own time.
