@@ -19,7 +19,7 @@
 .mark { position: absolute; top: 50%; width: 12px; height: 12px; transform: translate(-50%, -50%); left: calc(14px + (100% - 28px) * var(--x)); color: var(--w, var(--hx-ink)); pointer-events: none; border-radius: 50%; }
 .mark .glyph { width: 12px; height: 12px; }
 .mark.is-current { background: var(--hx-panel); box-shadow: 0 0 0 2px var(--hx-ink); }
-.playhead { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; left: calc(14px + (100% - 28px) * var(--head, 0)); background: var(--hx-ink); pointer-events: none; }
+.playhead { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; left: 14px; background: var(--hx-ink); pointer-events: none; }
 .transcript-wrap { position: relative; max-height: 40vh; overflow-y: auto; padding: var(--sp-1); border: 1px solid var(--hx-rule); border-radius: var(--r-btn); background: var(--hx-panel); }
 .transcript { list-style: none; margin: 0; padding: 0; display: grid; }
 .ev { border-bottom: 1px solid var(--hx-rule); }
@@ -58,3 +58,4 @@ button.ev-main:disabled { cursor: not-allowed; opacity: .6; }
   .mark .glyph { width: 18px; height: 18px; }
   .transcript-wrap { max-height: 40rem; }
 }
+.hx-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }

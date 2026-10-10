@@ -1,0 +1,3 @@
+# Demo pages under site/labs/ that default QA (and CI) checks: the director adds a
+# page here when its component is accepted. Builders check theirs with --only.
+# The Phase 1 gate requires every page under site/labs/ to be listed.

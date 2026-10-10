@@ -15,7 +15,8 @@ const ENTRY = `
 export { EditorState } from "@codemirror/state";
 export { EditorView, keymap, lineNumbers, drawSelection, highlightActiveLine } from "@codemirror/view";
 export { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
-export { syntaxHighlighting, indentOnInput, bracketMatching, classHighlighter } from "@codemirror/language";
+export { syntaxHighlighting, indentOnInput, bracketMatching } from "@codemirror/language";
+export { classHighlighter } from "@lezer/highlight";
 export { python } from "@codemirror/lang-python";
 `;
 

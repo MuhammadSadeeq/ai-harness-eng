@@ -13,3 +13,7 @@ hx-check .hx-ui { display: block; }
 .choice-mark { display: inline-flex; align-items: center; gap: var(--sp-1); white-space: normal; text-align: right; }
 .choice-mark .glyph { width: 16px; height: 16px; flex: none; }
 .choice:has(input:disabled) .choice-mark { font-weight: 600; }
+@media (max-width: 699px) {
+  .choice { grid-template-columns: 20px minmax(0, 1fr); }
+  .choice-mark { grid-column: 2; justify-self: start; text-align: left; }
+}

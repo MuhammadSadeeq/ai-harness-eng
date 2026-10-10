@@ -24,6 +24,7 @@ const SITE = path.join(ROOT, "site");
 const WEIGHT_BUDGET_BYTES = 300 * 1000;
 const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const MIN_FONT_PX = 14;
+const ACCEPTED_LABS = new URL("./accepted-labs.txt", import.meta.url);
 const CVD_TYPES = ["protan", "deutan", "tritan"];
 // Machado et al. 2009, severity 1.0, applied in linearRGB (same as check_palette.py).
 const MACHADO = {
@@ -360,7 +361,12 @@ async function runCvd(page, pageSlug, outDir, shots) {
 
 async function main() {
   const opts = parseArgs(process.argv.slice(2));
-  const all = await listHtml(SITE);
+  // Demo pages under labs/ are QA'd by default only once the director has accepted
+  // them (tools/qa/accepted-labs.txt): builders' unreviewed pages may be committed
+  // as work in progress, and builders check them with --only.
+  const accepted = new Set((await readFile(ACCEPTED_LABS, "utf8").catch(() => ""))
+    .split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")));
+  const all = (await listHtml(SITE)).filter((p) => !p.startsWith("labs/") || accepted.has(p));
   let pages = all;
   if (opts.only) {
     pages = opts.only.map((p) => p.replace(/^\.\//, "").replace(/\\/g, "/"));

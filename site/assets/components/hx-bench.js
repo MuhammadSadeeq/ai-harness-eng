@@ -2,9 +2,8 @@
 // page is computed from the results of runBench (sim/index.js), never typed.
 //   <hx-bench id="bench1" tape="b2-spiral" old="b2-old" new="b2-new" trials="20"
 //             knob="turn_limit.max_turns" knob-min="4" knob-max="30" par="cheapest-worst-case" locked></hx-bench>
-// Attributes are read once, at upgrade: set them before the element is connected.
-// Values (COMPONENTS §10): knob (settable, with hxRange), passed.old|new, worst_turns.old|new, worst_cost.old|new
-// (null until the first run) and trials. hxLabel(name) gives the knob's label for hx-num.
+// Attributes are read at upgrade. Values (COMPONENTS §10): knob, passed.*, worst_turns.*, worst_cost.*, trials;
+// hxLabel(name) gives the knob label for hx-num.
 import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFacts } from "./lib/data.js";
 import { runBench } from "../sim/index.js";
@@ -207,8 +206,10 @@ function drawSolution(width, uid, model) {
   svg.append(svgNode("line", { class: "axis", x1: x0, x2: x0, y1: y0, y2: y1 }));
   svg.append(svgNode("text", { class: "axis-title", x: x0, y: 18, "font-size": 14, text: "Worst-case cost" }));
   svg.append(svgNode("text", { class: "tick", x: x0 - 6, y: y0 + 6, "text-anchor": "end", "font-size": 14, text: costValue(yMax, priced) }));
-  rows.forEach((r) => {
-    if ((r.value - cfg.min) % 4 !== 0 && r.value !== cfg.max) return;
+  const last = rows.length - 1;
+  rows.forEach((r, i) => {
+    const onStep = i % 4 === 0 && last - i >= 3;
+    if (i !== last && !onStep) return;
     svg.append(svgNode("text", { class: "tick", x: xOf(r.value), y: y1 + 18, "text-anchor": "middle", "font-size": 14, text: String(r.value) }));
   });
   svg.append(svgNode("text", { class: "axis-title", x: x1, y: H - 4, "text-anchor": "end", "font-size": 14, text: cfg.label }));
@@ -226,7 +227,7 @@ function drawSolution(width, uid, model) {
     const cx = xOf(par.value);
     const cy = yOf(par.worst_cost);
     svg.append(svgNode("circle", { class: "par-ring", cx, cy, r: 13 }));
-    svg.append(svgNode("text", { class: "par-label", x: Math.min(cx + 16, x1 - 60), y: cy - 16, "font-size": 14, text: `PAR ${par.value}` }));
+    svg.append(svgNode("text", { class: "par-label", x: Math.min(cx + 16, x1 - 60), y: cy - 22, "font-size": 14, text: `PAR ${par.value}` }));
   }
   return svg;
 }
@@ -409,7 +410,6 @@ export class HxBench extends HxElement {
     this.setState({ sweep: { ...sweepPar(rows, oldPassed), total: values.length } });
   }
 
-  // Derived state: every label, readout and line is computed from this.
   derive() {
     const s = this.state;
     const run = s.run;
@@ -589,10 +589,6 @@ export class HxBench extends HxElement {
     dom.stale.textContent = d.stale ? `Results are for a ${this.knobCfg.label.toLowerCase()} of ${d.run.value}. Run again.` : "";
   }
 
-  boardKey(key) {
-    return key === "old" ? this.oldBoard : this.newBoard;
-  }
-
   // Cells: the same seed on both boards is a twin. Only the cursor cell is in the tab order.
   refreshGrid(d = this.derive()) {
     const dom = this.dom;
@@ -608,7 +604,7 @@ export class HxBench extends HxElement {
         const isCursor = this.cursor.board === key && this.cursor.k === k;
         cell.tabIndex = isCursor ? 0 : -1;
         cell.classList.toggle("is-twin", this.twinK === k);
-        const label = `${this.boardKey(key).label.toLowerCase()}`;
+        const label = (key === "old" ? this.oldBoard : this.newBoard).label.toLowerCase();
         const sig = trial ? `${trial.status}|${trial.passed}|${trial.turns}|${trial.cost}` : "pending";
         if (cell.dataset.sig === sig) return;
         cell.dataset.sig = sig;
@@ -690,7 +686,10 @@ export class HxBench extends HxElement {
     dom.noise.textContent = noiseSentence(run);
     const oldTurns = run.oldTrials.map((t) => t.turns);
     const newTurns = run.newTrials.map((t) => t.turns);
-    dom.histSummary.textContent = `Old board runs take ${Math.min(...oldTurns)} to ${Math.max(...oldTurns)} turns, and new board runs take ${Math.min(...newTurns)} to ${Math.max(...newTurns)}.`;
+    const span = (turns) => (Math.min(...turns) === Math.max(...turns)
+      ? `${turns[0]} turns`
+      : `${Math.min(...turns)} to ${Math.max(...turns)} turns`);
+    dom.histSummary.textContent = `Old board runs take ${span(oldTurns)}, and new board runs take ${span(newTurns)}.`;
     dom.histHost.replaceChildren(...(width >= 280 ? [drawTurns(width, this.uid, run.oldTrials, run.newTrials)] : []));
   }
 

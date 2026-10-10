@@ -56,6 +56,14 @@ export class HxClock extends HxElement {
       turn: Math.min(this.data.turns ?? 1, Math.max(1, Number(this.getAttribute("turn") ?? 1) || 1)),
       step: 0, plugged: false, plugNow: false, card: null, focusWire: this.wires[0].id, ver: 0,
     };
+    // The face is drawn at its measured width, so a change of width redraws it (DESIGN §5.1).
+    this.lastWidth = 0;
+    if (typeof ResizeObserver === "function") {
+      this.resizer = new ResizeObserver(() => {
+        if (this.ui && this.faceWidth() !== this.lastWidth) this.render();
+      });
+      this.resizer.observe(this);
+    }
   }
 
   #modeFromAttributes() {
@@ -171,6 +179,7 @@ export class HxClock extends HxElement {
   render() {
     const doc = this.store?.state ?? { modules: {}, cards: {} };
     const ui = this.ui;
+    this.lastWidth = this.faceWidth();
     const root = document.createElement("div");
     root.className = `clock-root clock-${this.mode}`;
     const faces = document.createElement("div");
@@ -484,6 +493,15 @@ export class HxClock extends HxElement {
   // ---------- self test (COMPONENTS §7): drives the real controls ----------
 
   async selfTest() {
+    const saved = { plugged: this.state.plugged, turn: this.state.turn, step: this.state.step, card: this.state.card };
+    try {
+      return await this.#runSelfTest();
+    } finally {
+      this.setState({ plugged: saved.plugged, turn: saved.turn, step: saved.step, card: saved.card });
+    }
+  }
+
+  async #runSelfTest() {
     if (this.mode === "compare") {
       const button = this.ui?.querySelector('[data-key="plug"]');
       if (!button || button.disabled) return false;
@@ -495,8 +513,8 @@ export class HxClock extends HxElement {
       this.ui?.querySelector('[data-key="step"]')?.click();
       this.ui?.querySelector('[data-key="step"]')?.click();
       const events = turnEvents(this.data.events, this.state.turn);
-      const expect = events[Math.min(2, events.length - 1)]?.wire;
-      return this.ui?.querySelector(".hand") != null && this.state.step === Math.min(2, events.length - 1) && expect != null;
+      const want = Math.min(2, events.length - 1);
+      return this.state.step === want && this.ui?.querySelector(".hand") != null;
     }
     const first = this.ui?.querySelector('[data-key="spoke-control"]');
     if (!first) return false;

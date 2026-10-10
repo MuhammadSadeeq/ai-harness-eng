@@ -274,6 +274,15 @@ export class HxWire extends HxElement {
   // ---------- self test (COMPONENTS §7) ----------
 
   async selfTest() {
+    const saved = { view: this.state.view, diff: this.state.diff, turn: this.state.turn };
+    try {
+      return this.#runSelfTest();
+    } finally {
+      this.setState({ view: saved.view, diff: saved.diff, turn: saved.turn });
+    }
+  }
+
+  #runSelfTest() {
     this.setState({ view: "friendly", diff: false });
     const turn = Math.min(3, this.turns);
     this.hxSetValue("turn", turn);

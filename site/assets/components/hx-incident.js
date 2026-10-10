@@ -5,7 +5,7 @@ import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFacts, getCourse } from "./lib/data.js";
 import { runTrial, createPrng } from "../sim/index.js";
 import { explain } from "./lib/explain.js";
-import { el, glyph, WIRES, repeats, transcriptList, laneStrip, sortedJson } from "./lib/transcript.js";
+import { el, glyph, WIRES, repeats, transcriptList, laneStrip, ensureSprite } from "./lib/transcript.js";
 
 /** The three families for the naming step: the right one, then two others, all shuffled by the same PRNG. */
 export function familyOptions(tapeId, correctId, families) {
@@ -30,6 +30,7 @@ export class HxIncident extends HxElement {
   async setup() {
     const tapeId = this.getAttribute("tape");
     if (!tapeId) throw new Error("hx-incident needs a tape attribute");
+    await ensureSprite();
     const tape = await getTape(tapeId);
     if (!tape.incident) throw new Error(`${tapeId} has no incident block`);
     const inc = tape.incident;

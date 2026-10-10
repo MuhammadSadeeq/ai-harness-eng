@@ -3,8 +3,31 @@
 import { pyjson } from "../../sim/index.js";
 import { explain } from "./explain.js";
 
-const SPRITE = new URL("../../core/glyphs.svg", import.meta.url).href;
+const SPRITE_URL = new URL("../../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
+let spriteReady = null;
+
+/**
+ * Copies the glyph symbols into one hidden sprite in the page, once. A <use> that points at the page is far
+ * cheaper to restyle than one that points into a file (replay steps restyle many marks).
+ */
+export function ensureSprite() {
+  if (!spriteReady) {
+    spriteReady = (async () => {
+      if (document.getElementById("hx-glyph-sprite")) return true;
+      const text = await (await fetch(SPRITE_URL)).text();
+      const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+      const svg = document.createElementNS(SVG_NS, "svg");
+      svg.setAttribute("id", "hx-glyph-sprite");
+      svg.setAttribute("class", "hx-sprite");
+      svg.setAttribute("aria-hidden", "true");
+      for (const symbol of doc.querySelectorAll("symbol")) svg.append(document.importNode(symbol, true));
+      document.body.append(svg);
+      return true;
+    })();
+  }
+  return spriteReady;
+}
 
 // The eight wires in turn order (DESIGN §3); the same ids, names and glyphs as course.json `wires`.
 export const WIRES = Object.freeze([
@@ -140,7 +163,7 @@ export function glyph(id, cls = "glyph") {
   svg.setAttribute("aria-hidden", "true");
   svg.setAttribute("focusable", "false");
   const use = document.createElementNS(SVG_NS, "use");
-  use.setAttribute("href", `${SPRITE}#${id}`);
+  use.setAttribute("href", `#${id}`);
   svg.append(use);
   return svg;
 }
@@ -208,12 +231,12 @@ export function transcriptList(opts) {
 
 /** Marks the current row (replay). The row for an index is found through its list. */
 export function setCurrentRow(list, index) {
-  let target = null;
-  for (const [i, li] of list.rowsByIndex) {
-    const on = i === index;
-    li.classList.toggle("is-current", on);
-    if (on) target = li;
+  if (list.current !== undefined && list.current !== index) {
+    list.rowsByIndex.get(list.current)?.classList.remove("is-current");
   }
+  list.current = index;
+  const target = list.rowsByIndex.get(index) ?? null;
+  target?.classList.add("is-current");
   return target;
 }
 
@@ -231,7 +254,11 @@ export function laneStrip({ events, wires = WIRES, compact = false, labels = fal
   strip.marks = new Map();
   strip.lanes = new Map();
   const axis = el("div", { class: "lane-axis", "aria-hidden": "true" });
-  for (const { index, turn } of turnStarts(events)) {
+  // Turn numbers are thinned so they never collide: every turn up to 8, then every k-th.
+  const starts = turnStarts(events);
+  const step = Math.max(1, Math.ceil(starts.length / 8));
+  for (const { index, turn } of starts) {
+    if (turn !== 1 && turn % step !== 0) continue;
     const label = el("span", { class: "turn-num", text: String(turn) });
     label.style.setProperty("--x", frac(index, n));
     axis.append(label);
@@ -283,6 +310,11 @@ export function nearestIndex(strip, clientX, n) {
 /** Moves the playhead of a strip to event `index`, and marks that mark as current. */
 export function setPlayhead(strip, index) {
   const n = Number(strip.dataset.n);
-  strip.style.setProperty("--head", frac(index, n));
-  for (const [i, mark] of strip.marks) mark.classList.toggle("is-current", i === index);
+  if (strip.current !== undefined && strip.current !== index) {
+    strip.marks.get(strip.current)?.classList.remove("is-current");
+  }
+  strip.current = index;
+  strip.marks.get(index)?.classList.add("is-current");
+  const head = strip.querySelector(".playhead");
+  if (head) head.style.left = `calc(14px + (100% - 28px) * ${frac(index, n)})`;
 }

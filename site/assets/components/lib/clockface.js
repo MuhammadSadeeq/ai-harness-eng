@@ -34,7 +34,8 @@ export function svgEl(name, attrs = {}) {
 
 /** Where a spoke's node sits on a face `width` px wide, for a spoke at `angle` degrees. */
 export function spokeAnchor(width, angle) {
-  const { R, c } = faceGeometry(width);
+  const { W, R } = faceGeometry(width);
+  const c = W / 2;
   return [c + R * Math.sin(angle * DEG), c - R * Math.cos(angle * DEG)];
 }
 
@@ -49,7 +50,7 @@ export function faceGeometry(width) {
 
 function glyphUse(name, x, y, size) {
   const group = svgEl("g", { class: "gl-wrap", transform: `translate(${x - size / 2} ${y - size / 2}) scale(${size / 24})` });
-  group.append(svgEl("use", { class: "gl-use", href: `${GLYPH_SPRITE}#g-${name}` }));
+  group.append(svgEl("use", { class: "gl-use", href: `${GLYPH_SPRITE}#g-${name}`, width: 24, height: 24 }));
   return group;
 }
 
@@ -73,7 +74,7 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
   const { W, narrow, R, nodeR, rimR } = faceGeometry(width);
   const c = W / 2;
   const svg = svgEl("svg", {
-    class: "clock", viewBox: `0 0 ${W} ${W}`, width: W, height: W, role: "img", "aria-label": label,
+    class: "clock", viewBox: `0 0 ${W} ${W}`, width: W, height: W, role: "group", "aria-label": label,
   });
   svg.append(svgEl("circle", { class: "rim", cx: c, cy: c, r: rimR }));
   for (let k = 0; k < 12; k += 1) {

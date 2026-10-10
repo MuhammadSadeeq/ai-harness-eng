@@ -7,7 +7,7 @@ import { runTrial } from "../sim/index.js";
 import { explain, turnSummary } from "./lib/explain.js";
 import {
   el, glyph, WIRES, visibleIndexes, repeats, transcriptList, laneStrip, setPlayhead, setCurrentRow,
-  nearestIndex, sortedJson,
+  nearestIndex, sortedJson, ensureSprite,
 } from "./lib/transcript.js";
 
 const DELAY_MS = { 1: 700, 2: 350, 4: 175 };
@@ -21,6 +21,7 @@ export class HxReplay extends HxElement {
   async setup() {
     const tapeId = this.getAttribute("tape");
     if (!tapeId) throw new Error("hx-replay needs a tape attribute");
+    await ensureSprite();
     const tape = await getTape(tapeId);
     const boardId = this.getAttribute("board") ?? tape.boards[0];
     const seed = Number(this.getAttribute("seed") ?? tape.golden_seeds[0]);
@@ -147,6 +148,7 @@ export class HxReplay extends HxElement {
 
   disconnectedCallback() {
     clearTimeout(this.timer);
+    this.resizeObserver?.disconnect();
   }
 
   attributeChanged(name) {
@@ -245,6 +247,10 @@ export class HxReplay extends HxElement {
       el("div", { class: "transport-row" }, speeds, el("span", { class: "counter-wrap" }, r.counter, r.counterSr)));
     r.transcriptRegion = el("div", { class: "transcript-area" }, r.transcriptWrap, r.empty, r.detail);
     this.refs = r;
+    // Row offsets are read once per transcript build and again after a resize (not on every step).
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = new ResizeObserver(() => { this.offsets = null; });
+    this.resizeObserver.observe(r.transcriptWrap);
     this.ui.replaceChildren(
       el("div", { class: "replay" },
         r.bar,
@@ -260,6 +266,7 @@ export class HxReplay extends HxElement {
   buildTranscript() {
     const { refs } = this;
     const s = this.state;
+    this.offsets = null;
     const list = transcriptList({
       events: this.events,
       detail: s.detail,
@@ -372,10 +379,13 @@ export class HxReplay extends HxElement {
   /** The row of an event in the transcript is kept in view by moving the transcript's own scroll. */
   scrollToRow(row) {
     const wrap = this.refs.transcriptWrap;
-    const li = this.refs.list?.rowsByIndex.get(row);
-    if (!li || !wrap) return;
-    const top = li.offsetTop;
-    const bottom = top + li.offsetHeight;
+    const list = this.refs.list;
+    if (!list || !wrap || row < 0) return;
+    if (!this.offsets) {
+      this.offsets = new Map([...list.rowsByIndex].map(([i, li]) => [i, [li.offsetTop, li.offsetHeight]]));
+    }
+    const [top, height] = this.offsets.get(row) ?? [0, 0];
+    const bottom = top + height;
     if (top < wrap.scrollTop) wrap.scrollTop = top;
     else if (bottom > wrap.scrollTop + wrap.clientHeight) wrap.scrollTop = bottom - wrap.clientHeight;
   }
