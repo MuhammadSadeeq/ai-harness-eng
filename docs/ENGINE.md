@@ -628,3 +628,97 @@ eventually notices; lessons say so).
   4. Both modules map to the loop wire on the board (`hx-clock`) with the tag
      labels `history not resent` and `reads the first block only`, drawn with
      the warning mark: they are bugs, not features.
+- **A6 (2026-10-10): compaction, prompt caching, and two prompt-aware
+  conditions** (wave 3.3: C2, C3, C4; DECISIONS D-051). Absent modules and
+  fields change nothing, so every existing golden trace stays as it is.
+  1. *Conditions* (§6.1), both read the request about to be sent (after
+     compaction and the clock below, with A5's sent messages):
+     `context_gte:<n>` is true when `100 * tokens(request) >= n * window`;
+     `sent_lacks:<text>` is true when no string value inside the request
+     (`system`, the tool definitions and the messages, recursively; values,
+     not keys) contains `<text>`. `<text>` is everything after the first `:`
+     and may hold spaces and colons. A tape uses them to make the scripted
+     model slip as the window fills (context rot) or act on a commitment it
+     can no longer see.
+  2. *Tape `notes`* (optional, default `[]`): the commitments a run builds up,
+     `[{"id", "kind", "turn", "text"}]`. `kind` is one of `goal`, `constraint`,
+     `decision`, `progress`, `file`; `turn` (≥ 0) is the turn after which the
+     note is known (0: from the start). The loader rejects a duplicate `id` or
+     an unknown `kind`.
+  3. *`compaction: {"threshold_percent": P, "keep": [kinds]}`* (`P` 1–100;
+     `keep` distinct kinds, possibly empty). The compactor is harness code: it
+     makes no model call and costs nothing. It runs once per turn, after the
+     guards and `turn += 1`, before the control wire. Let `before` be the
+     tokens of the request the control wire would build now. If
+     `100 * before > P * window`, `len(messages) >= 5` and the last message's
+     role is `user`:
+     - `kept` = the notes, in tape order, with `turn < <current turn>` and a
+       `kind` in `keep`;
+     - `summary` = `"Summary of the work so far:"` followed by
+       `"\n- " + kind + ": " + text` for each kept note, or by
+       `"\n- (nothing kept)"` when none is kept;
+     - `dropped = len(messages) - 2`; then
+       `messages = [user(text(summary))] + messages[-2:]` (the last reply and
+       the user message after it stay as they are). This is now the harness's
+       own history: later turns append to it.
+     - emit `compaction(tokens_before=before, tokens_after=<tokens of the request built from the new messages>, dropped_messages=dropped, kept_notes=[ids])`, wire `context`.
+     Then the control wire builds the request from the new messages, so
+     `prompt_built.tokens` equals `tokens_after`. `context_check.action` is
+     `"overflow"` if the request is over the window, else `"compacted"` if a
+     compaction ran this turn, else `"none"`. Conditions such as
+     `last_result_error` and `verify_feedback` read the kept last message as
+     before.
+  4. *`system_clock: {}`*, a harness bug on purpose (D-049): before each
+     request the harness puts the time at the top of the system prompt,
+     `system = "Current time: t=" + str(t) + " ms\n\n" + system` (`t` when the
+     prompt is built; after the A5 and rules-file layers). `prompt_built.layers`
+     starts with `"clock"`. Every call's system prompt differs, so no cached
+     prefix survives past the tool definitions. On the board it maps to the
+     context wire with the label `time at the top of the prompt`, drawn with
+     the warning mark.
+  5. *`cache: {}`*: the harness asks the API to cache the request, with one
+     cache breakpoint at the end of the request. The tape must then give
+     `cache_rules: {"min_tokens": M, "ttl_ms": L}` (the API's rules for this
+     model, each backed by a fact the page cites) and cache prices: from a
+     pricing fact, the value keys `cache_write_usd_per_mtok` and
+     `cache_hit_usd_per_mtok` (milli-units as A3.19); inline, the integers
+     `cache_write_milli_per_mtok` and `cache_read_milli_per_mtok`. The loader
+     rejects a board with `cache` on a tape without them.
+     - The prefix order is tools, then system, then messages (fact
+       `api.cache-invalidation-hierarchy`). For a request with `s` sent
+       messages, `n = 2 + s` prefixes: `P(1) = {"tools": tool_defs}`,
+       `P(2) = {"system": system, "tools": tool_defs}`, and for `1 <= j <= s`
+       `P(2 + j) = {"system": system, "tools": tool_defs, "messages": sent[0:j]}`
+       (insertion order as written, so `P(n)` is the request and
+       `tokens(P(n))` is `prompt_tokens`). `key(k) = pyjson(P(k))`.
+     - The harness keeps `cache`: a map from key to the time it was last
+       written or read. It is consulted only for a call that returns a reply
+       (errors and the A3.16 permanent errors never touch it), at `t_call`,
+       the value of `t` when `recovery_check` is emitted.
+     - If `prompt_tokens < M`: `read = 0`, `write = 0` (too short to cache).
+       Otherwise `i` is the largest `k` in `1..n` whose `key(k)` is in the
+       map with `t_call - cache[key(k)] < L` (0 if none); `read = tokens(P(i))`
+       (0 when `i = 0`); `write = prompt_tokens - read`; if `i > 0`, set
+       `cache[key(i)] = t_call` (a read refreshes it); then set
+       `cache[key(n)] = t_call`.
+     - `uncached = prompt_tokens - read - write`. Cost (§8) becomes
+       `uncached*input_milli + write*write_milli + read*read_milli + output_tokens*output_milli`.
+       `tokens_in` still adds `prompt_tokens` (budgets count the whole prompt).
+     - After `recovery_check` and before `model_reply`, emit
+       `cache(read=read, write=write, uncached=uncached, matched=<label>, hit_percent=floor(100*read/prompt_tokens))`,
+       wire `context`, where `<label>` is `"none"` (`i = 0`), `"tools"` (1),
+       `"system"` (2) or `"messages[<j-1>]"` (`i = 2 + j`): the last part of
+       the request that came from the cache.
+     - With `cache` plugged, `model_reply.usage` and the wire response's
+       `usage` are `{"input_tokens": uncached, "cache_creation_input_tokens": write, "cache_read_input_tokens": read, "output_tokens": output_tokens}`.
+       The wire request marks the breakpoint: its last message's last content
+       block carries `"cache_control": {"type": "ephemeral"}` (in the wire
+       payload only; the history and every token count leave it out).
+     - On the board, `cache` maps to the context wire with the label
+       `cache-friendly prefix`.
+     This is the course's model of the API, labelled as such on screen: one
+     breakpoint, an exact prefix match on whole parts of the request, the
+     lookback and the 4-breakpoint limit left out.
+  6. *Order within a turn*, all modules plugged: guards, `turn += 1`,
+     compaction, control wire (clock, rules layer, `prompt_built`), context
+     check, the call with recovery, `cache`, `model_reply`, as in §7.1.

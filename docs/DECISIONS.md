@@ -433,3 +433,21 @@ basis for Phase 1, and answered SPEC §14:
 - The simulator's missing-result error text equals the API's documented
   standard error (`api.tool-use-without-result-error`), so lessons may say
   "the API rejects the request with this error" on that fact.
+
+### D-051 · Wave 3.3 engine scope: compaction and caching in the engine, the fleet in the lab · *decided*
+- ENGINE A6 adds what C2–C4's incidents need as traced, parity-checked
+  behavior: a harness-side compactor driven by the tape's `notes` (C3: the
+  naive board keeps the story and drops the commitments), a one-breakpoint
+  prompt cache with exact prefix matching, TTL and the documented price split
+  (C4), `system_clock` as the silent invalidator (a harness bug on purpose,
+  D-049), and two conditions that let a scripted model react to what the
+  request holds (`context_gte`, `sent_lacks`).
+- "Many clients" (C6's retry storm across a fleet) is **not** an engine
+  feature: one trace is one harness, and a fleet trace would be noise to a
+  learner. `hx-outage` models the fleet itself (seeded, labelled as the
+  course's model) and reuses the engine's backoff rule (§7.3) for each client,
+  so the numbers agree with the single-run traces. C6's own incident stays a
+  single-run tape on the existing retry, breaker and outage modules.
+- The cache model is labelled on screen as the course's model: it leaves out
+  the lookback window and the four-breakpoint limit; prices and the minimum
+  length come from facts.
