@@ -371,6 +371,11 @@ report.
    the prose must type (20 trials) is also set on the component
    (`trials="20"`), so the two can't drift.
 5. **Every figure** has `FIG <ID>.<n> · <what it is>. Try this: <one action>.`
+   The caption sits outside the component: `figure > hx-… (fallback inside) +
+   figcaption`. A caption inside the fallback disappears when the component
+   upgrades. A lab's module data lives in `content/<ID>/labs/<name>.json`
+   (served at `../data/labs/<ID>/<name>.json`); the files in `site/labs/data/`
+   are the demo pages' only.
 6. **A `pre[data-run]` snippet gets a Run key** (the shell adds it; Python
    loads on the first Run). `check_snippets` runs the same snippet in CI, so
    give it its `data-output` (or `data-raises`): the learner's run is compared
