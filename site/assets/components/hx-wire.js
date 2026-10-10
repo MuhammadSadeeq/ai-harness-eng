@@ -4,12 +4,25 @@
 import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runTrial, tokens, pyjson } from "../sim/index.js";
-import { diffMessages } from "./lib/wirediff.js";
+import { diffRequest } from "./lib/wirediff.js";
 import { formatInt, plural } from "./lib/format.js";
 import { toolUseHits, toolsRange, foldTools } from "./lib/wire-hits.js";
 
 const MARK_PLUS = "M12 5v14M5 12h14";
 const MARK_BANG = "M12 4.5v10M12 19v.5";
+// B-16: the message status keys (the classes are is-new, is-changed and is-breakpoint-moved).
+const MESSAGE_STATUS = { added: "new", changed: "changed", "breakpoint moved": "breakpoint-moved" };
+/** The status of one part of the request diff; null when there is no diff or the part did not change. */
+const partStatus = (diff, part) => diff?.rows.find((r) => r.part === part)?.status ?? null;
+/** A small status tag for a system or tool part; null for an unchanged part. */
+function statusTag(status) {
+  if (!status || status === "same") return null;
+  const words = { added: "new this turn", changed: "changed", "breakpoint moved": "breakpoint moved", removed: "removed" };
+  const tag = el("span", `wire-status wire-part-status is-${MESSAGE_STATUS[status] ?? status}`, words[status]);
+  if (status === "added") tag.prepend(svgMark(MARK_PLUS));
+  if (status === "changed") tag.prepend(svgMark(MARK_BANG));
+  return tag;
+}
 const lines = (text, n) => String(text).split("\n").slice(0, n);
 
 /** The text of a content value: a string, or the text blocks of a list. */
@@ -37,6 +50,20 @@ function el(tag, cls, text) {
   if (cls) node.className = cls;
   if (text !== undefined) node.textContent = text;
   return node;
+}
+
+/**
+ * The usage line in plain words. A response with cache fields names all of them, so a cached call reads as what it is:
+ * "Usage: 0 input tokens, 653 written to the cache, 0 read from the cache, 53 output tokens." The JSON keeps the API names.
+ */
+export function usageWords(usage) {
+  const parts = [`${formatInt(usage.input_tokens)} input tokens`];
+  if ("cache_creation_input_tokens" in usage || "cache_read_input_tokens" in usage) {
+    parts.push(`${formatInt(usage.cache_creation_input_tokens ?? 0)} written to the cache`);
+    parts.push(`${formatInt(usage.cache_read_input_tokens ?? 0)} read from the cache`);
+  }
+  parts.push(`${formatInt(usage.output_tokens)} output tokens`);
+  return `Usage: ${parts.join(", ")}.`;
 }
 
 export class HxWire extends HxElement {
@@ -181,6 +208,7 @@ export class HxWire extends HxElement {
     const head = el("p", "wire-message-head");
     if (status === "new") head.append(svgMark(MARK_PLUS), el("span", "wire-status", "new this turn"));
     if (status === "changed") head.append(svgMark(MARK_BANG), el("span", "wire-status", "changed"));
+    if (status === "breakpoint-moved") head.append(el("span", "wire-status", "breakpoint moved"));
     head.append(el("span", "wire-role", message.role), el("span", "wire-tokens", `${formatInt(tokens(message))} tokens`));
     card.append(head);
     const blocks = typeof message.content === "string" ? [{ type: "text", text: message.content }] : message.content ?? [];
@@ -194,10 +222,15 @@ export class HxWire extends HxElement {
     const wrap = el("div", "wire-friendly");
     const reqSection = el("section", "wire-request");
     reqSection.append(el("h3", null, "Request"));
+    // B-16: with Changes on, every part of the request (system, each tool, each message) carries its own status.
+    const diff = this.state.diff && previous ? diffRequest(previous, request) : null;
     const system = el("section", "wire-system");
     const sysLines = String(request.system ?? "").split("\n");
     const shown = this.state.showSystem ? sysLines : sysLines.slice(0, 3);
-    system.append(el("h4", null, `System · ${formatInt(tokens(request.system))} tokens`));
+    const sysHead = el("h4", null, `System · ${formatInt(tokens(request.system))} tokens`);
+    const sysTag = statusTag(partStatus(diff, "system"));
+    if (sysTag) sysHead.append(" ", sysTag);
+    system.append(sysHead);
     system.append(el("pre", "wire-code", shown.join("\n")));
     if (sysLines.length > 3) {
       const toggle = el("button", "key", this.state.showSystem ? "Show less" : "Show all");
@@ -210,16 +243,23 @@ export class HxWire extends HxElement {
     const tools = el("section", "wire-tools");
     tools.append(el("h4", null, `Tools · ${plural(request.tools.length, "tool", "tools")} · ${formatInt(tokens(request.tools))} tokens`));
     const names = el("ul", "wire-tool-names");
-    for (const tool of request.tools) names.append(el("li", null, tool.name));
+    request.tools.forEach((tool, i) => {
+      const item = el("li", null, tool.name);
+      const tag = statusTag(partStatus(diff, `tools[${i}]`));
+      if (tag) item.append(" ", tag);
+      names.append(item);
+    });
+    const toolsRemoved = diff ? diff.rows.filter((r) => r.part.startsWith("tools[") && r.status === "removed").length : 0;
+    if (toolsRemoved > 0) names.append(el("li", "wire-removed", `${plural(toolsRemoved, "tool", "tools")} removed`));
     tools.append(names);
     reqSection.append(tools);
-    reqSection.append(this.#messages(request, previous));
+    reqSection.append(this.#messages(request, previous, diff));
     wrap.append(reqSection);
     wrap.append(this.#response(response));
     return wrap;
   }
 
-  #messages(request, previous) {
+  #messages(request, previous, diff) {
     const section = el("section", "wire-messages");
     section.append(el("h4", null, `Messages · ${plural(request.messages.length, "message", "messages")}`));
     const list = el("ol", "wire-message-list");
@@ -229,12 +269,24 @@ export class HxWire extends HxElement {
       section.append(el("p", "wire-first", "Turn 1: everything is new."));
       request.messages.forEach((m, i) => list.append(this.#message(m, i, null)));
     } else {
-      const diff = diffMessages(previous.messages, request.messages);
-      if (diff.unchanged > 0) {
-        list.append(el("li", "wire-unchanged", `${plural(diff.unchanged, "message", "messages")} unchanged`));
+      // B-16: the message parts of the request diff, in request order. Leading unchanged messages collapse.
+      const rows = diff.rows.filter((r) => r.part.startsWith("messages["));
+      let unchanged = 0;
+      let leading = true;
+      const shown = [];
+      for (const row of rows) {
+        if (row.status === "removed") continue;
+        if (row.status === "same" && leading) {
+          unchanged += 1;
+          continue;
+        }
+        if (row.status !== "same") leading = false;
+        shown.push({ index: Number(row.part.slice("messages[".length, -1)), status: row.status });
       }
-      for (const row of diff.rows) list.append(this.#message(request.messages[row.index], row.index, row.status === "same" ? null : row.status));
-      if (diff.removed > 0) list.append(el("li", "wire-removed", `${plural(diff.removed, "message", "messages")} removed`));
+      const removed = rows.filter((r) => r.status === "removed").length;
+      if (unchanged > 0) list.append(el("li", "wire-unchanged", `${plural(unchanged, "message", "messages")} unchanged`));
+      for (const { index, status } of shown) list.append(this.#message(request.messages[index], index, MESSAGE_STATUS[status] ?? null));
+      if (removed > 0) list.append(el("li", "wire-removed", `${plural(removed, "message", "messages")} removed`));
     }
     section.append(list);
     return section;
@@ -247,7 +299,7 @@ export class HxWire extends HxElement {
     const list = el("ul", "wire-blocks");
     for (const block of response.content ?? []) list.append(this.#block(block));
     section.append(list);
-    section.append(el("p", "wire-usage", `Usage: ${formatInt(response.usage.input_tokens)} input tokens, ${formatInt(response.usage.output_tokens)} output tokens.`));
+    section.append(el("p", "wire-usage", usageWords(response.usage)));
     return section;
   }
 
@@ -399,7 +451,7 @@ export class HxWire extends HxElement {
     this.ui?.querySelector('[data-key="changes-on"]')?.click();
     const news = this.ui?.querySelectorAll(".wire-message.is-new").length ?? 0;
     const previous = this.wire[2 * (turn - 2)];
-    const expected = diffMessages(previous?.messages, request.messages).rows.filter((r) => r.status === "new").length;
+    const expected = diffRequest(previous, request).rows.filter((r) => r.part.startsWith("messages[") && r.status === "added").length;
     return news === expected;
   }
 }

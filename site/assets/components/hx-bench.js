@@ -69,12 +69,19 @@ const glyph = (name) => {
 const words = (module) => module.replace(/_/g, " ");
 const money = (nano, priced) => formatCost(nano, { usd: priced });
 
+/** A retry that waits the same time every try: base equals cap, no jitter (B-16). */
+const isFixedWait = (p) => Number.isInteger(p.base_ms) && p.base_ms === p.cap_ms && p.jitter === "none" && Number.isInteger(p.max_attempts);
+
 /** "turn limit 12, token budget 60,000", or "no modules plugged". */
-function modulesText(board) {
+export function modulesText(board) {
   const parts = [];
   for (const [module, params] of Object.entries(board.modules ?? {})) {
     if (module === "history") {
       parts.push(historyWords(params));
+      continue;
+    }
+    if (module === "retry" && isFixedWait(params)) {
+      parts.push(`retry every ${formatInt(params.base_ms)} ms, up to ${plural(params.max_attempts, "try", "tries")}`);
       continue;
     }
     const entries = Object.entries(params ?? {});
