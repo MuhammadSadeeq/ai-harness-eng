@@ -28,6 +28,9 @@ a route around a denied host.
 | `docker.bind-mount` | `-v` / `--mount type=bind` mounts a host directory into the container. | docs.docker.com | T7 |
 | `docker.shares-host-kernel` | Containers share the host's kernel (unlike virtual machines). | docs.docker.com | T7.o1, C10.o5 |
 | `git.restore`, `git.revert`, `git.worktree` | What `git restore`, `git revert` and `git worktree add` do, in the manual's words. | git-scm.com/docs | T8 |
+| `git.diff-format` | The unified diff format `git diff` prints: the `---`/`+++` file lines, `@@` hunk lines, and `-`/`+` line marks. | git-scm.com/docs | T8.o1 |
+| `harnesses.claude-code-os-sandbox` | Claude Code's sandbox uses the operating system's own isolation (name the mechanisms the source names) to limit file and network access. | anthropic.com/engineering or code.claude.com docs | C10.o5 |
+| `docker.vm-difference` | What Docker's docs say separates a container from a virtual machine (the shared kernel, the weight). | docs.docker.com | C10.o5, T7 |
 | `anthropic.harness-changes-move-results` | An Anthropic engineering post states that changes to the harness or scaffold, with the same model, change agent results (quote the sentence and the numbers if any). | anthropic.com/engineering | B3.o5 |
 | `anthropic.harness-counterpoint` | A primary source that states a limit: a stronger model needs less scaffolding, or scaffolding gains shrink as models improve. | anthropic.com/engineering, or a vendor's model page | B3.o5 |
 
