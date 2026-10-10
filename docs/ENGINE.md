@@ -1150,3 +1150,21 @@ eventually notices; lessons say so).
      `"\n\n"`, as the rules layer does, and `trace.schema.json` lists
      `"progress"` among the layers; at run start the order is `run_start`,
      `tool_rejected` events, `capability`, then the first `session_start`.
+- **A17 (2026-10-10): rulings on A14's edges** (from the Python side; the JS
+  side agrees). Binding for both runtimes.
+  1. A tape `interrupt` applies to the main agent's turns only.
+  2. A crash on a sessions tape: without `durable_session` the current
+     session starts over (its first message again, its script cursor at the
+     session's start, the workspace as left); with it, the session resumes.
+  3. A model profile with a `script` on a tape with `sessions` is refused by
+     the loader.
+  4. The `lines` check counts newline characters, plus one when the file
+     ends with text after its last newline (so `"a\nb"` and `"a\nb\n"` both
+     have 2 lines, and an empty file 0).
+  5. A sub-agent starts with its own loop state: no last permission, no last
+     truncation, no recent calls.
+  6. One `leak` event per tool call, after its last attempt.
+  7. A forked context uses the messages the parent actually sent (with
+     `history` resend false, the task alone).
+  8. `lose_reply` counts per tool name; idempotency keys are kept only by
+     ledger tools.
