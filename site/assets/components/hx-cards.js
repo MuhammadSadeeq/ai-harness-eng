@@ -54,6 +54,8 @@ export class HxCards extends HxElement {
 
   #overlay = {};
   #finished = false;
+  // Keys are read from the document: after a click the focus can rest on the page body.
+  #onDocumentKey = (event) => this.onKey(event);
 
   async setup() {
     const src = this.getAttribute("src");
@@ -78,7 +80,15 @@ export class HxCards extends HxElement {
     this.familyNames = new Map(course.failure_families.map((family) => [family.id, family.name]));
     this.uid = `hxc${++uidCount}`;
     this.start();
-    this.addEventListener("keydown", (event) => this.onKey(event));
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    document.addEventListener("keydown", this.#onDocumentKey);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener("keydown", this.#onDocumentKey);
   }
 
   /** A fresh session from the stored boxes and today's date. */

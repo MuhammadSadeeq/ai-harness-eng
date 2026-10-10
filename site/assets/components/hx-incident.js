@@ -320,6 +320,15 @@ export class HxIncident extends HxElement {
     return Boolean(r && r.height > 0 && r.top >= 0 && r.bottom <= globalThis.innerHeight);
   }
 
+  /** The tapped row (its button) is on screen, and so is the top of its answer. */
+  rowAndAnswerVisible(li) {
+    const row = li?.querySelector(".ev-main");
+    const answer = li?.querySelector(".hunt-feedback");
+    if (!row || !answer) return false;
+    const top = answer.getBoundingClientRect().top;
+    return this.inWindow(row) && top >= 0 && top < globalThis.innerHeight;
+  }
+
   async selfTest() {
     this.resetHunt();
     this.render();
@@ -334,12 +343,12 @@ export class HxIncident extends HxElement {
 
     tap(early);
     const earlyLine = row(early)?.querySelector(".hunt-line")?.textContent ?? "";
-    const earlyOk = earlyLine.startsWith("Too early") && this.inWindow(row(early));
+    const earlyOk = earlyLine.startsWith("Too early") && this.rowAndAnswerVisible(row(early));
 
     tap(late);
     const lateRow = row(late);
     const hintOk = Boolean([...(lateRow?.querySelectorAll(".hunt-line") ?? [])].find((p) => p.textContent === inc.hint));
-    const lateOk = hintOk && this.inWindow(lateRow);
+    const lateOk = hintOk && this.rowAndAnswerVisible(lateRow);
 
     tap(inc.first_bad_seq);
     const foundHeading = this.ui.querySelector(".found-block h4");
@@ -356,19 +365,16 @@ export class HxIncident extends HxElement {
     return Boolean(earlyOk && lateOk && foundOk && resultOk && fired?.source === "incident" && fired.fix_ok === true);
   }
 
-  /** Waits until a smooth scroll has finished (the element's top stops moving), at most 60 frames. */
+  /** Resolves when the node has reached the top of the window (within 2 px), or after 3 seconds. */
   settleScroll(node) {
     return new Promise((resolve) => {
-      let last = null;
-      let frames = 0;
+      const started = performance.now();
       const step = () => {
         const top = node?.getBoundingClientRect().top;
-        if (top === last || frames >= 60) return resolve();
-        last = top;
-        frames += 1;
+        if ((top !== undefined && Math.abs(top) <= 2) || performance.now() - started > 3000) return resolve();
         requestAnimationFrame(step);
       };
-      requestAnimationFrame(step);
+      step();
     });
   }
 }
