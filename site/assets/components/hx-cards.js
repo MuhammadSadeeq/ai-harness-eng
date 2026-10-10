@@ -233,6 +233,7 @@ export class HxCards extends HxElement {
    * hx-cards on the page (so two decks never answer each other's keys).
    */
   onKey(event) {
+    if (!this.cards) return; // keys can arrive before the deck has loaded
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
     const target = event.target;
     const inside = target instanceof Node && this.contains(target);
