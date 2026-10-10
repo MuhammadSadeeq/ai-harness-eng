@@ -11,3 +11,7 @@ labs/replay.html
 labs/cards.html
 labs/kata.html
 labs/say.html
+labs/dice.html
+labs/forgetful.html
+labs/sampler.html
+labs/tokenizer.html

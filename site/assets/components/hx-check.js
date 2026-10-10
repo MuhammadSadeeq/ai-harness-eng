@@ -4,11 +4,11 @@
 // predict without for: the reveal comes right after the commit. check: the reveal comes right after the commit.
 // Evidence: "check" on a check commit; "prediction" when a prediction is revealed (COMPONENTS §5).
 import { HxElement } from "./lib/hx-element.js";
-import { getContent } from "./lib/data.js";
+import { getContent, getFacts } from "./lib/data.js";
+import { mountFacts } from "../core/shell/facts.js";
 
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
-const RESULT_TIMEOUT_MS = 60000;
 let uidCount = 0;
 
 const el = (tag, attrs = {}, ...children) => {
@@ -34,8 +34,13 @@ const glyph = (name) => {
   return icon;
 };
 
+/** The parts of an option's why: its text, and the fact id whose chip the text carries (or null). */
+export function whyParts(option) {
+  return { text: option.why, fact: typeof option.fact === "string" ? option.fact : null };
+}
+
 /** Checks that an item has the AUTHORING §10 shape. Throws with the first problem. */
-function validItem(item, mode) {
+export function validItem(item, mode) {
   if (!item || typeof item.id !== "string") throw new Error("hx-check: item has no id");
   if (typeof item.question !== "string") throw new Error(`hx-check: ${item.id} has no question`);
   if (!Array.isArray(item.options) || item.options.length < 2 || item.options.length > 5) {
@@ -45,6 +50,7 @@ function validItem(item, mode) {
     if (typeof option?.text !== "string" || typeof option?.why !== "string") {
       throw new Error(`hx-check: ${item.id} has an option without text or why`);
     }
+    if (option.fact !== undefined && typeof option.fact !== "string") throw new Error(`hx-check: ${item.id} has a fact that is not an id`);
   }
   if (!Number.isInteger(item.answer) || item.answer < 0 || item.answer >= item.options.length) {
     throw new Error(`hx-check: ${item.id} has no valid answer index`);
@@ -68,13 +74,15 @@ export class HxCheck extends HxElement {
     validItem(item, mode);
     this.item = item;
     this.mode = mode;
+    this.facts = item.options.some((o) => typeof o.fact === "string") ? await getFacts() : null;
     this.uid = `hxc${++uidCount}`;
     this.targetEl = null;
     const forId = this.getAttribute("for");
     if (forId && mode === "predict") {
       const target = document.getElementById(forId);
       if (!target) throw new Error(`hx-check: no element with id ${forId}`);
-      if (typeof target.hxValue !== "function") await customElements.whenDefined(target.localName);
+      // A component target may still be upgrading; any other element is a plain target.
+      if (target.localName.includes("-") && !customElements.get(target.localName)) await customElements.whenDefined(target.localName);
       if (target.ready && (await target.ready) === false) throw new Error(`hx-check: ${forId} failed to load`);
       this.targetEl = target;
       target.addEventListener("hx-result", () => this.onResult());
@@ -139,7 +147,10 @@ export class HxCheck extends HxElement {
       const input = el("input", { type: "radio", name, value: String(i), "data-key": `choice-${i}` });
       input.addEventListener("change", () => this.setState({ choice: i, nudge: false }));
       const mark = el("span", { class: "choice-mark" });
-      const why = el("span", { class: "why", text: option.why });
+      const parts = whyParts(option);
+      const why = el("span", { class: "why" }, parts.fact
+        ? el("span", { class: "fact", "data-fact": parts.fact, text: parts.text })
+        : parts.text);
       dom.inputs.push(input);
       dom.options.push({ mark, why });
       return el("li", {}, el("label", { class: "choice" }, input,
@@ -161,6 +172,8 @@ export class HxCheck extends HxElement {
       dom.line,
       dom.verdict,
       dom.outcome));
+    // The shell mounts chips once at load; a component's own UI needs its fact chips mounted here.
+    if (this.facts) mountFacts(this.facts, document);
   }
 
   commit() {
@@ -195,23 +208,21 @@ export class HxCheck extends HxElement {
     this.evidence("prediction", { item: this.item.id, choice, correct: choice === this.item.answer });
   }
 
+  // Self-test for any target: commit, check the target lost `locked`, send a synthetic result, check the reveal,
+  // then restore the check to unanswered.
   async selfTest() {
     const { dom } = this;
     dom.inputs[0].click();
     if (this.state.choice !== 0) return false;
     dom.commit.click();
     if (this.state.committed !== 0) return false;
-    if (this.mode === "check") return this.shownAfterReveal();
-    if (!this.targetEl) return this.shownAfterReveal();
-    if (this.targetEl.hasAttribute("locked")) return false;
-    // Drive the target's own Run control, then wait for the result it reports.
-    const run = this.targetEl.querySelector("[data-run]");
-    if (!run) return false;
-    const finished = new Promise((resolve) => this.targetEl.addEventListener("hx-result", resolve, { once: true }));
-    const timeout = new Promise((resolve) => setTimeout(() => resolve("timeout"), RESULT_TIMEOUT_MS));
-    run.click();
-    if ((await Promise.race([finished, timeout])) === "timeout") return false;
-    return this.shownAfterReveal();
+    if (this.targetEl) {
+      if (this.targetEl.hasAttribute("locked")) return false;
+      this.targetEl.dispatchEvent(new CustomEvent("hx-result", { bubbles: true, detail: { source: "selftest" } }));
+    }
+    const shown = this.shownAfterReveal();
+    this.setState({ choice: null, committed: null, resultSeen: false, evidenced: false, nudge: false });
+    return shown;
   }
 
   shownAfterReveal() {
