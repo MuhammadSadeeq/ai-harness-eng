@@ -1,0 +1,235 @@
+- id: "mcp.annotation-destructive"
+  claim: "destructiveHint: if true, the tool may perform destructive updates to its environment."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts"
+  quote: "If true, the tool may perform destructive updates to its environment."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.annotation-idempotent"
+  claim: "idempotentHint: if true, calling the tool repeatedly with the same arguments has no additional effect on its environment."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts"
+  quote: "If true, calling the tool repeatedly with the same arguments will have no additional effect on its environment."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.annotation-openworld"
+  claim: "openWorldHint: if true, the tool may interact with an open world of external entities."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts"
+  quote: "If true, this tool may interact with an \"open world\" of external entities. If false, the tool's domain of interaction is closed."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.annotation-readonly"
+  claim: "readOnlyHint: if true, the tool does not modify its environment."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts"
+  quote: "If true, the tool does not modify its environment."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.annotations-hints"
+  claim: "The spec schema states that all ToolAnnotations properties are hints that may not faithfully describe tool behaviour."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts"
+  quote: "NOTE: all properties in `ToolAnnotations` are **hints**. They are not guaranteed to provide a faithful description of tool behavior (including descriptive properties like `title`)."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.annotations-names"
+  claim: "The ToolAnnotations interface in the spec schema declares a readOnlyHint boolean member."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts"
+  quote: "readOnlyHint?: boolean;"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+  note: "Quote is an interface member line; the names are declared in the same interface block."
+
+- id: "mcp.annotations-untrusted-schema"
+  claim: "The spec schema says clients should never make tool-use decisions based on ToolAnnotations received from untrusted servers."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts"
+  quote: "Clients should never make tool use decisions based on `ToolAnnotations` received from untrusted servers."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.annotations-untrusted-tools"
+  claim: "The 2026-07-28 tools page requires clients to treat tool annotations as untrusted unless they come from trusted servers."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/server/tools.mdx"
+  quote: "For trust & safety and security, clients **MUST** consider tool annotations to be untrusted unless they come from trusted servers."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.auth-basis"
+  claim: "The 2026-07-28 authorization page lists the OAuth 2.1 IETF draft (draft-ietf-oauth-v2-1-13) among the specifications its mechanism is based on."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/authorization/index.mdx"
+  quote: "- OAuth 2.1 IETF DRAFT ([draft-ietf-oauth-v2-1-13](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13))"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.auth-oauth21-must"
+  claim: "Implementors of the 2026-07-28 spec MUST follow OAuth 2.1 security best practices."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/authorization/security-considerations.mdx"
+  quote: "Additionally, implementors **MUST** follow OAuth 2.1 security best practices as outlined in"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.auth-optional"
+  claim: "Authorization is OPTIONAL for MCP implementations in the 2026-07-28 spec."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/authorization/index.mdx"
+  quote: "Authorization is **OPTIONAL** for MCP implementations."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.client-features-2025-11-25"
+  claim: "The 2025-11-25 index lists Sampling, Roots and Elicitation as features clients may offer to servers."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/docs/specification/2025-11-25/index.mdx"
+  quote: "Clients may offer the following features to servers: - **Sampling**: Server-initiated agentic behaviors and recursive LLM interactions - **Roots**: Server-initiated inquiries into URI or filesystem boundaries to operate in - **Elicitation**: Server-initiated requests for additional information from users"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "mcp.client-features-2026"
+  claim: "The 2026-07-28 index lists Elicitation as the feature clients may offer to servers; Sampling and Roots are not in that list."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/index.mdx"
+  quote: "Clients may offer the following features to servers: - **Elicitation**: Server-initiated requests for additional information from users"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.deprecated-guidance"
+  claim: "The 2026-07-28 changelog says new implementations should not adopt deprecated features."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx"
+  quote: "New implementations should not adopt them."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.deprecated-roots-sampling-logging"
+  claim: "The 2026-07-28 revision deprecates the Roots, Sampling and Logging features."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx"
+  quote: "Deprecate the Roots, Sampling, and Logging features"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.docs-latest-label"
+  claim: "The MCP docs navigation labels revision 2026-07-28 as the latest spec version."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/docs.json"
+  quote: "\"version\": \"Version 2026-07-28 (latest)\","
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.ga-announcement"
+  claim: "MCP's GA post announces the 2026-07-28 specification release."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2026-07-28-spec-ga/index.md"
+  quote: "Today, we're officially pushing the release button on the next version of the MCP specification, `2026-07-28`, along with the SDKs that will allow you to start building clients and servers right away."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  note: "Blog front matter publishDate is 2026-07-28T09:00:00+00:00. The public blog host was not reachable (egress 403); quoted from the repo source at c518f7a9."
+
+- id: "mcp.governance-aaif"
+  claim: "Anthropic is donating MCP to the Agentic AI Foundation, a directed fund under the Linux Foundation."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2025-12-09-mcp-joins-agentic-ai-foundation.md"
+  quote: "Anthropic is donating MCP to the Agentic AI Foundation, a directed fund under the Linux Foundation."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+  note: "Date 2025-12-09 from the blog front matter (2025-12-09T09:00:00+00:00)."
+
+- id: "mcp.governance-lf-neutral"
+  claim: "MCP's announcement says the Linux Foundation will not dictate the technical direction of MCP."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2025-12-09-mcp-joins-agentic-ai-foundation.md"
+  quote: "The Linux Foundation provides a neutral home and infrastructure that allows maintainers to operate independently, and will not dictate the technical direction of MCP."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "mcp.latest-revision"
+  claim: "The MCP spec repo sets LATEST_PROTOCOL_VERSION to 2026-07-28."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts"
+  quote: "export const LATEST_PROTOCOL_VERSION = \"2026-07-28\";"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.release-tag"
+  claim: "The commit tagged 2026-07-28 has the subject 'Merge pull request #3158 from modelcontextprotocol/claude/subscriptions-listen-envelope'."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/commit/5f5440bb26a62e2cf3440b92da5a667efa03b267"
+  quote: "Merge pull request #3158 from modelcontextprotocol/claude/subscriptions-listen-envelope"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+  note: "Tag object dated 2026-07-28 09:44:35 -0700 (git for-each-ref creatordate)."
+
+- id: "mcp.server-discover"
+  claim: "The 2026-07-28 revision adds a server/discover RPC that servers MUST implement."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx"
+  quote: "Add `server/discover`: servers MUST implement this RPC to advertise their supported protocol versions, capabilities, and identity."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.server-features"
+  claim: "The 2026-07-28 index lists Resources, Prompts and Tools as features servers offer to clients."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/index.mdx"
+  quote: "Servers offer any of the following features to clients: - **Resources**: Context and data, for the user or the AI model to use - **Prompts**: Templated messages and workflows for users - **Tools**: Functions for the AI model to execute"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.sessions-removed"
+  claim: "The 2026-07-28 revision removes protocol-level sessions and the Mcp-Session-Id header from Streamable HTTP."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx"
+  quote: "Remove protocol-level sessions and the `Mcp-Session-Id` header from the Streamable HTTP transport."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.stateless-core"
+  claim: "The 2026-07-28 revision removes the initialize/notifications/initialized handshake to make MCP stateless."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx"
+  quote: "Make MCP stateless: remove the `initialize`/`notifications/initialized` handshake."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.tasks-extension"
+  claim: "The 2026-07-28 revision moves experimental tasks out of the core protocol into an official extension named io.modelcontextprotocol/tasks."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx"
+  quote: "Move experimental tasks out of the core protocol and into an official extension (`io.modelcontextprotocol/tasks`)."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.transport-http-sse-changelog"
+  claim: "The 2026-07-28 changelog reclassifies the HTTP+SSE transport (deprecated since protocol version 2025-03-26) as Deprecated under the feature lifecycle policy."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx"
+  quote: "Reclassify the HTTP+SSE transport (deprecated since protocol version `2025-03-26`) as Deprecated under the feature lifecycle policy"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.transports-standard"
+  claim: "The transports page describes stdio as newline-delimited messages over the standard streams of a client-launched subprocess."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/transports/index.mdx"
+  quote: "newline-delimited messages over the standard streams of a client-launched subprocess."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "mcp.transports-streamable-http"
+  claim: "The transports page says each Streamable HTTP message is an HTTP POST to a single MCP endpoint."
+  source: "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/transports/index.mdx"
+  quote: "each message is an HTTP POST to a single MCP endpoint; replies arrive as a JSON object or a request-scoped SSE stream."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"

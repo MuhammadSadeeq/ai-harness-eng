@@ -1,0 +1,160 @@
+- id: "owasp.asi-asi01-agent-goal-hijack"
+  claim: "ASI01 in the OWASP Top 10 for Agentic Applications is titled 'Agent Goal Hijack'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Agent Goal Hijack\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-asi02-tool-misuse-exploitation"
+  claim: "ASI02 in the OWASP Top 10 for Agentic Applications is titled 'Tool Misuse & Exploitation'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Tool Misuse & Exploitation\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-asi03-identity-privilege-abuse"
+  claim: "ASI03 in the OWASP Top 10 for Agentic Applications is titled 'Identity & Privilege Abuse'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Identity & Privilege Abuse\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-asi04-agentic-supply-chain-vulnerabilities"
+  claim: "ASI04 in the OWASP Top 10 for Agentic Applications is titled 'Agentic Supply Chain Vulnerabilities'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Agentic Supply Chain Vulnerabilities\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-asi05-unexpected-code-execution-rce"
+  claim: "ASI05 in the OWASP Top 10 for Agentic Applications is titled 'Unexpected Code Execution (RCE)'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Unexpected Code Execution (RCE)\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-asi06-memory-context-poisoning"
+  claim: "ASI06 in the OWASP Top 10 for Agentic Applications is titled 'Memory & Context Poisoning'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Memory & Context Poisoning\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-asi07-insecure-inter-agent-communication"
+  claim: "ASI07 in the OWASP Top 10 for Agentic Applications is titled 'Insecure Inter-Agent Communication'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Insecure Inter-Agent Communication\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-asi08-cascading-failures"
+  claim: "ASI08 in the OWASP Top 10 for Agentic Applications is titled 'Cascading Failures'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Cascading Failures\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-asi09-human-agent-trust-exploitation"
+  claim: "ASI09 in the OWASP Top 10 for Agentic Applications is titled 'Human-Agent Trust Exploitation'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Human-Agent Trust Exploitation\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-asi10-rogue-agents"
+  claim: "ASI10 in the OWASP Top 10 for Agentic Applications is titled 'Rogue Agents'."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"title\": \"Rogue Agents\""
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "owasp.asi-list-version"
+  claim: "The OWASP Top 10 for Agentic Applications (ASI) mapping file is labelled version 2026 and announced 2025-12-09."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json"
+  quote: "\"version\": \"2026 (announced 2025-12-09)\","
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+  note: "The mapping's own source_url (genai.owasp.org) was not reachable from this session; titles are checked against the repo file."
+
+- id: "owasp.llm-2026-release"
+  claim: "The OWASP Top 10 for LLM Applications 2026 has a release date of August 4, 2026."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/README.md"
+  quote: "**Release date:** August 4, 2026"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "owasp.llm01-2025-definition"
+  claim: "In the 2025 edition LLM01:2025 Prompt Injection was defined as user prompts altering LLM behaviour or output in unintended ways."
+  source: "https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/blob/99f4395589bdbd120ae961f9cd179e79d7f9b27f/2_0_vulns/LLM01_PromptInjection.md"
+  quote: "A Prompt Injection Vulnerability occurs when user prompts alter the LLM’s behavior or output in unintended ways."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "owasp.llm01-2026-definition"
+  claim: "LLM01:2026 Prompt Injection defines a prompt-injection vulnerability as input that alters model behaviour in ways the developer did not intend, including via retrieved content, tool output and persistent memory."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM01_PromptInjection.md"
+  quote: "A **prompt-injection vulnerability** occurs when input to a large language model (LLM), whether direct user input, retrieved content, tool output, image, audio, or video content, intermediate reasoning, or persistent memory, alters the model's behavior in ways the application developer did not intend."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "owasp.llm03-2026-agentic-mapping"
+  claim: "The 2026 LLM03 entry maps Excessive Agency in agentic systems to ASI02, ASI03 and ASI08."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM03_ExcessiveAgency.md"
+  quote: "Within the context of agentic systems, Excessive Agency can manifest as ASI02: Tool Misuse & Exploitation, ASI03: Identity & Privilege Abuse and ASI08: Cascading Failures."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "owasp.llm03-2026-definition"
+  claim: "LLM03:2026 Excessive Agency defines the vulnerability as damaging actions performed in response to unexpected, ambiguous or manipulated LLM outputs, whatever the cause."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM03_ExcessiveAgency.md"
+  quote: "Excessive Agency is the vulnerability that enables damaging actions to be performed in response to unexpected, ambiguous or manipulated outputs from an LLM, regardless of what is causing the LLM to malfunction."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "owasp.llm03-2026-excessive-agency"
+  claim: "The 2026 edition's Excessive Agency heading is LLM03:2026."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM03_ExcessiveAgency.md"
+  quote: "LLM03:2026 Excessive Agency"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "owasp.llm06-2025-excessive-agency"
+  claim: "The 2025 edition's LLM06 heading is Excessive Agency."
+  source: "https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/blob/99f4395589bdbd120ae961f9cd179e79d7f9b27f/2_0_vulns/LLM06_ExcessiveAgency.md"
+  quote: "LLM06:2025 Excessive Agency"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "owasp.llm06-2026-definition"
+  claim: "LLM06:2026 Unbounded Consumption covers excessive, uncontrolled inference that enables service disruption, financial cost or model cloning."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM06_UnboundedConsumption.md"
+  quote: "Unbounded Consumption occurs when an LLM application allows excessive and uncontrolled inferences, enabling attackers to disrupt service availability, inflict unsustainable financial costs, or steal intellectual property through model cloning, all by exploiting a common class of vulnerability: the absence of adequate controls over how resources are consumed."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "owasp.llm06-2026-unbounded-consumption"
+  claim: "The 2026 edition's LLM06 heading is Unbounded Consumption."
+  source: "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM06_UnboundedConsumption.md"
+  quote: "LLM06:2026 Unbounded Consumption"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"

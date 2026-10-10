@@ -1,0 +1,9 @@
+- id: "security.lethal-trifecta-definition"
+  claim: "Simon Willison's lethal trifecta post (dated 2025-06-16 per search results) names private data, untrusted content and external communication as its three conditions."
+  source: "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "simonwillison.net returned 403 from the egress proxy and the blog repo was not readable; the URL and date come from search results and the leg names from secondary excerpts."

@@ -194,3 +194,11 @@ on learning clarity, fun, intuitiveness, phone ergonomics, accessibility,
 budget and meaningful motion, with a novice cognitive walkthrough per
 prototype. The winner becomes DESIGN.md v2. Prototypes live in `site/proto/`
 and are removed once the decision is recorded.
+
+### D-032 · Facts registry seeded: 205 entries · *decided*
+From the Phase 0 research drafts (BP-0.6F): 194 verified, 11 unverifiable
+(blocked hosts or the source doesn't say it). Director spot-check of 20
+random verified facts against the live sources: 20/20 quotes present
+verbatim (one needed tag-aware matching). Spec facts quoted from Markdown use
+the pinned repository file as `source` (FACTS §3); ReAct and tau-bench
+citation facts are verified against the authors' own repositories.

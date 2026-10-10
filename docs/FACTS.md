@@ -67,9 +67,12 @@ director decision.
   company's own report in the page ("Anthropic reported…").
 - **Repositories as sources.** When a spec's rendered site can't be reached
   but its official repository can, quote the repository file at a pinned
-  commit (`source_alt`) and keep the rendered URL in `source`. Repo text can
-  differ from the rendered page: re-check against the rendered page when it
-  becomes reachable.
+  commit. If the quote contains Markdown or code that the rendered page
+  doesn't show verbatim, the pinned repo file *is* the `source`; otherwise
+  keep the rendered URL in `source` and the repo file in `source_alt`. The
+  authors' own repository (for example a paper's code and BibTeX) counts as
+  a primary source. Re-check against the rendered page when it becomes
+  reachable.
 - **Numbering that moves.** When a source's own numbering is unsettled (for
   example OWASP's 2026 list, whose README and working files disagree as of
   2026-10-10), the course names items by title and shows a number only with

@@ -1,0 +1,49 @@
+- id: "openai.harness-duration"
+  claim: "OpenAI reports a headline duration for its harness-engineering experiment; the figure could not be read from the primary post."
+  source: "https://openai.com/index/harness-engineering/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "company-report"
+  status: "unverifiable"
+  note: "openai.com returned 403 from the egress proxy (CONNECT denied); only search excerpts were seen, which are secondary and not verbatim."
+
+- id: "openai.harness-lines-of-code"
+  claim: "OpenAI reports a headline lines-of-code figure for its harness-engineering experiment; the figure could not be read from the primary post."
+  source: "https://openai.com/index/harness-engineering/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "company-report"
+  status: "unverifiable"
+  note: "openai.com returned 403 from the egress proxy (CONNECT denied); only search excerpts were seen, which are secondary and not verbatim."
+
+- id: "openai.harness-post-date"
+  claim: "OpenAI's harness-engineering post is dated February 2026."
+  source: "https://openai.com/index/harness-engineering/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "openai.com returned 403 from the egress proxy (CONNECT denied); only search excerpts were seen, which are secondary and not verbatim."
+
+- id: "openai.harness-prs"
+  claim: "OpenAI reports a headline pull-request figure for its harness-engineering experiment; the figure could not be read from the primary post."
+  source: "https://openai.com/index/harness-engineering/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "company-report"
+  status: "unverifiable"
+  note: "openai.com returned 403 from the egress proxy (CONNECT denied); only search excerpts were seen, which are secondary and not verbatim."
+
+- id: "openai.harness-team-size"
+  claim: "OpenAI reports a headline team-size figure for its harness-engineering experiment; the figure could not be read from the primary post."
+  source: "https://openai.com/index/harness-engineering/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "company-report"
+  status: "unverifiable"
+  note: "openai.com returned 403 from the egress proxy (CONNECT denied); only search excerpts were seen, which are secondary and not verbatim."

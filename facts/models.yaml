@@ -1,0 +1,148 @@
+- id: "models.aliases"
+  claim: "Dateless model IDs are their own pinned snapshots, and the alias row repeats them."
+  source: "https://platform.claude.com/docs/en/models/overview"
+  source_alt: "https://platform.claude.com/docs/en/models/overview.md"
+  quote: "Dateless IDs are their own pinned snapshot; the alias row repeats them."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.cache-min-1024-tokens"
+  claim: "The minimum cacheable prompt is 1,024 tokens for Opus 4.8, Sonnet 5 and Sonnet 4.6."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "1,024 tokens for Claude Opus 4.8, Claude Sonnet 5, Claude Sonnet 4.6"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.cache-min-2048-tokens"
+  claim: "The minimum cacheable prompt is 2,048 tokens for Opus 4.7."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "2,048 tokens for [Claude Mythos Preview](https://anthropic.com/glasswing) and Claude Opus 4.7"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.cache-min-4096-tokens"
+  claim: "The minimum cacheable prompt is 4,096 tokens for Opus 4.6 and Opus 4.5."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "4,096 tokens for Claude Opus 4.6 and Claude Opus 4.5"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.cache-min-512-tokens"
+  claim: "The minimum cacheable prompt is 512 tokens for Fable 5.1, Mythos 5.1, Opus 5.5, Opus 5, Sonnet 5.5, Fable 5, Mythos 5 and Haiku 5.5."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "512 tokens for Claude Fable 5.1, [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview), Claude Opus 5.5, Claude Opus 5, Claude Sonnet 5.5, Claude Fable 5, [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview), and Claude Haiku 5.5"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.cache-read-multiplier"
+  claim: "Cache reads cost 0.1x base input, 0.025x on Fable 5.1 and Mythos 5.1, and 0.05x on Opus 5.5 and Sonnet 5.5."
+  source: "https://platform.claude.com/docs/en/about-claude/pricing"
+  source_alt: "https://platform.claude.com/docs/en/about-claude/pricing.md"
+  quote: "0.1x base input price (0.025x on Claude Fable 5.1 and Claude Mythos 5.1; 0.05x on Claude Opus 5.5 and Claude Sonnet 5.5)"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.cache-write-1h-multiplier"
+  claim: "A 1-hour cache write costs 2x base input price and is valid for 1 hour."
+  source: "https://platform.claude.com/docs/en/about-claude/pricing"
+  source_alt: "https://platform.claude.com/docs/en/about-claude/pricing.md"
+  quote: "1-hour cache write | 2x base input price | Cache valid for 1 hour"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.cache-write-5m-multiplier"
+  claim: "A 5-minute cache write costs 1.25x base input price and is valid for 5 minutes."
+  source: "https://platform.claude.com/docs/en/about-claude/pricing"
+  source_alt: "https://platform.claude.com/docs/en/about-claude/pricing.md"
+  quote: "5-minute cache write | 1.25x base input price | Cache valid for 5 minutes"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.context-window"
+  claim: "The models overview lists a 1M-token context window for each of the four current models."
+  source: "https://platform.claude.com/docs/en/models/overview"
+  source_alt: "https://platform.claude.com/docs/en/models/overview.md"
+  quote: "1M tokens | 1M tokens | 1M tokens | 1M tokens"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.fable-5-1-price"
+  claim: "Claude Fable 5.1 base input is $10 per MTok, output $50 per MTok, and cache hits $0.25 per MTok."
+  source: "https://platform.claude.com/docs/en/about-claude/pricing"
+  source_alt: "https://platform.claude.com/docs/en/about-claude/pricing.md"
+  quote: "Claude Fable 5.1 | $10 / MTok | $12.50 / MTok | $20 / MTok | $0.25 / MTok<sup>1</sup> | $50 / MTok"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  value: {input_usd_per_mtok: 10, output_usd_per_mtok: 50, cache_hit_usd_per_mtok: 0.25}
+
+- id: "models.haiku-5-5-price-over-100k"
+  claim: "Claude Haiku 5.5 for prompts over 100,000 tokens is $0.50 input, $2.50 output and $0.05 cache hit per MTok."
+  source: "https://platform.claude.com/docs/en/about-claude/pricing"
+  source_alt: "https://platform.claude.com/docs/en/about-claude/pricing.md"
+  quote: "Claude Haiku 5.5 (for prompts over 100,000 tokens) | $0.50 / MTok | $0.625 / MTok | $1 / MTok | $0.05 / MTok | $2.50 / MTok"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  value: {over_prompt_tokens: 100000, input_usd_per_mtok: 0.5, output_usd_per_mtok: 2.5, cache_hit_usd_per_mtok: 0.05}
+
+- id: "models.haiku-5-5-price-up-to-100k"
+  claim: "Claude Haiku 5.5 for prompts up to 100,000 tokens is $0.10 input, $0.50 output and $0.01 cache hit per MTok."
+  source: "https://platform.claude.com/docs/en/about-claude/pricing"
+  source_alt: "https://platform.claude.com/docs/en/about-claude/pricing.md"
+  quote: "Claude Haiku 5.5 (for prompts up to 100,000 tokens) | $0.10 / MTok | $0.125 / MTok | $0.20 / MTok | $0.01 / MTok | $0.50 / MTok"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  value: {max_prompt_tokens: 100000, input_usd_per_mtok: 0.1, output_usd_per_mtok: 0.5, cache_hit_usd_per_mtok: 0.01}
+
+- id: "models.ids-current"
+  claim: "The models overview gives Claude API IDs claude-fable-5-1, claude-opus-5-5, claude-sonnet-5-5 and claude-haiku-5-5 for the four current models."
+  source: "https://platform.claude.com/docs/en/models/overview"
+  source_alt: "https://platform.claude.com/docs/en/models/overview.md"
+  quote: "Claude API ID | `claude-fable-5-1` | `claude-opus-5-5` | `claude-sonnet-5-5` | `claude-haiku-5-5`"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.max-output"
+  claim: "The models overview lists 128K max output tokens for each of the four current models."
+  source: "https://platform.claude.com/docs/en/models/overview"
+  source_alt: "https://platform.claude.com/docs/en/models/overview.md"
+  quote: "128K tokens | 128K tokens | 128K tokens | 128K tokens"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "models.opus-5-5-price"
+  claim: "Claude Opus 5.5 base input is $4 per MTok, output $20 per MTok, and cache hits $0.20 per MTok."
+  source: "https://platform.claude.com/docs/en/about-claude/pricing"
+  source_alt: "https://platform.claude.com/docs/en/about-claude/pricing.md"
+  quote: "Claude Opus 5.5 | $4 / MTok | $5 / MTok | $8 / MTok | $0.20 / MTok<sup>2</sup> | $20 / MTok"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  value: {input_usd_per_mtok: 4, output_usd_per_mtok: 20, cache_hit_usd_per_mtok: 0.2}
+
+- id: "models.sonnet-5-5-price"
+  claim: "Claude Sonnet 5.5 base input is $2 per MTok, output $10 per MTok, and cache hits $0.10 per MTok."
+  source: "https://platform.claude.com/docs/en/about-claude/pricing"
+  source_alt: "https://platform.claude.com/docs/en/about-claude/pricing.md"
+  quote: "Claude Sonnet 5.5 | $2 / MTok | $2.50 / MTok | $4 / MTok | $0.10 / MTok<sup>2</sup> | $10 / MTok"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  value: {input_usd_per_mtok: 2, output_usd_per_mtok: 10, cache_hit_usd_per_mtok: 0.1}

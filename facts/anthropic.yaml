@@ -1,0 +1,127 @@
+- id: "anthropic.bea-agents"
+  claim: "Anthropic defines agents as systems where LLMs dynamically direct their own processes and tool usage."
+  source: "https://www.anthropic.com/engineering/building-effective-agents"
+  quote: "Agents, on the other hand, are systems where LLMs dynamically direct their own processes and tool usage, maintaining control over how they accomplish tasks."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.bea-published"
+  claim: "Anthropic's 'Building effective agents' was published on 2024-12-19."
+  source: "https://www.anthropic.com/engineering/building-effective-agents"
+  quote: "Published Dec 19, 2024"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.bea-start-simple"
+  claim: "Anthropic advises finding the simplest solution possible and increasing complexity only when needed."
+  source: "https://www.anthropic.com/engineering/building-effective-agents"
+  quote: "When building applications with LLMs, we recommend finding the simplest solution possible, and only increasing complexity when needed."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.bea-tooling-changed"
+  claim: "Anthropic's own 2024 post carries a note that much of its tooling landscape has changed since December 2024."
+  source: "https://www.anthropic.com/engineering/building-effective-agents"
+  quote: "Note: Much of the tooling landscape described in this post has changed since December 2024."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "anthropic.bea-workflows"
+  claim: "Anthropic defines workflows as systems where LLMs and tools are orchestrated through predefined code paths."
+  source: "https://www.anthropic.com/engineering/building-effective-agents"
+  quote: "Workflows are systems where LLMs and tools are orchestrated through predefined code paths."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.ctx-attention-budget"
+  claim: "Anthropic describes LLMs as having an attention budget that they draw on when parsing large volumes of context."
+  source: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+  quote: "Like humans, who have limited working memory capacity, LLMs have an “attention budget” that they draw on when parsing large volumes of context."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.ctx-context-rot"
+  claim: "Anthropic describes context rot: recall accuracy decreases as the number of tokens in the context window increases."
+  source: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+  quote: "Studies on needle-in-a-haystack style benchmarking have uncovered the concept of context rot: as the number of tokens in the context window increases, the model’s ability to accurately recall information from that context decreases."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.ctx-definition"
+  claim: "Anthropic defines context engineering as curating and maintaining the optimal set of tokens during LLM inference."
+  source: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+  quote: "Context engineering refers to the set of strategies for curating and maintaining the optimal set of tokens (information) during LLM inference, including all the other information that may land there outside of the prompts."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.ctx-published"
+  claim: "Anthropic's 'Effective context engineering for AI agents' was published on 2025-09-29."
+  source: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+  quote: "Published Sep 29, 2025"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.harn-initializer-agent"
+  claim: "Anthropic's initializer agent runs the first session with a specialized prompt that sets up the environment, including init.sh, a progress log file and an initial git commit."
+  source: "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
+  quote: "Initializer agent: The very first agent session uses a specialized prompt that asks the model to set up the initial environment: an init.sh script, a claude-progress.txt file that keeps a log of what agents have done, and an initial git commit that shows what files were added."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.harn-progress-file"
+  claim: "Anthropic says the claude-progress.txt file, alongside git history, lets a fresh agent quickly understand the state of work."
+  source: "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
+  quote: "The key insight here was finding a way for agents to quickly understand the state of work when starting with a fresh context window, which is accomplished with the claude-progress.txt file alongside the git history."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.harn-published"
+  claim: "Anthropic's 'Effective harnesses for long-running agents' was published on 2025-11-26."
+  source: "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
+  quote: "Published Nov 26, 2025"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.twt-meaningful-context"
+  claim: "Anthropic's second tool-writing principle is returning meaningful context from tools back to agents."
+  source: "https://www.anthropic.com/engineering/writing-tools-for-agents"
+  quote: "Returning meaningful context from tools back to agents"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.twt-namespacing"
+  claim: "Anthropic's first tool-writing principle is namespacing tools to define clear boundaries in functionality."
+  source: "https://www.anthropic.com/engineering/writing-tools-for-agents"
+  quote: "Namespacing tools to define clear boundaries in functionality"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.twt-published"
+  claim: "Anthropic's 'Writing effective tools for agents' was published on 2025-09-11."
+  source: "https://www.anthropic.com/engineering/writing-tools-for-agents"
+  quote: "Published Sep 11, 2025"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.twt-token-efficiency"
+  claim: "Anthropic's third tool-writing principle is optimizing tool responses for token efficiency."
+  source: "https://www.anthropic.com/engineering/writing-tools-for-agents"
+  quote: "Optimizing tool responses for token efficiency"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"

@@ -1,0 +1,71 @@
+- id: "evals.grader"
+  claim: "Anthropic defines a grader as logic that scores some aspect of the agent's performance; a task can have several graders."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "A grader is logic that scores some aspect of the agent’s performance. A task can have multiple graders, each containing multiple assertions (sometimes called checks)."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "evals.outcome"
+  claim: "Anthropic defines the outcome as the final state in the environment at the end of the trial."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "The outcome is the final state in the environment at the end of the trial."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "evals.pass-at-k"
+  claim: "pass@k measures the likelihood that an agent gets at least one correct solution in k attempts (Anthropic's definition)."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "pass@k measures the likelihood that an agent gets at least one correct solution in k attempts."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "evals.pass-hat-k"
+  claim: "pass^k measures the probability that all k trials succeed (Anthropic's definition)."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "pass^k measures the probability that all k trials succeed."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "evals.published"
+  claim: "Anthropic's 'Demystifying evals for AI agents' was published on 2026-01-09."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "Published Jan 09, 2026"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "evals.task"
+  claim: "Anthropic defines a task as a single test with defined inputs and success criteria."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "A task (a.k.a problem or test case) is a single test with defined inputs and success criteria."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "evals.tau-successor"
+  claim: "Anthropic's evals page calls 𝜏-Bench and its successor τ2-Bench benchmarks that incorporate multidimensionality."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "Two benchmarks that incorporate multidimensionality are 𝜏-Bench and its successor, τ2-Bench."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "evals.transcript"
+  claim: "Anthropic defines a transcript (also called trace or trajectory) as the complete record of a trial."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "A transcript (also called a trace or trajectory) is the complete record of a trial, including outputs, tool calls, reasoning, intermediate results, and any other interactions."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+
+- id: "evals.trial"
+  claim: "Anthropic defines each attempt at a task as a trial."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "Each attempt at a task is a trial."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"

@@ -1,0 +1,624 @@
+- id: "api.cache-invalidation-effort"
+  claim: "Changing output_config.effort always invalidates message blocks."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "Changing the [`output_config.effort`](https://platform.claude.com/docs/en/build-with-claude/effort) value always invalidates message blocks, with the same model-specific effect on tool and system caches as thinking parameters."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.cache-invalidation-hierarchy"
+  claim: "Cache order is tools, then system, then messages, and a change at one level invalidates that level and every level after it."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "Changes at each level invalidate that level and all subsequent levels."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.cache-invalidation-images"
+  claim: "Adding or removing images anywhere in the prompt affects only the messages cache."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "Adding/removing images anywhere in the prompt affects message blocks"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.cache-invalidation-system-web-search"
+  claim: "Enabling or disabling web search modifies the system prompt, and the table marks the system and messages caches as invalidated (the tools cache is not)."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "**Web search toggle** | ✓ | ✘ | ✘ | Enabling/disabling web search modifies the system prompt"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.cache-invalidation-thinking"
+  claim: "Changing the thinking configuration always invalidates message blocks, and tool and system caches on models that render it ahead of them."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "The thinking configuration (mode, and `budget_tokens` in extended mode) is rendered into the prompt, so changing it always invalidates message blocks; tool and system caches are also invalidated on models that render the configuration ahead of them."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.cache-invalidation-tool-choice"
+  claim: "Changing tool_choice invalidates only the messages cache; the tools and system caches remain valid."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "Changes to `tool_choice` parameter only affect message blocks"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.cache-invalidation-tool-definitions"
+  claim: "Modifying tool definitions (names, descriptions, parameters) invalidates the entire cache."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "Modifying tool definitions (names, descriptions, parameters) invalidates the entire cache"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.cache-ttl-default-5m-and-1h"
+  claim: "The default cache TTL is 5 minutes, and a 1-hour TTL is available at 2x the base input token price."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "By default, automatic caching uses a 5-minute TTL. You can specify a 1-hour TTL at 2x the base input token price:"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.compaction-each-kind-own-header"
+  claim: "Each compaction kind has its own beta header, so each page has its own list."
+  source: "https://platform.claude.com/docs/en/build-with-claude/compaction"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/compaction.md"
+  quote: "each kind has its own beta header, so each page has its own list."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.compaction-on-demand-beta-header"
+  claim: "On-demand compaction is in beta and uses the compact-2026-09-04 beta header."
+  source: "https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand.md"
+  quote: "Send the `compact-2026-09-04` beta header on the request that asks for the summary and on every later request that carries the signed block."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.compaction-on-demand-parameter"
+  claim: "On-demand compaction is requested with a top-level compaction parameter of type summarize."
+  source: "https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand.md"
+  quote: "Send the conversation as it stands with `\"compaction\": {\"type\": \"summarize\"}`."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.compaction-threshold-beta-header"
+  claim: "Threshold compaction is in beta and uses the compact-2026-01-12 beta header."
+  source: "https://platform.claude.com/docs/en/build-with-claude/compaction-threshold"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/compaction-threshold.md"
+  quote: "betaHeader: compact-2026-01-12"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.compaction-threshold-strategy"
+  claim: "Threshold compaction is enabled by adding a compact_20260112 strategy to context_management.edits."
+  source: "https://platform.claude.com/docs/en/build-with-claude/compaction-threshold"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/compaction-threshold.md"
+  quote: "Enable compaction by adding the `compact_20260112` strategy to `context_management.edits` in your Messages API request."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.context-editing-beta-header"
+  claim: "Context editing is in beta and is enabled with the context-management-2025-06-27 beta header."
+  source: "https://platform.claude.com/docs/en/build-with-claude/context-editing"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/context-editing.md"
+  quote: "Context editing is in beta with support for tool result clearing and thinking block clearing. To enable it, use the beta header `context-management-2025-06-27` in your API requests."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.context-editing-clear-thinking"
+  claim: "The clear_thinking_20251015 strategy manages thinking blocks from earlier assistant turns."
+  source: "https://platform.claude.com/docs/en/build-with-claude/context-editing"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/context-editing.md"
+  quote: "The `clear_thinking_20251015` strategy manages `thinking` blocks from earlier assistant turns."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.context-editing-clear-tool-uses"
+  claim: "The clear_tool_uses_20250919 strategy clears tool results when context grows beyond a configured threshold."
+  source: "https://platform.claude.com/docs/en/build-with-claude/context-editing"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/context-editing.md"
+  quote: "The `clear_tool_uses_20250919` strategy clears tool results when conversation context grows beyond your configured threshold."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.effort-default-medium-opus-5-5-haiku-5-5"
+  claim: "Most Claude models default to high effort; Claude Opus 5.5 and Claude Haiku 5.5 default to medium."
+  source: "https://platform.claude.com/docs/en/build-with-claude/effort"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/effort.md"
+  quote: "Most Claude models default to high effort, spending as many tokens as needed for excellent results; Claude Opus 5.5 and Claude Haiku 5.5 default to medium."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.effort-five-levels"
+  claim: "The effort page says Claude Fable 5.1 supports all five effort levels."
+  source: "https://platform.claude.com/docs/en/build-with-claude/effort"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/effort.md"
+  quote: "Claude Fable 5.1 supports all five effort levels."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.effort-location"
+  claim: "Effort is set with output_config.effort on the request."
+  source: "https://platform.claude.com/docs/en/build-with-claude/effort"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/effort.md"
+  quote: "Set `output_config.effort` on the request."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.effort-max-availability"
+  claim: "The effort page lists the models on which the max level is available."
+  source: "https://platform.claude.com/docs/en/build-with-claude/effort"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/effort.md"
+  quote: "Absolute maximum capability with no constraints on token spending. Available on Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Mythos Preview, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, Claude Sonnet 5.5, Claude Sonnet 5, Claude Sonnet 4.6, and Claude Haiku 5.5."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.effort-not-all-max-support-xhigh"
+  claim: "Not every model that supports max also supports xhigh."
+  source: "https://platform.claude.com/docs/en/build-with-claude/effort"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/effort.md"
+  quote: "Not every model that supports `max` supports `xhigh`."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.effort-opus-4-5-levels"
+  claim: "The effort page's allowed levels for Claude Opus 4.5 are not stated; the page calls Opus 4.5 the only extended-thinking-only model that supports effort."
+  source: "https://platform.claude.com/docs/en/build-with-claude/effort"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/effort.md"
+  quote: "On Claude Opus 4.5, the only extended-thinking-only model that supports effort,"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "Skill says Opus 4.5 accepts only low, medium and high. This page does not list Opus 4.5's levels. Opus 4.5 is absent from the max and xhigh availability lists, which is consistent with the skill but does not confirm it."
+
+- id: "api.effort-xhigh-availability"
+  claim: "The effort page lists the models on which the xhigh level is available."
+  source: "https://platform.claude.com/docs/en/build-with-claude/effort"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/effort.md"
+  quote: "Extended capability for long-horizon work. Available on Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5.5, Claude Sonnet 5, and Claude Haiku 5.5."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.error-400-invalid-request"
+  claim: "HTTP 400 carries error type invalid_request_error for a request format or content problem."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "400 - `invalid_request_error`: There was an issue with the format or content of your request."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.error-429-rate-limit"
+  claim: "HTTP 429 carries error type rate_limit_error when a rate limit, spend cap or Claude Code workspace limit is reached."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "429 - `rate_limit_error`: Your organization has hit a [rate limit](https://platform.claude.com/docs/en/api/rate-limits), reached its usage tier's monthly spend cap, or reached a spend limit on the Claude Code workspace."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.error-429-retry-after"
+  claim: "A rate-limit 429 response includes a retry-after header that says how long to wait."
+  source: "https://platform.claude.com/docs/en/api/rate-limits"
+  source_alt: "https://platform.claude.com/docs/en/api/rate-limits.md"
+  quote: "along with a `retry-after` header indicating how long to wait."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.error-429-spend-cap-no-retry-after"
+  claim: "A tier spend-cap 429 has no retry-after header and keeps failing until access resumes."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "A tier spend-cap 429 has no `retry-after` header and keeps failing until access resumes"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.error-500-api-error"
+  claim: "HTTP 500 carries error type api_error for an unexpected internal error."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "500 - `api_error`: An unexpected error has occurred internal to Anthropic's systems."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.error-504-timeout"
+  claim: "HTTP 504 carries error type timeout_error when the request timed out while processing."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "504 - `timeout_error`: The request timed out while processing."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.error-529-overloaded"
+  claim: "HTTP 529 carries error type overloaded_error, meaning the API is temporarily overloaded."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "529 - `overloaded_error`: The API is temporarily overloaded."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.error-529-retry-after"
+  claim: "Whether a 529 response includes a retry-after header is not stated in the docs."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "honoring the `retry-after` header when present."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "The docs say the SDK retries transient failures and honors retry-after when present. They do not say that 529 responses carry retry-after. The SDK maps 529 to OverloadedError (SDK 1.13.0, _client.py)."
+
+- id: "api.error-sdk-retries"
+  claim: "The official SDK retries transient failures twice by default with exponential backoff, honoring retry-after when present."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "The official SDK automatically retries transient failures (such as connection errors, rate limits, and 5xx server errors) with exponential backoff, twice by default, honoring the `retry-after` header when present."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.messages-create-endpoint"
+  claim: "Creating a message is a POST to /v1/messages."
+  source: "https://platform.claude.com/docs/en/api/messages/create"
+  source_alt: "https://platform.claude.com/docs/en/api/messages/create.md"
+  quote: "**POST** `/v1/messages`"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.prefill-claude-4-6-and-later"
+  claim: "Claude 4.6 and later models and Claude Mythos Preview do not support assistant prefill; a prefilled last assistant message returns HTTP 400 invalid_request_error."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "Claude 4.6 and later models and [Claude Mythos Preview](https://anthropic.com/glasswing) do not support prefilling assistant messages. Sending a request with a prefilled last assistant message to any of these models returns a 400 `invalid_request_error`:"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.prefill-claude-fable-5-1"
+  claim: "Claude Fable 5.1 returns a 400 error when the assistant message is prefilled."
+  source: "https://platform.claude.com/docs/en/models/fable-5-1/migration-guide"
+  source_alt: "https://platform.claude.com/docs/en/models/fable-5-1/migration-guide.md"
+  quote: "**Prefill:** Prefilling the assistant message returns a 400 error, unchanged from Claude Fable 5."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.prefill-claude-haiku-5-5"
+  claim: "Claude Haiku 5.5 rejects a prefilled final assistant turn with a 400 error, even with thinking turned off."
+  source: "https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide"
+  source_alt: "https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide.md"
+  quote: "Claude Haiku 5.5 rejects it with a 400 error, even with thinking turned off."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.prefill-claude-opus-5-5"
+  claim: "Claude Opus 5.5 rejects a messages array that ends with a prefilled assistant turn."
+  source: "https://platform.claude.com/docs/en/models/opus-5-5/migration-guide"
+  source_alt: "https://platform.claude.com/docs/en/models/opus-5-5/migration-guide.md"
+  quote: "**Prefill:** Don't end `messages` with a prefilled assistant turn: it is rejected."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.prefill-claude-sonnet-5-5"
+  claim: "Claude Sonnet 5.5 rejects a prefilled last assistant turn with a 400 error, as Claude Sonnet 4.6 and Claude Sonnet 5 do."
+  source: "https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide"
+  source_alt: "https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide.md"
+  quote: "Claude Sonnet 5.5 rejects a prefilled last assistant turn with a 400 error, as Claude Sonnet 4.6 and Claude Sonnet 5 do."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.prefill-thinking-on-or-off"
+  claim: "Claude 4.6 and later models reject a prefilled final assistant turn with a 400 error whether or not thinking is on."
+  source: "https://platform.claude.com/docs/en/build-with-claude/thinking"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/thinking.md"
+  quote: "Claude 4.6 and later models and Claude Mythos Preview reject a prefilled final assistant turn with a 400 error, whether or not thinking is on"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.retry-after-meaning"
+  claim: "retry-after is the number of seconds to wait before retrying, and earlier retries fail."
+  source: "https://platform.claude.com/docs/en/api/rate-limits"
+  source_alt: "https://platform.claude.com/docs/en/api/rate-limits.md"
+  quote: "The number of seconds to wait until you can retry the request. Earlier retries will fail."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.stop-reason-end-turn"
+  claim: "end_turn is the stop reason when Claude finished its response naturally."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "Claude finished its response naturally."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.stop-reason-max-tokens"
+  claim: "max_tokens is the stop reason when the response reached the request's max_tokens limit."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "The response reached your `max_tokens` limit."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.stop-reason-model-context-window-exceeded"
+  claim: "model_context_window_exceeded is the stop reason when the response stopped because it reached the model's context window limit."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "Claude stopped because it reached the model's context window limit."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.stop-reason-pause-turn"
+  claim: "pause_turn is the stop reason when a server-tool loop reached its iteration limit."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "A server-tool loop reached its iteration limit."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.stop-reason-refusal"
+  claim: "refusal is the stop reason when Claude declined to generate a response, returned as a normal HTTP 200 response rather than an error."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "Claude declined to generate a response. Safety classifiers return this stop reason as a normal HTTP 200 response, not an error."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.stop-reason-stop-sequence"
+  claim: "stop_sequence is the stop reason when Claude emitted one of the request's stop_sequences."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "Claude emitted one of your `stop_sequences`."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.stop-reason-tool-use"
+  claim: "tool_use is the stop reason when Claude is calling a tool and expects the application to run it."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "Claude is calling a tool and expects you to run it."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.structured-outputs-citations-incompatible"
+  claim: "Enabling citations together with output_config.format returns a 400 error."
+  source: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md"
+  quote: "Returns 400 error if citations enabled with `output_config.format`."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.structured-outputs-ga"
+  claim: "Structured outputs is generally available on the Claude API."
+  source: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md"
+  quote: "Claude API: ga"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.structured-outputs-json-param"
+  claim: "JSON outputs are requested with output_config.format of type json_schema."
+  source: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md"
+  quote: "The request carries the schema in `output_config.format` with `type: \"json_schema\"`."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.structured-outputs-output-format-deprecated"
+  claim: "The output_format parameter has moved to output_config.format and is deprecated."
+  source: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md"
+  quote: "The `output_format` parameter has moved to `output_config.format`, and beta headers are no longer required. The `output_format` parameter is deprecated and will be removed in the future."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.structured-outputs-parse-helper-arg"
+  claim: "The Python parse helper takes the Pydantic model as an output_format argument, and the SDK sends it as output_config.format."
+  source: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md"
+  quote: "Pass a [Pydantic](https://docs.pydantic.dev/) model to `client.messages.parse()`, the recommended method, as `output_format`. The SDK transforms the model's schema, sends it as `output_config.format`, validates the response, and returns the parsed model in `parsed_output`."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.structured-outputs-prefill-incompatible"
+  claim: "Message prefilling is incompatible with JSON outputs."
+  source: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md"
+  quote: "**Message Prefilling:** Incompatible with JSON outputs"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.structured-outputs-strict-tool-use"
+  claim: "Strict tool use is set with strict: true and guarantees schema validation of tool names and inputs."
+  source: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md"
+  quote: "**Strict tool use** (`strict: true`): Guarantee schema validation on tool names and inputs."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.thinking-adaptive-recommended"
+  claim: "Anthropic says to use adaptive thinking wherever both thinking modes are available."
+  source: "https://platform.claude.com/docs/en/build-with-claude/extended-thinking"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md"
+  quote: "Where both modes are available, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) instead."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.thinking-blocks-pass-back-tool-use"
+  claim: "During tool use, thinking blocks from the assistant turn must be passed back complete and unmodified alongside the tool_use block."
+  source: "https://platform.claude.com/docs/en/build-with-claude/thinking"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/thinking.md"
+  quote: "Pass every `thinking` block back to the API complete and unmodified, alongside the `tool_use` block it accompanied."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.thinking-budget-tokens-deprecated"
+  claim: "Manual thinking with type enabled and budget_tokens is deprecated on Claude 4.6 models, where requests still succeed, and is rejected with HTTP 400 on Claude 4.7 and later."
+  source: "https://platform.claude.com/docs/en/build-with-claude/extended-thinking"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md"
+  quote: "Extended thinking (`thinking.type: \"enabled\"` with `budget_tokens`) is deprecated on the Claude 4.6 models (requests using it still succeed). Claude 4.7 and later models do not support it and reject requests that use it, returning a 400 error."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.thinking-display-default-omitted"
+  claim: "The docs name omitted as the default display setting on the listed models, including Claude Opus 5.5 and Claude Haiku 5.5."
+  source: "https://platform.claude.com/docs/en/build-with-claude/thinking"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/thinking.md"
+  quote: "This is the default on Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Sonnet 5.5, Claude Sonnet 5, Claude Opus 4.8, Claude Opus 4.7, [Claude Mythos Preview](https://anthropic.com/glasswing), and Claude Haiku 5.5."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.token-count-endpoint"
+  claim: "Token counting is a POST to /v1/messages/count_tokens."
+  source: "https://platform.claude.com/docs/en/api/messages/count_tokens"
+  source_alt: "https://platform.claude.com/docs/en/api/messages/count_tokens.md"
+  quote: "**POST** `/v1/messages/count_tokens`"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.token-count-response"
+  claim: "The token-count response contains the total number of input tokens."
+  source: "https://platform.claude.com/docs/en/build-with-claude/token-counting"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/token-counting.md"
+  quote: "The response contains the total number of input tokens."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.token-count-status"
+  claim: "Token counting is generally available on the Claude API."
+  source: "https://platform.claude.com/docs/en/build-with-claude/token-counting"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/token-counting.md"
+  quote: "Claude API: ga"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.tool-choice-adaptive-forced-exceptions"
+  claim: "Forced tool use works with adaptive thinking, except that Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1 and Claude Mythos 5.1 reject it on every request with a 400 error."
+  source: "https://platform.claude.com/docs/en/build-with-claude/thinking"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/thinking.md"
+  quote: "Forced tool use (`tool_choice: {\"type\": \"any\"}` or `{\"type\": \"tool\", ...}`) is incompatible with manual extended thinking but works with adaptive thinking. The exceptions are Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and Claude Mythos 5.1, which reject forced tool use on every request with a 400 error."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.tool-choice-manual-thinking-allowed"
+  claim: "With manual extended thinking (thinking type enabled), tool_choice may only be auto or none; any and tool return an error."
+  source: "https://platform.claude.com/docs/en/build-with-claude/thinking"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/thinking.md"
+  quote: "tool use with manual extended thinking (`thinking: {type: \"enabled\"}`) only supports `tool_choice: {\"type\": \"auto\"}` (the default) or `tool_choice: {\"type\": \"none\"}`."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.tool-choice-unsupported-fallback"
+  claim: "Where forced tool use is not supported, tool_choice any and tool fail while auto and none still work."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md"
+  quote: "Where it isn't supported, `tool_choice: {\"type\": \"any\"}` and `tool_choice: {\"type\": \"tool\", \"name\": \"...\"}` fail, while `tool_choice: {\"type\": \"auto\"}` (the default) and `tool_choice: {\"type\": \"none\"}` still work:"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.tool-result-blocks-first"
+  claim: "In the user message that carries tool results, every tool_result block comes before any text content in that message."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md"
+  quote: "put every `tool_result` block before any text content in that message."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.tool-result-is-error"
+  claim: "is_error is an optional tool_result field that is set to true when the tool execution resulted in an error."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md"
+  quote: "`is_error` (optional): Set to `true` if the tool execution resulted in an error."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.tool-result-text-after-results"
+  claim: "Any text in the tool-result user message must come after all tool results."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md"
+  quote: "Any text must come AFTER all tool results."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.tool-result-unrun-call"
+  claim: "A tool_use block that is not run still needs a tool_result with is_error true and a brief explanation."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md"
+  quote: "still return a `tool_result` for it with `is_error: true` and a brief explanation."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.tool-results-single-user-message"
+  claim: "The docs say to return one tool_result for each tool_use block, all together in the next user message."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md"
+  quote: "Whichever strategy you use, return one `tool_result` for each `tool_use` block, all together in the next user message."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"

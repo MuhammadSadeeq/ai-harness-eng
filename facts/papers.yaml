@@ -1,0 +1,64 @@
+- id: "papers.react-abstract"
+  claim: "The ReAct abstract's core idea (interleaving reasoning traces with task-specific actions) is the paper's own claim."
+  source: "https://arxiv.org/abs/2210.03629"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "paper"
+  status: "unverifiable"
+  note: "arXiv returned 403 from the egress proxy; the abstract could not be fetched, so no verbatim quote was recorded."
+
+- id: "papers.react-authors"
+  claim: "The ReAct BibTeX in the authors' repo lists Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan and Yuan Cao as authors."
+  source: "https://github.com/ysymyth/ReAct/blob/6bdb3a1fd38b8188fc7ba4102969fe483df8fdc9/README.md"
+  quote: "author = {Yao, Shunyu and Zhao, Jeffrey and Yu, Dian and Du, Nan and Shafran, Izhak and Narasimhan, Karthik and Cao, Yuan},"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "paper"
+  note: "arXiv returned 403 from the egress proxy; verified against the authors' repo BibTeX."
+
+- id: "papers.react-title-id"
+  claim: "The ReAct authors' repo cites ReAct as arXiv 2210.03629, titled 'ReAct: Synergizing Reasoning and Acting in Language Models', ICLR 2023."
+  source: "https://github.com/ysymyth/ReAct/blob/6bdb3a1fd38b8188fc7ba4102969fe483df8fdc9/README.md"
+  quote: "GPT-3 prompting code for ICLR 2023 paper [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "paper"
+  note: "arXiv returned 403 from the egress proxy; verified against the authors' repo citation, not the paper."
+
+- id: "papers.tau-bench-eprint"
+  claim: "The tau-bench authors' BibTeX gives eprint 2406.12045 with archivePrefix arXiv."
+  source: "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/README.md"
+  quote: "eprint={2406.12045},"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "paper"
+  note: "arXiv returned 403 from the egress proxy; verified against the authors' repo BibTeX."
+
+- id: "papers.tau-bench-title-id"
+  claim: "The tau-bench authors' BibTeX gives the title 'τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains' and year 2024."
+  source: "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/README.md"
+  quote: "title={$\\tau$-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains},"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "paper"
+  note: "arXiv returned 403 from the egress proxy; verified against the authors' repo BibTeX."
+
+- id: "papers.tau-passk-code"
+  claim: "tau-bench's code adds comb(c, k) / comb(num_trials, k) for each task, where c counts that task's successful trials."
+  source: "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/tau_bench/run.py"
+  quote: "sum_task_pass_hat_k += comb(c, k) / comb(num_trials, k)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "paper"
+  note: "Code evidence from the authors' repo; it is not the paper's definition text."
+
+- id: "papers.tau-passk-paper-definition"
+  claim: "The tau-bench paper's own definition of pass^k (the paper that introduced it) could not be retrieved."
+  source: "https://arxiv.org/abs/2406.12045"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "paper"
+  status: "unverifiable"
+  note: "arXiv returned 403 from the egress proxy. The repo code computes pass^k (see papers.tau-passk-code), but that is code, not the paper's text."

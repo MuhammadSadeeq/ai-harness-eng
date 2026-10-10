@@ -1,0 +1,57 @@
+- id: "skills.maintainer"
+  claim: "The Agent Skills format was originally developed by Anthropic and released as an open standard."
+  source: "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/README.md"
+  quote: "The Agent Skills format was originally developed by [Anthropic](https://www.anthropic.com/), released as an open standard, and has been adopted by a growing number of agent products."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "skills.open-standard-date"
+  claim: "The date on which Agent Skills was released as an open standard."
+  source: "https://agentskills.io/specification"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+  status: "unverifiable"
+  note: "No release date appears in the spec repo; agentskills.io returned 403 from the egress proxy. Repo HEAD dated 2026-08-09 is not a release date."
+
+- id: "skills.progressive-disclosure"
+  claim: "The Agent Skills spec describes progressive disclosure: agents load skills progressively, adding detail only as a task requires it."
+  source: "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx"
+  quote: "Agents load skills *progressively*, pulling in more detail only as a task calls for it."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "skills.progressive-tier1"
+  claim: "Under progressive disclosure, the name and description of every skill are loaded at startup (about 100 tokens)."
+  source: "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx"
+  quote: "1. **Metadata** (~100 tokens): The `name` and `description` fields are loaded at startup for all skills"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "skills.required-description"
+  claim: "The description field is required, with a maximum of 1024 characters, and describes what the skill does and when to use it."
+  source: "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx"
+  quote: "| `description` | Yes | Max 1024 characters. Non-empty. Describes what the skill does and when to use it. |"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "skills.required-name"
+  claim: "The name field is required, at most 64 characters, and limited to lowercase letters, numbers and hyphens."
+  source: "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx"
+  quote: "| `name` | Yes | Max 64 characters. Lowercase letters, numbers, and hyphens only. Must not start or end with a hyphen. |"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "skills.spec-frontmatter"
+  claim: "The Agent Skills specification requires SKILL.md to contain YAML frontmatter followed by Markdown content."
+  source: "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx"
+  quote: "The `SKILL.md` file must contain YAML frontmatter followed by Markdown content."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"

@@ -1,0 +1,16 @@
+- id: "agentsmd.definition"
+  claim: "AGENTS.md is described by its own README as a simple, open format for guiding coding agents."
+  source: "https://github.com/agentsmd/agents.md/blob/d001185d792eb6402a58e4cbef1c228b309ec25d/README.md"
+  quote: "[AGENTS.md](https://agents.md) is a simple, open format for guiding coding agents."
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "spec"
+
+- id: "agentsmd.stewardship"
+  claim: "The agents.md website states that AGENTS.md is stewarded by the Agentic AI Foundation under the Linux Foundation."
+  source: "https://github.com/agentsmd/agents.md/blob/d001185d792eb6402a58e4cbef1c228b309ec25d/components/AboutSection.tsx"
+  quote: "AGENTS.md is now stewarded by the Agentic AI Foundation under the Linux Foundation."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+  note: "Quote is rendered text from the site's TSX source; agents.md returned 403 from the egress proxy. No source read gives the adoption date."

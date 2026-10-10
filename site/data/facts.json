@@ -1,1 +1,1581 @@
-{}
+{
+ "a2a.governance-linux-foundation": {
+  "claim": "The A2A Protocol is an open source project under the Linux Foundation, contributed by Google.",
+  "kind": "spec",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "a2a.governance-tsc": {
+  "claim": "A2A is maintained by a Technical Steering Committee with representatives from eight named organizations.",
+  "kind": "spec",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/docs/index.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "a2a.latest-version": {
+  "claim": "The newest entry in the A2A changelog is 1.0.1, dated 2026-05-26.",
+  "kind": "spec",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/CHANGELOG.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "aaif.a2a-growth-stage": {
+  "claim": "A2A's post says the protocol was accepted as a Growth Stage project at the Agentic AI Foundation (AAIF).",
+  "kind": "docs",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/docs/blog/posts/a2a-joins-aaif.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "aaif.founding": {
+  "claim": "MCP's announcement says it will become a founding project of the newly created Agentic AI Foundation, a directed fund under the Linux Foundation co-founded by Anthropic, Block and OpenAI.",
+  "kind": "docs",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2025-12-09-mcp-joins-agentic-ai-foundation.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "aaif.projects-a2a-post": {
+  "claim": "A2A's post refers to MCP, goose and AGENTS.md as sibling projects of AAIF.",
+  "kind": "docs",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/docs/blog/posts/a2a-joins-aaif.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "agentsmd.definition": {
+  "claim": "AGENTS.md is described by its own README as a simple, open format for guiding coding agents.",
+  "kind": "spec",
+  "source": "https://github.com/agentsmd/agents.md/blob/d001185d792eb6402a58e4cbef1c228b309ec25d/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "agentsmd.stewardship": {
+  "claim": "The agents.md website states that AGENTS.md is stewarded by the Agentic AI Foundation under the Linux Foundation.",
+  "kind": "spec",
+  "source": "https://github.com/agentsmd/agents.md/blob/d001185d792eb6402a58e4cbef1c228b309ec25d/components/AboutSection.tsx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "anthropic.bea-agents": {
+  "claim": "Anthropic defines agents as systems where LLMs dynamically direct their own processes and tool usage.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.bea-published": {
+  "claim": "Anthropic's 'Building effective agents' was published on 2024-12-19.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.bea-start-simple": {
+  "claim": "Anthropic advises finding the simplest solution possible and increasing complexity only when needed.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.bea-tooling-changed": {
+  "claim": "Anthropic's own 2024 post carries a note that much of its tooling landscape has changed since December 2024.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "anthropic.bea-workflows": {
+  "claim": "Anthropic defines workflows as systems where LLMs and tools are orchestrated through predefined code paths.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.ctx-attention-budget": {
+  "claim": "Anthropic describes LLMs as having an attention budget that they draw on when parsing large volumes of context.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.ctx-context-rot": {
+  "claim": "Anthropic describes context rot: recall accuracy decreases as the number of tokens in the context window increases.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.ctx-definition": {
+  "claim": "Anthropic defines context engineering as curating and maintaining the optimal set of tokens during LLM inference.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.ctx-published": {
+  "claim": "Anthropic's 'Effective context engineering for AI agents' was published on 2025-09-29.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.harn-initializer-agent": {
+  "claim": "Anthropic's initializer agent runs the first session with a specialized prompt that sets up the environment, including init.sh, a progress log file and an initial git commit.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.harn-progress-file": {
+  "claim": "Anthropic says the claude-progress.txt file, alongside git history, lets a fresh agent quickly understand the state of work.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.harn-published": {
+  "claim": "Anthropic's 'Effective harnesses for long-running agents' was published on 2025-11-26.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.twt-meaningful-context": {
+  "claim": "Anthropic's second tool-writing principle is returning meaningful context from tools back to agents.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.twt-namespacing": {
+  "claim": "Anthropic's first tool-writing principle is namespacing tools to define clear boundaries in functionality.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.twt-published": {
+  "claim": "Anthropic's 'Writing effective tools for agents' was published on 2025-09-11.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "anthropic.twt-token-efficiency": {
+  "claim": "Anthropic's third tool-writing principle is optimizing tool responses for token efficiency.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "api.cache-invalidation-effort": {
+  "claim": "Changing output_config.effort always invalidates message blocks.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.cache-invalidation-hierarchy": {
+  "claim": "Cache order is tools, then system, then messages, and a change at one level invalidates that level and every level after it.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.cache-invalidation-images": {
+  "claim": "Adding or removing images anywhere in the prompt affects only the messages cache.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.cache-invalidation-system-web-search": {
+  "claim": "Enabling or disabling web search modifies the system prompt, and the table marks the system and messages caches as invalidated (the tools cache is not).",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.cache-invalidation-thinking": {
+  "claim": "Changing the thinking configuration always invalidates message blocks, and tool and system caches on models that render it ahead of them.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.cache-invalidation-tool-choice": {
+  "claim": "Changing tool_choice invalidates only the messages cache; the tools and system caches remain valid.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.cache-invalidation-tool-definitions": {
+  "claim": "Modifying tool definitions (names, descriptions, parameters) invalidates the entire cache.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.cache-ttl-default-5m-and-1h": {
+  "claim": "The default cache TTL is 5 minutes, and a 1-hour TTL is available at 2x the base input token price.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.compaction-each-kind-own-header": {
+  "claim": "Each compaction kind has its own beta header, so each page has its own list.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.compaction-on-demand-beta-header": {
+  "claim": "On-demand compaction is in beta and uses the compact-2026-09-04 beta header.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.compaction-on-demand-parameter": {
+  "claim": "On-demand compaction is requested with a top-level compaction parameter of type summarize.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.compaction-threshold-beta-header": {
+  "claim": "Threshold compaction is in beta and uses the compact-2026-01-12 beta header.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction-threshold",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.compaction-threshold-strategy": {
+  "claim": "Threshold compaction is enabled by adding a compact_20260112 strategy to context_management.edits.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction-threshold",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.context-editing-beta-header": {
+  "claim": "Context editing is in beta and is enabled with the context-management-2025-06-27 beta header.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.context-editing-clear-thinking": {
+  "claim": "The clear_thinking_20251015 strategy manages thinking blocks from earlier assistant turns.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.context-editing-clear-tool-uses": {
+  "claim": "The clear_tool_uses_20250919 strategy clears tool results when context grows beyond a configured threshold.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.effort-default-medium-opus-5-5-haiku-5-5": {
+  "claim": "Most Claude models default to high effort; Claude Opus 5.5 and Claude Haiku 5.5 default to medium.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.effort-five-levels": {
+  "claim": "The effort page says Claude Fable 5.1 supports all five effort levels.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.effort-location": {
+  "claim": "Effort is set with output_config.effort on the request.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.effort-max-availability": {
+  "claim": "The effort page lists the models on which the max level is available.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.effort-not-all-max-support-xhigh": {
+  "claim": "Not every model that supports max also supports xhigh.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.effort-xhigh-availability": {
+  "claim": "The effort page lists the models on which the xhigh level is available.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.error-400-invalid-request": {
+  "claim": "HTTP 400 carries error type invalid_request_error for a request format or content problem.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.error-429-rate-limit": {
+  "claim": "HTTP 429 carries error type rate_limit_error when a rate limit, spend cap or Claude Code workspace limit is reached.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.error-429-retry-after": {
+  "claim": "A rate-limit 429 response includes a retry-after header that says how long to wait.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/rate-limits",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.error-429-spend-cap-no-retry-after": {
+  "claim": "A tier spend-cap 429 has no retry-after header and keeps failing until access resumes.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.error-500-api-error": {
+  "claim": "HTTP 500 carries error type api_error for an unexpected internal error.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.error-504-timeout": {
+  "claim": "HTTP 504 carries error type timeout_error when the request timed out while processing.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.error-529-overloaded": {
+  "claim": "HTTP 529 carries error type overloaded_error, meaning the API is temporarily overloaded.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.error-sdk-retries": {
+  "claim": "The official SDK retries transient failures twice by default with exponential backoff, honoring retry-after when present.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.messages-create-endpoint": {
+  "claim": "Creating a message is a POST to /v1/messages.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/messages/create",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.prefill-claude-4-6-and-later": {
+  "claim": "Claude 4.6 and later models and Claude Mythos Preview do not support assistant prefill; a prefilled last assistant message returns HTTP 400 invalid_request_error.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.prefill-claude-fable-5-1": {
+  "claim": "Claude Fable 5.1 returns a 400 error when the assistant message is prefilled.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/models/fable-5-1/migration-guide",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.prefill-claude-haiku-5-5": {
+  "claim": "Claude Haiku 5.5 rejects a prefilled final assistant turn with a 400 error, even with thinking turned off.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.prefill-claude-opus-5-5": {
+  "claim": "Claude Opus 5.5 rejects a messages array that ends with a prefilled assistant turn.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/models/opus-5-5/migration-guide",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.prefill-claude-sonnet-5-5": {
+  "claim": "Claude Sonnet 5.5 rejects a prefilled last assistant turn with a 400 error, as Claude Sonnet 4.6 and Claude Sonnet 5 do.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.prefill-thinking-on-or-off": {
+  "claim": "Claude 4.6 and later models reject a prefilled final assistant turn with a 400 error whether or not thinking is on.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.retry-after-meaning": {
+  "claim": "retry-after is the number of seconds to wait before retrying, and earlier retries fail.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/rate-limits",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.stop-reason-end-turn": {
+  "claim": "end_turn is the stop reason when Claude finished its response naturally.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.stop-reason-max-tokens": {
+  "claim": "max_tokens is the stop reason when the response reached the request's max_tokens limit.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.stop-reason-model-context-window-exceeded": {
+  "claim": "model_context_window_exceeded is the stop reason when the response stopped because it reached the model's context window limit.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.stop-reason-pause-turn": {
+  "claim": "pause_turn is the stop reason when a server-tool loop reached its iteration limit.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.stop-reason-refusal": {
+  "claim": "refusal is the stop reason when Claude declined to generate a response, returned as a normal HTTP 200 response rather than an error.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.stop-reason-stop-sequence": {
+  "claim": "stop_sequence is the stop reason when Claude emitted one of the request's stop_sequences.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.stop-reason-tool-use": {
+  "claim": "tool_use is the stop reason when Claude is calling a tool and expects the application to run it.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.structured-outputs-citations-incompatible": {
+  "claim": "Enabling citations together with output_config.format returns a 400 error.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.structured-outputs-ga": {
+  "claim": "Structured outputs is generally available on the Claude API.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.structured-outputs-json-param": {
+  "claim": "JSON outputs are requested with output_config.format of type json_schema.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.structured-outputs-output-format-deprecated": {
+  "claim": "The output_format parameter has moved to output_config.format and is deprecated.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.structured-outputs-parse-helper-arg": {
+  "claim": "The Python parse helper takes the Pydantic model as an output_format argument, and the SDK sends it as output_config.format.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.structured-outputs-prefill-incompatible": {
+  "claim": "Message prefilling is incompatible with JSON outputs.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.structured-outputs-strict-tool-use": {
+  "claim": "Strict tool use is set with strict: true and guarantees schema validation of tool names and inputs.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.thinking-adaptive-recommended": {
+  "claim": "Anthropic says to use adaptive thinking wherever both thinking modes are available.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.thinking-blocks-pass-back-tool-use": {
+  "claim": "During tool use, thinking blocks from the assistant turn must be passed back complete and unmodified alongside the tool_use block.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.thinking-budget-tokens-deprecated": {
+  "claim": "Manual thinking with type enabled and budget_tokens is deprecated on Claude 4.6 models, where requests still succeed, and is rejected with HTTP 400 on Claude 4.7 and later.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.thinking-display-default-omitted": {
+  "claim": "The docs name omitted as the default display setting on the listed models, including Claude Opus 5.5 and Claude Haiku 5.5.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.token-count-endpoint": {
+  "claim": "Token counting is a POST to /v1/messages/count_tokens.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/messages/count_tokens",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.token-count-response": {
+  "claim": "The token-count response contains the total number of input tokens.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.token-count-status": {
+  "claim": "Token counting is generally available on the Claude API.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.tool-choice-adaptive-forced-exceptions": {
+  "claim": "Forced tool use works with adaptive thinking, except that Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1 and Claude Mythos 5.1 reject it on every request with a 400 error.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.tool-choice-manual-thinking-allowed": {
+  "claim": "With manual extended thinking (thinking type enabled), tool_choice may only be auto or none; any and tool return an error.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.tool-choice-unsupported-fallback": {
+  "claim": "Where forced tool use is not supported, tool_choice any and tool fail while auto and none still work.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.tool-result-blocks-first": {
+  "claim": "In the user message that carries tool results, every tool_result block comes before any text content in that message.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.tool-result-is-error": {
+  "claim": "is_error is an optional tool_result field that is set to true when the tool execution resulted in an error.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.tool-result-text-after-results": {
+  "claim": "Any text in the tool-result user message must come after all tool results.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.tool-result-unrun-call": {
+  "claim": "A tool_use block that is not run still needs a tool_result with is_error true and a brief explanation.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.tool-results-single-user-message": {
+  "claim": "The docs say to return one tool_result for each tool_use block, all together in the next user message.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "evals.grader": {
+  "claim": "Anthropic defines a grader as logic that scores some aspect of the agent's performance; a task can have several graders.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "evals.outcome": {
+  "claim": "Anthropic defines the outcome as the final state in the environment at the end of the trial.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "evals.pass-at-k": {
+  "claim": "pass@k measures the likelihood that an agent gets at least one correct solution in k attempts (Anthropic's definition).",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "evals.pass-hat-k": {
+  "claim": "pass^k measures the probability that all k trials succeed (Anthropic's definition).",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "evals.published": {
+  "claim": "Anthropic's 'Demystifying evals for AI agents' was published on 2026-01-09.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "evals.task": {
+  "claim": "Anthropic defines a task as a single test with defined inputs and success criteria.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "evals.tau-successor": {
+  "claim": "Anthropic's evals page calls 𝜏-Bench and its successor τ2-Bench benchmarks that incorporate multidimensionality.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "evals.transcript": {
+  "claim": "Anthropic defines a transcript (also called trace or trajectory) as the complete record of a trial.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "evals.trial": {
+  "claim": "Anthropic defines each attempt at a task as a trial.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "mcp.annotation-destructive": {
+  "claim": "destructiveHint: if true, the tool may perform destructive updates to its environment.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.annotation-idempotent": {
+  "claim": "idempotentHint: if true, calling the tool repeatedly with the same arguments has no additional effect on its environment.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.annotation-openworld": {
+  "claim": "openWorldHint: if true, the tool may interact with an open world of external entities.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.annotation-readonly": {
+  "claim": "readOnlyHint: if true, the tool does not modify its environment.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.annotations-hints": {
+  "claim": "The spec schema states that all ToolAnnotations properties are hints that may not faithfully describe tool behaviour.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.annotations-names": {
+  "claim": "The ToolAnnotations interface in the spec schema declares a readOnlyHint boolean member.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.annotations-untrusted-schema": {
+  "claim": "The spec schema says clients should never make tool-use decisions based on ToolAnnotations received from untrusted servers.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.annotations-untrusted-tools": {
+  "claim": "The 2026-07-28 tools page requires clients to treat tool annotations as untrusted unless they come from trusted servers.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/server/tools.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.auth-basis": {
+  "claim": "The 2026-07-28 authorization page lists the OAuth 2.1 IETF draft (draft-ietf-oauth-v2-1-13) among the specifications its mechanism is based on.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/authorization/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.auth-oauth21-must": {
+  "claim": "Implementors of the 2026-07-28 spec MUST follow OAuth 2.1 security best practices.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/authorization/security-considerations.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.auth-optional": {
+  "claim": "Authorization is OPTIONAL for MCP implementations in the 2026-07-28 spec.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/authorization/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.client-features-2025-11-25": {
+  "claim": "The 2025-11-25 index lists Sampling, Roots and Elicitation as features clients may offer to servers.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/docs/specification/2025-11-25/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "mcp.client-features-2026": {
+  "claim": "The 2026-07-28 index lists Elicitation as the feature clients may offer to servers; Sampling and Roots are not in that list.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.deprecated-guidance": {
+  "claim": "The 2026-07-28 changelog says new implementations should not adopt deprecated features.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.deprecated-roots-sampling-logging": {
+  "claim": "The 2026-07-28 revision deprecates the Roots, Sampling and Logging features.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.docs-latest-label": {
+  "claim": "The MCP docs navigation labels revision 2026-07-28 as the latest spec version.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/docs.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.ga-announcement": {
+  "claim": "MCP's GA post announces the 2026-07-28 specification release.",
+  "kind": "docs",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2026-07-28-spec-ga/index.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "mcp.governance-aaif": {
+  "claim": "Anthropic is donating MCP to the Agentic AI Foundation, a directed fund under the Linux Foundation.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2025-12-09-mcp-joins-agentic-ai-foundation.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "mcp.governance-lf-neutral": {
+  "claim": "MCP's announcement says the Linux Foundation will not dictate the technical direction of MCP.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2025-12-09-mcp-joins-agentic-ai-foundation.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "mcp.latest-revision": {
+  "claim": "The MCP spec repo sets LATEST_PROTOCOL_VERSION to 2026-07-28.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.release-tag": {
+  "claim": "The commit tagged 2026-07-28 has the subject 'Merge pull request #3158 from modelcontextprotocol/claude/subscriptions-listen-envelope'.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/commit/5f5440bb26a62e2cf3440b92da5a667efa03b267",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "mcp.server-discover": {
+  "claim": "The 2026-07-28 revision adds a server/discover RPC that servers MUST implement.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.server-features": {
+  "claim": "The 2026-07-28 index lists Resources, Prompts and Tools as features servers offer to clients.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.sessions-removed": {
+  "claim": "The 2026-07-28 revision removes protocol-level sessions and the Mcp-Session-Id header from Streamable HTTP.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.stateless-core": {
+  "claim": "The 2026-07-28 revision removes the initialize/notifications/initialized handshake to make MCP stateless.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.tasks-extension": {
+  "claim": "The 2026-07-28 revision moves experimental tasks out of the core protocol into an official extension named io.modelcontextprotocol/tasks.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.transport-http-sse-changelog": {
+  "claim": "The 2026-07-28 changelog reclassifies the HTTP+SSE transport (deprecated since protocol version 2025-03-26) as Deprecated under the feature lifecycle policy.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.transports-standard": {
+  "claim": "The transports page describes stdio as newline-delimited messages over the standard streams of a client-launched subprocess.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/transports/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "mcp.transports-streamable-http": {
+  "claim": "The transports page says each Streamable HTTP message is an HTTP POST to a single MCP endpoint.",
+  "kind": "spec",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/transports/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.aliases": {
+  "claim": "Dateless model IDs are their own pinned snapshots, and the alias row repeats them.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/models/overview",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.cache-min-1024-tokens": {
+  "claim": "The minimum cacheable prompt is 1,024 tokens for Opus 4.8, Sonnet 5 and Sonnet 4.6.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.cache-min-2048-tokens": {
+  "claim": "The minimum cacheable prompt is 2,048 tokens for Opus 4.7.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.cache-min-4096-tokens": {
+  "claim": "The minimum cacheable prompt is 4,096 tokens for Opus 4.6 and Opus 4.5.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.cache-min-512-tokens": {
+  "claim": "The minimum cacheable prompt is 512 tokens for Fable 5.1, Mythos 5.1, Opus 5.5, Opus 5, Sonnet 5.5, Fable 5, Mythos 5 and Haiku 5.5.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.cache-read-multiplier": {
+  "claim": "Cache reads cost 0.1x base input, 0.025x on Fable 5.1 and Mythos 5.1, and 0.05x on Opus 5.5 and Sonnet 5.5.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.cache-write-1h-multiplier": {
+  "claim": "A 1-hour cache write costs 2x base input price and is valid for 1 hour.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.cache-write-5m-multiplier": {
+  "claim": "A 5-minute cache write costs 1.25x base input price and is valid for 5 minutes.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.context-window": {
+  "claim": "The models overview lists a 1M-token context window for each of the four current models.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/models/overview",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.fable-5-1-price": {
+  "claim": "Claude Fable 5.1 base input is $10 per MTok, output $50 per MTok, and cache hits $0.25 per MTok.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.25,
+   "input_usd_per_mtok": 10,
+   "output_usd_per_mtok": 50
+  },
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.haiku-5-5-price-over-100k": {
+  "claim": "Claude Haiku 5.5 for prompts over 100,000 tokens is $0.50 input, $2.50 output and $0.05 cache hit per MTok.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.05,
+   "input_usd_per_mtok": 0.5,
+   "output_usd_per_mtok": 2.5,
+   "over_prompt_tokens": 100000
+  },
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.haiku-5-5-price-up-to-100k": {
+  "claim": "Claude Haiku 5.5 for prompts up to 100,000 tokens is $0.10 input, $0.50 output and $0.01 cache hit per MTok.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.01,
+   "input_usd_per_mtok": 0.1,
+   "max_prompt_tokens": 100000,
+   "output_usd_per_mtok": 0.5
+  },
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.ids-current": {
+  "claim": "The models overview gives Claude API IDs claude-fable-5-1, claude-opus-5-5, claude-sonnet-5-5 and claude-haiku-5-5 for the four current models.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/models/overview",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.max-output": {
+  "claim": "The models overview lists 128K max output tokens for each of the four current models.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/models/overview",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.opus-5-5-price": {
+  "claim": "Claude Opus 5.5 base input is $4 per MTok, output $20 per MTok, and cache hits $0.20 per MTok.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.2,
+   "input_usd_per_mtok": 4,
+   "output_usd_per_mtok": 20
+  },
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "models.sonnet-5-5-price": {
+  "claim": "Claude Sonnet 5.5 base input is $2 per MTok, output $10 per MTok, and cache hits $0.10 per MTok.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.1,
+   "input_usd_per_mtok": 2,
+   "output_usd_per_mtok": 10
+  },
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.attr-conversation-id": {
+  "claim": "gen_ai.conversation.id identifies a conversation (session, thread).",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.attr-request-model": {
+  "claim": "gen_ai.request.model holds the name of the model a request is made to.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.attr-system-deprecated": {
+  "claim": "The core CHANGELOG (v1.38.0) refers to gen_ai.system as a deprecated attribute.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions/blob/68e89181d4cb9bbce975c8128e694363214ab5fb/CHANGELOG.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.attr-system-renamed": {
+  "claim": "gen_ai.system was renamed to gen_ai.provider.name in semantic conventions v1.37.0 (breaking change).",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions/blob/68e89181d4cb9bbce975c8128e694363214ab5fb/CHANGELOG.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.attr-tool-call-id": {
+  "claim": "gen_ai.tool.call.id is the tool call identifier.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.attr-tool-name": {
+  "claim": "gen_ai.tool.name is the name of the tool used by the agent.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.attr-usage-input": {
+  "claim": "gen_ai.usage.input_tokens counts the tokens used in the GenAI input (prompt).",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.attr-usage-output": {
+  "claim": "gen_ai.usage.output_tokens counts the tokens used in the GenAI response (completion).",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.genai-moved-repo": {
+  "claim": "Core semantic conventions deprecated their gen_ai.* definitions and moved them to a dedicated GenAI repository.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions/blob/68e89181d4cb9bbce975c8128e694363214ab5fb/CHANGELOG.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.genai-registry-version": {
+  "claim": "The GenAI registry manifest declares schema_url gen-ai-dev/1.42.0-dev.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/manifest.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.genai-stability": {
+  "claim": "The OpenTelemetry GenAI semantic conventions registry manifest declares stability: development.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/manifest.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.op-chat": {
+  "claim": "The chat member of gen_ai.operation.name is described as a chat completion operation.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.op-execute-tool": {
+  "claim": "For tool execution spans, gen_ai.operation.name SHOULD be execute_tool.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.op-invoke-agent": {
+  "claim": "For the invoke_agent client span, gen_ai.operation.name SHOULD be invoke_agent.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.span-chat-name": {
+  "claim": "The inference client span name SHOULD be '{gen_ai.operation.name} {gen_ai.request.model}'.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.span-create-agent-name": {
+  "claim": "The create_agent client span name SHOULD be 'create_agent {gen_ai.agent.name}'.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.span-execute-tool-name": {
+  "claim": "The execute_tool span name SHOULD be 'execute_tool {gen_ai.tool.name}'.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "otel.span-invoke-agent-name": {
+  "claim": "The invoke_agent span name SHOULD be 'invoke_agent {gen_ai.agent.name}' when gen_ai.agent.name is readily available.",
+  "kind": "spec",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "owasp.asi-asi01-agent-goal-hijack": {
+  "claim": "ASI01 in the OWASP Top 10 for Agentic Applications is titled 'Agent Goal Hijack'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-asi02-tool-misuse-exploitation": {
+  "claim": "ASI02 in the OWASP Top 10 for Agentic Applications is titled 'Tool Misuse & Exploitation'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-asi03-identity-privilege-abuse": {
+  "claim": "ASI03 in the OWASP Top 10 for Agentic Applications is titled 'Identity & Privilege Abuse'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-asi04-agentic-supply-chain-vulnerabilities": {
+  "claim": "ASI04 in the OWASP Top 10 for Agentic Applications is titled 'Agentic Supply Chain Vulnerabilities'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-asi05-unexpected-code-execution-rce": {
+  "claim": "ASI05 in the OWASP Top 10 for Agentic Applications is titled 'Unexpected Code Execution (RCE)'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-asi06-memory-context-poisoning": {
+  "claim": "ASI06 in the OWASP Top 10 for Agentic Applications is titled 'Memory & Context Poisoning'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-asi07-insecure-inter-agent-communication": {
+  "claim": "ASI07 in the OWASP Top 10 for Agentic Applications is titled 'Insecure Inter-Agent Communication'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-asi08-cascading-failures": {
+  "claim": "ASI08 in the OWASP Top 10 for Agentic Applications is titled 'Cascading Failures'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-asi09-human-agent-trust-exploitation": {
+  "claim": "ASI09 in the OWASP Top 10 for Agentic Applications is titled 'Human-Agent Trust Exploitation'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-asi10-rogue-agents": {
+  "claim": "ASI10 in the OWASP Top 10 for Agentic Applications is titled 'Rogue Agents'.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.asi-list-version": {
+  "claim": "The OWASP Top 10 for Agentic Applications (ASI) mapping file is labelled version 2026 and announced 2025-12-09.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "owasp.llm-2026-release": {
+  "claim": "The OWASP Top 10 for LLM Applications 2026 has a release date of August 4, 2026.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "owasp.llm01-2025-definition": {
+  "claim": "In the 2025 edition LLM01:2025 Prompt Injection was defined as user prompts altering LLM behaviour or output in unintended ways.",
+  "kind": "spec",
+  "source": "https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/blob/99f4395589bdbd120ae961f9cd179e79d7f9b27f/2_0_vulns/LLM01_PromptInjection.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "owasp.llm01-2026-definition": {
+  "claim": "LLM01:2026 Prompt Injection defines a prompt-injection vulnerability as input that alters model behaviour in ways the developer did not intend, including via retrieved content, tool output and persistent memory.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM01_PromptInjection.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "owasp.llm03-2026-agentic-mapping": {
+  "claim": "The 2026 LLM03 entry maps Excessive Agency in agentic systems to ASI02, ASI03 and ASI08.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM03_ExcessiveAgency.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "owasp.llm03-2026-definition": {
+  "claim": "LLM03:2026 Excessive Agency defines the vulnerability as damaging actions performed in response to unexpected, ambiguous or manipulated LLM outputs, whatever the cause.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM03_ExcessiveAgency.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "owasp.llm03-2026-excessive-agency": {
+  "claim": "The 2026 edition's Excessive Agency heading is LLM03:2026.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM03_ExcessiveAgency.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "owasp.llm06-2025-excessive-agency": {
+  "claim": "The 2025 edition's LLM06 heading is Excessive Agency.",
+  "kind": "spec",
+  "source": "https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/blob/99f4395589bdbd120ae961f9cd179e79d7f9b27f/2_0_vulns/LLM06_ExcessiveAgency.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "owasp.llm06-2026-definition": {
+  "claim": "LLM06:2026 Unbounded Consumption covers excessive, uncontrolled inference that enables service disruption, financial cost or model cloning.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM06_UnboundedConsumption.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "owasp.llm06-2026-unbounded-consumption": {
+  "claim": "The 2026 edition's LLM06 heading is Unbounded Consumption.",
+  "kind": "spec",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM06_UnboundedConsumption.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "papers.react-authors": {
+  "claim": "The ReAct BibTeX in the authors' repo lists Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan and Yuan Cao as authors.",
+  "kind": "paper",
+  "source": "https://github.com/ysymyth/ReAct/blob/6bdb3a1fd38b8188fc7ba4102969fe483df8fdc9/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "papers.react-title-id": {
+  "claim": "The ReAct authors' repo cites ReAct as arXiv 2210.03629, titled 'ReAct: Synergizing Reasoning and Acting in Language Models', ICLR 2023.",
+  "kind": "paper",
+  "source": "https://github.com/ysymyth/ReAct/blob/6bdb3a1fd38b8188fc7ba4102969fe483df8fdc9/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "papers.tau-bench-eprint": {
+  "claim": "The tau-bench authors' BibTeX gives eprint 2406.12045 with archivePrefix arXiv.",
+  "kind": "paper",
+  "source": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "papers.tau-bench-title-id": {
+  "claim": "The tau-bench authors' BibTeX gives the title 'τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains' and year 2024.",
+  "kind": "paper",
+  "source": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "papers.tau-passk-code": {
+  "claim": "tau-bench's code adds comb(c, k) / comb(num_trials, k) for each task, where c counts that task's successful trials.",
+  "kind": "paper",
+  "source": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/tau_bench/run.py",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "skills.maintainer": {
+  "claim": "The Agent Skills format was originally developed by Anthropic and released as an open standard.",
+  "kind": "spec",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "skills.progressive-disclosure": {
+  "claim": "The Agent Skills spec describes progressive disclosure: agents load skills progressively, adding detail only as a task requires it.",
+  "kind": "spec",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "skills.progressive-tier1": {
+  "claim": "Under progressive disclosure, the name and description of every skill are loaded at startup (about 100 tokens).",
+  "kind": "spec",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "skills.required-description": {
+  "claim": "The description field is required, with a maximum of 1024 characters, and describes what the skill does and when to use it.",
+  "kind": "spec",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "skills.required-name": {
+  "claim": "The name field is required, at most 64 characters, and limited to lowercase letters, numbers and hyphens.",
+  "kind": "spec",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "skills.spec-frontmatter": {
+  "claim": "The Agent Skills specification requires SKILL.md to contain YAML frontmatter followed by Markdown content.",
+  "kind": "spec",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ }
+}

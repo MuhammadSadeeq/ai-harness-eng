@@ -1,0 +1,24 @@
+- id: "a2a.governance-linux-foundation"
+  claim: "The A2A Protocol is an open source project under the Linux Foundation, contributed by Google."
+  source: "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/README.md"
+  quote: "The A2A Protocol is an open source project under the Linux Foundation, contributed by Google."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "a2a.governance-tsc"
+  claim: "A2A is maintained by a Technical Steering Committee with representatives from eight named organizations."
+  source: "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/docs/index.md"
+  quote: "It is maintained by a Technical Steering Committee with representatives from AWS, Cisco, Google, IBM Research, Microsoft, Salesforce, SAP, and ServiceNow, and supported by a broad community of [partners](./partners.md)."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+
+- id: "a2a.latest-version"
+  claim: "The newest entry in the A2A changelog is 1.0.1, dated 2026-05-26."
+  source: "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/CHANGELOG.md"
+  quote: "## [1.0.1](https://github.com/a2aproject/A2A/compare/v1.0.0...v1.0.1) (2026-05-26)"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "spec"
+  note: "Tags v1.0.0 and v1.0.1 confirmed with git ls-remote; no later version tag at the repo HEAD of 2026-10-07."
