@@ -44,11 +44,55 @@
   "wire": "verify"
  },
  {
-  "back": "The two results for one reply sit in two user messages. Send all of them together, in one user message, each with its tool_use_id.",
+  "back": "The two results for one reply sit in two user messages. Send all of them together, in one user message.",
   "bug_path": "messages[2]",
   "front": "Spot the bug in this history.",
   "id": "B2-k7",
-  "json": "{\"messages\": [\n  {\"role\": \"assistant\", \"content\": [\n    {\"type\": \"tool_use\", \"id\": \"t1\", \"name\": \"read_file\", \"input\": {\"path\": \"calc.py\"}},\n    {\"type\": \"tool_use\", \"id\": \"t2\", \"name\": \"run_command\", \"input\": {\"cmd\": \"pytest -q\"}}]},\n  {\"role\": \"user\", \"content\": [\n    {\"type\": \"tool_result\", \"tool_use_id\": \"t1\", \"content\": \"def add(a, b): ...\"}]},\n  {\"role\": \"user\", \"content\": [\n    {\"type\": \"tool_result\", \"tool_use_id\": \"t2\", \"content\": \"2 passed\"}]}\n]}\n",
+  "json": {
+   "messages": [
+    {
+     "content": [
+      {
+       "id": "t1",
+       "input": {
+        "path": "calc.py"
+       },
+       "name": "read_file",
+       "type": "tool_use"
+      },
+      {
+       "id": "t2",
+       "input": {
+        "cmd": "pytest -q"
+       },
+       "name": "run_tests",
+       "type": "tool_use"
+      }
+     ],
+     "role": "assistant"
+    },
+    {
+     "content": [
+      {
+       "content": "def add(a, b): ...",
+       "tool_use_id": "t1",
+       "type": "tool_result"
+      }
+     ],
+     "role": "user"
+    },
+    {
+     "content": [
+      {
+       "content": "2 passed",
+       "tool_use_id": "t2",
+       "type": "tool_result"
+      }
+     ],
+     "role": "user"
+    }
+   ]
+  },
   "objective": "B2.o1",
   "type": "spot-bug-json"
  },

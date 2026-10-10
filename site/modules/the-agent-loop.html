@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The agent loop · HARNESSED</title>
 <meta name="description" content="After this module you can write an agent loop with more than one exit, and read a replay of one.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
 <link rel="stylesheet" href="../assets/core/hx.css">
 <script type="module" src="../assets/core/app.js"></script>
 </head>
@@ -131,7 +132,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
     </table>
 
     <h3>What the loop sends</h3>
-    <p>The history only grows. Each turn adds the reply and its results, and the next call sends all of it again. <span class="fact" data-fact="api.tool-results-single-user-message">The docs say to return one tool_result for each tool_use block, all together in the next user message.</span> <span class="fact" data-fact="api.tool-result-unrun-call">A tool_use block that is not run still needs a tool_result with is_error true and a brief explanation.</span></p>
+    <p>This loop only grows the history. Each turn adds the reply and its results, and each call sends the whole history. <span class="fact" data-fact="api.tool-results-single-user-message">The docs say to return one tool_result for each tool_use block, all together in the next user message.</span> <span class="fact" data-fact="api.tool-result-unrun-call">A tool_use block that is not run still needs a tool_result with is_error true and a brief explanation.</span></p>
 
     <figure>
       <hx-wire tape="b2-spiral" board="b2-new" turn="3" diff data-objective="B2.o4">

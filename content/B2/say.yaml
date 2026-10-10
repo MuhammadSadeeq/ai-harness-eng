@@ -4,7 +4,7 @@
   model_answer: >-
     The loop keeps the whole history in one list, starting with the task. Each turn I call the model
     with that full history. I read the stop_reason. If it is tool_use, I run only the tools the model
-    asked for, after a permission check, and I match each result to its tool_use_id. Then I append all
+    asked for, after a permission check, and I return one result for each call. Then I append all
     of the results in one user message, so the next call sees everything. If the reply is end_turn, I
     treat it as a done claim and check the work before I return. If it is max_tokens, I do not run the
     half-written call. Every turn also counts against a turn limit and a token budget, so the loop has
@@ -12,7 +12,7 @@
   rubric:
     - "Calls the model with the full history on every turn"
     - "Runs only the tools the model requested, after a permission check"
-    - "Returns all tool results in one user message, matched by tool_use_id"
+    - "Returns all tool results in one user message"
     - "Names at least two exits besides a plain end_turn"
 
 - id: B2-s2
