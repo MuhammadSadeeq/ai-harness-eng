@@ -857,3 +857,27 @@ eventually notices; lessons say so).
      message index in the sent messages), each measured as `tokens(part)`;
      ties go to the earliest part. On the board: observe wire, label
      `readable trace`.
+- **A10 (2026-10-10): rulings from building A9.** Binding for both runtimes.
+  1. `tool_overrides`, `tool_search` and `cost_attribution` are board
+     modules; `tests` is a tape field; `pristine_tests` is a `verify_gate`
+     parameter.
+  2. A name in `tool_overrides` or in `tool_search.always` must be a tool the
+     tape has (a built-in listed in `tape.tools`, or a custom tool); any other
+     name is refused by the loader. A tape that defines its own `tool_search`
+     is refused when the module is plugged.
+  3. Request order with `tool_search`: the `always` tools (A3.1 order), then
+     the loaded tools that are not in `always` (A3.1 order), then `tool_search`.
+     `always` tools count as loaded. Without `always`, the list is empty.
+  4. Matching reads each tool's definition as sent (with `tool_overrides`
+     applied).
+  5. A query with no words (empty or blank) loads nothing: `No tool matched: <query>`,
+     `ok` false. When every match is already loaded: `Already loaded: <names joined by ", ">`,
+     `ok` true. A non-string query reads as `""`.
+  6. `tools_gte` counts every definition in the request, `tool_search`
+     included. `tool_loaded:<name>` with an unknown name never holds.
+  7. `pristine_tests` without a tape `tests` suite has no effect (`verify.check`
+     stays `"tests"`). Pristine markers are read from the tape's original
+     workspace; a marker the model adds switches nothing on under pristine.
+  8. `cost` fields: `call_cost = input_cost + output_cost + cache_cost`, where
+     `input_cost` is the uncached input; `top_part` is measured on the request
+     as sent, before the reply joins the history.
