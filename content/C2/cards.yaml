@@ -1,0 +1,42 @@
+- id: C2-k1
+  type: term
+  objective: C2.o1
+  front: "What is context rot?"
+  back: "The fall in answer quality as the window fills, well before the hard limit."
+
+- id: C2-k2
+  type: term
+  objective: C2.o2
+  front: "What does an audit of the desk count?"
+  back: "Each part of the context in tokens: instructions, tool definitions, history and tool outputs."
+
+- id: C2-k3
+  type: term
+  objective: C2.o3
+  front: "What are the four levers, in order?"
+  back: "Don't load it, shrink it, move it out, summarize it."
+
+- id: C2-k4
+  type: term
+  objective: C2.o4
+  front: "What does an output cap keep, and what does it say?"
+  back: "The start and the end of the output, and how many characters were cut, so the reader can ask for a smaller range."
+
+- id: C2-k5
+  type: term
+  objective: C2.o5
+  front: "How should context be ordered for attention?"
+  back: "Stable material first, the current task last."
+
+- id: C2-k6
+  type: which-wire
+  objective: C2.o4
+  wire: context
+  front: "One tool output fills most of the window, so the next prompt cannot be sent. Which wire is that?"
+  back: "Context. The desk is full, and nothing caps what went onto it."
+
+- id: C2-k7
+  type: term
+  objective: C2.o1
+  front: "Does a window that fits mean the model reads all of it equally well?"
+  back: "No. Quality can fall well before the window is full."

@@ -1,0 +1,133 @@
+[
+ {
+  "answer": 2,
+  "id": "B4-p1",
+  "mode": "predict",
+  "objective": "B4.o3",
+  "options": [
+   {
+    "text": "Control plane: the model was told the wrong thing.",
+    "why": "Tempting. The instructions matter, but the claim is the failure: the model was not told to lie."
+   },
+   {
+    "text": "Loop & state: the run should have kept going.",
+    "why": "Tempting. The run did stop, but stopping was not the fault. Nothing checked the claim."
+   },
+   {
+    "text": "Verification & evals: nothing checked the done claim.",
+    "why": "Right. The claim was the only evidence, and nothing ran the tests."
+   },
+   {
+    "text": "Observability: the run was not recorded.",
+    "why": "Tempting. The run was recorded; the record shows the claim and nothing after it."
+   }
+  ],
+  "outcome": "It is verification. The trace recorded the claim, but nothing checked it.",
+  "question": "The model says the tests pass, and nothing ran them. Which wire is at fault?"
+ },
+ {
+  "answer": 1,
+  "id": "B4-c1",
+  "mode": "check",
+  "objective": "B4.o1",
+  "options": [
+   {
+    "text": "Errors & recovery.",
+    "why": "Tempting. Errors comes before Tools on the clock, not after."
+   },
+   {
+    "text": "Permissions & sandbox.",
+    "why": "Right. Tools sits at six o'clock and Permissions at seven to eight."
+   },
+   {
+    "text": "Verification & evals.",
+    "why": "Tempting. Verification comes after Permissions, two wires later."
+   }
+  ],
+  "question": "On the Turn Clock, which wire comes right after Tools?"
+ },
+ {
+  "answer": 1,
+  "id": "B4-c2",
+  "mode": "check",
+  "objective": "B4.o1",
+  "options": [
+   {
+    "text": "Which actions are allowed?",
+    "why": "Tempting. That is the Permissions & sandbox question."
+   },
+   {
+    "text": "What is on the desk this call, and what is saved?",
+    "why": "Right. Context & memory is the desk, and what it keeps."
+   },
+   {
+    "text": "What exactly happened?",
+    "why": "Tempting. That is Observability's question."
+   }
+  ],
+  "question": "Which question does Context & memory answer?"
+ },
+ {
+  "answer": 1,
+  "id": "B4-c3",
+  "mode": "check",
+  "objective": "B4.o1",
+  "options": [
+   {
+    "text": "Loop & state.",
+    "why": "Tempting. Loop & state is third, at three o'clock."
+   },
+   {
+    "text": "Control plane.",
+    "why": "Right. Control is first, and it decides what the model is told."
+   },
+   {
+    "text": "Observability.",
+    "why": "Tempting. Observability is last, at eleven o'clock."
+   }
+  ],
+  "question": "Which wire sits at twelve o'clock, the first on the clock?"
+ },
+ {
+  "answer": 0,
+  "id": "B4-c4",
+  "mode": "check",
+  "objective": "B4.o1",
+  "options": [
+   {
+    "text": "Observability.",
+    "why": "Right. Observability records what happened and where the time and money went."
+   },
+   {
+    "text": "Verification & evals.",
+    "why": "Tempting. Verification asks whether a claim is true, not what the run cost."
+   },
+   {
+    "text": "Errors & recovery.",
+    "why": "Tempting. Errors asks how a failure is handled, not where the money went."
+   }
+  ],
+  "question": "Which wire answers 'What exactly happened, and where did time and money go?'"
+ },
+ {
+  "answer": 0,
+  "id": "B4-c5",
+  "mode": "check",
+  "objective": "B4.o3",
+  "options": [
+   {
+    "text": "Permissions & sandbox.",
+    "why": "Right. The permission check belongs to that wire."
+   },
+   {
+    "text": "Tools.",
+    "why": "Tempting. The tool ran, but the wire that should have blocked it is Permissions."
+   },
+   {
+    "text": "Context & memory.",
+    "why": "Tempting. The context did not decide whether the command was allowed."
+   }
+  ],
+  "question": "A command runs that the rules forbid, because the permission check was skipped. Which wire is at fault?"
+ }
+]

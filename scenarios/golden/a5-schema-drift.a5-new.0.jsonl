@@ -1,0 +1,25 @@
+{"agent":"main","board":"a5-new","kind":"run_start","model_id":"claude-sonnet-5-5","run":"a5-schema-drift:a5-new:0","seed":0,"seq":0,"t":0,"task":"Add Grace to names.txt. Keep the other names.","turn":0,"v":1,"wire":"loop"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"a5-schema-drift:a5-new:0","seq":1,"t":0,"tokens":253,"turn":1,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":3,"run":"a5-schema-drift:a5-new:0","seq":2,"t":0,"tokens":253,"turn":1,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"a5-schema-drift:a5-new:0","seq":3,"t":0,"tokens_in":253,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"a5-schema-drift:a5-new:0","seq":4,"t":0,"turn":1,"v":1,"wire":"errors"}
+{"agent":"main","cost":966000,"kind":"model_reply","run":"a5-schema-drift:a5-new:0","seq":5,"stop_reason":"tool_use","t":1520,"text":"I will add Grace to names.txt.","tool_uses":[{"id":"toolu_1_1","input":{"path":"names.txt","text":"Ada\nLin\nGrace\n"},"name":"write_file"}],"turn":1,"usage":{"input_tokens":253,"output_tokens":46},"v":1,"wire":"loop"}
+{"agent":"main","decision":"allow","final":"allow","human":null,"kind":"permission","reason":"no permission policy","rule":"none","run":"a5-schema-drift:a5-new:0","seq":6,"t":1520,"tool":"write_file","tool_use_id":"toolu_1_1","turn":1,"v":1,"wire":"permissions"}
+{"agent":"main","kind":"input_check","reason":"missing required field: content","run":"a5-schema-drift:a5-new:0","seq":7,"t":1520,"tool":"write_file","tool_use_id":"toolu_1_1","turn":1,"v":1,"valid":false,"wire":"tools"}
+{"agent":"main","events":8,"kind":"trace_write","redacted":0,"run":"a5-schema-drift:a5-new:0","seq":8,"t":1520,"turn":1,"v":1,"wire":"observe"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"a5-schema-drift:a5-new:0","seq":9,"t":1520,"tokens":348,"turn":2,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":4,"run":"a5-schema-drift:a5-new:0","seq":10,"t":1520,"tokens":348,"turn":2,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"a5-schema-drift:a5-new:0","seq":11,"t":1520,"tokens_in":348,"turn":2,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"a5-schema-drift:a5-new:0","seq":12,"t":1520,"turn":2,"v":1,"wire":"errors"}
+{"agent":"main","cost":2202000,"kind":"model_reply","run":"a5-schema-drift:a5-new:0","seq":13,"stop_reason":"tool_use","t":3200,"text":"The input was missing content. I will write the whole file.","tool_uses":[{"id":"toolu_2_1","input":{"content":"Ada\nLin\nGrace\n","path":"names.txt"},"name":"write_file"}],"turn":2,"usage":{"input_tokens":348,"output_tokens":54},"v":1,"wire":"loop"}
+{"agent":"main","decision":"allow","final":"allow","human":null,"kind":"permission","reason":"no permission policy","rule":"none","run":"a5-schema-drift:a5-new:0","seq":14,"t":3200,"tool":"write_file","tool_use_id":"toolu_2_1","turn":2,"v":1,"wire":"permissions"}
+{"agent":"main","kind":"input_check","reason":"","run":"a5-schema-drift:a5-new:0","seq":15,"t":3200,"tool":"write_file","tool_use_id":"toolu_2_1","turn":2,"v":1,"valid":true,"wire":"tools"}
+{"agent":"main","input":{"content":"Ada\nLin\nGrace\n","path":"names.txt"},"kind":"tool_call","ok":true,"output":"Wrote names.txt (14 chars)","output_tokens":7,"run":"a5-schema-drift:a5-new:0","seq":16,"t":3300,"tool":"write_file","tool_use_id":"toolu_2_1","truncated":false,"turn":2,"v":1,"wire":"tools"}
+{"agent":"main","events":8,"kind":"trace_write","redacted":0,"run":"a5-schema-drift:a5-new:0","seq":17,"t":3300,"turn":2,"v":1,"wire":"observe"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"a5-schema-drift:a5-new:0","seq":18,"t":3300,"tokens":447,"turn":3,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":5,"run":"a5-schema-drift:a5-new:0","seq":19,"t":3300,"tokens":447,"turn":3,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"a5-schema-drift:a5-new:0","seq":20,"t":3300,"tokens_in":447,"turn":3,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"a5-schema-drift:a5-new:0","seq":21,"t":3300,"turn":3,"v":1,"wire":"errors"}
+{"agent":"main","cost":3176000,"kind":"model_reply","run":"a5-schema-drift:a5-new:0","seq":22,"stop_reason":"end_turn","t":4060,"text":"Done.","tool_uses":[],"turn":3,"usage":{"input_tokens":447,"output_tokens":8},"v":1,"wire":"loop"}
+{"agent":"main","events":5,"kind":"trace_write","redacted":0,"run":"a5-schema-drift:a5-new:0","seq":23,"t":4060,"turn":3,"v":1,"wire":"observe"}
+{"agent":"main","cost":3176000,"kind":"run_end","passed":true,"run":"a5-schema-drift:a5-new:0","seq":24,"status":"done","t":4060,"tokens":{"input":1048,"output":108},"turn":3,"turns":3,"v":1,"wire":"loop"}

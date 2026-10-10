@@ -1,0 +1,65 @@
+[
+ {
+  "answer": 1,
+  "id": "T7-c1",
+  "mode": "check",
+  "objective": "T7.o2",
+  "options": [
+   {
+    "text": "--read-only",
+    "why": "No. That item makes the root filesystem read-only; it is not the network setting."
+   },
+   {
+    "text": "--network, then none",
+    "why": "Right. The test checks that the item after --network is none."
+   },
+   {
+    "text": "-v, then the folder",
+    "why": "No. That pair is the mount."
+   }
+  ],
+  "question": "Which pair in this list is the network setting?"
+ },
+ {
+  "answer": 1,
+  "id": "T7-c2",
+  "mode": "check",
+  "objective": "T7.o3",
+  "options": [
+   {
+    "text": "None",
+    "why": "No. The task needs one folder, so the list needs its mount."
+   },
+   {
+    "text": "One",
+    "why": "Right. The test counts the -v items and expects exactly one."
+   },
+   {
+    "text": "Two",
+    "why": "No. A second mount gives the command a folder the task does not need."
+   }
+  ],
+  "question": "A task needs one folder. How many mounts should the list have?"
+ },
+ {
+  "answer": 1,
+  "id": "T7-c3",
+  "mode": "check",
+  "objective": "T7.o1",
+  "options": [
+   {
+    "text": "It starts a container.",
+    "why": "No. It only builds the list. Nothing is started."
+   },
+   {
+    "text": "It returns a list of strings, and no container starts.",
+    "why": "Right. The tests read the list, and nothing else happens."
+   },
+   {
+    "text": "It checks that the folder exists on disk.",
+    "why": "No. The function does not look at the disk."
+   }
+  ],
+  "question": "What does build_args do when the kata runs?"
+ }
+]

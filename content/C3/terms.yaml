@@ -1,0 +1,55 @@
+- id: compaction
+  term: compaction
+  aliases: [compaction, compactions]
+  strict: true
+  wire: context
+  definition: >-
+    Replacing the older messages with a summary, so the desk has room again. The summary keeps only what the harness chose to keep.
+
+- id: compaction-threshold
+  term: compaction threshold
+  aliases: [compaction threshold, compaction thresholds]
+  strict: true
+  wire: context
+  definition: >-
+    The share of the window at which a compaction runs. A low threshold compacts often; a high one lets the desk fill.
+
+- id: clean-reset
+  term: clean reset
+  aliases: [clean reset, clean resets]
+  strict: true
+  wire: context
+  definition: >-
+    Starting a new run with only the task and a handoff note, instead of compacting the old one.
+
+- id: handoff-note
+  term: handoff note
+  aliases: [handoff note, handoff notes]
+  strict: true
+  wire: context
+  definition: >-
+    A short written record of the goal, the constraints, the decisions, the progress and the files, that a new run reads first.
+
+- id: memory-tier
+  term: memory tier
+  aliases: [memory tier, memory tiers]
+  strict: true
+  wire: context
+  definition: >-
+    One of the four places a harness keeps what a model needs: the window, the session log, the project files and the long-term store.
+
+- id: memory-file
+  term: memory file
+  aliases: [memory file, memory files]
+  strict: true
+  wire: context
+  definition: >-
+    A file in the project that holds standing facts, read by every run in that project.
+
+- id: session-log
+  term: session log
+  aliases: [session log, session logs]
+  strict: true
+  wire: observe
+  definition: >-
+    A record of one session's events, kept so a later session or a reader can see what happened.

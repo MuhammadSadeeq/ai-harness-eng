@@ -1,0 +1,25 @@
+- id: C11-s1
+  objectives: [C11.o1, C11.o2]
+  prompt: "A run says done. What gate do you put in front of the claim, and what makes it computational?"
+  model_answer: >-
+    A gate that runs the original tests and refuses the claim unless they pass. It is computational because a program
+    decides: the tests pass or they fail, whoever asks. A review of the diff would be an inferential check, useful where
+    no program can decide, but the first gate should be the run.
+  rubric:
+    - "Puts a gate between the done claim and the success"
+    - "Names the tests as a computational check and says why it decides"
+    - "Says a review of the diff is inferential, and when it fits"
+    - "Does not accept the model's own report as the check"
+
+- id: C11-s2
+  objectives: [C11.o4, C11.o5]
+  prompt: "How would you set up an independent reviewer, and how would you spot a test edited to pass?"
+  model_answer: >-
+    The reviewer sees the task and the diff, not the author's reasoning, so it judges the result. To spot tampering I
+    would compare the tests the gate runs with the original ones: a changed assertion, a cleared marker or a special case
+    is a diff in the tests, and it fails the gate until someone reads it.
+  rubric:
+    - "Gives the reviewer the task and the diff, not the reasoning"
+    - "Says a reviewer that shares the same context is not independent"
+    - "Compares the gate's tests with the original to spot a change"
+    - "Names the tampering forms: an edited assertion, a cleared marker, a special case"

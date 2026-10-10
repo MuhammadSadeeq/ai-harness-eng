@@ -1,0 +1,15 @@
+- id: race-condition
+  term: race condition
+  aliases:
+  - race condition
+  - race conditions
+  - race
+  strict: true
+  definition: A bug where the result depends on which of two steps runs first.
+- id: concurrency
+  term: concurrency
+  aliases:
+  - concurrency
+  - concurrent
+  strict: false
+  definition: Doing more than one thing in the same period, so that a program does other work while it waits.

@@ -1,0 +1,281 @@
+{
+  "schema": 1,
+  "id": "a7-long-chain",
+  "title": "Five settings, one slip each",
+  "task": "Set timeout to 30, retries to 5, region to us, cache to on and log to debug in config.txt.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a careful assistant. Use the file tools to read and write files.",
+  "rules": [],
+  "workspace": {
+    "config.txt": "# settings\ntimeout = 10\nretries = 2\nregion = eu\ncache = off\nlog = info\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file",
+    "edit_file"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "config.txt",
+      "contains": "timeout = 30"
+    },
+    {
+      "file": "config.txt",
+      "contains": "retries = 5"
+    },
+    {
+      "file": "config.txt",
+      "contains": "region = us"
+    },
+    {
+      "file": "config.txt",
+      "contains": "cache = on"
+    },
+    {
+      "file": "config.txt",
+      "contains": "log = debug"
+    }
+  ],
+  "test_output": {
+    "pass": "5 settings set",
+    "fail": "config.txt does not match the five settings"
+  },
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "seed_base": 20261010,
+  "boards": [
+    "a7-old",
+    "a7-new"
+  ],
+  "script": [
+    {
+      "branch": [
+        {
+          "percent": 60,
+          "then": [
+            {
+              "say": "Timeout set to 30.",
+              "tools": [
+                [
+                  "edit_file",
+                  {
+                    "path": "config.txt",
+                    "old_text": "timeout = 10",
+                    "new_text": "timeout = 30"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "percent": 40,
+          "then": [
+            {
+              "say": "Timeout set to 30.",
+              "tools": [
+                [
+                  "edit_file",
+                  {
+                    "path": "config.txt",
+                    "old_text": "timeout = 10",
+                    "new_text": "timeout = 3"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "branch": [
+        {
+          "percent": 45,
+          "then": [
+            {
+              "say": "Retries set to 5.",
+              "tools": [
+                [
+                  "edit_file",
+                  {
+                    "path": "config.txt",
+                    "old_text": "retries = 2",
+                    "new_text": "retries = 5"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "percent": 55,
+          "then": [
+            {
+              "say": "Retries set to 5.",
+              "tools": [
+                [
+                  "edit_file",
+                  {
+                    "path": "config.txt",
+                    "old_text": "retries = 2",
+                    "new_text": "retries = 7"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "branch": [
+        {
+          "percent": 80,
+          "then": [
+            {
+              "say": "Region set to us.",
+              "tools": [
+                [
+                  "edit_file",
+                  {
+                    "path": "config.txt",
+                    "old_text": "region = eu",
+                    "new_text": "region = us"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "percent": 20,
+          "then": [
+            {
+              "say": "Region set to us.",
+              "tools": [
+                [
+                  "edit_file",
+                  {
+                    "path": "config.txt",
+                    "old_text": "region = eu",
+                    "new_text": "region = ap"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "Cache on.",
+      "tools": [
+        [
+          "edit_file",
+          {
+            "path": "config.txt",
+            "old_text": "cache = off",
+            "new_text": "cache = on"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Log level debug.",
+      "tools": [
+        [
+          "edit_file",
+          {
+            "path": "config.txt",
+            "old_text": "log = info",
+            "new_text": "log = debug"
+          }
+        ]
+      ]
+    },
+    {
+      "repeat": {
+        "times": "forever",
+        "steps": [
+          {
+            "when": [
+              {
+                "if": "verify_feedback",
+                "then": [
+                  {
+                    "say": "The file does not match the five settings. I will rewrite it.",
+                    "tools": [
+                      [
+                        "write_file",
+                        {
+                          "path": "config.txt",
+                          "content": "# settings\ntimeout = 30\nretries = 5\nregion = us\ncache = on\nlog = debug\n"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "else": [
+                  {
+                    "say": "All five settings are set. Done.",
+                    "stop": "end_turn"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "incident": {
+    "family": "long-chain-collapse",
+    "wire": "verify",
+    "board": "a7-old",
+    "seed": 1,
+    "first_bad_seq": 45,
+    "accept_seqs": [
+      47
+    ],
+    "why": "The model edits five settings, one edit each, and then says all five are set. Two of the edits wrote the wrong value. Nothing checked the file when the model said done, so the run ends done with two settings wrong.",
+    "hint": "Count the edits, and check which two went wrong. When the model says done, what looks at the file?",
+    "notes": [
+      {
+        "seq": 5,
+        "text": "The timeout edit wrote 3, not 30. That is an ordinary slip, and models make them. The failure is later: when the model says done, nothing checks the five values."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Check the file when the model says done, and send any failure back to the model",
+        "why": "The done claim becomes a question the harness answers. A wrong edit goes back to the model, and the run does not end until the file matches."
+      },
+      {
+        "text": "Ask the model to double-check each edit itself",
+        "why": "Tempting. The model checks its own work with the same habits that made the slip, so the check shares the weakness."
+      },
+      {
+        "text": "Use a model that makes fewer mistakes per edit",
+        "why": "Tempting. Five steps still compound: fewer slips per edit is not no slips, and the harness has to catch the rest."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 60
+  }
+}

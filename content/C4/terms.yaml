@@ -1,0 +1,65 @@
+- id: prompt-caching
+  term: prompt caching
+  aliases:
+  - prompt caching
+  - prompt cache
+  strict: true
+  wire: context
+  definition: Keeping the start of a request, so that a later call with the same start can read it back instead of processing it again.
+- id: cache-prefix
+  term: cache prefix
+  aliases:
+  - cache prefix
+  - cache prefixes
+  strict: true
+  wire: context
+  definition: The part of a request that comes before a point. A cache matches a prefix whole, or not at all.
+- id: cache-hit
+  term: cache hit
+  aliases:
+  - cache hit
+  - cache hits
+  strict: true
+  wire: context
+  definition: A call that reads some of its input from the cache. The hit rate is the share of the input that was read.
+- id: cache-write
+  term: cache write
+  aliases:
+  - cache write
+  - cache writes
+  strict: true
+  wire: context
+  definition: Input that a call stores in the cache, so that a later call can read it.
+- id: cache-read
+  term: cache read
+  aliases:
+  - cache read
+  - cache reads
+  strict: true
+  wire: context
+  definition: Input that a call takes from the cache instead of processing it again.
+- id: cache-breakpoint
+  term: cache breakpoint
+  aliases:
+  - cache breakpoint
+  - cache breakpoints
+  strict: true
+  wire: context
+  definition: The point up to which a request asks to be cached. The course's model of caching uses one, at the end of the request.
+- id: cache-ttl
+  term: cache TTL
+  aliases:
+  - cache TTL
+  - cache lifetime
+  strict: true
+  wire: context
+  definition: How long a cache entry lasts after it was last written or read.
+- id: cache-invalidation
+  term: cache invalidation
+  aliases:
+  - cache invalidation
+  - invalidator
+  - invalidates
+  strict: true
+  wire: context
+  definition: A change that makes earlier cache entries stop matching, so the next call writes the request again.

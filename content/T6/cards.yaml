@@ -1,0 +1,20 @@
+- id: T6-k1
+  type: term
+  objective: T6.o1
+  front: What does a plain assert do when it is false?
+  back: It raises AssertionError, and the test fails.
+- id: T6-k2
+  type: term
+  objective: T6.o2
+  front: What is a fixture?
+  back: A helper that builds the setup for a test, fresh each time.
+- id: T6-k3
+  type: term
+  objective: T6.o2
+  front: What is a case table?
+  back: A list of inputs and expected outputs, checked in one loop.
+- id: T6-k4
+  type: term
+  objective: T6.o3
+  front: Why check that a test fails on purpose?
+  back: A test that passes for a broken function proves nothing, so run it against one first.

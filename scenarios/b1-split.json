@@ -1,0 +1,256 @@
+{
+  "id": "b1-split",
+  "schema": 1,
+  "title": "Results split across messages",
+  "task": "Read the six notes in notes/ and write a one-line summary to notes/summary.txt.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given. Say done when the summary is written.",
+  "rules": [],
+  "workspace": {
+    "notes/a.txt": "Buy milk.\n",
+    "notes/b.txt": "Call Sam.\n",
+    "notes/c.txt": "Book the room.\n",
+    "notes/d.txt": "Buy bread.\n",
+    "notes/e.txt": "Fix the car.\n",
+    "notes/f.txt": "Plan the trip.\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "notes/summary.txt",
+      "contains": "Six"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "script": [
+    {
+      "say": "I'll read the first three notes together.",
+      "tools": [
+        [
+          "read_file",
+          {
+            "path": "notes/a.txt"
+          }
+        ],
+        [
+          "read_file",
+          {
+            "path": "notes/b.txt"
+          }
+        ],
+        [
+          "read_file",
+          {
+            "path": "notes/c.txt"
+          }
+        ]
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "results_split",
+          "then": [
+            {
+              "say": "I'll read the next note on its own.",
+              "tools": [
+                [
+                  "read_file",
+                  {
+                    "path": "notes/d.txt"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "I'll read the next three notes together.",
+              "tools": [
+                [
+                  "read_file",
+                  {
+                    "path": "notes/d.txt"
+                  }
+                ],
+                [
+                  "read_file",
+                  {
+                    "path": "notes/e.txt"
+                  }
+                ],
+                [
+                  "read_file",
+                  {
+                    "path": "notes/f.txt"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "results_split",
+          "then": [
+            {
+              "say": "I'll read the next note on its own.",
+              "tools": [
+                [
+                  "read_file",
+                  {
+                    "path": "notes/e.txt"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "I have all six notes. I'll write the summary.",
+              "tools": [
+                [
+                  "write_file",
+                  {
+                    "path": "notes/summary.txt",
+                    "content": "Six notes: milk, Sam, room, bread, car and trip.\n"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "results_split",
+          "then": [
+            {
+              "say": "I'll read the last note on its own.",
+              "tools": [
+                [
+                  "read_file",
+                  {
+                    "path": "notes/f.txt"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "Done."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "results_split",
+          "then": [
+            {
+              "say": "I have all six notes. I'll write the summary.",
+              "tools": [
+                [
+                  "write_file",
+                  {
+                    "path": "notes/summary.txt",
+                    "content": "Six notes: milk, Sam, room, bread, car and trip.\n"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "Done."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "Done."
+    }
+  ],
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "boards": [
+    "b1-old",
+    "b1-new"
+  ],
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "seed_base": 20261010,
+  "incident": {
+    "family": "split-tool-results",
+    "wire": "tools",
+    "board": "b1-old",
+    "seed": 0,
+    "first_bad_seq": 7,
+    "accept_seqs": [
+      9,
+      11
+    ],
+    "why": "The model asked for the notes in one reply. The harness handed back each result in its own user message: event 7 is the first, and 9 and 11 are the other two from the same reply. The next request then held several user messages in a row, and the model read one note per turn. The run took more turns than it needed to.",
+    "hint": "Count the user messages the harness sends back after the model's first reply. Then look at what the model does on the next turn.",
+    "notes": [
+      {
+        "seq": 13,
+        "text": "This is the first request with user messages in a row. The model's next reply reacts to it."
+      },
+      {
+        "seq": 17,
+        "text": "The model is not broken. It reads one note per turn because the history now looks like one message per result."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Send all the results of one reply back together, in one user message",
+        "why": "The docs say one tool_result per tool_use, all in the next user message. Then the history has the shape the model expects, and it can read in parallel."
+      },
+      {
+        "text": "Tell the model in the prompt to read the notes in one call",
+        "why": "Tempting, but the model's first reply already asked for all three in one call. The harness split the results after that, so the prompt is not the bug."
+      },
+      {
+        "text": "Give the run a higher turn limit",
+        "why": "Tempting, but nothing ran out. The run ended as done after six turns, and it passed."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 60
+  }
+}

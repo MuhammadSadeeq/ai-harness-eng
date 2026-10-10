@@ -1,0 +1,22 @@
+id: C8-search
+module: C8
+title: Load a tool by its keywords
+objectives:
+- C8.o3
+minutes: 25
+hints:
+- 'Work out the words first: lowercase the query and split it. A query with no words loads nothing.'
+- A tool matches when every word is in its lowercased name and description. Skip the tools already loaded, then keep at most five, in the order the request lists them.
+- 'Nearly the code: fresh = [names of tools not loaded that match]; if fresh: newly = fresh[:5]; then the Already loaded and No tool matched cases.'
+from_memory: true
+wrong_solutions:
+- name: any-word-matches
+  code: "def search(query, tools, loaded):\n    text = query if isinstance(query, str) else \"\"\n    words = text.lower().split()\n    if not words:\n        return f\"No tool matched: {text}\", False, []\n    def matches(tool):\n        haystack = f\"{tool['name']} {tool['description']}\".lower()\n        return any(word in haystack for word in words)\n    fresh = [tool[\"name\"] for tool in tools if tool[\"name\"] not in loaded and matches(tool)]\n    if fresh:\n        newly = fresh[:5]\n        return f\"Loaded: {', '.join(newly)}\", True, newly\n    old = [tool[\"name\"] for tool in tools if tool[\"name\"] in loaded and matches(tool)]\n    if old:\n        return f\"Already loaded: {', '.join(old)}\", True, []\n    return f\"No tool matched: {text}\", False, []\n"
+- name: no-cap
+  code: "def search(query, tools, loaded):\n    text = query if isinstance(query, str) else \"\"\n    words = text.lower().split()\n    if not words:\n        return f\"No tool matched: {text}\", False, []\n    def matches(tool):\n        haystack = f\"{tool['name']} {tool['description']}\".lower()\n        return all(word in haystack for word in words)\n    fresh = [tool[\"name\"] for tool in tools if tool[\"name\"] not in loaded and matches(tool)]\n    if fresh:\n        return f\"Loaded: {', '.join(fresh)}\", True, fresh\n    old = [tool[\"name\"] for tool in tools if tool[\"name\"] in loaded and matches(tool)]\n    if old:\n        return f\"Already loaded: {', '.join(old)}\", True, []\n    return f\"No tool matched: {text}\", False, []\n"
+- name: case-sensitive
+  code: "def search(query, tools, loaded):\n    text = query if isinstance(query, str) else \"\"\n    words = text.split()\n    if not words:\n        return f\"No tool matched: {text}\", False, []\n    def matches(tool):\n        haystack = f\"{tool['name']} {tool['description']}\"\n        return all(word in haystack for word in words)\n    fresh = [tool[\"name\"] for tool in tools if tool[\"name\"] not in loaded and matches(tool)]\n    if fresh:\n        newly = fresh[:5]\n        return f\"Loaded: {', '.join(newly)}\", True, newly\n    old = [tool[\"name\"] for tool in tools if tool[\"name\"] in loaded and matches(tool)]\n    if old:\n        return f\"Already loaded: {', '.join(old)}\", True, []\n    return f\"No tool matched: {text}\", False, []\n"
+- name: already-loaded-as-no-match
+  code: "def search(query, tools, loaded):\n    text = query if isinstance(query, str) else \"\"\n    words = text.lower().split()\n    if not words:\n        return f\"No tool matched: {text}\", False, []\n    def matches(tool):\n        haystack = f\"{tool['name']} {tool['description']}\".lower()\n        return all(word in haystack for word in words)\n    fresh = [tool[\"name\"] for tool in tools if tool[\"name\"] not in loaded and matches(tool)]\n    if fresh:\n        newly = fresh[:5]\n        return f\"Loaded: {', '.join(newly)}\", True, newly\n    return f\"No tool matched: {text}\", False, []\n"
+- name: sorted-order
+  code: "def search(query, tools, loaded):\n    text = query if isinstance(query, str) else \"\"\n    words = text.lower().split()\n    if not words:\n        return f\"No tool matched: {text}\", False, []\n    def matches(tool):\n        haystack = f\"{tool['name']} {tool['description']}\".lower()\n        return all(word in haystack for word in words)\n    fresh = sorted(tool[\"name\"] for tool in tools if tool[\"name\"] not in loaded and matches(tool))\n    if fresh:\n        newly = fresh[:5]\n        return f\"Loaded: {', '.join(newly)}\", True, newly\n    old = [tool[\"name\"] for tool in tools if tool[\"name\"] in loaded and matches(tool)]\n    if old:\n        return f\"Already loaded: {', '.join(old)}\", True, []\n    return f\"No tool matched: {text}\", False, []\n"

@@ -1,0 +1,39 @@
+- id: context-rot
+  term: context rot
+  aliases: [context rot]
+  strict: true
+  wire: context
+  definition: >-
+    The fall in answer quality as the window fills, well before the hard limit is reached.
+
+- id: context-budget
+  term: context budget
+  aliases: [context budget, context budgets]
+  strict: true
+  wire: context
+  definition: >-
+    The share of the window that each part of the desk takes, counted before the model sees any of it.
+
+- id: just-in-time-retrieval
+  term: just-in-time retrieval
+  aliases: [just-in-time retrieval, just in time retrieval]
+  strict: true
+  wire: context
+  definition: >-
+    Loading a piece of material when the task needs it, instead of loading everything at the start.
+
+- id: output-cap
+  term: output cap
+  aliases: [output cap, output caps]
+  strict: true
+  wire: context
+  definition: >-
+    A limit on how much of one tool output the model sees. It keeps the start and the end, and says how much was cut.
+
+- id: attention-budget
+  term: attention budget
+  aliases: [attention budget, attention budgets]
+  strict: true
+  wire: context
+  definition: >-
+    The limited capacity of a model to draw on a large context when it reads it.

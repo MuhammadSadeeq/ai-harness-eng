@@ -1,0 +1,71 @@
+- id: wire
+  term: wire
+  aliases: [wire, wires]
+  strict: false
+  wire: observe
+  definition: >-
+    One of the eight parts of a harness, and one spoke of the Turn Clock. Each wire answers one question about a turn.
+
+- id: turn-clock
+  term: Turn Clock
+  aliases: [Turn Clock, turn clock]
+  strict: true
+  wire: observe
+  definition: >-
+    The clock face that shows one turn of a run as eight wires in order, with the harness settings beside them.
+
+- id: control-plane
+  term: control plane
+  aliases: [control plane, control planes]
+  strict: true
+  wire: control
+  definition: >-
+    The wire that answers what the model is told, and which instruction wins.
+
+- id: context-management
+  term: context management
+  aliases: [context management]
+  strict: true
+  wire: context
+  definition: >-
+    The wire that answers what is on the desk this call, and what is saved.
+
+- id: recovery
+  term: recovery
+  aliases: [recovery]
+  strict: false
+  wire: errors
+  definition: >-
+    The wire that answers how a failure is handled, so the run continues without spinning.
+
+- id: permissions
+  term: permissions
+  aliases: [permissions, permission]
+  strict: false
+  wire: permissions
+  definition: >-
+    The wire that answers which actions are allowed, and how bad a mistake can get.
+
+- id: sandbox
+  term: sandbox
+  aliases: [sandbox, sandboxes]
+  strict: true
+  wire: permissions
+  definition: >-
+    The limit on where an action can reach, such as files and the network.
+
+- id: verification
+  term: verification
+  aliases: [verification]
+  strict: false
+  wire: verify
+  definition: >-
+    The wire that answers whether a done claim is really done, and whether a change helped.
+
+- id: observability
+  term: observability
+  aliases: [observability]
+  strict: false
+  wire: observe
+  definition: >-
+    The wire that answers what exactly happened, and where time and money went.

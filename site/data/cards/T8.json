@@ -1,0 +1,44 @@
+[
+ {
+  "back": "One change you can explain in one line.",
+  "front": "What makes a commit small?",
+  "id": "T8-k1",
+  "objective": "T8.o1",
+  "type": "term"
+ },
+ {
+  "back": "The line is new in the file after the change.",
+  "front": "In this course's diff, what does a line that starts with + mean?",
+  "id": "T8-k2",
+  "objective": "T8.o1",
+  "type": "term"
+ },
+ {
+  "back": "Read the diff, so you know what the undo will remove.",
+  "front": "What is the first step before you undo an agent's change?",
+  "id": "T8-k3",
+  "objective": "T8.o2",
+  "type": "term"
+ },
+ {
+  "back": "So its changes can be reviewed on their own.",
+  "front": "Why keep an agent's work apart from yours?",
+  "id": "T8-k4",
+  "objective": "T8.o3",
+  "type": "term"
+ },
+ {
+  "back": "A separate folder for one line of work.",
+  "front": "What is a worktree in this course?",
+  "id": "T8-k5",
+  "objective": "T8.o3",
+  "type": "term"
+ },
+ {
+  "back": "The lines a change adds, removes or leaves alone, file by file.",
+  "front": "What does a diff show?",
+  "id": "T8-k6",
+  "objective": "T8.o1",
+  "type": "term"
+ }
+]

@@ -1,0 +1,162 @@
+{
+ "schema": 1,
+ "model_id": "claude-sonnet-5-5",
+ "pricing": {
+  "fact": "models.sonnet-5-5-price"
+ },
+ "window": 8000,
+ "rules": [],
+ "outside": {},
+ "custom_tools": [],
+ "human": {
+  "default": "approve"
+ },
+ "interrupt": null,
+ "golden_seeds": [
+  0,
+  1,
+  2
+ ],
+ "seed_base": 20261010,
+ "effort": {
+  "default": "high",
+  "thinking_tokens": {
+   "low": 40,
+   "medium": 300,
+   "high": 900,
+   "xhigh": 1500,
+   "max": 3000
+  }
+ },
+ "id": "a6-effort",
+ "title": "Maximum effort on an easy rename",
+ "task": "Rename total to count in calc.py",
+ "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the work is finished.",
+ "workspace": {
+  "calc.py": "total = 0\nfor x in [1, 2, 3]:\n    total = total + x\nprint(total)\n",
+  "test_calc.py": "from calc import *\n\ndef test_count_is_six():\n    assert count == 6\n"
+ },
+ "tools": [
+  "read_file",
+  "edit_file",
+  "run_command"
+ ],
+ "checks": [
+  {
+   "file": "calc.py",
+   "contains": "count = 0"
+  }
+ ],
+ "test_output": {
+  "pass": "1 passed",
+  "fail": "1 failed: NameError: name 'count' is not defined"
+ },
+ "script": [
+  {
+   "say": "Reading calc.py.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Renaming the first total.",
+   "tools": [
+    [
+     "edit_file",
+     {
+      "path": "calc.py",
+      "old_text": "total = 0",
+      "new_text": "count = 0"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Renaming the total in the loop.",
+   "tools": [
+    [
+     "edit_file",
+     {
+      "path": "calc.py",
+      "old_text": "total = total + x",
+      "new_text": "count = count + x"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Renaming the print.",
+   "tools": [
+    [
+     "edit_file",
+     {
+      "path": "calc.py",
+      "old_text": "print(total)",
+      "new_text": "print(count)"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Running the tests.",
+   "tools": [
+    [
+     "run_command",
+     {
+      "cmd": "pytest -q"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "The rename is done, and the tests pass. Done."
+  }
+ ],
+ "boards": [
+  "a6-old",
+  "a6-new"
+ ],
+ "incident": {
+  "family": "effort-mismatch",
+  "wire": "loop",
+  "board": "a6-old",
+  "seed": 1,
+  "first_bad_seq": 5,
+  "accept_seqs": [
+   13,
+   21,
+   29,
+   37,
+   45
+  ],
+  "why": "Every reply runs at the board's maximum effort, including the first reply, which only reads one file. The answer is the same as it would be on low effort, but each reply costs and waits many times as much. The board set the level, not the model.",
+  "hint": "Look at what the first reply cost, for the work it did. Reading one file is easy work.",
+  "notes": [
+   {
+    "seq": 47,
+    "text": "The run ends done, and the answer is right, so nothing looks wrong. The waste shows in the cost and the wait of each reply. Look there."
+   }
+  ],
+  "fixes": [
+   {
+    "text": "Set effort to a level that fits the work: low for an easy rename, higher only when the task needs it",
+    "why": "The same answers come back for much less cost and wait. Effort is a dial, and the board sets it."
+   },
+   {
+    "text": "Use a bigger model for the rename",
+    "why": "Tempting and wrong. A bigger model costs more, and a rename does not need its extra ability."
+   },
+   {
+    "text": "Keep the maximum effort, since it is the safest",
+    "why": "Tempting and wrong. It is the same answer at many times the cost and wait."
+   }
+  ],
+  "correct_fix": 0,
+  "par_s": 45
+ }
+}

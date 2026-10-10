@@ -1,0 +1,78 @@
+- id: C1-p1
+  objective: C1.o3
+  mode: predict
+  question: "The project rules say never touch tests/, and that is the only place the rule lives. The model's reply edits the test anyway. What happens?"
+  options:
+    - text: "The harness denies the edit, because the rule is in the prompt."
+      why: "Tempting. A rule in the prompt is words the model reads. Nothing in this board checks the edit."
+    - text: "The edit goes through, because a rule in the prompt is only a line."
+      why: "Right. The board has no check on the edit, so the model's reply decides what happens."
+    - text: "The model stops and asks the user first."
+      why: "Tempting. That would need a check, and this board does not have one."
+  answer: 1
+  outcome: "The edit went through and the run ended as done. The test check failed."
+
+- id: C1-c1
+  objective: C1.o1
+  mode: check
+  question: "The system prompt says fix the code. A user message says edit the test. Which one wins, and why?"
+  options:
+    - text: "The user, because the user is talking now."
+      why: "Tempting. Who is talking is not the test. The layer's place in the hierarchy decides."
+    - text: "The system prompt, because the instruction hierarchy puts the operator's standing instructions above one message."
+      why: "Right. The hierarchy follows who wrote the layer, and the standing rules set the limits."
+    - text: "Whichever is longer."
+      why: "Wrong. Length does not decide which layer wins."
+  answer: 1
+
+- id: C1-c2
+  objective: C1.o2
+  mode: check
+  question: "Which instruction has the right altitude?"
+  options:
+    - text: "Be careful with code."
+      why: "Tempting. It is too high: a slogan that gives no action to take."
+    - text: "Never edit a file under tests/; fix the code the test calls instead, and run pytest before you say done."
+      why: "Right. It is specific enough to act on and general enough to hold for any test in that folder."
+    - text: "On line 42 of calc.py, change the 3 to a 4."
+      why: "Tempting. It is too low: a lookup table that breaks as soon as the file changes."
+  answer: 1
+
+- id: C1-c3
+  objective: C1.o3
+  mode: check
+  question: "A pre-tool hook cannot read the path of a call it is checking. What should it do?"
+  options:
+    - text: "Allow the call, because nothing says to stop it."
+      why: "Tempting. That fails open, and the rule can be broken by a malformed call."
+    - text: "Deny the call, because a check that cannot decide fails closed."
+      why: "Right. A hook that cannot decide denies, so a broken check cannot let an edit through."
+    - text: "Ask the model to try again with a path."
+      why: "Tempting. The model's retry is not a check, and the hook still has to decide."
+  answer: 1
+
+- id: C1-c4
+  objective: C1.o4
+  mode: check
+  question: "Which rules file is written as a map?"
+  options:
+    - text: "A manual that lists every case the team has ever seen."
+      why: "Tempting. A map points to where things are; a manual tries to hold every case."
+    - text: "A short file: where the tests live, the command that runs them, and the few rules that must hold, each with its reason."
+      why: "Right. A map says where things live and how to check them."
+    - text: "One line: MUST follow every rule, always."
+      why: "Tempting. A line like that has no altitude and no way to check it."
+  answer: 1
+
+- id: C1-c5
+  objective: C1.o5
+  mode: check
+  question: "A rule line in the rules file changes, and nothing else does. What should happen before it goes live?"
+  options:
+    - text: "Nothing: prompt lines do not need review."
+      why: "Tempting. A changed rule can change every run after it, so it needs the same review as code."
+    - text: "The line is versioned, reviewed, and a test shows the rule still holds."
+      why: "Right. Prompt lines are treated as code: versioned, reviewed and tested."
+    - text: "The line is made longer, so it is safer."
+      why: "Tempting. Longer instructions are not safer."
+  answer: 1

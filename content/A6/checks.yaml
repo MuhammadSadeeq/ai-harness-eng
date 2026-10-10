@@ -1,0 +1,70 @@
+- id: A6-p1
+  objective: A6.o2
+  mode: predict
+  question: "The board sets effort to the maximum on an easy rename. What happens to the answer, the cost and the wait?"
+  options:
+    - text: "The answer gets better, and the cost rises a little."
+      why: "Tempting. More effort feels like a better answer, but this rename has one right answer and the board does not change it."
+    - text: "The answer stays the same, and the cost and the wait rise many times over."
+      why: "Right. The same answer comes back, and every reply pays for thinking the rename does not need."
+    - text: "The answer stays the same, and the cost falls, because the model is more efficient."
+      why: "Wrong. More thinking is more output, so the cost rises."
+  answer: 1
+  outcome: "It finished with the same answer. Its cost and wait were many times those of the low board."
+
+- id: A6-c1
+  objective: A6.o1
+  mode: check
+  question: "A reply has some thinking and then an answer. Which tokens are billed as output?"
+  options:
+    - text: "Only the answer tokens."
+      why: "Tempting. It is easy to count only what the user reads, but the thinking is billed too."
+      fact: api.thinking-billed-as-output
+    - text: "The thinking tokens and the answer tokens together."
+      why: "Right. The docs say the tokens used while thinking are billed as output tokens."
+      fact: api.thinking-billed-as-output
+    - text: "Only the thinking tokens."
+      why: "Wrong. The answer is output too, so it is billed as well."
+      fact: api.thinking-billed-as-output
+  answer: 1
+
+- id: A6-c2
+  objective: A6.o2
+  mode: check
+  question: "On easy work, effort goes from low to the maximum. What changes?"
+  options:
+    - text: "The answer improves, and the cost rises a little."
+      why: "Tempting. On easy work the answer often does not change, so the extra cost buys nothing."
+    - text: "The answer often stays the same, and the cost and the wait rise a lot."
+      why: "Right. Thinking is output, so the cost and the wait grow with it."
+    - text: "The answer stays the same, and the cost falls."
+      why: "Wrong. More thinking means more output, so the cost goes up."
+  answer: 1
+
+- id: A6-c3
+  objective: A6.o3
+  mode: check
+  question: "During a tool loop, the reply carries a thinking block next to a tool call. What does the harness do with it?"
+  options:
+    - text: "Trims it, to save tokens before the next call."
+      why: "Tempting. Trimming saves tokens, but the block must come back unchanged."
+    - text: "Passes it back complete and unmodified, with the tool call it belongs to."
+      why: "Right. The docs say thinking blocks must be passed back complete and unmodified alongside the tool_use block."
+      fact: api.thinking-blocks-pass-back-tool-use
+    - text: "Removes it, because it is not part of the answer."
+      why: "Wrong. Removing it changes what the model sees on the next call."
+  answer: 1
+
+- id: A6-c4
+  objective: A6.o4
+  mode: check
+  question: "For a class of easy edits, which effort level fits, and why?"
+  options:
+    - text: "The highest level, to be safe, since it can only help."
+      why: "Tempting. It can add cost and wait without a better answer on easy work."
+    - text: "A low level, checked by the tests, because cost per completed task falls when the tasks still finish."
+      why: "Right. The choice is measured by cost per completed task, and it holds only if the tasks finish at the same rate."
+    - text: "No level, because thinking is free."
+      why: "Wrong. The docs say thinking is billed as output."
+      fact: api.thinking-billed-as-output
+  answer: 1

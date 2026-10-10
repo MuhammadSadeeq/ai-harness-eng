@@ -1,0 +1,25 @@
+- id: B3-s1
+  objectives: [B3.o5]
+  prompt: "Name one piece of evidence that a harness change alone moves results, and one counterpoint."
+  model_answer: >-
+    The same model, on the same tasks and the same seeds, gave a different pass rate with a different
+    harness. The harness was the only change. A fair counterpoint is that a harness change can move one
+    kind of task and not another, so the effect depends on the task as well as the harness.
+  rubric:
+    - "Names a comparison that changes only the harness, with the model, tasks and seeds kept the same"
+    - "Says what the pass rate was on each side"
+    - "Gives one counterpoint that limits the claim"
+    - "Says the comparison holds the model, tasks and seeds the same"
+
+- id: B3-s2
+  objectives: [B3.o3]
+  prompt: "Where does the operating-system picture of an agent break down?"
+  model_answer: >-
+    The picture says the harness schedules and guards the model the way an operating system does for a
+    program. A program runs the same steps each time. A model writes different text on each run, so the
+    harness has to check what the model produced. The picture hides that check.
+  rubric:
+    - "Uses the operating-system picture and says what it gets right"
+    - "Names the place it breaks: the model's output is text that changes each run"
+    - "Says the harness must check the output"
+    - "Says a program and a model differ in whether the same steps give the same text"

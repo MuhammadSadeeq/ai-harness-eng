@@ -1,0 +1,39 @@
+id: C11-gate
+module: C11
+title: Write a verification gate that reruns the original tests
+objectives: [C11.o1, C11.o5]
+minutes: 25
+hints:
+  - "The gate must not trust the tests the model can change. Compare the suite the workspace holds with the original suite, and run the original."
+  - "If the names or the sources differ in any way, the gate fails and says the tests were changed. Only an unchanged suite is run, and the run is the original one."
+  - "Nearly the code: if current != pristine, return passed False and a reason that says the tests were changed. Otherwise run the pristine tests inside try: passed is the run's result, and an exception is a failure, not a pass."
+from_memory: false
+wrong_solutions:
+  - name: runs-the-live-tests
+    code: |
+      def verify(current, pristine, run):
+          ok = bool(run(current))
+          return {"passed": ok, "reason": "" if ok else "a test fails"}
+  - name: compares-names-only
+    code: |
+      def verify(current, pristine, run):
+          if set(current) != set(pristine):
+              return {"passed": False, "reason": "the tests were changed"}
+          ok = bool(run(pristine))
+          return {"passed": ok, "reason": "" if ok else "a test fails"}
+  - name: fails-open-on-error
+    code: |
+      def verify(current, pristine, run):
+          if current != pristine:
+              return {"passed": False, "reason": "the tests were changed"}
+          try:
+              ok = bool(run(pristine))
+          except Exception:
+              ok = True
+          return {"passed": ok, "reason": "" if ok else "a test fails"}
+  - name: silent-failure
+    code: |
+      def verify(current, pristine, run):
+          if current != pristine:
+              return {"passed": False, "reason": ""}
+          return {"passed": bool(run(pristine)), "reason": ""}

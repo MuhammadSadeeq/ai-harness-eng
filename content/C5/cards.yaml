@@ -1,0 +1,35 @@
+- id: C5-k1
+  type: term
+  objective: C5.o1
+  front: What is run state?
+  back: 'Everything the run remembers between calls: messages, turn count and status. It lives in one place, and one function changes it.'
+- id: C5-k2
+  type: term
+  objective: C5.o2
+  front: What is a final status?
+  back: The one word that says how the run ended. A run has one final status, set by one exit.
+- id: C5-k3
+  type: term
+  objective: C5.o3
+  front: What is an orphaned tool call?
+  back: A tool call with no result after it. The next request holding it is refused, so the harness must answer it.
+- id: C5-k4
+  type: term
+  objective: C5.o4
+  front: What does pause and resume need from the state?
+  back: 'Everything the run needs to start again: the messages, the turn count and the pending calls, saved together.'
+- id: C5-k5
+  type: term
+  objective: C5.o4
+  front: What is append-only history?
+  back: A history that only grows at the end. A resumed run keeps the same earlier messages.
+- id: C5-k6
+  type: term
+  objective: C5.o5
+  front: What is loop detection?
+  back: Noticing the same action repeated across the last few calls, and stopping the run before the turn limit.
+- id: C5-k7
+  type: term
+  objective: C5.o3
+  front: What is an interrupt?
+  back: A stop that a person asks for during a run. The harness answers the pending calls, then ends or resumes the run.

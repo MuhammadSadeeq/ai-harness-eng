@@ -1,0 +1,63 @@
+id: C3-compact
+module: C3
+title: Write a compactor that keeps the commitments
+objectives: [C3.o2]
+minutes: 25
+hints:
+  - "Keep only the notes whose kind is in the keep list and whose turn is before the current turn. Drop the raw tool output: it is not a note."
+  - "The summary starts with 'Summary of the work so far:' and then one line per kept note, '- kind: text'. With nothing kept, the one line is '- (nothing kept)'. The new history is that summary as one user message, then the last two messages as they were."
+  - "Nearly the code: kept = [n for n in notes if n['turn'] < current_turn and n['kind'] in keep]. summary = 'Summary of the work so far:' then add '\\n- ' + kind + ': ' + text for each kept note, or '\\n- (nothing kept)' if none. new_history: if fewer than five messages or the last one is not a user message, return messages; otherwise return [{'role': 'user', 'content': summary}] + messages[-2:]."
+from_memory: false
+wrong_solutions:
+  - name: keeps-everything
+    code: |
+      def compact(notes, keep, current_turn):
+          lines = ["Summary of the work so far:"]
+          for n in notes:
+              if n["turn"] < current_turn:
+                  lines.append("\n- " + n["kind"] + ": " + n["text"])
+          return "".join(lines)
+      def new_history(messages, notes, keep, current_turn):
+          return messages
+  - name: includes-the-current-turn
+    code: |
+      def compact(notes, keep, current_turn):
+          kept = [n for n in notes if n["turn"] <= current_turn and n["kind"] in keep]
+          if not kept:
+              return "Summary of the work so far:\n- (nothing kept)"
+          return "Summary of the work so far:" + "".join("\n- " + n["kind"] + ": " + n["text"] for n in kept)
+      def new_history(messages, notes, keep, current_turn):
+          if len(messages) < 5 or messages[-1]["role"] != "user":
+              return messages
+          return [{"role": "user", "content": compact(notes, keep, current_turn)}] + messages[-2:]
+  - name: no-nothing-line
+    code: |
+      def compact(notes, keep, current_turn):
+          kept = [n for n in notes if n["turn"] < current_turn and n["kind"] in keep]
+          return "Summary of the work so far:" + "".join("\n- " + n["kind"] + ": " + n["text"] for n in kept)
+      def new_history(messages, notes, keep, current_turn):
+          if len(messages) < 5 or messages[-1]["role"] != "user":
+              return messages
+          return [{"role": "user", "content": compact(notes, keep, current_turn)}] + messages[-2:]
+  - name: drops-the-last-reply
+    code: |
+      def compact(notes, keep, current_turn):
+          kept = [n for n in notes if n["turn"] < current_turn and n["kind"] in keep]
+          if not kept:
+              return "Summary of the work so far:\n- (nothing kept)"
+          return "Summary of the work so far:" + "".join("\n- " + n["kind"] + ": " + n["text"] for n in kept)
+      def new_history(messages, notes, keep, current_turn):
+          if len(messages) < 5 or messages[-1]["role"] != "user":
+              return messages
+          return [{"role": "user", "content": compact(notes, keep, current_turn)}] + messages[-1:]
+  - name: keeps-raw-output
+    code: |
+      def compact(notes, keep, current_turn):
+          kept = [n for n in notes if n["turn"] < current_turn and n["kind"] in keep]
+          if not kept:
+              return "Summary of the work so far:\n- (nothing kept)"
+          return "Summary of the work so far:" + "".join("\n- " + n["kind"] + ": " + n["text"] for n in kept)
+      def new_history(messages, notes, keep, current_turn):
+          if len(messages) < 5 or messages[-1]["role"] != "user":
+              return messages
+          return [{"role": "user", "content": compact(notes, keep, current_turn)}] + messages[1:]

@@ -1,0 +1,152 @@
+{
+ "schema": 1,
+ "model_id": "claude-sonnet-5-5",
+ "pricing": {
+  "fact": "models.sonnet-5-5-price"
+ },
+ "window": 8000,
+ "rules": [],
+ "outside": {},
+ "custom_tools": [],
+ "human": {
+  "default": "approve"
+ },
+ "interrupt": null,
+ "golden_seeds": [
+  0,
+  1,
+  2
+ ],
+ "seed_base": 20261010,
+ "id": "b3-regression",
+ "title": "A harness change makes the same model worse",
+ "task": "Make test_port pass",
+ "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the work is finished.",
+ "workspace": {
+  "config.py": "DEFAULT_PORT = 80\n\ndef port(settings):\n    return settings.get(\"port\", DEFAULT_PORT)\n",
+  "test_config.py": "from config import port\n\ndef test_port():\n    assert port({}) == 8080\n"
+ },
+ "tools": [
+  "read_file",
+  "edit_file",
+  "run_command"
+ ],
+ "checks": [
+  {
+   "file": "config.py",
+   "contains": "DEFAULT_PORT = 8080"
+  }
+ ],
+ "test_output": {
+  "pass": "1 passed",
+  "fail": "test_config.py::test_port FAILED. Traceback (most recent call last):\n  File \"test_config.py\", line 4, in test_port\n    frame of the test runner, not the cause\n  File \"test_config.py\", line 4, in test_port\n    frame of the test runner, not the cause\n  File \"test_config.py\", line 4, in test_port\n    frame of the test runner, not the cause\n  File \"test_config.py\", line 4, in test_port\n    frame of the test runner, not the cause\nE   assert 80 == 8080\n  File \"test_config.py\", line 4, in test_port\n    frame of the test runner, not the cause\n  File \"test_config.py\", line 4, in test_port\n    frame of the test runner, not the cause\n  File \"test_config.py\", line 4, in test_port\n    frame of the test runner, not the cause\n  File \"test_config.py\", line 4, in test_port\n    frame of the test runner, not the cause\n1 failed in 0.04s"
+ },
+ "script": [
+  {
+   "say": "Reading config.py.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "config.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Running the test.",
+   "tools": [
+    [
+     "run_command",
+     {
+      "cmd": "pytest -q"
+     }
+    ]
+   ]
+  },
+  {
+   "when": [
+    {
+     "if": "sent_lacks:E   assert 80 == 8080",
+     "then": [
+      {
+       "say": "I cannot see why the test fails. I will guess a different port.",
+       "tools": [
+        [
+         "edit_file",
+         {
+          "path": "config.py",
+          "old_text": "DEFAULT_PORT = 80\n",
+          "new_text": "DEFAULT_PORT = 8000\n"
+         }
+        ]
+       ]
+      },
+      {
+       "say": "Changed the port. Done."
+      }
+     ]
+    },
+    {
+     "else": [
+      {
+       "say": "The test wants port 8080. Setting the default to 8080.",
+       "tools": [
+        [
+         "edit_file",
+         {
+          "path": "config.py",
+          "old_text": "DEFAULT_PORT = 80\n",
+          "new_text": "DEFAULT_PORT = 8080\n"
+         }
+        ]
+       ]
+      },
+      {
+       "say": "The test passes now. Done."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "boards": [
+  "b3-old",
+  "b3-new"
+ ],
+ "incident": {
+  "family": "harness-regression",
+  "wire": "observe",
+  "board": "b3-new",
+  "seed": 1,
+  "first_bad_seq": 15,
+  "accept_seqs": [
+   21,
+   23
+  ],
+  "why": "The output cap cuts the middle of the failing test output, and the line that says what the test wanted is in the cut. The model is the same as before, but it cannot see the cause. It guesses a port, the test still fails, and the run ends as done. The harness change made the result worse.",
+  "hint": "Find the test output. Which line says what the test wanted, and can the model still see it?",
+  "notes": [
+   {
+    "seq": 7,
+    "text": "This read is cut too, but the port is still in the start of the file. The line the model needs is in the test output, not here."
+   }
+  ],
+  "fixes": [
+   {
+    "text": "Keep the failing line when the output is cut, or raise the cap so the failure output comes back whole",
+    "why": "The model sees what the test wanted, and it sets the port. The same model passes on the old board."
+   },
+   {
+    "text": "Ask the model to try harder on the next turn",
+    "why": "Tempting and wrong. It cannot try harder at a line it cannot see."
+   },
+   {
+    "text": "Switch to a model that reads more carefully",
+    "why": "Tempting and wrong. The old board passes with this model, so the change that hurt was in the harness."
+   }
+  ],
+  "correct_fix": 0,
+  "par_s": 45
+ }
+}

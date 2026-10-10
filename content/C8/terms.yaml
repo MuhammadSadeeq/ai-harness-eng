@@ -1,0 +1,92 @@
+- id: model-context-protocol
+  term: Model Context Protocol
+  aliases:
+  - Model Context Protocol
+  - MCP
+  strict: true
+  wire: tools
+  definition: An open protocol through which an application connects a model to tools, resources and prompts that other programs offer.
+- id: mcp-host
+  term: MCP host
+  aliases:
+  - MCP host
+  - MCP hosts
+  strict: true
+  wire: tools
+  definition: The application the user runs. It decides which servers to connect to. This is the course's model; the facts registry defines no host role.
+- id: mcp-client
+  term: MCP client
+  aliases:
+  - MCP client
+  - MCP clients
+  strict: true
+  wire: tools
+  definition: The part of a host that keeps one connection to one server. This is the course's model; the facts registry defines no client role.
+- id: mcp-server
+  term: MCP server
+  aliases:
+  - MCP server
+  - MCP servers
+  strict: true
+  wire: tools
+  definition: A program that offers tools, resources or prompts to a client.
+- id: transport
+  term: transport
+  aliases:
+  - transport
+  - transports
+  strict: false
+  wire: tools
+  definition: How messages move between a client and a server. Stdio uses newline-delimited messages over the standard streams of a subprocess.
+- id: mcp-resource
+  term: MCP resource
+  aliases:
+  - MCP resource
+  - MCP resources
+  strict: true
+  wire: tools
+  definition: Data that a server offers for the model to read, such as a file or a record.
+- id: skill
+  term: skill
+  aliases:
+  - skill
+  - skills
+  strict: false
+  wire: context
+  definition: 'A folder with a SKILL.md file: a short description, and the procedure for one kind of task.'
+- id: skill-md
+  term: SKILL.md
+  aliases:
+  - SKILL.md
+  strict: true
+  wire: context
+  definition: 'The file in a skill''s folder: YAML frontmatter followed by the procedure in Markdown.'
+- id: progressive-disclosure
+  term: progressive disclosure
+  aliases:
+  - progressive disclosure
+  strict: true
+  wire: context
+  definition: 'Loading detail only when a task needs it: the short description first, the full procedure when it is used.'
+- id: tool-search
+  term: tool search
+  aliases:
+  - tool search
+  strict: true
+  wire: tools
+  definition: Finding a tool's definition by keyword, and loading it for the next call. The course's simulator does it, and it makes no product claim.
+- id: deferred-loading
+  term: deferred loading
+  aliases:
+  - deferred loading
+  strict: true
+  wire: tools
+  definition: Keeping a tool's definition out of the request until a step needs it.
+- id: programmatic-tool-calling
+  term: programmatic tool calling
+  aliases:
+  - programmatic tool calling
+  - programmatic tool call
+  strict: true
+  wire: tools
+  definition: The model writes a short program that calls several tools, so that only the program's result returns to the context. The idea only; the course makes no product claim.

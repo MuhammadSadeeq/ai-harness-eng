@@ -1,0 +1,126 @@
+id: C12-spans
+module: C12
+title: Turn a trace into spans
+objectives:
+- C12.o3
+minutes: 30
+hints:
+- Make one pass over the events. Keep the index of each turn span and each model span as you create them, so a child can name its parent.
+- A turn span starts at its first event and moves its end on every event of that turn, except run_end. The run span moves its end on every event, run_end included.
+- 'Nearly the code: the run is out[0]; a tool_call creates a tool span under turn_index[turn]; a model_reply sets the end and the output tokens of the model span of its turn.'
+from_memory: true
+wrong_solutions:
+- name: no-turn-nesting
+  code: "\"\"\"Turn a trace into spans. The span structure (run, turn, model call, tool call) is the course's own;\nthe names and attribute keys follow the OpenTelemetry GenAI conventions (C12.o3).\n\n\
+    events: the trace's events in order. Each is a dict with \"kind\", \"t\" and, where the kind has one, \"turn\".\nReturn a list of spans in the order each one first appears in events. A span is a dict\
+    \ with\n\"name\", \"kind\", \"parent\" (the index in the list of the parent span, None for the run), \"start\", \"end\" (t values)\nand \"attributes\" (a dict).\n\n- The run span comes first. It is\
+    \ kind \"run\", named \"invoke_agent <agent>\" from run_start, and it ends at the t\n  of the last event (run_end included).\n- A turn span, kind \"turn\", named \"turn <n>\", is a child of the run.\
+    \ It starts at the first event whose turn is n\n  and ends at the last such event; run_end is not part of a turn.\n- A model span, kind \"model\", named \"chat <model_id>\" from run_start, is a child\
+    \ of its turn. It starts at\n  model_call and ends at the model_reply of the same turn. Its attributes are gen_ai.request.model (model_id),\n  gen_ai.usage.input_tokens (tokens_in of model_call) and\
+    \ gen_ai.usage.output_tokens (usage.output_tokens of the reply).\n- A tool span, kind \"tool\", named \"execute_tool <tool>\", is a child of its turn. It starts and ends at tool_call.\n  Its attributes\
+    \ are gen_ai.tool.name (tool) and gen_ai.tool.call.id (tool_use_id).\n\nAn empty trace gives an empty list.\n\"\"\"\n\n\ndef spans(events):\n    out = []\n    model_id = \"\"\n    turn_index = {}\n\
+    \    model_index = {}\n    for event in events:\n        kind = event.get(\"kind\")\n        t = event.get(\"t\")\n        if kind == \"run_start\":\n            model_id = event.get(\"model_id\", \"\
+    \")\n            out.append({\"name\": f\"invoke_agent {event.get('agent')}\", \"kind\": \"run\", \"parent\": None,\n                        \"start\": t, \"end\": t, \"attributes\": {}})\n        \
+    \    continue\n        if not out:\n            continue\n        out[0][\"end\"] = t\n        if kind == \"run_end\":\n            continue\n        n = event.get(\"turn\")\n        if n not in turn_index:\n\
+    \            turn_index[n] = len(out)\n            out.append({\"name\": f\"turn {n}\", \"kind\": \"turn\", \"parent\": 0, \"start\": t, \"end\": t, \"attributes\": {}})\n        turn = out[turn_index[n]]\n\
+    \        turn[\"end\"] = t\n        if kind == \"model_call\":\n            model_index[n] = len(out)\n            out.append({\"name\": f\"chat {model_id}\", \"kind\": \"model\", \"parent\": 0, \"\
+    start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.request.model\": model_id,\n                                       \"gen_ai.usage.input_tokens\": event.get(\"tokens_in\")}})\n\
+    \        elif kind == \"model_reply\" and n in model_index:\n            span = out[model_index[n]]\n            span[\"end\"] = t\n            span[\"attributes\"][\"gen_ai.usage.output_tokens\"] =\
+    \ event.get(\"usage\", {}).get(\"output_tokens\")\n        elif kind == \"tool_call\":\n            out.append({\"name\": f\"execute_tool {event.get('tool')}\", \"kind\": \"tool\", \"parent\": turn_index[n],\n\
+    \                        \"start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.tool.name\": event.get(\"tool\"),\n                                       \"gen_ai.tool.call.id\"\
+    : event.get(\"tool_use_id\")}})\n    return out\n"
+- name: bare-model-name
+  code: "\"\"\"Turn a trace into spans. The span structure (run, turn, model call, tool call) is the course's own;\nthe names and attribute keys follow the OpenTelemetry GenAI conventions (C12.o3).\n\n\
+    events: the trace's events in order. Each is a dict with \"kind\", \"t\" and, where the kind has one, \"turn\".\nReturn a list of spans in the order each one first appears in events. A span is a dict\
+    \ with\n\"name\", \"kind\", \"parent\" (the index in the list of the parent span, None for the run), \"start\", \"end\" (t values)\nand \"attributes\" (a dict).\n\n- The run span comes first. It is\
+    \ kind \"run\", named \"invoke_agent <agent>\" from run_start, and it ends at the t\n  of the last event (run_end included).\n- A turn span, kind \"turn\", named \"turn <n>\", is a child of the run.\
+    \ It starts at the first event whose turn is n\n  and ends at the last such event; run_end is not part of a turn.\n- A model span, kind \"model\", named \"chat <model_id>\" from run_start, is a child\
+    \ of its turn. It starts at\n  model_call and ends at the model_reply of the same turn. Its attributes are gen_ai.request.model (model_id),\n  gen_ai.usage.input_tokens (tokens_in of model_call) and\
+    \ gen_ai.usage.output_tokens (usage.output_tokens of the reply).\n- A tool span, kind \"tool\", named \"execute_tool <tool>\", is a child of its turn. It starts and ends at tool_call.\n  Its attributes\
+    \ are gen_ai.tool.name (tool) and gen_ai.tool.call.id (tool_use_id).\n\nAn empty trace gives an empty list.\n\"\"\"\n\n\ndef spans(events):\n    out = []\n    model_id = \"\"\n    turn_index = {}\n\
+    \    model_index = {}\n    for event in events:\n        kind = event.get(\"kind\")\n        t = event.get(\"t\")\n        if kind == \"run_start\":\n            model_id = event.get(\"model_id\", \"\
+    \")\n            out.append({\"name\": f\"invoke_agent {event.get('agent')}\", \"kind\": \"run\", \"parent\": None,\n                        \"start\": t, \"end\": t, \"attributes\": {}})\n        \
+    \    continue\n        if not out:\n            continue\n        out[0][\"end\"] = t\n        if kind == \"run_end\":\n            continue\n        n = event.get(\"turn\")\n        if n not in turn_index:\n\
+    \            turn_index[n] = len(out)\n            out.append({\"name\": f\"turn {n}\", \"kind\": \"turn\", \"parent\": 0, \"start\": t, \"end\": t, \"attributes\": {}})\n        turn = out[turn_index[n]]\n\
+    \        turn[\"end\"] = t\n        if kind == \"model_call\":\n            model_index[n] = len(out)\n            out.append({\"name\": \"chat\", \"kind\": \"model\", \"parent\": turn_index[n], \"\
+    start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.request.model\": model_id,\n                                       \"gen_ai.usage.input_tokens\": event.get(\"tokens_in\")}})\n\
+    \        elif kind == \"model_reply\" and n in model_index:\n            span = out[model_index[n]]\n            span[\"end\"] = t\n            span[\"attributes\"][\"gen_ai.usage.output_tokens\"] =\
+    \ event.get(\"usage\", {}).get(\"output_tokens\")\n        elif kind == \"tool_call\":\n            out.append({\"name\": f\"execute_tool {event.get('tool')}\", \"kind\": \"tool\", \"parent\": turn_index[n],\n\
+    \                        \"start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.tool.name\": event.get(\"tool\"),\n                                       \"gen_ai.tool.call.id\"\
+    : event.get(\"tool_use_id\")}})\n    return out\n"
+- name: tool-under-run
+  code: "\"\"\"Turn a trace into spans. The span structure (run, turn, model call, tool call) is the course's own;\nthe names and attribute keys follow the OpenTelemetry GenAI conventions (C12.o3).\n\n\
+    events: the trace's events in order. Each is a dict with \"kind\", \"t\" and, where the kind has one, \"turn\".\nReturn a list of spans in the order each one first appears in events. A span is a dict\
+    \ with\n\"name\", \"kind\", \"parent\" (the index in the list of the parent span, None for the run), \"start\", \"end\" (t values)\nand \"attributes\" (a dict).\n\n- The run span comes first. It is\
+    \ kind \"run\", named \"invoke_agent <agent>\" from run_start, and it ends at the t\n  of the last event (run_end included).\n- A turn span, kind \"turn\", named \"turn <n>\", is a child of the run.\
+    \ It starts at the first event whose turn is n\n  and ends at the last such event; run_end is not part of a turn.\n- A model span, kind \"model\", named \"chat <model_id>\" from run_start, is a child\
+    \ of its turn. It starts at\n  model_call and ends at the model_reply of the same turn. Its attributes are gen_ai.request.model (model_id),\n  gen_ai.usage.input_tokens (tokens_in of model_call) and\
+    \ gen_ai.usage.output_tokens (usage.output_tokens of the reply).\n- A tool span, kind \"tool\", named \"execute_tool <tool>\", is a child of its turn. It starts and ends at tool_call.\n  Its attributes\
+    \ are gen_ai.tool.name (tool) and gen_ai.tool.call.id (tool_use_id).\n\nAn empty trace gives an empty list.\n\"\"\"\n\n\ndef spans(events):\n    out = []\n    model_id = \"\"\n    turn_index = {}\n\
+    \    model_index = {}\n    for event in events:\n        kind = event.get(\"kind\")\n        t = event.get(\"t\")\n        if kind == \"run_start\":\n            model_id = event.get(\"model_id\", \"\
+    \")\n            out.append({\"name\": f\"invoke_agent {event.get('agent')}\", \"kind\": \"run\", \"parent\": None,\n                        \"start\": t, \"end\": t, \"attributes\": {}})\n        \
+    \    continue\n        if not out:\n            continue\n        out[0][\"end\"] = t\n        if kind == \"run_end\":\n            continue\n        n = event.get(\"turn\")\n        if n not in turn_index:\n\
+    \            turn_index[n] = len(out)\n            out.append({\"name\": f\"turn {n}\", \"kind\": \"turn\", \"parent\": 0, \"start\": t, \"end\": t, \"attributes\": {}})\n        turn = out[turn_index[n]]\n\
+    \        turn[\"end\"] = t\n        if kind == \"model_call\":\n            model_index[n] = len(out)\n            out.append({\"name\": f\"chat {model_id}\", \"kind\": \"model\", \"parent\": turn_index[n],\
+    \ \"start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.request.model\": model_id,\n                                       \"gen_ai.usage.input_tokens\": event.get(\"tokens_in\"\
+    )}})\n        elif kind == \"model_reply\" and n in model_index:\n            span = out[model_index[n]]\n            span[\"end\"] = t\n            span[\"attributes\"][\"gen_ai.usage.output_tokens\"\
+    ] = event.get(\"usage\", {}).get(\"output_tokens\")\n        elif kind == \"tool_call\":\n            out.append({\"name\": f\"execute_tool {event.get('tool')}\", \"kind\": \"tool\", \"parent\": 0,\n\
+    \                        \"start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.tool.name\": event.get(\"tool\"),\n                                       \"gen_ai.tool.call.id\"\
+    : event.get(\"tool_use_id\")}})\n    return out\n"
+- name: output-from-input
+  code: "\"\"\"Turn a trace into spans. The span structure (run, turn, model call, tool call) is the course's own;\nthe names and attribute keys follow the OpenTelemetry GenAI conventions (C12.o3).\n\n\
+    events: the trace's events in order. Each is a dict with \"kind\", \"t\" and, where the kind has one, \"turn\".\nReturn a list of spans in the order each one first appears in events. A span is a dict\
+    \ with\n\"name\", \"kind\", \"parent\" (the index in the list of the parent span, None for the run), \"start\", \"end\" (t values)\nand \"attributes\" (a dict).\n\n- The run span comes first. It is\
+    \ kind \"run\", named \"invoke_agent <agent>\" from run_start, and it ends at the t\n  of the last event (run_end included).\n- A turn span, kind \"turn\", named \"turn <n>\", is a child of the run.\
+    \ It starts at the first event whose turn is n\n  and ends at the last such event; run_end is not part of a turn.\n- A model span, kind \"model\", named \"chat <model_id>\" from run_start, is a child\
+    \ of its turn. It starts at\n  model_call and ends at the model_reply of the same turn. Its attributes are gen_ai.request.model (model_id),\n  gen_ai.usage.input_tokens (tokens_in of model_call) and\
+    \ gen_ai.usage.output_tokens (usage.output_tokens of the reply).\n- A tool span, kind \"tool\", named \"execute_tool <tool>\", is a child of its turn. It starts and ends at tool_call.\n  Its attributes\
+    \ are gen_ai.tool.name (tool) and gen_ai.tool.call.id (tool_use_id).\n\nAn empty trace gives an empty list.\n\"\"\"\n\n\ndef spans(events):\n    out = []\n    model_id = \"\"\n    turn_index = {}\n\
+    \    model_index = {}\n    for event in events:\n        kind = event.get(\"kind\")\n        t = event.get(\"t\")\n        if kind == \"run_start\":\n            model_id = event.get(\"model_id\", \"\
+    \")\n            out.append({\"name\": f\"invoke_agent {event.get('agent')}\", \"kind\": \"run\", \"parent\": None,\n                        \"start\": t, \"end\": t, \"attributes\": {}})\n        \
+    \    continue\n        if not out:\n            continue\n        out[0][\"end\"] = t\n        if kind == \"run_end\":\n            continue\n        n = event.get(\"turn\")\n        if n not in turn_index:\n\
+    \            turn_index[n] = len(out)\n            out.append({\"name\": f\"turn {n}\", \"kind\": \"turn\", \"parent\": 0, \"start\": t, \"end\": t, \"attributes\": {}})\n        turn = out[turn_index[n]]\n\
+    \        turn[\"end\"] = t\n        if kind == \"model_call\":\n            model_index[n] = len(out)\n            out.append({\"name\": f\"chat {model_id}\", \"kind\": \"model\", \"parent\": turn_index[n],\
+    \ \"start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.request.model\": model_id,\n                                       \"gen_ai.usage.input_tokens\": event.get(\"tokens_in\"\
+    )}})\n        elif kind == \"model_reply\" and n in model_index:\n            span = out[model_index[n]]\n            span[\"end\"] = t\n            span[\"attributes\"][\"gen_ai.usage.output_tokens\"\
+    ] = event.get(\"usage\", {}).get(\"input_tokens\")\n        elif kind == \"tool_call\":\n            out.append({\"name\": f\"execute_tool {event.get('tool')}\", \"kind\": \"tool\", \"parent\": turn_index[n],\n\
+    \                        \"start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.tool.name\": event.get(\"tool\"),\n                                       \"gen_ai.tool.call.id\"\
+    : event.get(\"tool_use_id\")}})\n    return out\n"
+- name: turn-ends-at-start
+  code: "\"\"\"Turn a trace into spans. The span structure (run, turn, model call, tool call) is the course's own;\nthe names and attribute keys follow the OpenTelemetry GenAI conventions (C12.o3).\n\n\
+    events: the trace's events in order. Each is a dict with \"kind\", \"t\" and, where the kind has one, \"turn\".\nReturn a list of spans in the order each one first appears in events. A span is a dict\
+    \ with\n\"name\", \"kind\", \"parent\" (the index in the list of the parent span, None for the run), \"start\", \"end\" (t values)\nand \"attributes\" (a dict).\n\n- The run span comes first. It is\
+    \ kind \"run\", named \"invoke_agent <agent>\" from run_start, and it ends at the t\n  of the last event (run_end included).\n- A turn span, kind \"turn\", named \"turn <n>\", is a child of the run.\
+    \ It starts at the first event whose turn is n\n  and ends at the last such event; run_end is not part of a turn.\n- A model span, kind \"model\", named \"chat <model_id>\" from run_start, is a child\
+    \ of its turn. It starts at\n  model_call and ends at the model_reply of the same turn. Its attributes are gen_ai.request.model (model_id),\n  gen_ai.usage.input_tokens (tokens_in of model_call) and\
+    \ gen_ai.usage.output_tokens (usage.output_tokens of the reply).\n- A tool span, kind \"tool\", named \"execute_tool <tool>\", is a child of its turn. It starts and ends at tool_call.\n  Its attributes\
+    \ are gen_ai.tool.name (tool) and gen_ai.tool.call.id (tool_use_id).\n\nAn empty trace gives an empty list.\n\"\"\"\n\n\ndef spans(events):\n    out = []\n    model_id = \"\"\n    turn_index = {}\n\
+    \    model_index = {}\n    for event in events:\n        kind = event.get(\"kind\")\n        t = event.get(\"t\")\n        if kind == \"run_start\":\n            model_id = event.get(\"model_id\", \"\
+    \")\n            out.append({\"name\": f\"invoke_agent {event.get('agent')}\", \"kind\": \"run\", \"parent\": None,\n                        \"start\": t, \"end\": t, \"attributes\": {}})\n        \
+    \    continue\n        if not out:\n            continue\n        out[0][\"end\"] = t\n        if kind == \"run_end\":\n            continue\n        n = event.get(\"turn\")\n        if n not in turn_index:\n\
+    \            turn_index[n] = len(out)\n            out.append({\"name\": f\"turn {n}\", \"kind\": \"turn\", \"parent\": 0, \"start\": t, \"end\": t, \"attributes\": {}})\n        turn = out[turn_index[n]]\n\
+    \        if kind == \"model_call\":\n            model_index[n] = len(out)\n            out.append({\"name\": f\"chat {model_id}\", \"kind\": \"model\", \"parent\": turn_index[n], \"start\": t, \"end\"\
+    : t,\n                        \"attributes\": {\"gen_ai.request.model\": model_id,\n                                       \"gen_ai.usage.input_tokens\": event.get(\"tokens_in\")}})\n        elif kind\
+    \ == \"model_reply\" and n in model_index:\n            span = out[model_index[n]]\n            span[\"end\"] = t\n            span[\"attributes\"][\"gen_ai.usage.output_tokens\"] = event.get(\"usage\"\
+    , {}).get(\"output_tokens\")\n        elif kind == \"tool_call\":\n            out.append({\"name\": f\"execute_tool {event.get('tool')}\", \"kind\": \"tool\", \"parent\": turn_index[n],\n         \
+    \               \"start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.tool.name\": event.get(\"tool\"),\n                                       \"gen_ai.tool.call.id\": event.get(\"\
+    tool_use_id\")}})\n    return out\n"
+- name: run-end-only
+  code: "\"\"\"Turn a trace into spans. The span structure (run, turn, model call, tool call) is the course's own;\nthe names and attribute keys follow the OpenTelemetry GenAI conventions (C12.o3).\n\n\
+    events: the trace's events in order. Each is a dict with \"kind\", \"t\" and, where the kind has one, \"turn\".\nReturn a list of spans in the order each one first appears in events. A span is a dict\
+    \ with\n\"name\", \"kind\", \"parent\" (the index in the list of the parent span, None for the run), \"start\", \"end\" (t values)\nand \"attributes\" (a dict).\n\n- The run span comes first. It is\
+    \ kind \"run\", named \"invoke_agent <agent>\" from run_start, and it ends at the t\n  of the last event (run_end included).\n- A turn span, kind \"turn\", named \"turn <n>\", is a child of the run.\
+    \ It starts at the first event whose turn is n\n  and ends at the last such event; run_end is not part of a turn.\n- A model span, kind \"model\", named \"chat <model_id>\" from run_start, is a child\
+    \ of its turn. It starts at\n  model_call and ends at the model_reply of the same turn. Its attributes are gen_ai.request.model (model_id),\n  gen_ai.usage.input_tokens (tokens_in of model_call) and\
+    \ gen_ai.usage.output_tokens (usage.output_tokens of the reply).\n- A tool span, kind \"tool\", named \"execute_tool <tool>\", is a child of its turn. It starts and ends at tool_call.\n  Its attributes\
+    \ are gen_ai.tool.name (tool) and gen_ai.tool.call.id (tool_use_id).\n\nAn empty trace gives an empty list.\n\"\"\"\n\n\ndef spans(events):\n    out = []\n    model_id = \"\"\n    turn_index = {}\n\
+    \    model_index = {}\n    for event in events:\n        kind = event.get(\"kind\")\n        t = event.get(\"t\")\n        if kind == \"run_start\":\n            model_id = event.get(\"model_id\", \"\
+    \")\n            out.append({\"name\": f\"invoke_agent {event.get('agent')}\", \"kind\": \"run\", \"parent\": None,\n                        \"start\": t, \"end\": t, \"attributes\": {}})\n        \
+    \    continue\n        if not out:\n            continue\n        if kind == \"run_end\":\n            out[0][\"end\"] = t\n        if kind == \"run_end\":\n            continue\n        n = event.get(\"\
+    turn\")\n        if n not in turn_index:\n            turn_index[n] = len(out)\n            out.append({\"name\": f\"turn {n}\", \"kind\": \"turn\", \"parent\": 0, \"start\": t, \"end\": t, \"attributes\"\
+    : {}})\n        turn = out[turn_index[n]]\n        turn[\"end\"] = t\n        if kind == \"model_call\":\n            model_index[n] = len(out)\n            out.append({\"name\": f\"chat {model_id}\"\
+    , \"kind\": \"model\", \"parent\": turn_index[n], \"start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.request.model\": model_id,\n                                       \"gen_ai.usage.input_tokens\"\
+    : event.get(\"tokens_in\")}})\n        elif kind == \"model_reply\" and n in model_index:\n            span = out[model_index[n]]\n            span[\"end\"] = t\n            span[\"attributes\"][\"\
+    gen_ai.usage.output_tokens\"] = event.get(\"usage\", {}).get(\"output_tokens\")\n        elif kind == \"tool_call\":\n            out.append({\"name\": f\"execute_tool {event.get('tool')}\", \"kind\"\
+    : \"tool\", \"parent\": turn_index[n],\n                        \"start\": t, \"end\": t,\n                        \"attributes\": {\"gen_ai.tool.name\": event.get(\"tool\"),\n                     \
+    \                  \"gen_ai.tool.call.id\": event.get(\"tool_use_id\")}})\n    return out\n"

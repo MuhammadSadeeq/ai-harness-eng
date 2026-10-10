@@ -1,0 +1,16 @@
+{
+ "id": "c3-new",
+ "label": "New board",
+ "modules": {
+  "compaction": {
+   "threshold_percent": 40,
+   "keep": [
+    "goal",
+    "constraint",
+    "decision",
+    "progress",
+    "file"
+   ]
+  }
+ }
+}

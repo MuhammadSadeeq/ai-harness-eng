@@ -1,0 +1,40 @@
+- id: C12-k1
+  type: term
+  objective: C12.o1
+  front: What is an event in this course's trace?
+  back: 'One record the harness writes as it runs, with a sequence number and a time: a model call, a tool call, a permission decision.'
+- id: C12-k2
+  type: term
+  objective: C12.o2
+  front: What is a span?
+  back: A timed piece of work with a name, a start, an end, attributes and a parent. A tool call is a span under its turn.
+- id: C12-k3
+  type: term
+  objective: C12.o2
+  front: What does a trace id do?
+  back: It ties the spans and events of one run together, so you can read one run from start to finish.
+- id: C12-k4
+  type: term
+  objective: C12.o3
+  front: What is the GenAI name for a model call span?
+  back: chat followed by the model name, such as chat claude-sonnet-5-5, following the convention for the inference span.
+- id: C12-k5
+  type: term
+  objective: C12.o3
+  front: Which attribute counts the prompt's tokens?
+  back: gen_ai.usage.input_tokens. The response's tokens are gen_ai.usage.output_tokens.
+- id: C12-k6
+  type: term
+  objective: C12.o4
+  front: What does redaction protect?
+  back: The trace. The placeholder replaces the secret in the stored event; the model still gets the text it was sent.
+- id: C12-k7
+  type: term
+  objective: C12.o5
+  front: Where does cost attribution name the expensive part?
+  back: 'In the cost event after each model reply: top_part names the largest part of the request, and top_tokens counts its tokens.'
+- id: C12-k8
+  type: term
+  objective: C12.o1
+  front: Why do logs alone fall short of a trace?
+  back: A log line is a message. A trace keeps which call it belongs to, when it ran, and what it cost, so you can read the order of events.

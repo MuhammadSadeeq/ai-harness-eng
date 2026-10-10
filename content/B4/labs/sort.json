@@ -1,0 +1,23 @@
+{
+ "prompt": "Match each wire to its law.",
+ "buckets": [
+  {"id": "control", "label": "Control plane"},
+  {"id": "context", "label": "Context & memory"},
+  {"id": "loop", "label": "Loop & state"},
+  {"id": "errors", "label": "Errors & recovery"},
+  {"id": "tools", "label": "Tools"},
+  {"id": "permissions", "label": "Permissions & sandbox"},
+  {"id": "verify", "label": "Verification & evals"},
+  {"id": "observe", "label": "Observability"}
+ ],
+ "items": [
+  {"id": "b4-control", "text": "Words guide, code enforces.", "bucket": "control", "why": "A line in the prompt guides the model. Only the harness can enforce a rule."},
+  {"id": "b4-context", "text": "The smallest window that works.", "bucket": "context", "why": "Send what the call needs, and keep the rest out of the desk."},
+  {"id": "b4-loop", "text": "Every run needs more than one exit.", "bucket": "loop", "why": "A run that can stop only one way will sometimes never stop."},
+  {"id": "b4-errors", "text": "Errors are the main path.", "bucket": "errors", "why": "Failures happen on most runs, so the harness plans for them."},
+  {"id": "b4-tools", "text": "A tool is a user interface for a model.", "bucket": "tools", "why": "A poor tool definition is a poor interface, and the model misuses it."},
+  {"id": "b4-permissions", "text": "Judge the action and its target.", "bucket": "permissions", "why": "The same command can be safe or harmful depending on what it touches."},
+  {"id": "b4-verify", "text": "“Done” is a claim.", "bucket": "verify", "why": "A done claim stays a claim until a check runs and confirms it."},
+  {"id": "b4-observe", "text": "If it isn't in the trace, it didn't happen.", "bucket": "observe", "why": "Without a record, a failure cannot be traced to a wire."}
+ ]
+}

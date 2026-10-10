@@ -1,0 +1,55 @@
+{
+  "tool": {
+    "name": "search_text",
+    "description": "Search files.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "task": "Find the file in the tests that imports calc.py and write its path to answer.txt.",
+  "checks": [
+    {
+      "id": "when",
+      "label": "The description says when to use it",
+      "test": {
+        "kind": "contains",
+        "field": "description",
+        "text": "when"
+      },
+      "weight": 15
+    },
+    {
+      "id": "params",
+      "label": "Every parameter is described",
+      "test": {
+        "kind": "has_description_for_every_property"
+      },
+      "weight": 20
+    },
+    {
+      "id": "name",
+      "label": "The name says what it acts on (a verb and a noun, like search_files)",
+      "test": {
+        "kind": "contains",
+        "field": "name",
+        "text": "_"
+      },
+      "weight": 10
+    }
+  ],
+  "base_misuse_percent": 60,
+  "tape": "c7-tool-confusion",
+  "board": "c7-old",
+  "misuse": {
+    "branch": "/script/0/when/0/then/0",
+    "option": 0
+  }
+}

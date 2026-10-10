@@ -1,0 +1,31 @@
+- id: extended-thinking
+  term: extended thinking
+  aliases: [extended thinking]
+  strict: true
+  wire: loop
+  definition: >-
+    Extra tokens the model writes before it answers, to work a problem out. The thinking is billed as output.
+
+- id: thinking-block
+  term: thinking block
+  aliases: [thinking block, thinking blocks]
+  strict: true
+  wire: loop
+  definition: >-
+    The part of a reply that holds the model's thinking. In a tool loop, it goes back to the model unchanged with the tool call.
+
+- id: effort
+  term: effort
+  aliases: [effort]
+  strict: false
+  wire: control
+  definition: >-
+    A setting that tells the model how much to work before it answers. The harness sets it on each request.
+
+- id: cost-per-completed-task
+  term: cost per completed task
+  aliases: [cost per completed task]
+  strict: true
+  wire: observe
+  definition: >-
+    The cost of a task's calls, divided by the share of tasks that finish. A cheap call that often fails is not cheap.

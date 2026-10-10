@@ -1,0 +1,41 @@
+- id: C7-k1
+  type: term
+  objective: C7.o1
+  front: What is an agent-computer interface?
+  back: 'The tools as the model sees them: names, descriptions, inputs and results. Design it for the model, as you would a screen for a person.'
+- id: C7-k2
+  type: term
+  objective: C7.o2
+  front: What is a tool description for?
+  back: It tells the model what the tool does and when to use it. The model reads it on every call, so vague words cost calls.
+- id: C7-k3
+  type: term
+  objective: C7.o3
+  front: What makes an error actionable?
+  back: It names what went wrong and what to do next, in a few words. A bare 'Invalid input' leaves the model guessing.
+- id: C7-k4
+  type: term
+  objective: C7.o4
+  front: What is a read-only tool?
+  back: A tool that does not change its environment. A read-only hint says so, and a hint is not a check.
+- id: C7-k5
+  type: term
+  objective: C7.o4
+  front: What is a destructive tool?
+  back: A tool that may change or delete things. Treat its call as a decision, not a read.
+- id: C7-k6
+  type: term
+  objective: C7.o5
+  front: When are two tool calls parallel-safe?
+  back: When neither writes a resource the other reads or writes. A read and an edit of the same file are not.
+- id: C7-k7
+  type: which-wire
+  objective: C7.o2
+  wire: tools
+  front: On which wire does a tool description sit?
+  back: 'The tools wire: the definitions are sent with every call.'
+- id: C7-k8
+  type: term
+  objective: C7.o4
+  front: What is a tool annotation?
+  back: A hint a tool server gives about a tool. Clients should not make tool-use decisions on untrusted annotations.

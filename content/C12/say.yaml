@@ -1,0 +1,25 @@
+- id: C12-s1
+  objectives:
+  - C12.o1
+  - C12.o2
+  prompt: A run cost much more than you expected. Walk me through how you find the cause from the trace, and in what order.
+  model_answer: I start with the run's total and the cost event of each turn, and find the turn where the cost jumps. Then I read the largest part that cost event names, and go back to the event that put
+    that part into the request. I do not guess from the model's price. The first event that shows the change is the one I report.
+  rubric:
+  - Starts from the total and the cost event of each turn
+  - Finds the first turn where the cost jumps
+  - Reads the largest part the cost event names, not the model's price
+  - Goes back to the event that put that part into the request
+- id: C12-s2
+  objectives:
+  - C12.o3
+  - C12.o4
+  - C12.o5
+  prompt: What does a span record for a model call, and what must never reach the trace? How would you answer where the money went?
+  model_answer: A model call span has its model name and its input and output token counts, from the GenAI attributes. A secret must be redacted before the event is stored, because the trace is read by
+    others. To answer where the money went, I read the cost attribution of each call and add up the largest parts by turn.
+  rubric:
+  - Names the model and the input and output tokens of a model call span
+  - Says a secret is redacted before the event is stored
+  - Redaction changes the stored trace, not what the model is sent
+  - Answers from the cost event of each call and its largest part

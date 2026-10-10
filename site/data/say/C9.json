@@ -1,0 +1,32 @@
+[
+ {
+  "id": "C9-s1",
+  "model_answer": "rm build/ inside the project is a cleanup I can reverse by rebuilding, so I would ask or allow it depending on the policy. rm ../data reaches outside the workspace and can destroy what the project does not own, so I would deny it with the reason outside the workspace. The command is the same word in both; the target is what makes them differ.",
+  "objectives": [
+   "C9.o1",
+   "C9.o2"
+  ],
+  "prompt": "Give a permission decision for rm build/ and for rm ../data, with reasons, and say why they differ.",
+  "rubric": [
+   "Gives a decision and a reason for each command",
+   "Says the target decides the risk, not the command name alone",
+   "Denies the call that reaches outside the workspace",
+   "Says the same command can be safe in one place and dangerous in another"
+  ]
+ },
+ {
+  "id": "C9-s2",
+  "model_answer": "Approval fatigue: after many prompts a person approves without reading, so the dangerous one slips through with the rest. I would order the policy by decision: deny what must never run, ask only for what matters, and allow the harmless read-only calls, so the prompts left are rare and each one gets a look. The mode is the default for what no rule matches.",
+  "objectives": [
+   "C9.o3",
+   "C9.o4"
+  ],
+  "prompt": "Why do ask prompts fail after many harmless calls, and how would you order a policy to fix it?",
+  "rubric": [
+   "Names approval fatigue and what it does to the one dangerous prompt",
+   "Orders the policy: deny, then ask, then allow, then the mode's default",
+   "Says harmless calls should be allowed, so asks stay rare",
+   "Says a prompt is worth a person's attention only when the action or its target matters"
+  ]
+ }
+]

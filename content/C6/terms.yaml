@@ -1,0 +1,77 @@
+- id: transient-error
+  term: transient error
+  aliases:
+  - transient error
+  - transient errors
+  strict: true
+  wire: errors
+  definition: A failure that is likely to pass on its own, such as a busy provider. A retry may succeed.
+- id: permanent-error
+  term: permanent error
+  aliases:
+  - permanent error
+  - permanent errors
+  strict: true
+  wire: errors
+  definition: A failure that will repeat on every try, such as a request that is badly formed. A retry does not help.
+- id: exponential-backoff
+  term: exponential backoff
+  aliases:
+  - exponential backoff
+  - backoff
+  strict: true
+  wire: errors
+  definition: Waiting longer after each failed try, doubling the wait each time up to a cap.
+- id: jitter
+  term: jitter
+  aliases:
+  - jitter
+  strict: true
+  wire: errors
+  definition: A random part of the wait, so that many clients that failed together do not retry together.
+- id: circuit-breaker
+  term: circuit breaker
+  aliases:
+  - circuit breaker
+  - breaker
+  strict: true
+  wire: errors
+  definition: A switch that opens after a set number of failures in a row, and holds calls back for a cooldown.
+- id: retry-budget
+  term: retry budget
+  aliases:
+  - retry budget
+  strict: true
+  wire: errors
+  definition: A limit on the retries a run or a client may make, so that retries cannot grow without end.
+- id: idempotency
+  term: idempotency
+  aliases:
+  - idempotency
+  strict: true
+  wire: errors
+  definition: 'A property of an action: doing it again with the same request has the same effect as doing it once.'
+- id: idempotency-key
+  term: idempotency key
+  aliases:
+  - idempotency key
+  - idempotency keys
+  strict: true
+  wire: errors
+  definition: A value sent with a request, so that a repeated request can be recognised and not run twice.
+- id: rate-limit
+  term: rate limit
+  aliases:
+  - rate limit
+  - rate limits
+  strict: true
+  wire: errors
+  definition: A cap on how many requests or tokens a client may use in a period. Going over it returns an error.
+- id: overloaded-error
+  term: overloaded error
+  aliases:
+  - overloaded error
+  - overloaded errors
+  strict: true
+  wire: errors
+  definition: The error the API returns when it is temporarily overloaded. It is a transient error.

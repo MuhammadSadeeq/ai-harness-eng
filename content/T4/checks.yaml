@@ -1,0 +1,37 @@
+- id: T4-c1
+  objective: T4.o1
+  mode: check
+  question: A value has a user object, and user has a name string. Which schema describes the path to name?
+  options:
+  - text: A user property whose schema is an object, with a name property that is a string.
+    why: Right. Each level is a schema with its own properties, which makes it nested.
+  - text: A single type of string at the top level.
+    why: Too shallow. The name sits inside user, not at the top.
+  - text: A list of the allowed names.
+    why: No. A list of allowed values describes one field; it does not describe a path.
+  answer: 0
+- id: T4-c2
+  objective: T4.o2
+  mode: check
+  question: A schema lists properties a and b, and sets additionalProperties to false. The value has a and c. What
+    comes back?
+  options:
+  - text: An error that names c as an unexpected field.
+    why: Right. c is not in the properties, and extra fields are refused.
+  - text: No error, because a is present.
+    why: No. The value has a field the schema does not allow.
+  - text: An error that names b as missing.
+    why: Not from additionalProperties. b would be reported only if the schema required it.
+  answer: 0
+- id: T4-c3
+  objective: T4.o3
+  mode: check
+  question: 'The checker returns ["$.user.name: expected string"]. Which value is wrong, and what should it be?'
+  options:
+  - text: The name inside user, which should be a string.
+    why: Right. The path names the field, and the message says the type that is expected.
+  - text: The user object as a whole.
+    why: No. The path ends at name, so the bad value is the field, not the object.
+  - text: The top-level object, which should be a string.
+    why: No. The path starts at $, but it points two levels down, to name.
+  answer: 0

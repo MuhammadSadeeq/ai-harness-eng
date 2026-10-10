@@ -1,0 +1,44 @@
+[
+ {
+  "back": "A property whose own schema is an object or an array, with its own properties or items.",
+  "front": "What makes a schema nested?",
+  "id": "T4-k1",
+  "objective": "T4.o1",
+  "type": "term"
+ },
+ {
+  "back": "The value must be one of the listed values.",
+  "front": "What does a list of allowed values say?",
+  "id": "T4-k2",
+  "objective": "T4.o1",
+  "type": "term"
+ },
+ {
+  "back": "The listed fields must be present in the value.",
+  "front": "What does required say?",
+  "id": "T4-k3",
+  "objective": "T4.o2",
+  "type": "term"
+ },
+ {
+  "back": "It rejects any field that the schema does not list in its properties.",
+  "front": "What does additionalProperties false do?",
+  "id": "T4-k4",
+  "objective": "T4.o2",
+  "type": "term"
+ },
+ {
+  "back": "None. Without a required list, no field is required.",
+  "front": "A schema has no required list. Which fields must a value have?",
+  "id": "T4-k5",
+  "objective": "T4.o2",
+  "type": "term"
+ },
+ {
+  "back": "The path to the bad value, such as $.user.name, then a colon and the problem.",
+  "front": "What does each error in the course's checker start with?",
+  "id": "T4-k6",
+  "objective": "T4.o3",
+  "type": "term"
+ }
+]

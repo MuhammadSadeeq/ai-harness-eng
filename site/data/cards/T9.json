@@ -1,0 +1,44 @@
+[
+ {
+  "back": "PPID.",
+  "front": "Which column names a process's parent in the course's table?",
+  "id": "T9-k1",
+  "objective": "T9.o1",
+  "type": "term"
+ },
+ {
+  "back": "CWD.",
+  "front": "Which column holds a process's working folder?",
+  "id": "T9-k2",
+  "objective": "T9.o1",
+  "type": "term"
+ },
+ {
+  "back": "The owner's triple, the first three letters of the mode.",
+  "front": "Which triple applies when the user is the owner?",
+  "id": "T9-k3",
+  "objective": "T9.o2",
+  "type": "term"
+ },
+ {
+  "back": "The group's triple, the middle three letters.",
+  "front": "Which triple applies to a user who is in the file's group?",
+  "id": "T9-k4",
+  "objective": "T9.o2",
+  "type": "term"
+ },
+ {
+  "back": "No. It lists the children and grandchildren above the limit.",
+  "front": "Does runaway_children list the parent?",
+  "id": "T9-k5",
+  "objective": "T9.o3",
+  "type": "term"
+ },
+ {
+  "back": "No. The limit is strict: only a process over it is listed.",
+  "front": "Is a process exactly at the cpu limit listed?",
+  "id": "T9-k6",
+  "objective": "T9.o3",
+  "type": "term"
+ }
+]

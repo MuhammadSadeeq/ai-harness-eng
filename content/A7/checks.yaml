@@ -1,0 +1,65 @@
+- id: A7-p1
+  objective: A7.o3
+  mode: predict
+  question: "The run edits five settings, one edit each, and nothing checks the file. Each edit can slip, and a slip leaves a wrong value. What does the run do at the end?"
+  options:
+    - text: "It checks the file, finds the wrong values and fixes them."
+      why: "Tempting. A check would do this, but nothing in this run checks the file."
+    - text: "It says all five settings are set, and ends as done, with some settings still wrong."
+      why: "Right. The model's words are the only evidence, so the run ends as done whatever the file holds."
+    - text: "It stops at the first wrong edit."
+      why: "Tempting. A wrong edit does not stop the run, because nothing notices it."
+  answer: 1
+  outcome: "In this run, two of the five edits were wrong. The run ended done anyway."
+
+- id: A7-c1
+  objective: A7.o1
+  mode: check
+  question: "A model says a wrong answer is right, and says its work is good. Which failure mode is that?"
+  options:
+    - text: "Randomness"
+      why: "Tempting. Randomness gives different answers, not a wrong answer with praise."
+    - text: "Self-praise"
+      why: "Right. The model says its own work is good when it is not."
+    - text: "Drift"
+      why: "Tempting. Drift is change over time, not a claim about this answer."
+  answer: 1
+
+- id: A7-c2
+  objective: A7.o2
+  mode: check
+  question: "A step works 98 times in 100. About how often do 30 steps all work, if each works on its own?"
+  options:
+    - text: "About 98 times in 100."
+      why: "Tempting. The steps do not share a single 98 percent; each one can fail on its own."
+    - text: "About 55 times in 100."
+      why: "Right. Working out 0.98 to the 30th power gives about 0.55. Each step multiplies the chance."
+    - text: "About 2 times in 100."
+      why: "Wrong. The chance does not fall to 2 percent, because most steps succeed."
+  answer: 1
+
+- id: A7-c3
+  objective: A7.o3
+  mode: check
+  question: "According to this course, where does the reliability of a task come from?"
+  options:
+    - text: "The model getting better each year."
+      why: "Tempting. A better model helps, but this course puts the reliability in the system around the model."
+    - text: "The system around the model, checked from outside."
+      why: "Right. The harness does the checks, and the checks do not depend on the model's words."
+    - text: "Careful wording of the prompt alone."
+      why: "Tempting. The prompt matters, but a prompt alone cannot check the work."
+  answer: 1
+
+- id: A7-c4
+  objective: A7.o4
+  mode: check
+  question: "Which is a fair way to argue that models keep getting better, so harnesses matter less?"
+  options:
+    - text: "State it as settled, since newer models are better."
+      why: "Tempting. Newer is not the same as reliable enough for a long task."
+    - text: "Name the evidence for each side, and say what would change your mind."
+      why: "Right. An argument with evidence on both sides can be tested."
+    - text: "Skip it: no evidence is available."
+      why: "Wrong. The argument can be settled with runs, with and without a check."
+  answer: 1

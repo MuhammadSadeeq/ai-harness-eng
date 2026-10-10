@@ -1,0 +1,74 @@
+id: T8-diff
+module: T8
+title: Read a diff into the lines it changes
+objectives:
+- T8.o1
+minutes: 20
+hints:
+- 'Read test_kata.py. Each test names one rule: the file name, the new file, two files, a second hunk, a deleted file, removed
+  lines.'
+- Walk the lines with a flag for whether you are inside a hunk. The hunk header gives the starting number. Count + and space
+  lines; skip - lines.
+- 'Nearly the code: after a line that starts with ''@@ '', set new_line to the number after ''+'' in the header. For each
+  + line, append new_line and add one. For each space line, add one.'
+from_memory: true
+wrong_solutions:
+- name: counts-removed
+  code: "def changed_lines(diff: str) -> dict[str, list[int]]:\n    \"\"\"Map each file in a unified diff to the new-file\
+    \ line numbers it adds.\n\n    A file's name comes from its \"+++ b/<path>\" line. A hunk header\n    \"@@ -a,b +c,d @@\"\
+    \ starts the new-file count at c. A \"+\" line is added and\n    counts; a \" \" line counts; a \"-\" line is not in the\
+    \ new file and does not\n    count. A file deleted in the diff (\"+++ /dev/null\") is not listed.\n    \"\"\"\n    result:\
+    \ dict[str, list[int]] = {}\n    current: str | None = None\n    in_hunk = False\n    new_line = 0\n    for line in diff.split(\"\
+    \\n\"):\n        if line.startswith(\"diff \"):\n            in_hunk = False\n            continue\n        if not in_hunk\
+    \ and line.startswith(\"+++ \"):\n            target = line[4:]\n            if target == \"/dev/null\":\n           \
+    \     current = None\n            else:\n                current = target[2:] if target.startswith(\"b/\") else target\n\
+    \                result.setdefault(current, [])\n            continue\n        if not in_hunk and line.startswith(\"---\
+    \ \"):\n            continue\n        if line.startswith(\"@@ \"):\n            in_hunk = True\n            new_line =\
+    \ int(line.split(\" +\", 1)[1].split(\" \", 1)[0].split(\",\", 1)[0])\n            continue\n        if not in_hunk or\
+    \ current is None:\n            continue\n        if line.startswith(\"+\"):\n            result[current].append(new_line)\n\
+    \            new_line += 1\n        elif line.startswith(\" \") or line.startswith(\"-\"):\n            new_line += 1\n\
+    \    return result\n"
+- name: ignores-hunk-start
+  code: "def changed_lines(diff: str) -> dict[str, list[int]]:\n    \"\"\"Map each file in a unified diff to the new-file\
+    \ line numbers it adds.\n\n    A file's name comes from its \"+++ b/<path>\" line. A hunk header\n    \"@@ -a,b +c,d @@\"\
+    \ starts the new-file count at c. A \"+\" line is added and\n    counts; a \" \" line counts; a \"-\" line is not in the\
+    \ new file and does not\n    count. A file deleted in the diff (\"+++ /dev/null\") is not listed.\n    \"\"\"\n    result:\
+    \ dict[str, list[int]] = {}\n    current: str | None = None\n    in_hunk = False\n    new_line = 0\n    for line in diff.split(\"\
+    \\n\"):\n        if line.startswith(\"diff \"):\n            in_hunk = False\n            continue\n        if not in_hunk\
+    \ and line.startswith(\"+++ \"):\n            target = line[4:]\n            if target == \"/dev/null\":\n           \
+    \     current = None\n            else:\n                current = target[2:] if target.startswith(\"b/\") else target\n\
+    \                result.setdefault(current, [])\n            continue\n        if not in_hunk and line.startswith(\"---\
+    \ \"):\n            continue\n        if line.startswith(\"@@ \"):\n            in_hunk = True\n            new_line =\
+    \ 1\n            continue\n        if not in_hunk or current is None:\n            continue\n        if line.startswith(\"\
+    +\"):\n            result[current].append(new_line)\n            new_line += 1\n        elif line.startswith(\" \"):\n\
+    \            new_line += 1\n    return result\n"
+- name: lists-context
+  code: "def changed_lines(diff: str) -> dict[str, list[int]]:\n    \"\"\"Map each file in a unified diff to the new-file\
+    \ line numbers it adds.\n\n    A file's name comes from its \"+++ b/<path>\" line. A hunk header\n    \"@@ -a,b +c,d @@\"\
+    \ starts the new-file count at c. A \"+\" line is added and\n    counts; a \" \" line counts; a \"-\" line is not in the\
+    \ new file and does not\n    count. A file deleted in the diff (\"+++ /dev/null\") is not listed.\n    \"\"\"\n    result:\
+    \ dict[str, list[int]] = {}\n    current: str | None = None\n    in_hunk = False\n    new_line = 0\n    for line in diff.split(\"\
+    \\n\"):\n        if line.startswith(\"diff \"):\n            in_hunk = False\n            continue\n        if not in_hunk\
+    \ and line.startswith(\"+++ \"):\n            target = line[4:]\n            if target == \"/dev/null\":\n           \
+    \     current = None\n            else:\n                current = target[2:] if target.startswith(\"b/\") else target\n\
+    \                result.setdefault(current, [])\n            continue\n        if not in_hunk and line.startswith(\"---\
+    \ \"):\n            continue\n        if line.startswith(\"@@ \"):\n            in_hunk = True\n            new_line =\
+    \ int(line.split(\" +\", 1)[1].split(\" \", 1)[0].split(\",\", 1)[0])\n            continue\n        if not in_hunk or\
+    \ current is None:\n            continue\n        if line.startswith(\"+\"):\n            result[current].append(new_line)\n\
+    \            new_line += 1\n        elif line.startswith(\" \"):\n            result[current].append(new_line)\n     \
+    \       new_line += 1\n    return result\n"
+- name: lists-deleted
+  code: "def changed_lines(diff: str) -> dict[str, list[int]]:\n    \"\"\"Map each file in a unified diff to the new-file\
+    \ line numbers it adds.\n\n    A file's name comes from its \"+++ b/<path>\" line. A hunk header\n    \"@@ -a,b +c,d @@\"\
+    \ starts the new-file count at c. A \"+\" line is added and\n    counts; a \" \" line counts; a \"-\" line is not in the\
+    \ new file and does not\n    count. A file deleted in the diff (\"+++ /dev/null\") is not listed.\n    \"\"\"\n    result:\
+    \ dict[str, list[int]] = {}\n    current: str | None = None\n    in_hunk = False\n    new_line = 0\n    for line in diff.split(\"\
+    \\n\"):\n        if line.startswith(\"diff \"):\n            in_hunk = False\n            continue\n        if not in_hunk\
+    \ and line.startswith(\"+++ \"):\n            target = line[4:]\n            if target == \"/dev/null\":\n           \
+    \     current = \"deleted\"\n                result.setdefault(current, [])\n            else:\n                current\
+    \ = target[2:] if target.startswith(\"b/\") else target\n                result.setdefault(current, [])\n            continue\n\
+    \        if not in_hunk and line.startswith(\"--- \"):\n            continue\n        if line.startswith(\"@@ \"):\n \
+    \           in_hunk = True\n            new_line = int(line.split(\" +\", 1)[1].split(\" \", 1)[0].split(\",\", 1)[0])\n\
+    \            continue\n        if not in_hunk or current is None:\n            continue\n        if line.startswith(\"\
+    +\"):\n            result[current].append(new_line)\n            new_line += 1\n        elif line.startswith(\" \"):\n\
+    \            new_line += 1\n    return result\n"

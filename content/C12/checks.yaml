@@ -1,0 +1,76 @@
+- id: C12-p1
+  objective: C12.o2
+  mode: predict
+  question: On the old board, seed 0, the run passes and the check is green. Which event is the first to show the bill was large?
+  options:
+  - text: The first model call, because it has the most tokens.
+    why: Tempting. The first call is the cheap one. It names the tools, not the log.
+  - text: The second turn's cost event, which names messages[2], the log.
+    why: Right. The cost event after the second model reply names the log at 2056 tokens, and its call cost is the largest of the run.
+  - text: The run_end event, which holds the total.
+    why: Tempting. The total is right, but it does not say where the money went.
+  answer: 1
+  outcome: The cost event at seq 15 names messages[2], the log, at 2056 tokens. Its call cost is the largest of the three calls.
+- id: C12-c1
+  objective: C12.o3
+  mode: check
+  question: A model call is made to claude-sonnet-5-5. Under the GenAI conventions, how is its inference span named?
+  options:
+  - text: chat claude-sonnet-5-5
+    fact: otel.span-chat-name
+    why: Right. The inference span name is the operation name, then the model name.
+  - text: inference
+    why: Tempting. The name carries the model too, not only the kind of call.
+  - text: model_call
+    why: Tempting. That is this course's event name, not the span's name.
+  answer: 0
+- id: C12-c2
+  objective: C12.o1
+  mode: check
+  question: Which record should the trace hold for each tool call, so you can read it later?
+  options:
+  - text: Only the tool's name.
+    why: Tempting. The name alone does not show what the call sent or what came back.
+  - text: The tool's name, its input, its result, and its time, with a sequence number.
+    why: Right. An event with these fields lets you read the order of the run and find the call later.
+  - text: Nothing; the model's reply already says what it did.
+    why: Tempting. The reply says what the model meant to do. The trace records what actually ran.
+  answer: 1
+- id: C12-c3
+  objective: C12.o4
+  mode: check
+  question: A tool result contains a deploy token, and the trace is written to a shared folder. What must happen before the event is stored?
+  options:
+  - text: Redact the token before the event is stored.
+    why: Right. The placeholder goes into the stored event. The model still gets the text it was sent.
+  - text: Nothing. The model needs the token, so the trace needs it too.
+    why: Tempting. The model's request and the trace are different records. The trace must not keep the secret.
+  - text: Delete the trace file after the run.
+    why: Tempting. The file was shared while the run was going, so deleting it later is too late.
+  answer: 0
+- id: C12-c4
+  objective: C12.o5
+  mode: check
+  question: The bill is high. Which field of a cost event says where the money went?
+  options:
+  - text: top_part, with top_tokens
+    why: Right. top_part names the largest part of the request, and top_tokens counts it.
+  - text: The task in run_start.
+    why: Tempting. The task says what the run was for, not what it cost.
+  - text: The window size.
+    why: Tempting. The window limits how much fits; it does not say where the cost went.
+  answer: 0
+- id: C12-c5
+  objective: C12.o3
+  mode: check
+  question: Which GenAI attribute counts the prompt's tokens?
+  options:
+  - text: gen_ai.usage.input_tokens
+    fact: otel.attr-usage-input
+    why: Right. The input tokens are the prompt's tokens.
+  - text: gen_ai.usage.output_tokens
+    why: Tempting. That one counts the response's tokens.
+  - text: gen_ai.system
+    fact: otel.attr-system-renamed
+    why: Tempting. The attribute was renamed to gen_ai.provider.name in v1.37.0, so it is not the prompt count.
+  answer: 0

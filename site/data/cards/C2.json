@@ -1,0 +1,52 @@
+[
+ {
+  "back": "The fall in answer quality as the window fills, well before the hard limit.",
+  "front": "What is context rot?",
+  "id": "C2-k1",
+  "objective": "C2.o1",
+  "type": "term"
+ },
+ {
+  "back": "Each part of the context in tokens: instructions, tool definitions, history and tool outputs.",
+  "front": "What does an audit of the desk count?",
+  "id": "C2-k2",
+  "objective": "C2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Don't load it, shrink it, move it out, summarize it.",
+  "front": "What are the four levers, in order?",
+  "id": "C2-k3",
+  "objective": "C2.o3",
+  "type": "term"
+ },
+ {
+  "back": "The start and the end of the output, and how many characters were cut, so the reader can ask for a smaller range.",
+  "front": "What does an output cap keep, and what does it say?",
+  "id": "C2-k4",
+  "objective": "C2.o4",
+  "type": "term"
+ },
+ {
+  "back": "Stable material first, the current task last.",
+  "front": "How should context be ordered for attention?",
+  "id": "C2-k5",
+  "objective": "C2.o5",
+  "type": "term"
+ },
+ {
+  "back": "Context. The desk is full, and nothing caps what went onto it.",
+  "front": "One tool output fills most of the window, so the next prompt cannot be sent. Which wire is that?",
+  "id": "C2-k6",
+  "objective": "C2.o4",
+  "type": "which-wire",
+  "wire": "context"
+ },
+ {
+  "back": "No. Quality can fall well before the window is full.",
+  "front": "Does a window that fits mean the model reads all of it equally well?",
+  "id": "C2-k7",
+  "objective": "C2.o1",
+  "type": "term"
+ }
+]

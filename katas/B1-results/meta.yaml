@@ -1,0 +1,29 @@
+id: B1-results
+module: B1
+title: Answer every tool_use in one message
+objectives:
+- B1.o3
+minutes: 15
+hints:
+- 'Read test_kata.py. Each test names one rule: one message, the ids, the error flag.'
+- Loop over the tool_uses. Make one tool_result per call with its id, and put all of them in one user message.
+- 'Nearly the code: wrap run in try. On an exception, add is_error: True and content f"Error: {exc}". Return {"role": "user",
+  "content": blocks}.'
+from_memory: true
+wrong_solutions:
+- name: one-message-per-result
+  code: "def results_message(tool_uses, run):\n    return [\n        {\"role\": \"user\", \"content\": [{\"type\": \"tool_result\"\
+    , \"tool_use_id\": use[\"id\"], \"content\": run(use[\"name\"], use[\"input\"])}]}\n        for use in tool_uses\n   \
+    \ ]\n"
+- name: position-ids
+  code: "def results_message(tool_uses, run):\n    blocks = []\n    for index, use in enumerate(tool_uses):\n        blocks.append({\"\
+    type\": \"tool_result\", \"tool_use_id\": f\"t{index}\", \"content\": run(use[\"name\"], use[\"input\"])})\n    return\
+    \ {\"role\": \"user\", \"content\": blocks}\n"
+- name: no-try
+  code: "def results_message(tool_uses, run):\n    blocks = [{\"type\": \"tool_result\", \"tool_use_id\": use[\"id\"], \"\
+    content\": run(use[\"name\"], use[\"input\"])} for use in tool_uses]\n    return {\"role\": \"user\", \"content\": blocks}\n"
+- name: no-is-error
+  code: "def results_message(tool_uses, run):\n    blocks = []\n    for use in tool_uses:\n        try:\n            output\
+    \ = run(use[\"name\"], use[\"input\"])\n        except Exception as exc:\n            output = f\"Error: {exc}\"\n   \
+    \     blocks.append({\"type\": \"tool_result\", \"tool_use_id\": use[\"id\"], \"content\": output})\n    return {\"role\"\
+    : \"user\", \"content\": blocks}\n"

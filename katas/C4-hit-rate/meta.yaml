@@ -1,0 +1,20 @@
+id: C4-hit-rate
+module: C4
+title: Read the cache from the usage fields
+objectives:
+- C4.o4
+minutes: 20
+hints:
+- The three input fields add up to every input token. Name them first, then add them.
+- The hit rate is the read tokens over the total. Use integers and floor division, so the answer is a whole percent.
+- 'Nearly the code: total = input + written + read; hit = 100 * read // total; saving: compare total * 1000 with input * 1000 + written * 1250 + read * 50, then 100 * (no - with) // no.'
+from_memory: true
+wrong_solutions:
+- name: ignores-the-writes
+  code: "def _parts(usage):\n    return usage.get(\"input_tokens\", 0), usage.get(\"cache_creation_input_tokens\", 0), usage.get(\"cache_read_input_tokens\", 0), 0\n\n\ndef hit_percent(usage):\n    input_tokens, written, read, _ = _parts(usage)\n    total = input_tokens + read\n    return 0 if total == 0 else 100 * read // total\n\n\ndef saving_percent(usage):\n    input_tokens, written, read, _ = _parts(usage)\n    total = input_tokens + written + read\n    if total == 0:\n        return 0\n    no_cache = total * 1000\n    with_cache = input_tokens * 1000 + read * 50\n    return 100 * (no_cache - with_cache) // no_cache\n"
+- name: rounds-to-nearest
+  code: "def hit_percent(usage):\n    total = usage.get(\"input_tokens\", 0) + usage.get(\"cache_creation_input_tokens\", 0) + usage.get(\"cache_read_input_tokens\", 0)\n    if total == 0:\n        return 0\n    return round(100 * usage.get(\"cache_read_input_tokens\", 0) / total)\n\n\ndef saving_percent(usage):\n    return 0\n"
+- name: no-write-premium
+  code: "def hit_percent(usage):\n    total = usage.get(\"input_tokens\", 0) + usage.get(\"cache_creation_input_tokens\", 0) + usage.get(\"cache_read_input_tokens\", 0)\n    if total == 0:\n        return 0\n    return 100 * usage.get(\"cache_read_input_tokens\", 0) // total\n\n\ndef saving_percent(usage):\n    input_tokens = usage.get(\"input_tokens\", 0)\n    written = usage.get(\"cache_creation_input_tokens\", 0)\n    read = usage.get(\"cache_read_input_tokens\", 0)\n    total = input_tokens + written + read\n    if total == 0:\n        return 0\n    no_cache = total * 1000\n    with_cache = input_tokens * 1000 + written * 1000 + read * 50\n    return 100 * (no_cache - with_cache) // no_cache\n"
+- name: crashes-on-no-input
+  code: "def hit_percent(usage):\n    total = usage[\"input_tokens\"] + usage[\"cache_read_input_tokens\"]\n    return 100 * usage[\"cache_read_input_tokens\"] // total\n\n\ndef saving_percent(usage):\n    return 0\n"

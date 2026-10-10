@@ -1,0 +1,44 @@
+[
+ {
+  "back": "docker, then run.",
+  "front": "What does the argument list start with?",
+  "id": "T7-k1",
+  "objective": "T7.o2",
+  "type": "term"
+ },
+ {
+  "back": "--network, then none, in that order.",
+  "front": "Which two list items set the network to none?",
+  "id": "T7-k2",
+  "objective": "T7.o2",
+  "type": "term"
+ },
+ {
+  "back": "--read-only.",
+  "front": "Which item makes the root filesystem read-only?",
+  "id": "T7-k3",
+  "objective": "T7.o2",
+  "type": "term"
+ },
+ {
+  "back": "One: one -v item with the folder.",
+  "front": "How many mounts does this module's list have?",
+  "id": "T7-k4",
+  "objective": "T7.o3",
+  "type": "term"
+ },
+ {
+  "back": "After the flags and the mount, and before the command.",
+  "front": "Where does the image go in the list?",
+  "id": "T7-k5",
+  "objective": "T7.o3",
+  "type": "term"
+ },
+ {
+  "back": "It returns a list of strings. Nothing runs, and no container starts.",
+  "front": "What does build_args do when the kata runs?",
+  "id": "T7-k6",
+  "objective": "T7.o1",
+  "type": "term"
+ }
+]

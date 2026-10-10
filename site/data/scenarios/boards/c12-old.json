@@ -1,0 +1,7 @@
+{
+  "id": "c12-old",
+  "label": "Readable trace, secret in the clear",
+  "modules": {
+    "cost_attribution": {}
+  }
+}

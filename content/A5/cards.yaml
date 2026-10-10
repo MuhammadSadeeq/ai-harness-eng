@@ -1,0 +1,42 @@
+- id: A5-c1
+  type: term
+  objective: A5.o1
+  front: "What is JSON Schema?"
+  back: "A way to write down the shape of a JSON object: its fields, their types, which are required and which values are allowed."
+
+- id: A5-c2
+  type: term
+  objective: A5.o1
+  front: "What does additionalProperties false do?"
+  back: "It refuses a field the schema does not name. This course's checker refuses it."
+
+- id: A5-c3
+  type: term
+  objective: A5.o1
+  front: "What is an enum?"
+  back: "A field that may take only one of a short list of values."
+
+- id: A5-c4
+  type: term
+  objective: A5.o2
+  front: "What is schema validation?"
+  back: "Checking a value against a schema before the harness uses it. It returns the first reason the value fails."
+
+- id: A5-c5
+  type: term
+  objective: A5.o4
+  front: "What is a structured output?"
+  back: "A reply in a shape you asked for. The shape can be right and the values still wrong."
+
+- id: A5-c6
+  type: which-wire
+  objective: A5.o2
+  wire: tools
+  front: "A schema check on each tool call's input runs before the tool. Which wire is that?"
+  back: "Tools. The check is on the call's input, before the tool runs."
+
+- id: A5-c7
+  type: term
+  objective: A5.o3
+  front: "What is constrained decoding?"
+  back: "Generating a reply so that only the tokens a schema allows can be chosen. A method, compared with the other two."

@@ -1,0 +1,14 @@
+- id: process
+  term: process
+  aliases:
+  - process
+  - processes
+  strict: false
+  definition: A running program, with its own id, its parent's id, a user and a working folder.
+- id: file-permissions
+  term: file permissions
+  aliases:
+  - file permissions
+  - file permission
+  strict: true
+  definition: The rules that say which user may read, write or run a file, given its owner, its group and its mode.

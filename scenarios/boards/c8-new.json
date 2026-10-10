@@ -1,0 +1,9 @@
+{
+  "id": "c8-new",
+  "label": "New board",
+  "modules": {
+    "tool_search": {
+      "always": []
+    }
+  }
+}

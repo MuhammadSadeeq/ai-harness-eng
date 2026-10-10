@@ -1,0 +1,30 @@
+- id: T8-k1
+  type: term
+  objective: T8.o1
+  front: What makes a commit small?
+  back: One change you can explain in one line.
+- id: T8-k2
+  type: term
+  objective: T8.o1
+  front: In this course's diff, what does a line that starts with + mean?
+  back: The line is new in the file after the change.
+- id: T8-k3
+  type: term
+  objective: T8.o2
+  front: What is the first step before you undo an agent's change?
+  back: Read the diff, so you know what the undo will remove.
+- id: T8-k4
+  type: term
+  objective: T8.o3
+  front: Why keep an agent's work apart from yours?
+  back: So its changes can be reviewed on their own.
+- id: T8-k5
+  type: term
+  objective: T8.o3
+  front: What is a worktree in this course?
+  back: A separate folder for one line of work.
+- id: T8-k6
+  type: term
+  objective: T8.o1
+  front: What does a diff show?
+  back: The lines a change adds, removes or leaves alone, file by file.

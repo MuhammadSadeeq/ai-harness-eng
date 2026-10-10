@@ -1,0 +1,40 @@
+- id: C8-k1
+  type: term
+  objective: C8.o1
+  front: What does an MCP server offer to a client?
+  back: Tools, resources and prompts. The client reaches them through a transport.
+- id: C8-k2
+  type: term
+  objective: C8.o1
+  front: What is a transport?
+  back: How messages move between a client and a server. Stdio sends newline-delimited messages over a subprocess's standard streams.
+- id: C8-k3
+  type: term
+  objective: C8.o2
+  front: What is progressive disclosure for a skill?
+  back: The name and description load first. The full procedure loads only when the task needs it.
+- id: C8-k4
+  type: term
+  objective: C8.o2
+  front: What is a SKILL.md file?
+  back: YAML frontmatter, then the procedure in Markdown. The frontmatter carries the name and the description.
+- id: C8-k5
+  type: term
+  objective: C8.o3
+  front: What is tool search?
+  back: Finding a tool's definition by keyword and loading it for the next call, instead of sending every definition each time.
+- id: C8-k6
+  type: term
+  objective: C8.o3
+  front: What does a long list of tool definitions cost?
+  back: Tokens on every call, and a harder choice for the model. Measure both before you add a tool.
+- id: C8-k7
+  type: term
+  objective: C8.o4
+  front: What does programmatic tool calling replace?
+  back: Many round trips, each with its own result, with one program that calls several tools and returns one result.
+- id: C8-k8
+  type: term
+  objective: C8.o5
+  front: How should you treat a server's tool annotations?
+  back: As untrusted hints. Do not make a permission decision on them alone.

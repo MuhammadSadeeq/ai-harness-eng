@@ -1,0 +1,79 @@
+- id: instruction-layer
+  term: instruction layer
+  aliases: [instruction layer, instruction layers]
+  strict: true
+  wire: control
+  definition: >-
+    One block of text in the prompt that tells the model what to do: the system prompt, the project rules, the user's message or a tool result.
+
+- id: instruction-hierarchy
+  term: instruction hierarchy
+  aliases: [instruction hierarchy]
+  strict: true
+  wire: control
+  definition: >-
+    The order that decides which layer wins when two of them disagree. It is set by who wrote each layer, not by what it says.
+
+- id: altitude
+  term: altitude
+  aliases: [altitude]
+  strict: false
+  wire: control
+  definition: >-
+    How specific an instruction is. Too low and it is a lookup table; too high and it is a slogan. Good instructions are specific enough to act on and general enough to transfer.
+
+- id: agents-md
+  term: AGENTS.md
+  aliases: [AGENTS.md]
+  strict: true
+  wire: control
+  definition: >-
+    A rules file in the repository, named by a convention. Which product reads it is a fact the course lists, not a claim made here.
+
+- id: claude-md
+  term: CLAUDE.md
+  aliases: [CLAUDE.md]
+  strict: true
+  wire: control
+  definition: >-
+    A rules file in the repository, named by a convention. Which product reads it is a fact the course lists, not a claim made here.
+
+- id: hook
+  term: hook
+  aliases: [hook, hooks]
+  strict: false
+  wire: permissions
+  definition: >-
+    Code the harness runs at a fixed point, such as before a tool call, so the rule holds whatever the prompt says.
+
+- id: pre-tool-hook
+  term: pre-tool hook
+  aliases: [pre-tool hook, pre-tool hooks]
+  strict: true
+  wire: permissions
+  definition: >-
+    A hook that runs before each tool call and decides whether the call may run.
+
+- id: fail-closed
+  term: fail closed
+  aliases: [fail closed, fails closed, failing closed]
+  strict: true
+  wire: permissions
+  definition: >-
+    When a check cannot decide, it denies the action. A check that fails open lets the action through when it breaks.
+
+- id: project-rules
+  term: project rules
+  aliases: [project rules]
+  strict: true
+  wire: control
+  definition: >-
+    The standing instructions for one repository, written down so every run in it reads them.
+
+- id: rules-file
+  term: rules file
+  aliases: [rules file, rules files]
+  strict: true
+  wire: control
+  definition: >-
+    A file that holds the project rules. Kept short, it is a map of where things are and how to check them.

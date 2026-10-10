@@ -1,0 +1,14 @@
+- id: image
+  term: image
+  aliases:
+  - image
+  - images
+  strict: true
+  definition: The name of the starting point a container runs from, such as python:3.
+- id: mount
+  term: mount
+  aliases:
+  - mount
+  - mounts
+  strict: true
+  definition: A folder you name in the command so the command can use it. This course mounts one folder per task.

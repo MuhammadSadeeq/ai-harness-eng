@@ -1,0 +1,42 @@
+- id: C9-k1
+  type: term
+  objective: C9.o1
+  front: "What must every permission decision carry?"
+  back: "One of allow, ask or deny, always with a reason."
+
+- id: C9-k2
+  type: term
+  objective: C9.o2
+  front: "How is risk judged?"
+  back: "As action times target. The same command can be safe in one place and dangerous in another."
+
+- id: C9-k3
+  type: term
+  objective: C9.o3
+  front: "What is approval fatigue?"
+  back: "The loss of care after many prompts, so that the one dangerous prompt is approved without a look."
+
+- id: C9-k4
+  type: term
+  objective: C9.o4
+  front: "What is the decision order of a policy?"
+  back: "All deny rules, then all ask rules, then all allow rules, then the mode's default."
+
+- id: C9-k5
+  type: term
+  objective: C9.o5
+  front: "How do you show a permission policy holds?"
+  back: "Test it with a table of cases, each with the decision it must give."
+
+- id: C9-k6
+  type: which-wire
+  objective: C9.o1
+  wire: permissions
+  front: "A rule must hold whatever the prompt says. Which wire is the enforcement on?"
+  back: "Permissions. A decision in code holds; a line in the prompt only asks."
+
+- id: C9-k7
+  type: term
+  objective: C9.o3
+  front: "What should a policy do with harmless read-only calls?"
+  back: "Allow them, so that the prompts left are the ones that matter."

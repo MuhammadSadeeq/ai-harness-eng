@@ -1,0 +1,70 @@
+[
+ {
+  "answer": 1,
+  "id": "T5-c1",
+  "mode": "check",
+  "objective": "T5.o1",
+  "options": [
+   {
+    "fact": "api.error-429-rate-limit",
+    "text": "The status code, 429.",
+    "why": "No. The code names the error; it does not say how long to wait."
+   },
+   {
+    "fact": "api.error-429-retry-after",
+    "text": "The retry-after header.",
+    "why": "Right. The header says how long to wait, when it is present."
+   },
+   {
+    "text": "The body, because it is always the last line.",
+    "why": "No. Where the body sits does not tell the client a wait time."
+   }
+  ],
+  "question": "A response has status 429 and a retry-after header. Which part tells the client how long to wait?"
+ },
+ {
+  "answer": 1,
+  "id": "T5-c2",
+  "mode": "check",
+  "objective": "T5.o2",
+  "options": [
+   {
+    "fact": "api.error-500-api-error",
+    "text": "500",
+    "why": "No. 500 is an unexpected internal error."
+   },
+   {
+    "fact": "api.error-529-overloaded",
+    "text": "529",
+    "why": "Right. The error type is overloaded_error."
+   },
+   {
+    "fact": "api.error-400-invalid-request",
+    "text": "400",
+    "why": "No. 400 is a request format or content problem."
+   }
+  ],
+  "question": "Which status code means the API is temporarily overloaded?"
+ },
+ {
+  "answer": 1,
+  "id": "T5-c3",
+  "mode": "check",
+  "objective": "T5.o3",
+  "options": [
+   {
+    "text": "The end of the text, even without a blank line.",
+    "why": "No. An event with no blank line after it is not returned yet."
+   },
+   {
+    "text": "A blank line.",
+    "why": "Right. In this course's parser a blank line ends the event, and only an event with data is returned."
+   },
+   {
+    "text": "A line that starts with a colon.",
+    "why": "No. A line that starts with a colon is a comment, and the parser skips it."
+   }
+  ],
+  "question": "What ends a server-sent event in this course's parser?"
+ }
+]

@@ -1,0 +1,32 @@
+[
+ {
+  "id": "B1-s1",
+  "model_answer": "The model replies with one or more tool_use blocks and a stop reason of tool_use. The harness reads every block, runs each named tool with its input, and collects one tool_result per call, each with its tool_use_id. It sends them all back together in one user message, after the assistant's reply, and calls the model again. Any failed call gets is_error set to true, so the model knows it failed.",
+  "objectives": [
+   "B1.o1",
+   "B1.o3"
+  ],
+  "prompt": "Walk me through one tool round trip, from the model's reply to the next request.",
+  "rubric": [
+   "Says the model only asks, and the harness runs the tool",
+   "Names the tool_use_id match between each call and its result",
+   "Says all results go back together in one user message",
+   "Mentions is_error for a failed call"
+  ]
+ },
+ {
+  "id": "B1-s2",
+  "model_answer": "I read the tool definition the model sees: the name, the description and the input schema. A vague name or a description that does not say when to use the tool, or parameters with no description, make the model guess. I fix the definition before I change the prompt, because the definition is the tool's whole interface to the model.",
+  "objectives": [
+   "B1.o2",
+   "B1.o4"
+  ],
+  "prompt": "A tool keeps being misused. What do you check first, and why?",
+  "rubric": [
+   "Starts with the definition the model actually sees",
+   "Names the three parts: name, description, input schema",
+   "Says a missing description or unclear parameters invite misuse",
+   "Treats the definition as the tool's interface, not the prompt"
+  ]
+ }
+]

@@ -1,0 +1,24 @@
+- id: C7-s1
+  objectives:
+  - C7.o1
+  - C7.o2
+  prompt: A tool keeps failing because the model sends the wrong fields. Walk me through what you change, and in what order.
+  model_answer: First I read the tool's definition as the model sees it. The name and description do not say when to use it, and the fields are not described, so I rewrite the description with the use and
+    each parameter, and I add the required fields. Then I run the same task again and read the calls. Only after that do I touch the prompt, and only if a rule still fails.
+  rubric:
+  - Reads the definition as the model sees it, before changing anything
+  - Names when to use the tool in the description
+  - Describes each parameter and marks the required ones
+  - Re-runs the same task and reads the calls to check the change
+- id: C7-s2
+  objectives:
+  - C7.o3
+  - C7.o5
+  prompt: A tool returns a bare error, and the model runs five tools one after another that could have run together. What do you change?
+  model_answer: I make the error say what went wrong and what to send next, in a few words. For the calls, I check which ones read and write the same resource. The reads that touch nothing another call
+    writes can go in one round together, and anything that conflicts waits for the next round.
+  rubric:
+  - Changes the error to name the problem and the next step
+  - Keeps the error short, so it does not spend the context
+  - Checks which calls read or write the same resource before batching
+  - Puts only calls that do not conflict in the same round

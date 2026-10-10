@@ -1,0 +1,52 @@
+[
+ {
+  "back": "One block of text in the prompt that tells the model what to do: the system prompt, the project rules, the user's message or a tool result.",
+  "front": "What is an instruction layer?",
+  "id": "C1-k1",
+  "objective": "C1.o1",
+  "type": "term"
+ },
+ {
+  "back": "The instruction hierarchy: who wrote each layer, not what it says. A tool result is data, not an instruction.",
+  "front": "What decides which layer wins when two disagree?",
+  "id": "C1-k2",
+  "objective": "C1.o1",
+  "type": "term"
+ },
+ {
+  "back": "How specific it is. Too low and it is a lookup table; too high and it is a slogan.",
+  "front": "What is altitude in an instruction?",
+  "id": "C1-k3",
+  "objective": "C1.o2",
+  "type": "term"
+ },
+ {
+  "back": "Code that runs before each tool call and decides whether it may run. It holds whatever the prompt says.",
+  "front": "What is a pre-tool hook?",
+  "id": "C1-k4",
+  "objective": "C1.o3",
+  "type": "term"
+ },
+ {
+  "back": "When the check cannot decide, it denies the action. A hook that fails open lets the action through when it breaks.",
+  "front": "What does fail closed mean for a hook?",
+  "id": "C1-k5",
+  "objective": "C1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Where things live, the commands that check them, and the rules that must hold. Not every case, and not a manual.",
+  "front": "What belongs in a rules file, as a map?",
+  "id": "C1-k6",
+  "objective": "C1.o4",
+  "type": "term"
+ },
+ {
+  "back": "Control. The rule lives in words, so nothing enforces it; a hook on the permissions wire would.",
+  "front": "The project rules say never touch tests/, and only the prompt holds it. Which wire is that?",
+  "id": "C1-k7",
+  "objective": "C1.o3",
+  "type": "which-wire",
+  "wire": "control"
+ }
+]

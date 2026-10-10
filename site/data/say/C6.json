@@ -1,0 +1,33 @@
+[
+ {
+  "id": "C6-s1",
+  "model_answer": "An overloaded error is transient, so I retry it with exponential backoff, a cap and jitter, up to a set number of attempts. A bad request is a permanent error: a retry sends the same request and gets the same refusal, so I return the error to the model or stop, and do not retry it.",
+  "objectives": [
+   "C6.o1",
+   "C6.o2"
+  ],
+  "prompt": "A call fails with an overloaded error on the first try. How does your harness handle it, and what does it do with a bad request?",
+  "rubric": [
+   "Classifies the overloaded error as transient and retries it",
+   "Classifies a bad request as permanent and does not retry it",
+   "Names exponential backoff, a cap and jitter for the wait",
+   "Sets a limit on the attempts"
+  ]
+ },
+ {
+  "id": "C6-s2",
+  "model_answer": "I add a circuit breaker that opens after a few failures in a row, and a retry budget that caps the retries. When a tool fails, I keep the error text in the context as a tool result marked as an error, so the model can correct itself. For an action that might run twice, I send an idempotency key.",
+  "objectives": [
+   "C6.o3",
+   "C6.o4",
+   "C6.o5"
+  ],
+  "prompt": "Your provider is down, and every client retries at once. What brakes do you add, and what do you keep in the context when a tool fails?",
+  "rubric": [
+   "Names a circuit breaker that opens after failures in a row",
+   "Names a retry budget, and says why retries need a limit",
+   "Keeps the error text in context, marked as an error",
+   "Uses an idempotency key where a retried action could run twice"
+  ]
+ }
+]

@@ -1,0 +1,42 @@
+- id: C3-k1
+  type: term
+  objective: C3.o1
+  front: "What is compaction?"
+  back: "Replacing the older messages with a summary, so the desk has room. The summary keeps only what the harness chose to keep."
+
+- id: C3-k2
+  type: term
+  objective: C3.o1
+  front: "What is the main failure of compaction?"
+  back: "It loses what matters: a constraint or a decision that the summary did not keep is gone for every later call."
+
+- id: C3-k3
+  type: term
+  objective: C3.o2
+  front: "What should a compactor drop?"
+  back: "Raw tool output. It keeps the goal, the constraints, the decisions, the progress and the file pointers."
+
+- id: C3-k4
+  type: term
+  objective: C3.o3
+  front: "When is a clean reset with a handoff note the better choice?"
+  back: "When the run has drifted and the goal is clearer as a fresh start. Compaction suits a clear thread that only needs room."
+
+- id: C3-k5
+  type: term
+  objective: C3.o4
+  front: "What are the four memory tiers?"
+  back: "The window, the session log, the project files and the long-term store."
+
+- id: C3-k6
+  type: term
+  objective: C3.o4
+  front: "Does memory mean the model learns?"
+  back: "No. A memory tier is text the harness puts in front of the model or keeps for later. The model's weights do not change."
+
+- id: C3-k7
+  type: which-wire
+  objective: C3.o1
+  wire: context
+  front: "A summary after compaction drops a constraint, and the model breaks it. Which wire is that?"
+  back: "Context. The desk lost the commitment, and the compactor's keep list decided what stayed."

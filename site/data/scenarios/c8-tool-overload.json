@@ -1,0 +1,537 @@
+{
+  "schema": 1,
+  "id": "c8-tool-overload",
+  "title": "Sixteen tools and the one that matters",
+  "task": "Find the status of ticket T-204 and write it to answer.txt.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a support coding agent working for one team. Use the tools to look up tickets and write the answers down. Read each result before you act on it. When the answer is written, say done.",
+  "rules": [],
+  "workspace": {
+    "README.md": "Support tickets for the team.\n"
+  },
+  "outside": {},
+  "tools": [
+    "write_file"
+  ],
+  "custom_tools": [
+    {
+      "name": "ticket_lookup",
+      "description": "Look up a support ticket by its id. Use it when the user names a ticket.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [
+        {
+          "match": {
+            "id": "T-204"
+          },
+          "output": "T-204: open, assigned to Ada.",
+          "ok": true
+        }
+      ],
+      "default": {
+        "output": "Error: no ticket with that id. Send the id as it appears, for example T-204.",
+        "ok": false
+      }
+    },
+    {
+      "name": "ticket_list",
+      "description": "List open tickets for a customer.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Error: this lists tickets for a customer. To check one ticket, use ticket_lookup with its id.",
+        "ok": false
+      }
+    },
+    {
+      "name": "calendar_create",
+      "description": "Create a calendar event for the team.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "when": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "calendar_list",
+      "description": "List the calendar events for a day.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "invoice_pdf",
+      "description": "Make a PDF of an invoice.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "invoice": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "invoice_send",
+      "description": "Send an invoice to a customer by email.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "invoice": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "expense_add",
+      "description": "Add an expense to the report.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "expense_report",
+      "description": "Print the expense report for a month.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "deploy_status",
+      "description": "Show the status of the last deploy.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "deploy_start",
+      "description": "Start a deploy of a service.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "build_logs",
+      "description": "Show the logs of a build.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "build": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "release_notes",
+      "description": "Write the release notes for a version.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "team_roster",
+      "description": "Show who is on which team.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "team": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "room_book",
+      "description": "Book a meeting room.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "room": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    },
+    {
+      "name": "weather_get",
+      "description": "Get the weather for a city.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Done.",
+        "ok": true
+      }
+    }
+  ],
+  "checks": [
+    {
+      "file": "answer.txt",
+      "contains": "T-204 is open"
+    }
+  ],
+  "test_output": {
+    "pass": "answer written",
+    "fail": "answer.txt missing the status"
+  },
+  "script": [
+    {
+      "when": [
+        {
+          "if": "tools_gte:10",
+          "then": [
+            {
+              "branch": [
+                {
+                  "percent": 50,
+                  "then": [
+                    {
+                      "say": "I'll list the open tickets for the customer.",
+                      "tools": [
+                        [
+                          "ticket_list",
+                          {
+                            "customer": "acme"
+                          }
+                        ]
+                      ],
+                      "stop": "tool_use"
+                    }
+                  ]
+                },
+                {
+                  "percent": 50,
+                  "then": [
+                    {
+                      "say": "I'll look up the ticket.",
+                      "tools": [
+                        [
+                          "ticket_lookup",
+                          {
+                            "id": "T-204"
+                          }
+                        ]
+                      ],
+                      "stop": "tool_use"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "The lookup tool is not loaded. I'll search for it.",
+              "tools": [
+                [
+                  "tool_search",
+                  {
+                    "query": "ticket lookup"
+                  }
+                ]
+              ],
+              "stop": "tool_use"
+            },
+            {
+              "when": [
+                {
+                  "if": "tool_loaded:ticket_lookup",
+                  "then": [
+                    {
+                      "say": "Looking up the ticket.",
+                      "tools": [
+                        [
+                          "ticket_lookup",
+                          {
+                            "id": "T-204"
+                          }
+                        ]
+                      ],
+                      "stop": "tool_use"
+                    }
+                  ]
+                },
+                {
+                  "else": [
+                    {
+                      "say": "The lookup tool did not load, so I can't give the status. Stopping here.",
+                      "stop": "end_turn"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "last_result_error",
+          "then": [
+            {
+              "say": "The lookup failed, so I can't give the status. Stopping here.",
+              "stop": "end_turn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "T-204 is open. Writing it down.",
+      "tools": [
+        [
+          "write_file",
+          {
+            "path": "answer.txt",
+            "content": "T-204 is open\n"
+          }
+        ]
+      ],
+      "stop": "tool_use"
+    },
+    {
+      "say": "Done. T-204 is open."
+    }
+  ],
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "seed_base": 20261010,
+  "boards": [
+    "c8-old",
+    "c8-new"
+  ],
+  "incident": {
+    "family": "tool-overload",
+    "wire": "tools",
+    "board": "c8-old",
+    "seed": 0,
+    "first_bad_seq": 5,
+    "accept_seqs": [
+      1,
+      7
+    ],
+    "why": "The request on turn 1 sends all sixteen tool definitions (write_file and fifteen tools) (seq 1). The reply then picks ticket_list, one of the look-alikes, and the lookup never runs (seq 5). Sixteen definitions in every call make the wrong pick easy, and each call pays for all of them.",
+    "hint": "Count the tools in the request on turn 1. Then read the tool the reply picks. Is it the one the task needs?",
+    "notes": [
+      {
+        "seq": 1,
+        "text": "The request is ordinary; the harness sends what it was given. The question is whether every definition belongs in every call."
+      },
+      {
+        "seq": 7,
+        "text": "The error tells the model where to go: ticket_lookup. Tempting: blame the error. The pick was already wrong before the error came back."
+      },
+      {
+        "seq": 13,
+        "text": "The run stops and says done. The lookup failed, so the run ends without the answer."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Load each tool only when a step needs it, with a keyword search over the definitions",
+        "why": "The request carries the few tools the step needs, so the look-alikes are not offered, and each call pays for fewer definitions."
+      },
+      {
+        "text": "Use a bigger model, which can choose among more tools",
+        "why": "Tempting and wrong: a bigger model still sees the same sixteen definitions, and each call still pays for all of them."
+      },
+      {
+        "text": "Delete the look-alike tools",
+        "why": "Tempting and wrong: the other tools are real and the team uses them. Remove them from this run, not from the course."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 60
+  }
+}

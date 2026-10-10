@@ -1,0 +1,76 @@
+{
+ "models": [
+  {
+   "label": "All clients start together",
+   "provider": {
+    "arrivals_per_slot": 0,
+    "start": "together"
+   }
+  }
+ ],
+ "policy": {
+  "base_ms": 200,
+  "breaker": null,
+  "cap_ms": 5000,
+  "jitter": "full",
+  "max_attempts": 5
+ },
+ "presets": [
+  {
+   "label": "Retry at once, no jitter",
+   "policy": {
+    "base_ms": 0,
+    "breaker": null,
+    "cap_ms": 100,
+    "jitter": "none",
+    "max_attempts": 5
+   }
+  },
+  {
+   "label": "Backoff, no jitter",
+   "policy": {
+    "base_ms": 200,
+    "breaker": null,
+    "cap_ms": 5000,
+    "jitter": "none",
+    "max_attempts": 5
+   }
+  },
+  {
+   "label": "Backoff with full jitter",
+   "policy": {
+    "base_ms": 200,
+    "breaker": null,
+    "cap_ms": 5000,
+    "jitter": "full",
+    "max_attempts": 5
+   }
+  },
+  {
+   "label": "Backoff, jitter and a breaker",
+   "policy": {
+    "base_ms": 200,
+    "breaker": {
+     "cooldown_ms": 4000,
+     "threshold": 3
+    },
+    "cap_ms": 5000,
+    "jitter": "full",
+    "max_attempts": 5
+   }
+  }
+ ],
+ "provider": {
+  "arrivals_per_slot": 0,
+  "capacity": 12,
+  "clients": 40,
+  "duration_ms": 20000,
+  "error_ms": 300,
+  "outage_from_ms": 0,
+  "outage_to_ms": 6000,
+  "slot_ms": 100,
+  "start": "together",
+  "think_ms": 500
+ },
+ "story": "At 0 s the provider goes overloaded for six seconds, and all 40 clients start retrying at the same moment."
+}

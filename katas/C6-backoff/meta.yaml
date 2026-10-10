@@ -1,0 +1,24 @@
+id: C6-backoff
+module: C6
+title: Backoff, jitter, a cap and a breaker
+objectives:
+- C6.o1
+- C6.o2
+- C6.o3
+minutes: 25
+hints:
+- 'Split the errors first: a permanent error never retries, and a transient one retries while attempts remain.'
+- The wait is base = min(cap, base_ms * 2 ** (attempt - 1)). Full jitter takes a draw modulo base + 1 instead of base.
+- 'Nearly the code: should_retry is error_type in TRANSIENT and attempt < max_attempts; backoff_ms caps before it jitters; breaker_open is failures >= threshold.'
+from_memory: true
+wrong_solutions:
+- name: no-cap
+  code: "TRANSIENT = (\"overloaded\", \"rate_limit\", \"api_error\", \"timeout\")\n\n\ndef should_retry(error_type, attempt, max_attempts):\n    return error_type in TRANSIENT and attempt < max_attempts\n\n\ndef backoff_ms(attempt, base_ms, cap_ms, jitter, draw=0):\n    base = base_ms * 2 ** (attempt - 1)\n    if jitter == \"none\":\n        return base\n    return draw % (base + 1)\n\n\ndef breaker_open(failures_in_a_row, threshold):\n    return failures_in_a_row >= threshold\n"
+- name: double-before-the-first-wait
+  code: "TRANSIENT = (\"overloaded\", \"rate_limit\", \"api_error\", \"timeout\")\n\n\ndef should_retry(error_type, attempt, max_attempts):\n    return error_type in TRANSIENT and attempt < max_attempts\n\n\ndef backoff_ms(attempt, base_ms, cap_ms, jitter, draw=0):\n    base = min(cap_ms, base_ms * 2 ** attempt)\n    if jitter == \"none\":\n        return base\n    if jitter == \"full\":\n        return draw % (base + 1)\n    raise ValueError(f\"unknown jitter: {jitter}\")\n\n\ndef breaker_open(failures_in_a_row, threshold):\n    return failures_in_a_row >= threshold\n"
+- name: permanent-retried
+  code: "TRANSIENT = (\"overloaded\", \"rate_limit\", \"api_error\", \"timeout\")\n\n\ndef should_retry(error_type, attempt, max_attempts):\n    return attempt < max_attempts\n\n\ndef backoff_ms(attempt, base_ms, cap_ms, jitter, draw=0):\n    base = min(cap_ms, base_ms * 2 ** (attempt - 1))\n    if jitter == \"none\":\n        return base\n    if jitter == \"full\":\n        return draw % (base + 1)\n    raise ValueError(f\"unknown jitter: {jitter}\")\n\n\ndef breaker_open(failures_in_a_row, threshold):\n    return failures_in_a_row >= threshold\n"
+- name: jitter-ignored
+  code: "TRANSIENT = (\"overloaded\", \"rate_limit\", \"api_error\", \"timeout\")\n\n\ndef should_retry(error_type, attempt, max_attempts):\n    return error_type in TRANSIENT and attempt < max_attempts\n\n\ndef backoff_ms(attempt, base_ms, cap_ms, jitter, draw=0):\n    return min(cap_ms, base_ms * 2 ** (attempt - 1))\n\n\ndef breaker_open(failures_in_a_row, threshold):\n    return failures_in_a_row >= threshold\n"
+- name: breaker-one-late
+  code: "TRANSIENT = (\"overloaded\", \"rate_limit\", \"api_error\", \"timeout\")\n\n\ndef should_retry(error_type, attempt, max_attempts):\n    return error_type in TRANSIENT and attempt < max_attempts\n\n\ndef backoff_ms(attempt, base_ms, cap_ms, jitter, draw=0):\n    base = min(cap_ms, base_ms * 2 ** (attempt - 1))\n    if jitter == \"none\":\n        return base\n    if jitter == \"full\":\n        return draw % (base + 1)\n    raise ValueError(f\"unknown jitter: {jitter}\")\n\n\ndef breaker_open(failures_in_a_row, threshold):\n    return failures_in_a_row > threshold\n"

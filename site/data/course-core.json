@@ -320,7 +320,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "A4",
    "kind": "core",
    "minutes": 50,
@@ -337,7 +337,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "A5",
    "kind": "core",
    "minutes": 45,
@@ -353,7 +353,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "A6",
    "kind": "concept",
    "minutes": 35,
@@ -365,7 +365,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "A7",
    "kind": "concept",
    "minutes": 30,
@@ -378,7 +378,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "B1",
    "kind": "core",
    "minutes": 50,
@@ -411,7 +411,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "B3",
    "kind": "concept",
    "minutes": 35,
@@ -430,7 +430,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "B4",
    "kind": "concept",
    "minutes": 30,
@@ -449,7 +449,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C1",
    "kind": "core",
    "minutes": 55,
@@ -465,7 +465,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C2",
    "kind": "core",
    "minutes": 50,
@@ -481,7 +481,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C3",
    "kind": "core",
    "minutes": 50,
@@ -497,7 +497,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C4",
    "kind": "core",
    "minutes": 45,
@@ -513,7 +513,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C5",
    "kind": "core",
    "minutes": 55,
@@ -529,7 +529,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C6",
    "kind": "core",
    "minutes": 55,
@@ -545,7 +545,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C7",
    "kind": "core",
    "minutes": 55,
@@ -561,7 +561,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C8",
    "kind": "core",
    "minutes": 50,
@@ -578,7 +578,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C9",
    "kind": "core",
    "minutes": 55,
@@ -594,7 +594,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C10",
    "kind": "core",
    "minutes": 50,
@@ -610,7 +610,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C11",
    "kind": "core",
    "minutes": 55,
@@ -626,7 +626,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "C12",
    "kind": "core",
    "minutes": 50,
@@ -1214,7 +1214,7 @@
    "wires": []
   },
   {
-   "built": false,
+   "built": true,
    "id": "T4",
    "kind": "primer",
    "minutes": 20,
@@ -1224,7 +1224,7 @@
    "wires": []
   },
   {
-   "built": false,
+   "built": true,
    "id": "T5",
    "kind": "primer",
    "minutes": 20,
@@ -1234,7 +1234,7 @@
    "wires": []
   },
   {
-   "built": false,
+   "built": true,
    "id": "T6",
    "kind": "primer",
    "minutes": 20,
@@ -1244,7 +1244,7 @@
    "wires": []
   },
   {
-   "built": false,
+   "built": true,
    "id": "T7",
    "kind": "primer",
    "minutes": 25,
@@ -1254,7 +1254,7 @@
    "wires": []
   },
   {
-   "built": false,
+   "built": true,
    "id": "T8",
    "kind": "primer",
    "minutes": 20,
@@ -1264,7 +1264,7 @@
    "wires": []
   },
   {
-   "built": false,
+   "built": true,
    "id": "T9",
    "kind": "primer",
    "minutes": 20,
@@ -1274,7 +1274,7 @@
    "wires": []
   },
   {
-   "built": false,
+   "built": true,
    "id": "T10",
    "kind": "primer",
    "minutes": 20,

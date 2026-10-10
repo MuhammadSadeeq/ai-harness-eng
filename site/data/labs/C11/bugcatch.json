@@ -1,0 +1,96 @@
+{
+ "budget": 5,
+ "bugs": [
+  {
+   "detail": "The marker kept the add test on. Clearing it switched the test off, so the live suite passes with nothing checked.",
+   "id": "marker-cleared",
+   "label": "A test marker was cleared"
+  },
+  {
+   "detail": "The assertion was changed to match the wrong output, so the suite is green for the wrong reason.",
+   "id": "test-edited",
+   "label": "A test was edited to pass"
+  },
+  {
+   "detail": "The function returns the expected value for the visible inputs and nothing else.",
+   "id": "special-case",
+   "label": "The answer is special-cased"
+  },
+  {
+   "detail": "The final message claims success, and no run backs it.",
+   "id": "says-done",
+   "label": "It says done, but a test fails"
+  },
+  {
+   "detail": "add() returns the sum as a string, so a test that compares numbers fails, and a type check flags it.",
+   "id": "wrong-type",
+   "label": "The result has the wrong type"
+  }
+ ],
+ "catches": {
+  "marker-cleared": [
+   "pristine",
+   "reviewer"
+  ],
+  "says-done": [
+   "unit",
+   "pristine"
+  ],
+  "special-case": [
+   "reviewer"
+  ],
+  "test-edited": [
+   "pristine",
+   "reviewer"
+  ],
+  "wrong-type": [
+   "type",
+   "unit",
+   "pristine"
+  ]
+ },
+ "checks": [
+  {
+   "cost": 0,
+   "id": "rules",
+   "kind": "guide",
+   "label": "Rules in the prompt: never edit or clear a test to pass"
+  },
+  {
+   "cost": 0,
+   "id": "general",
+   "kind": "guide",
+   "label": "Prompt: write a general solution, not special cases"
+  },
+  {
+   "cost": 0,
+   "id": "self-report",
+   "kind": "sensor",
+   "label": "The model says it is done"
+  },
+  {
+   "cost": 1,
+   "id": "type",
+   "kind": "sensor",
+   "label": "Type check on add()"
+  },
+  {
+   "cost": 2,
+   "id": "unit",
+   "kind": "sensor",
+   "label": "Unit tests on the live suite"
+  },
+  {
+   "cost": 3,
+   "id": "pristine",
+   "kind": "sensor",
+   "label": "Tests from a pristine copy"
+  },
+  {
+   "cost": 4,
+   "id": "reviewer",
+   "kind": "sensor",
+   "label": "Independent reviewer: sees the task and the diff"
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+- id: A6-k1
+  type: term
+  objective: A6.o1
+  front: "What is extended thinking?"
+  back: "Extra tokens the model writes before it answers, to work a problem out. They are billed as output."
+
+- id: A6-k2
+  type: term
+  objective: A6.o3
+  front: "What must happen to a thinking block during a tool loop?"
+  back: "It goes back to the model complete and unmodified, with the tool call that it belongs to."
+
+- id: A6-k3
+  type: term
+  objective: A6.o2
+  front: "What is effort?"
+  back: "A setting that tells the model how much to work before it answers. The harness sets it on each request."
+
+- id: A6-k4
+  type: term
+  objective: A6.o4
+  front: "What is cost per completed task?"
+  back: "The cost of a task's calls, divided by the share of tasks that finish. A cheap call that often fails is not cheap."
+
+- id: A6-k5
+  type: which-wire
+  objective: A6.o2
+  wire: control
+  front: "The board sets effort to low for every call. Which wire is that setting on?"
+  back: "Control. The harness decides how much the model works before it answers."
+
+- id: A6-k6
+  type: term
+  objective: A6.o2
+  front: "Does a higher effort always help?"
+  back: "No. On easy work it can add cost and wait without a better answer."

@@ -1,0 +1,16 @@
+{
+  "id": "c10-new",
+  "label": "Sandbox and redact",
+  "modules": {
+    "sandbox": {
+      "egress": [
+        "docs.example"
+      ]
+    },
+    "redact": {
+      "patterns": [
+        "sk-test-planted"
+      ]
+    }
+  }
+}

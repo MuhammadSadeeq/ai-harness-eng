@@ -1,0 +1,53 @@
+id: C1-hook
+module: C1
+title: Write a pre-tool hook that fails closed
+objectives: [C1.o3]
+minutes: 20
+hints:
+  - "Look at the rules first. A deny rule for a tool and a path prefix must stop a matching call before it runs."
+  - "Check deny rules before anything else. If the call is malformed, or the check itself raises, return deny: a hook that fails open lets the edit through."
+  - "Nearly the code: wrap the check in try. Deny when the call is not a dict or its input is not a dict. For each deny rule with the same tool, if the input path starts with the rule's prefix, return deny with the rule's reason. Otherwise return allow. In except, return deny."
+from_memory: false
+wrong_solutions:
+  - name: fails-open
+    code: |
+      def check_call(call, rules):
+          try:
+              tool = call["tool"]
+              data = call["input"]
+              for rule in rules:
+                  if rule["decision"] == "deny" and rule["tool"] == tool and str(data.get("path", "")).startswith(rule["prefix"]):
+                      return {"decision": "deny", "reason": rule["reason"]}
+              return {"decision": "allow", "reason": ""}
+          except Exception:
+              return {"decision": "allow", "reason": "the check failed"}
+  - name: ignores-the-prefix
+    code: |
+      def check_call(call, rules):
+          if not isinstance(call, dict) or not isinstance(call.get("input"), dict):
+              return {"decision": "deny", "reason": "malformed call"}
+          for rule in rules:
+              if rule["decision"] == "deny" and rule["tool"] == call.get("tool"):
+                  return {"decision": "deny", "reason": rule["reason"]}
+          return {"decision": "allow", "reason": ""}
+  - name: raises-on-malformed
+    code: |
+      def check_call(call, rules):
+          tool = call["tool"]
+          data = call["input"]
+          for rule in rules:
+              if rule["decision"] == "deny" and rule["tool"] == tool and data["path"].startswith(rule["prefix"]):
+                  return {"decision": "deny", "reason": rule["reason"]}
+          return {"decision": "allow", "reason": ""}
+  - name: allow-before-deny
+    code: |
+      def check_call(call, rules):
+          tool = call["tool"]
+          data = call["input"]
+          for rule in rules:
+              if rule["decision"] == "allow" and rule["tool"] == tool:
+                  return {"decision": "allow", "reason": ""}
+          for rule in rules:
+              if rule["decision"] == "deny" and rule["tool"] == tool and data["path"].startswith(rule["prefix"]):
+                  return {"decision": "deny", "reason": rule["reason"]}
+          return {"decision": "allow", "reason": ""}

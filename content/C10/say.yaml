@@ -1,0 +1,31 @@
+- id: C10-s1
+  objectives:
+  - C10.o1
+  - C10.o2
+  prompt: A model's file tool gets a path with ../ in it. Walk me through what the sandbox does with it, and why
+    the order of the steps matters.
+  model_answer: 'The sandbox normalizes the path first, so ../ segments are resolved. Then it checks where the normal
+    form lands. If it lands outside the workspace root, the call is refused before it runs. A link is followed the
+    same way: its target is resolved from the link''s own folder, and the final path must still be inside the root.
+    The order matters because a check on the raw text can be fooled by a path that looks inside but leaves the root
+    once normalized.'
+  rubric:
+  - Normalizes before checking
+  - Says the final path must stay inside the root
+  - Covers links, with their target resolved from the link's folder
+  - Explains why a check on the raw text is not enough
+- id: C10-s2
+  objectives:
+  - C10.o3
+  - C10.o4
+  prompt: The harness has an egress allow-list and the redact module. What does each stop, and what does neither
+    stop?
+  model_answer: The allow-list refuses a network call to a host that is not listed, so a secret cannot leave through
+    that call. The redact module replaces listed text with [REDACTED] in the trace. It does not change the files
+    the model wrote or the calls it made, so a secret in a file, or a call the allow-list allows, still holds the
+    secret. Only the sandbox's path check stops a read from reaching the secret in the first place.
+  rubric:
+  - Says the allow-list refuses calls to unlisted hosts
+  - Says the redact module changes the trace, not the files
+  - Says the path check is what stops the read
+  - Does not claim the redact module stops a leak

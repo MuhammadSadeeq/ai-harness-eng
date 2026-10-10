@@ -1,0 +1,47 @@
+- id: harness-engineering
+  term: harness engineering
+  aliases: [harness engineering]
+  strict: true
+  wire: control
+  definition: >-
+    Building and tuning the code around the model: the loop, tools, permissions, checks and limits.
+
+- id: prompt-engineering
+  term: prompt engineering
+  aliases: [prompt engineering]
+  strict: true
+  wire: control
+  definition: >-
+    Choosing the words of the prompt and the instructions. Words guide the model; they do not enforce anything.
+
+- id: context-engineering
+  term: context engineering
+  aliases: [context engineering]
+  strict: true
+  wire: context
+  definition: >-
+    Choosing what goes on the desk for each call, and what gets cut or saved.
+
+- id: product-harness
+  term: product harness
+  aliases: [product harness, product harnesses]
+  strict: true
+  wire: control
+  definition: >-
+    The harness a vendor ships with its model product, with its own loop, tools and limits.
+
+- id: user-harness
+  term: user harness
+  aliases: [user harness, user harnesses]
+  strict: true
+  wire: control
+  definition: >-
+    The harness you add around a model product or API: your loop, your tools and your checks.
+
+- id: framework
+  term: framework
+  aliases: [framework, frameworks]
+  strict: false
+  wire: control
+  definition: >-
+    A library of ready-made parts for building a harness. It supplies parts; it does not decide your harness for you.

@@ -1,0 +1,52 @@
+[
+ {
+  "back": "A model saying its work is good when it is not. Checking its own work does not catch it.",
+  "front": "What is self-praise, as a failure mode?",
+  "id": "A7-c1",
+  "objective": "A7.o1",
+  "type": "term"
+ },
+ {
+  "back": "A check that does not depend on the model's words: a test, a file, a number you can look up.",
+  "front": "What is ground truth?",
+  "id": "A7-c2",
+  "objective": "A7.o1",
+  "type": "term"
+ },
+ {
+  "back": "When each step can fail, the chance that all the steps work falls with every step.",
+  "front": "What is a compounding error?",
+  "id": "A7-c3",
+  "objective": "A7.o2",
+  "type": "term"
+ },
+ {
+  "back": "From the system around the model, checked from outside the model.",
+  "front": "Where does reliability come from in this course?",
+  "id": "A7-c4",
+  "objective": "A7.o3",
+  "type": "term"
+ },
+ {
+  "back": "Facts the model holds that have changed since it learned them. The model does not know they are out of date.",
+  "front": "What is stale knowledge?",
+  "id": "A7-c5",
+  "objective": "A7.o1",
+  "type": "term"
+ },
+ {
+  "back": "Verification and evals. The check is outside the model's words.",
+  "front": "A check that runs the tests after the model says done. Which wire is it?",
+  "id": "A7-c6",
+  "objective": "A7.o3",
+  "type": "which-wire",
+  "wire": "verify"
+ },
+ {
+  "back": "The model can give different answers to the same prompt, so one good run says little about the next.",
+  "front": "What is randomness, as a failure mode?",
+  "id": "A7-c7",
+  "objective": "A7.o2",
+  "type": "term"
+ }
+]

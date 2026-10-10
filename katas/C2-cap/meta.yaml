@@ -1,0 +1,39 @@
+id: C2-cap
+module: C2
+title: Cap a tool output and point to more
+objectives: [C2.o4]
+minutes: 20
+hints:
+  - "A cap only applies when the output is over the limit. Estimate the tokens as len(text) // 4, and compare with max_tokens."
+  - "When it is over, keep the first 2 * max_tokens characters and the last 2 * max_tokens characters. Join them with a line that says how many characters were cut and that the reader can ask for a smaller range."
+  - "Nearly the code: if len(text) // 4 <= max_tokens, return text. Otherwise keep = 2 * max_tokens, removed = len(text) - 2 * keep, and return text[:keep] + '\\n[... ' + str(removed) + ' characters cut; ask for a smaller range ...]\\n' + text[len(text) - keep:]. Take care when keep is 0."
+from_memory: false
+wrong_solutions:
+  - name: keeps-only-the-start
+    code: |
+      def cap_output(text, max_tokens):
+          if len(text) // 4 <= max_tokens:
+              return text
+          keep = 2 * max_tokens
+          return text[:keep] + "\n[... " + str(len(text) - keep) + " characters cut; ask for a smaller range ...]\n"
+  - name: keeps-half-the-budget
+    code: |
+      def cap_output(text, max_tokens):
+          if len(text) // 4 <= max_tokens:
+              return text
+          keep = max_tokens
+          removed = len(text) - 2 * keep
+          return text[:keep] + "\n[... " + str(removed) + " characters cut; ask for a smaller range ...]\n" + text[len(text) - keep:]
+  - name: silent-cut
+    code: |
+      def cap_output(text, max_tokens):
+          if len(text) // 4 <= max_tokens:
+              return text
+          keep = 2 * max_tokens
+          return text[:keep] + text[len(text) - keep:]
+  - name: cuts-short-text
+    code: |
+      def cap_output(text, max_tokens):
+          keep = 2 * max_tokens
+          removed = len(text) - 2 * keep
+          return text[:keep] + "\n[... " + str(removed) + " characters cut; ask for a smaller range ...]\n" + text[len(text) - keep:]

@@ -1,0 +1,147 @@
+{
+  "id": "b1-workbench",
+  "schema": 1,
+  "title": "A tool definition the model can misuse",
+  "task": "Find the file that imports calc.py. Write its path to answer.txt.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given. Say done when the answer is written.",
+  "rules": [],
+  "workspace": {
+    "src/calc.py": "def add(a, b):\n    return a + b\n",
+    "tests/test_calc.py": "from calc import add\n\n\ndef test_add():\n    assert add(2, 3) == 5\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [
+    {
+      "name": "search_files",
+      "description": "Search files for a word.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "trifecta": [],
+      "results": [
+        {
+          "match": {
+            "query": "calc"
+          },
+          "output": "tests/test_calc.py: from calc import add",
+          "ok": true
+        }
+      ],
+      "default": {
+        "output": "Error: query is required.",
+        "ok": false
+      }
+    }
+  ],
+  "checks": [
+    {
+      "file": "answer.txt",
+      "contains": "test_calc.py"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "script": [
+    {
+      "branch": [
+        {
+          "percent": 60,
+          "then": [
+            {
+              "say": "I'll search the files for calc.",
+              "tools": [
+                [
+                  "search_files",
+                  {
+                    "query": "calc"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "percent": 40,
+          "then": [
+            {
+              "say": "I'll search the files for calc.",
+              "tools": [
+                [
+                  "search_files",
+                  {
+                    "text": "calc"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "last_result_contains:test_calc.py",
+          "then": [
+            {
+              "say": "The file is tests/test_calc.py. I'll write the answer.",
+              "tools": [
+                [
+                  "write_file",
+                  {
+                    "path": "answer.txt",
+                    "content": "tests/test_calc.py\n"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "The search gave an error, so I can't find the file."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "Done."
+    }
+  ],
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "boards": [
+    "b1-workbench"
+  ],
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "seed_base": 20261010
+}

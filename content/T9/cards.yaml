@@ -1,0 +1,30 @@
+- id: T9-k1
+  type: term
+  objective: T9.o1
+  front: Which column names a process's parent in the course's table?
+  back: PPID.
+- id: T9-k2
+  type: term
+  objective: T9.o1
+  front: Which column holds a process's working folder?
+  back: CWD.
+- id: T9-k3
+  type: term
+  objective: T9.o2
+  front: Which triple applies when the user is the owner?
+  back: The owner's triple, the first three letters of the mode.
+- id: T9-k4
+  type: term
+  objective: T9.o2
+  front: Which triple applies to a user who is in the file's group?
+  back: The group's triple, the middle three letters.
+- id: T9-k5
+  type: term
+  objective: T9.o3
+  front: Does runaway_children list the parent?
+  back: No. It lists the children and grandchildren above the limit.
+- id: T9-k6
+  type: term
+  objective: T9.o3
+  front: Is a process exactly at the cpu limit listed?
+  back: 'No. The limit is strict: only a process over it is listed.'

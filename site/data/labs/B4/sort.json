@@ -1,0 +1,87 @@
+{
+ "buckets": [
+  {
+   "id": "control",
+   "label": "Control plane"
+  },
+  {
+   "id": "context",
+   "label": "Context & memory"
+  },
+  {
+   "id": "loop",
+   "label": "Loop & state"
+  },
+  {
+   "id": "errors",
+   "label": "Errors & recovery"
+  },
+  {
+   "id": "tools",
+   "label": "Tools"
+  },
+  {
+   "id": "permissions",
+   "label": "Permissions & sandbox"
+  },
+  {
+   "id": "verify",
+   "label": "Verification & evals"
+  },
+  {
+   "id": "observe",
+   "label": "Observability"
+  }
+ ],
+ "items": [
+  {
+   "bucket": "control",
+   "id": "b4-control",
+   "text": "Words guide, code enforces.",
+   "why": "A line in the prompt guides the model. Only the harness can enforce a rule."
+  },
+  {
+   "bucket": "context",
+   "id": "b4-context",
+   "text": "The smallest window that works.",
+   "why": "Send what the call needs, and keep the rest out of the desk."
+  },
+  {
+   "bucket": "loop",
+   "id": "b4-loop",
+   "text": "Every run needs more than one exit.",
+   "why": "A run that can stop only one way will sometimes never stop."
+  },
+  {
+   "bucket": "errors",
+   "id": "b4-errors",
+   "text": "Errors are the main path.",
+   "why": "Failures happen on most runs, so the harness plans for them."
+  },
+  {
+   "bucket": "tools",
+   "id": "b4-tools",
+   "text": "A tool is a user interface for a model.",
+   "why": "A poor tool definition is a poor interface, and the model misuses it."
+  },
+  {
+   "bucket": "permissions",
+   "id": "b4-permissions",
+   "text": "Judge the action and its target.",
+   "why": "The same command can be safe or harmful depending on what it touches."
+  },
+  {
+   "bucket": "verify",
+   "id": "b4-verify",
+   "text": "“Done” is a claim.",
+   "why": "A done claim stays a claim until a check runs and confirms it."
+  },
+  {
+   "bucket": "observe",
+   "id": "b4-observe",
+   "text": "If it isn't in the trace, it didn't happen.",
+   "why": "Without a record, a failure cannot be traced to a wire."
+  }
+ ],
+ "prompt": "Match each wire to its law."
+}

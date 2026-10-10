@@ -1,0 +1,54 @@
+- id: span
+  term: span
+  aliases:
+  - span
+  - spans
+  strict: true
+  wire: observe
+  definition: 'A timed piece of work in a trace: a name, a start, an end, its attributes, and the span it sits under.'
+- id: event
+  term: event
+  aliases:
+  - event
+  - events
+  strict: false
+  wire: observe
+  definition: 'One record the harness writes as it runs: a model call, a tool call, a permission decision. Each has a sequence number and a time.'
+- id: trace-id
+  term: trace id
+  aliases:
+  - trace id
+  - trace ids
+  strict: true
+  wire: observe
+  definition: The identifier that ties the spans and events of one run together, so one trace reads as one run.
+- id: opentelemetry
+  term: OpenTelemetry
+  aliases:
+  - OpenTelemetry
+  strict: true
+  wire: observe
+  definition: An open standard for traces, metrics and logs. This course takes its names for spans and attributes.
+- id: genai-conventions
+  term: GenAI semantic conventions
+  aliases:
+  - GenAI semantic conventions
+  - GenAI conventions
+  strict: true
+  wire: observe
+  definition: OpenTelemetry's names for generative AI spans and attributes. The registry declares them in development, so names can still change.
+- id: redaction
+  term: redaction
+  aliases:
+  - redaction
+  - redact
+  strict: false
+  wire: observe
+  definition: Replacing secret text with a placeholder before the event is stored. It changes the trace, not what the model is sent.
+- id: cost-attribution
+  term: cost attribution
+  aliases:
+  - cost attribution
+  strict: true
+  wire: observe
+  definition: Splitting a model call's cost into its parts, and naming the largest part of the request.

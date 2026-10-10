@@ -1,0 +1,30 @@
+- id: T4-k1
+  type: term
+  objective: T4.o1
+  front: What makes a schema nested?
+  back: A property whose own schema is an object or an array, with its own properties or items.
+- id: T4-k2
+  type: term
+  objective: T4.o1
+  front: What does a list of allowed values say?
+  back: The value must be one of the listed values.
+- id: T4-k3
+  type: term
+  objective: T4.o2
+  front: What does required say?
+  back: The listed fields must be present in the value.
+- id: T4-k4
+  type: term
+  objective: T4.o2
+  front: What does additionalProperties false do?
+  back: It rejects any field that the schema does not list in its properties.
+- id: T4-k5
+  type: term
+  objective: T4.o2
+  front: A schema has no required list. Which fields must a value have?
+  back: None. Without a required list, no field is required.
+- id: T4-k6
+  type: term
+  objective: T4.o3
+  front: What does each error in the course's checker start with?
+  back: The path to the bad value, such as $.user.name, then a colon and the problem.

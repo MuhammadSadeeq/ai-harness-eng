@@ -1,0 +1,18 @@
+{
+ "defaults": {
+  "cache_hit_percent": 60,
+  "effort": "low",
+  "input_tokens": 4000,
+  "model": "sonnet-5-5",
+  "output_tokens": 600,
+  "success_percent": 80,
+  "turns": 6
+ },
+ "efforts": {
+  "high": 4,
+  "low": 1,
+  "max": 8,
+  "medium": 2,
+  "xhigh": 6
+ }
+}

@@ -1,0 +1,131 @@
+[
+ {
+  "answer": 1,
+  "id": "C7-p1",
+  "mode": "predict",
+  "objective": "C7.o1",
+  "options": [
+   {
+    "text": "The run keeps trying until the search works.",
+    "why": "Tempting. A retry would only help if the call were fixed, and nothing in this run fixes it."
+   },
+   {
+    "text": "The run says done, and answer.txt is never written.",
+    "why": "Right. The search fails, the model stops with a done claim, and the checks fail. A false done."
+   },
+   {
+    "text": "The harness renames the field to query and carries on.",
+    "why": "Tempting. The harness does not guess field names. The definition should say what they are."
+   }
+  ],
+  "outcome": "The run ended as done after the failed search. answer.txt was never written, so the checks fail.",
+  "question": "On the old board the description is 'Search files.' and the fields have no descriptions. The model's first call sends a field named file. What is the final status?"
+ },
+ {
+  "answer": 0,
+  "id": "C7-c1",
+  "mode": "check",
+  "objective": "C7.o1",
+  "options": [
+   {
+    "text": "Name it for what it acts on, such as run_tests.",
+    "why": "Right. The name is the first thing the model sees. It should say what the tool acts on."
+   },
+   {
+    "text": "Add a longer system prompt about the tools.",
+    "why": "Tempting. The words in the prompt guide the model, but the tool's own definition is the first thing to fix."
+   },
+   {
+    "text": "Hide the tool from the model.",
+    "why": "Tempting. Hiding it removes the tool. The fix is to make it clear."
+   }
+  ],
+  "question": "A weak tool is named 'run' with the description 'Runs things.' Which change should you make first?"
+ },
+ {
+  "answer": 1,
+  "id": "C7-c2",
+  "mode": "check",
+  "objective": "C7.o2",
+  "options": [
+   {
+    "text": "Search files.",
+    "why": "Tempting. It says what the tool does, but not when to use it or what to send."
+   },
+   {
+    "text": "Search the text of the files. Use it when you need the lines where a name is used or imported.",
+    "why": "Right. It says what the tool does and when to use it. The fields need their own descriptions."
+   },
+   {
+    "text": "Search.",
+    "why": "Tempting. One word tells the model nothing about the input."
+   }
+  ],
+  "question": "Which description helps a model choose the right tool?"
+ },
+ {
+  "answer": 1,
+  "id": "C7-c3",
+  "mode": "check",
+  "objective": "C7.o3",
+  "options": [
+   {
+    "text": "Invalid input.",
+    "why": "Tempting. It says something failed, but not which field or what to send."
+   },
+   {
+    "text": "search_text has no field 'file'. It takes: query, path. Send again with only those fields.",
+    "why": "Right. It names the field, the allowed fields and the next step, in one line."
+   },
+   {
+    "text": "Error 400.",
+    "why": "Tempting. A code without a message leaves the model to guess."
+   }
+  ],
+  "question": "A call sends a field the tool does not have. Which result helps the model fix the call?"
+ },
+ {
+  "answer": 1,
+  "id": "C7-c4",
+  "mode": "check",
+  "objective": "C7.o4",
+  "options": [
+   {
+    "fact": "mcp.annotation-readonly",
+    "text": "Yes. The hint says the tool is read-only.",
+    "why": "Tempting. The hint says what the server claims. It is not checked, and a hint is not a permission."
+   },
+   {
+    "fact": "mcp.annotations-untrusted-schema",
+    "text": "No. The spec says the hints may not describe the tool faithfully, and clients should not decide tool use on untrusted annotations.",
+    "why": "Right. Annotations are hints. The harness keeps its own permission check."
+   },
+   {
+    "text": "Yes, if the tool also has an idempotent hint.",
+    "why": "Tempting. Another hint adds nothing to the trust. Both are hints."
+   }
+  ],
+  "question": "A server marks a tool readOnlyHint true. Can the harness skip the permission check for it?"
+ },
+ {
+  "answer": 1,
+  "id": "C7-c5",
+  "mode": "check",
+  "objective": "C7.o5",
+  "options": [
+   {
+    "text": "Yes, they run in parallel.",
+    "why": "Tempting. Two calls in one round run together, and the edit could change the file under the read."
+   },
+   {
+    "text": "No. The edit writes a file the read reads, so they conflict and go in separate rounds.",
+    "why": "Right. A call that writes a resource another call reads is not parallel-safe with it."
+   },
+   {
+    "text": "Yes, if the read is listed first.",
+    "why": "Tempting. The order in the list does not decide a conflict. The resources do."
+   }
+  ],
+  "question": "One call reads calc.py and another edits calc.py. Can they run in the same round?"
+ }
+]

@@ -1,0 +1,30 @@
+[
+ {
+  "id": "B4-s1",
+  "model_answer": "Control first: what the model is told, and which instruction wins. Then context: what is on the desk this call, and what is saved. Loop: what happens next, and when the run stops. Errors: how a failure is handled without spinning. Tools: what the model can do, and whether each tool is easy to use. Permissions: which actions are allowed, and how bad a mistake can get. Verification: whether a done claim is really done. Observability: what happened, and where time and money went.",
+  "objectives": [
+   "B4.o2"
+  ],
+  "prompt": "Walk one turn around the clock, out loud. Say what each wire does, starting at the control plane.",
+  "rubric": [
+   "Goes around the clock in order, starting at the control plane",
+   "Says what each wire does in its own words",
+   "Names the wires in order without skipping any of the eight",
+   "Says what each wire answers in its own words, not the course wording alone"
+  ]
+ },
+ {
+  "id": "B4-s2",
+  "model_answer": "Verification is at fault: the done claim was never checked. I would add a check on the final workspace, read its result before I accept the run, and send any failure back to the model.",
+  "objectives": [
+   "B4.o3"
+  ],
+  "prompt": "A run says done, and nothing checked it. Which wire is at fault, and what would you add?",
+  "rubric": [
+   "Names Verification & evals as the wire at fault",
+   "Says the done claim was never checked",
+   "Proposes a check that runs before the run is accepted",
+   "Says the failure is the claim, not the model's wording"
+  ]
+ }
+]

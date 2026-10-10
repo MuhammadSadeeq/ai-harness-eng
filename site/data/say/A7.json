@@ -1,0 +1,30 @@
+[
+ {
+  "id": "A7-s1",
+  "model_answer": "For the claim: a better model makes fewer slips in each step, so a long task fails less often, and some checks may become unnecessary. Against it: fewer slips per step still compound over many steps, and a check from outside is the only way to know a result is right. I would settle it with evidence: the same task on two models, with and without a check, and the pass rate of each.",
+  "objectives": [
+   "A7.o4"
+  ],
+  "prompt": "Argue both sides of: models keep getting better, so harnesses matter less.",
+  "rubric": [
+   "States the case for the claim with a reason",
+   "States the case against, with the compounding of steps",
+   "Names evidence that would settle it, such as runs with and without a check",
+   "Says that a check which does not depend on the model settles more than an opinion"
+  ]
+ },
+ {
+  "id": "A7-s2",
+  "model_answer": "It can run the tests on the files, so the result does not depend on what the model says. It can compare a file with its expected content, or look up a number in the source. Each check is outside the model's words, so the model cannot argue its way past it.",
+  "objectives": [
+   "A7.o3"
+  ],
+  "prompt": "Name two things a harness can check from outside the model.",
+  "rubric": [
+   "Names a check that runs outside the model, such as the tests",
+   "Names a second check that does not depend on the model's words",
+   "Says why a check outside the model is stronger than the model's own review",
+   "Says a check outside the model can fail, and the model cannot argue it away"
+  ]
+ }
+]

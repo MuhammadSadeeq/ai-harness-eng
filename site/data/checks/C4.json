@@ -1,0 +1,88 @@
+[
+ {
+  "answer": 1,
+  "id": "C4-p1",
+  "mode": "predict",
+  "objective": "C4.o1",
+  "options": [
+   {
+    "text": "Nearly all of it, about 90 percent.",
+    "why": "Tempting. That is what a working cache shows on this run, but this board changes the start of the request on every call."
+   },
+   {
+    "text": "None. The second call writes the whole request again.",
+    "why": "Right. The clock line at the top of the system prompt changed, so nothing before the end matches, and the cache reads nothing."
+   },
+   {
+    "text": "About half, because the history grows.",
+    "why": "Tempting. The history grows at the end, where a change costs little. The top of the request is what matters."
+   }
+  ],
+  "outcome": "The second call read 0 tokens and wrote 653. The clock line changed, so the cache matched nothing.",
+  "question": "The run calls the model four times with the same task, tools and system prompt. How much of the input does the second call read from the cache?"
+ },
+ {
+  "answer": 1,
+  "id": "C4-c1",
+  "mode": "check",
+  "objective": "C4.o1",
+  "options": [
+   {
+    "text": "It invalidates only the system prompt; the messages stay cached.",
+    "why": "Tempting. The messages come after the system prompt, so a change at the system level invalidates them too."
+   },
+   {
+    "fact": "api.cache-invalidation-hierarchy",
+    "text": "The tool definitions stay cached, and the system prompt and everything after it are written again.",
+    "why": "Right. Cache order is tools, then system, then messages, and a change at one level invalidates that level and every level after it."
+   },
+   {
+    "text": "It invalidates the tool definitions and the system prompt as well as the messages.",
+    "why": "Tempting. The order runs one way: a change later in the request leaves the earlier levels cached."
+   }
+  ],
+  "question": "A cache matches a prefix. Which statement about a change in the system prompt is right?"
+ },
+ {
+  "answer": 1,
+  "id": "C4-c2",
+  "mode": "check",
+  "objective": "C4.o2",
+  "options": [
+   {
+    "text": "The clock line first, then the tools, the system prompt and the messages.",
+    "why": "Tempting. A block that changes every call breaks the cache wherever it sits, and here it would break the tools too."
+   },
+   {
+    "text": "The tools, the system prompt without the clock, the messages, and the new message last.",
+    "why": "Right. The stable parts come first and the changing text last, so the cache reads everything before the new message."
+   },
+   {
+    "text": "The messages first, then the tools and the system prompt.",
+    "why": "Tempting. The cache matches a prefix in the order tools, system, messages. A different order matches nothing new."
+   }
+  ],
+  "question": "The clock line changes on every call. Which order keeps the most of the request cached?"
+ },
+ {
+  "answer": 1,
+  "id": "C4-c3",
+  "mode": "check",
+  "objective": "C4.o3",
+  "options": [
+   {
+    "text": "The history grew, so the cache missed.",
+    "why": "Tempting. The history grows at the end. This diff changes at the top."
+   },
+   {
+    "text": "A block that changes on every call: the clock line.",
+    "why": "Right. A block that changes on every call breaks the cache wherever it sits, so everything after it misses."
+   },
+   {
+    "text": "The model changed its reply.",
+    "why": "Tempting. The reply is added at the end of the history, so it cannot change the top of the next request."
+   }
+  ],
+  "question": "With Changes on, the Wire View marks the system prompt on turn 2 as changed. What changed it?"
+ }
+]

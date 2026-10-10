@@ -1,0 +1,66 @@
+{
+  "calls": 6,
+  "call_gap_ms": 30000,
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "cache_rules": {
+    "min_tokens": 512,
+    "ttl_ms": 300000,
+    "model_label": "Sonnet 5.5",
+    "facts": {
+      "price": "models.sonnet-5-5-price",
+      "minimum": "models.cache-min-512-tokens",
+      "ttl": "api.cache-ttl-default-5m-and-1h"
+    }
+  },
+  "blocks": [
+    {
+      "id": "tools",
+      "label": "Tool definitions",
+      "part": "tools",
+      "changes": "never",
+      "text": "Tool definitions for this session.\nTool 1: read_file. Input: a JSON object with the fields it needs, each typed and described. Reads a file in the repository and returns its text, or an error string when the file is missing. Use it only for the job its description names.\nTool 2: edit_file. Input: a JSON object with the fields it needs, each typed and described. Replaces one exact piece of a file. The old text must match once; it returns an error when it does not. Use it only for the job its description names.\nTool 3: write_file. Input: a JSON object with the fields it needs, each typed and described. Writes a whole file. Use it for new files only, and say what it replaces. Use it only for the job its description names.\nTool 4: run_tests. Input: a JSON object with the fields it needs, each typed and described. Runs the test suite and returns the failures with their names and messages. Use it only for the job its description names.\nTool 5: git_status. Input: a JSON object with the fields it needs, each typed and described. Lists the changed files in the working tree. Use it only for the job its description names.\nTool 6: git_diff. Input: a JSON object with the fields it needs, each typed and described. Shows the diff of the working tree for one path, or for the whole tree when no path is given. Use it only for the job its description names.\nTool 7: grep_code. Input: a JSON object with the fields it needs, each typed and described. Searches the repository for a pattern and returns the matching lines with their paths. Use it only for the job its description names.\nTool 8: list_dir. Input: a JSON object with the fields it needs, each typed and described. Lists the entries of one folder, with folders marked. Use it only for the job its description names."
+    },
+    {
+      "id": "system",
+      "label": "System prompt",
+      "part": "system",
+      "changes": "never",
+      "text": "You are a coding assistant working in one repository for one team.\nRules: read a file before you change it. Keep each change small and say what it does. Do not edit the tests to make them pass. When a tool fails, read the error text and fix its cause. Never print keys or secrets. When the work is done, say done and name the tests that now pass.\nStyle: follow the names and the layout the repository already uses. Prefer the smallest change that passes the check.\nSafety: stay inside the repository. Ask before you delete a file, and say what you would delete."
+    },
+    {
+      "id": "clock",
+      "label": "Clock line",
+      "part": "system",
+      "changes": "every_call",
+      "text": "Session clock, call {t}: use it when a date or a deadline matters."
+    },
+    {
+      "id": "rules",
+      "label": "Project rules file",
+      "part": "system",
+      "changes": "never",
+      "text": "Project rules file.\nProject note 1: the parser lives in src/parse, and its tests live in tests/parse.\nProject note 2: run the suite with the run_tests tool, not with a shell.\nProject note 3: the changelog is updated in the same change as the code.\nProject note 4: dates in the code are UTC; do not add a local time zone."
+    },
+    {
+      "id": "task",
+      "label": "The task",
+      "part": "messages",
+      "changes": "never",
+      "text": "Task: fix the failing test in calc.py. Do not rename the function."
+    },
+    {
+      "id": "history",
+      "label": "Conversation so far",
+      "part": "messages",
+      "changes": "grows",
+      "turn_text": "the model read a file and ran the tests.",
+      "text": "Conversation so far:"
+    }
+  ],
+  "invalidator": {
+    "block": "clock",
+    "why": "The clock line names a different call every time. A block that changes on every call breaks the cache wherever it sits in the request, so everything after it misses. Stamp it into the new turn instead: the time then joins the newest message, which is never sent again as history."
+  }
+}

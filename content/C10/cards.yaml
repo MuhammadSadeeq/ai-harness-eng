@@ -1,0 +1,40 @@
+- id: C10-k1
+  type: term
+  objective: C10.o1
+  front: What does a sandbox limit?
+  back: How bad a mistake can get, whatever the permissions said.
+- id: C10-k2
+  type: term
+  objective: C10.o2
+  front: What does the sandbox do with a ../ path?
+  back: It normalizes the path, then refuses it if it lands outside the workspace root.
+- id: C10-k3
+  type: term
+  objective: C10.o2
+  front: Where does a link's target start from?
+  back: The link's own folder.
+- id: C10-k4
+  type: term
+  objective: C10.o3
+  front: What does an egress allow-list do?
+  back: It refuses a network call to a host that is not on the list.
+- id: C10-k5
+  type: term
+  objective: C10.o3
+  front: Why does an allow-list on the network stop a leak?
+  back: A secret leaves through a network call. Refuse the call, and the secret stays inside.
+- id: C10-k6
+  type: term
+  objective: C10.o4
+  front: What does the redact module change?
+  back: 'The trace: listed text shows as [REDACTED]. The files and the calls do not change.'
+- id: C10-k7
+  type: term
+  objective: C10.o5
+  front: Does a container replace the sandbox rules?
+  back: No. The sandbox rules still apply. A container is one wall among others.
+- id: C10-k8
+  type: term
+  objective: C10.o1
+  front: Does the blast wall depend on the permissions?
+  back: No. It holds whatever the permissions said.

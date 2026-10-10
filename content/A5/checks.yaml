@@ -1,0 +1,67 @@
+- id: A5-p1
+  objective: A5.o2
+  mode: predict
+  question: "The model asks to write names.txt, with the new names in a field called text. The harness has no check. What happens?"
+  options:
+    - text: "The harness refuses the call and asks the model for the right field."
+      why: "Tempting. That is what a check would do. This harness has none, so the call runs as given."
+    - text: "The write runs with no content, and the file is written empty."
+      why: "Right. The tool reads a missing content as empty text, so the file is replaced with nothing."
+    - text: "The write runs, and the new names are saved under the field text."
+      why: "Tempting. The tool only writes what it reads from content, so the text field is ignored."
+  answer: 1
+  outcome: "The file was written empty. The run ended as done, and the names were gone."
+
+- id: A5-c1
+  objective: A5.o1
+  mode: check
+  question: "In this course's checker, which keyword lists the fields that must be present?"
+  options:
+    - text: "enum"
+      why: "Tempting. enum lists the allowed values of one field, not the fields that must be present."
+    - text: "required"
+      why: "Right. required names the fields that must be present, and the checker reports the first one missing."
+    - text: "additionalProperties"
+      why: "Tempting. That keyword refuses extra fields. It does not say which fields must be there."
+  answer: 1
+
+- id: A5-c2
+  objective: A5.o2
+  mode: check
+  question: "A schema check says the field content is missing. What should the harness send back to the model?"
+  options:
+    - text: "Nothing; it should run the tool with the missing field empty."
+      why: "Tempting. Running it with nothing is the failure this module is about."
+    - text: "A tool result that says the input is invalid and why, marked as an error."
+      fact: api.tool-result-is-error
+      why: "Right. The result carries the reason, and is_error marks it as a failed call, so the model can fix the input."
+    - text: "A new task, so the model starts again."
+      why: "Wrong. The model needs the reason for this call, not a new task."
+  answer: 1
+
+- id: A5-c3
+  objective: A5.o3
+  mode: check
+  question: "Which way of getting structured output checks the shape after the model has answered?"
+  options:
+    - text: "Asking for JSON in the prompt."
+      why: "Tempting. The prompt asks, but nothing checks the reply afterwards."
+    - text: "Validating afterwards, against the schema."
+      why: "Right. The harness checks each reply and sends a failure back."
+    - text: "Constrained decoding."
+      why: "Tempting. It enforces the shape while the reply is made, so nothing is left to check afterwards."
+  answer: 1
+
+- id: A5-c4
+  objective: A5.o4
+  mode: check
+  question: "A strict schema guarantees the shape of the input. What does it not guarantee?"
+  options:
+    - text: "That the tool names and inputs match the schema."
+      why: "Tempting. That is the guarantee strict tool use gives, so it is not the answer."
+    - text: "That the values are correct."
+      fact: api.structured-outputs-strict-tool-use
+      why: "Right. The docs say strict tool use guarantees schema validation of tool names and inputs. A valid shape can still hold a wrong value."
+    - text: "That the reply is a JSON object."
+      why: "Tempting. A schema can require an object, so this is part of the shape, not the gap."
+  answer: 1

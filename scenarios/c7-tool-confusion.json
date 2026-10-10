@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "id": "c7-tool-confusion",
+  "title": "A tool nobody can use",
+  "task": "Find the file in the tests that imports calc.py and write its path to answer.txt.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a coding agent working in one repository for one team. Use the tools to find text in files, change them and run the tests. Read a file before you change it. When the answer is written down, say done.",
+  "rules": [],
+  "workspace": {
+    "calc.py": "def add(a, b):\n    return a + b\n",
+    "tests/test_calc.py": "from calc import add\n\n\ndef test_add():\n    assert add(2, 3) == 5\n",
+    "README.md": "A small calculator and its tests.\n"
+  },
+  "outside": {},
+  "tools": [
+    "write_file",
+    "list_files"
+  ],
+  "custom_tools": [
+    {
+      "name": "search_text",
+      "description": "Search files.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      },
+      "latency_ms": 300,
+      "results": [
+        {
+          "match": {
+            "query": "from calc import",
+            "path": "tests"
+          },
+          "output": "tests/test_calc.py:1: from calc import add",
+          "ok": true
+        }
+      ],
+      "default": {
+        "output": "Error: search_text needs query, the exact text to find, and path, the folder to search. Send both.",
+        "ok": false
+      }
+    }
+  ],
+  "checks": [
+    {
+      "file": "answer.txt",
+      "contains": "tests/test_calc.py"
+    }
+  ],
+  "test_output": {
+    "pass": "answer written",
+    "fail": "answer.txt missing the import"
+  },
+  "script": [
+    {
+      "when": [
+        {
+          "if": "sent_lacks:Use it when",
+          "then": [
+            {
+              "branch": [
+                {
+                  "percent": 60,
+                  "then": [
+                    {
+                      "say": "I'll search for the file name.",
+                      "tools": [
+                        [
+                          "search_text",
+                          {
+                            "file": "calc.py"
+                          }
+                        ]
+                      ],
+                      "stop": "tool_use"
+                    }
+                  ]
+                },
+                {
+                  "percent": 40,
+                  "then": [
+                    {
+                      "say": "I'll search for the import.",
+                      "tools": [
+                        [
+                          "search_text",
+                          {
+                            "query": "from calc import",
+                            "path": "tests"
+                          }
+                        ]
+                      ],
+                      "stop": "tool_use"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "I'll search for the import.",
+              "tools": [
+                [
+                  "search_text",
+                  {
+                    "query": "from calc import",
+                    "path": "tests"
+                  }
+                ]
+              ],
+              "stop": "tool_use"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "last_result_error",
+          "then": [
+            {
+              "say": "The search failed, so I can't name the file. Stopping here.",
+              "stop": "end_turn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "The import is in tests/test_calc.py. Writing it down.",
+      "tools": [
+        [
+          "write_file",
+          {
+            "path": "answer.txt",
+            "content": "tests/test_calc.py\n"
+          }
+        ]
+      ],
+      "stop": "tool_use"
+    },
+    {
+      "say": "Done. The file is tests/test_calc.py."
+    }
+  ],
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "seed_base": 20261010,
+  "boards": [
+    "c7-old",
+    "c7-new"
+  ],
+  "incident": {
+    "family": "tool-confusion",
+    "wire": "tools",
+    "board": "c7-old",
+    "seed": 0,
+    "first_bad_seq": 5,
+    "accept_seqs": [
+      7
+    ],
+    "why": "The reply asks for search_text with a field called file. The tool's definition says only 'Search files.' and never names its fields, so the model guessed. The harness let the call through, and the search failed (seq 7).",
+    "hint": "Read the input of the call in the reply. Which field names does the tool's definition give the model?",
+    "notes": [
+      {
+        "seq": 3,
+        "text": "The model call is ordinary. The model is trying to help; the problem is what it was given to work with."
+      },
+      {
+        "seq": 7,
+        "text": "The error is honest but it does not say what to send. Tempting: fix the error text alone. The model still has no field names to read before the call."
+      },
+      {
+        "seq": 13,
+        "text": "The run stops and says done. That is a false done, but the search failed before this, and the definition is where it began."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Describe the tool and each of its fields in the definition, and mark the required ones",
+        "why": "The model reads the definition on every call. With the fields named and the required ones marked, the guessed field name is no longer a likely choice."
+      },
+      {
+        "text": "Tell the model in the prompt never to guess field names",
+        "why": "Tempting and wrong: the prompt is one more line the model may not follow. The definition is where the field names belong."
+      },
+      {
+        "text": "Retry the call until it works",
+        "why": "Tempting and wrong: the same guessed field fails the same way every time."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 60
+  }
+}

@@ -1,0 +1,35 @@
+id: T7-docker-args
+module: T7
+title: Build a docker run argument list
+objectives:
+- T7.o2
+- T7.o3
+minutes: 25
+hints:
+- 'Read test_kata.py. Each test names one part of the list: the start, the network, the read-only flag, the one mount, the
+  image and command at the end.'
+- Build one list literal. Put "docker", "run" first, then the flags, then -v with f"{folder}:/work", then the image, then
+  unpack the command with *command.
+- 'Nearly the code: return ["docker", "run", "--network", "none", "--read-only", "-v", f"{folder}:/work", image, *command].'
+from_memory: true
+wrong_solutions:
+- name: network-left-on
+  code: "def build_args(folder: str, image: str, command: list[str]) -> list[str]:\n    \"\"\"The argument list of one docker\
+    \ run: no network, a read-only root, one mount.\"\"\"\n    return [\"docker\", \"run\", \"--read-only\",\n           \
+    \ \"-v\", f\"{folder}:/work\", image, *command]\n"
+- name: writable-root
+  code: "def build_args(folder: str, image: str, command: list[str]) -> list[str]:\n    \"\"\"The argument list of one docker\
+    \ run: no network, a read-only root, one mount.\"\"\"\n    return [\"docker\", \"run\", \"--network\", \"none\", \"-v\"\
+    , f\"{folder}:/work\", image, *command]\n"
+- name: whole-home-mount
+  code: "def build_args(folder: str, image: str, command: list[str]) -> list[str]:\n    \"\"\"The argument list of one docker\
+    \ run: no network, a read-only root, one mount.\"\"\"\n    return [\"docker\", \"run\", \"--network\", \"none\", \"--read-only\"\
+    ,\n            \"-v\", \"/home/me:/work\", image, *command]\n"
+- name: two-mounts
+  code: "def build_args(folder: str, image: str, command: list[str]) -> list[str]:\n    \"\"\"The argument list of one docker\
+    \ run: no network, a read-only root, one mount.\"\"\"\n    return [\"docker\", \"run\", \"--network\", \"none\", \"--read-only\"\
+    ,\n            \"-v\", f\"{folder}:/work\", \"-v\", \"/etc:/etc\", image, *command]\n"
+- name: command-first
+  code: "def build_args(folder: str, image: str, command: list[str]) -> list[str]:\n    \"\"\"The argument list of one docker\
+    \ run: no network, a read-only root, one mount.\"\"\"\n    return [\"docker\", \"run\", \"--network\", \"none\", \"--read-only\"\
+    ,\n            \"-v\", f\"{folder}:/work\", *command, image]\n"

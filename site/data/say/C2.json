@@ -1,0 +1,32 @@
+[
+ {
+  "id": "C2-s1",
+  "model_answer": "First, don't load it: if the log is not needed for this call, it stays out of the desk. Second, shrink it: cap it to its start and its end, and say how much was cut. Third, move it out: leave a pointer the model can fetch when it needs a line. Fourth, summarize it: keep what the run needs and drop the rest. Each lever costs something: a missing log can hide a cause, a cap can hide the middle, a pointer costs a fetch, and a summary can lose a detail.",
+  "objectives": [
+   "C2.o3",
+   "C2.o4"
+  ],
+  "prompt": "Walk through the four levers in order for a 40 KB log, and say what each one costs you.",
+  "rubric": [
+   "Names the four levers in order",
+   "Ties each lever to a desk action: leave it out, cap it, leave a pointer, summarize it",
+   "Says what each lever can cost, not only what it saves",
+   "Says the cap keeps the start and the end and names the cut"
+  ]
+ },
+ {
+  "id": "C2-s2",
+  "model_answer": "Quality can fall well before the window is full, so a window that fits is not the same as a window the model reads well. The more material is on the desk, the more the model has to draw on. I would put stable material first, the system prompt and the project rules, and the current task last, so the newest and most specific instruction is closest to the reply.",
+  "objectives": [
+   "C2.o1",
+   "C2.o5"
+  ],
+  "prompt": "Why can a long context make the model worse, and how would you order it?",
+  "rubric": [
+   "Says quality can fall before the window is full",
+   "Says more material means more to draw on",
+   "Orders stable material first and the current task last",
+   "Says a window that fits does not mean every part is read equally well"
+  ]
+ }
+]

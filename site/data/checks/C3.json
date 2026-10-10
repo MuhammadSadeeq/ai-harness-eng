@@ -1,0 +1,129 @@
+[
+ {
+  "answer": 1,
+  "id": "C3-p1",
+  "mode": "predict",
+  "objective": "C3.o1",
+  "options": [
+   {
+    "text": "The constraint, because it was in the task.",
+    "why": "Tempting. The task is among the messages the compaction replaces, and the summary keeps no notes."
+   },
+   {
+    "text": "A summary that says nothing was kept, so the constraint is gone.",
+    "why": "Right. With an empty keep list, the summary holds no commitments, and the model cannot see the rule."
+   },
+   {
+    "text": "The whole earlier conversation again.",
+    "why": "Wrong. Compaction replaces the earlier messages with the summary; it does not restore them."
+   }
+  ],
+  "outcome": "The first compaction kept nothing. The constraint left the request, and the model renamed the function.",
+  "question": "The task has a constraint about a function's signature, and the compactor keeps no notes. What does the model see after the first compaction?"
+ },
+ {
+  "answer": 0,
+  "id": "C3-c1",
+  "mode": "check",
+  "objective": "C3.o1",
+  "options": [
+   {
+    "text": "It loses what matters: a commitment the summary did not keep.",
+    "why": "Right. A summary keeps only what the compactor chose; the rest is gone for later calls."
+   },
+   {
+    "text": "It makes the model learn from the run.",
+    "why": "Tempting. Compaction changes the desk, not the weights. The model does not learn."
+   },
+   {
+    "text": "It costs nothing.",
+    "why": "Tempting. A compaction is harness work with a cost of its own: the next call builds a new prompt."
+   }
+  ],
+  "question": "What is the main failure of compaction?"
+ },
+ {
+  "answer": 0,
+  "id": "C3-c2",
+  "mode": "check",
+  "objective": "C3.o2",
+  "options": [
+   {
+    "text": "Raw tool output.",
+    "why": "Right. The commitments are kept as notes; the raw output is the bulk and can go."
+   },
+   {
+    "text": "The goal.",
+    "why": "Wrong. The goal is one of the commitments a compactor keeps."
+   },
+   {
+    "text": "The file pointers.",
+    "why": "Wrong. Pointers tell the model where the work is; they are kept."
+   }
+  ],
+  "question": "Which of these should a compactor drop?"
+ },
+ {
+  "answer": 1,
+  "id": "C3-c3",
+  "mode": "check",
+  "objective": "C3.o3",
+  "options": [
+   {
+    "text": "Compact it, because a summary keeps the thread.",
+    "why": "Tempting. A summary of a tangled thread keeps the tangle; a drifted run is clearer as a fresh start."
+   },
+   {
+    "text": "A clean reset with a handoff note, because the goal is clearer as a fresh start and the note carries the commitments.",
+    "why": "Right. The reset clears the drift, and the handoff note keeps the goal, the constraints and the progress."
+   },
+   {
+    "text": "Keep running it, because the window still fits.",
+    "why": "Wrong. A window that fits is not a run that is on track."
+   }
+  ],
+  "question": "A long run has drifted from its goal, and its window is nearly full. Which choice fits, and why?"
+ },
+ {
+  "answer": 1,
+  "id": "C3-c4",
+  "mode": "check",
+  "objective": "C3.o4",
+  "options": [
+   {
+    "text": "The window.",
+    "why": "Tempting. The window holds what is on the desk for one call, not the standing facts."
+   },
+   {
+    "text": "The project files.",
+    "why": "Right. Standing facts about one repository live in its project files."
+   },
+   {
+    "text": "The model's weights.",
+    "why": "Wrong. Training sets the weights, and a run does not change them."
+   }
+  ],
+  "question": "Which memory tier holds a project's standing conventions, read by every run in that project?"
+ },
+ {
+  "answer": 1,
+  "id": "C3-c5",
+  "mode": "check",
+  "objective": "C3.o4",
+  "options": [
+   {
+    "text": "Yes, every run teaches the model.",
+    "why": "Tempting. A run does not change the weights; the harness keeps text for later runs."
+   },
+   {
+    "text": "No. A memory tier is text the harness puts in front of the model or keeps for later.",
+    "why": "Right. The model reads what it is sent; memory is what the harness keeps."
+   },
+   {
+    "text": "Only the long-term store teaches it.",
+    "why": "Wrong. The store is text too; no tier changes the weights."
+   }
+  ],
+  "question": "Memory means the model learns. Is that right?"
+ }
+]

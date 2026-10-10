@@ -1,0 +1,9 @@
+{
+ "id": "b3-new",
+ "label": "New board",
+ "modules": {
+  "output_cap": {
+   "max_tokens": 20
+  }
+ }
+}

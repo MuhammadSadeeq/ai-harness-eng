@@ -1,0 +1,129 @@
+[
+ {
+  "answer": 1,
+  "id": "C9-p1",
+  "mode": "predict",
+  "objective": "C9.o3",
+  "options": [
+   {
+    "text": "The person reads it and denies it, because it is outside the project.",
+    "why": "Tempting. Asking is safe only when the person looks. After ten harmless prompts, the question is not read."
+   },
+   {
+    "text": "The person approves it without reading, after the run of harmless prompts.",
+    "why": "Right. Approval fatigue: the dangerous prompt arrives among harmless ones and is approved by habit."
+   },
+   {
+    "text": "The harness blocks it, because it targets a folder outside the project.",
+    "why": "Tempting. This board has no rule for that path; only the ask stands in the way."
+   }
+  ],
+  "outcome": "The eleventh ask was approved without a look. The folder outside the project was gone, and the tests still passed.",
+  "question": "The person has been asked ten harmless questions. The eleventh asks to delete ../data, outside the project. What happens?"
+ },
+ {
+  "answer": 1,
+  "id": "C9-c1",
+  "mode": "check",
+  "objective": "C9.o1",
+  "options": [
+   {
+    "text": "Only a yes or a no.",
+    "why": "Wrong. The decision has three values, allow, ask and deny, and each needs a reason."
+   },
+   {
+    "text": "One of allow, ask or deny, always with a reason.",
+    "why": "Right. The learner and the log both need to know what was decided and why."
+   },
+   {
+    "text": "A number from zero to one.",
+    "why": "Wrong. A permission decision is not a score."
+   }
+  ],
+  "question": "A permission check returns a decision for a tool call. What must the result always carry?"
+ },
+ {
+  "answer": 1,
+  "id": "C9-c2",
+  "mode": "check",
+  "objective": "C9.o2",
+  "options": [
+   {
+    "text": "rm build/ inside the project.",
+    "why": "Less risky. It is inside the workspace, and a rebuild restores it."
+   },
+   {
+    "text": "rm ../data, which reaches outside the workspace.",
+    "why": "Right. The target is outside the project, so the same action is far riskier."
+   },
+   {
+    "text": "Both are the same risk, because both are rm.",
+    "why": "Wrong. The command word is the same; the target differs."
+   }
+  ],
+  "question": "Which is the riskier call?"
+ },
+ {
+  "answer": 1,
+  "id": "C9-c3",
+  "mode": "check",
+  "objective": "C9.o3",
+  "options": [
+   {
+    "text": "Ask on every call, so nothing slips through.",
+    "why": "Tempting. More asks is what causes the fatigue; the prompts left get no look."
+   },
+   {
+    "text": "Allow the harmless reads, deny what is outside, and ask only for what matters.",
+    "why": "Right. Fewer prompts, and each one that is left gets a look."
+   },
+   {
+    "text": "Turn the prompts off so the run is faster.",
+    "why": "Wrong. Then nothing stands between the model and the dangerous call."
+   }
+  ],
+  "question": "A person is asked eleven times, and nine of the prompts were harmless reads. What should the policy do?"
+ },
+ {
+  "answer": 1,
+  "id": "C9-c4",
+  "mode": "check",
+  "objective": "C9.o4",
+  "options": [
+   {
+    "text": "The allow rule, because it is the more specific one.",
+    "why": "Tempting. Specificity is not the order. The order is fixed: ask is checked before allow."
+   },
+   {
+    "text": "The ask rule, because asks come before allows in the decision order.",
+    "why": "Right. The decision order is deny, then ask, then allow, then the mode's default."
+   },
+   {
+    "text": "Whichever rule is listed first.",
+    "why": "Wrong. The order of the groups decides, not the order of the list."
+   }
+  ],
+  "question": "A call matches both an ask rule and an allow rule. Which decides?"
+ },
+ {
+  "answer": 0,
+  "id": "C9-c5",
+  "mode": "check",
+  "objective": "C9.o5",
+  "options": [
+   {
+    "text": "A table of cases, each with the decision the policy must give.",
+    "why": "Right. Each row is a check that can fail, which is what a test is."
+   },
+   {
+    "text": "The author's reading of the file.",
+    "why": "Wrong. A reading is not a check; it cannot fail."
+   },
+   {
+    "text": "The mode setting alone.",
+    "why": "Wrong. The mode is only the default for calls no rule matches."
+   }
+  ],
+  "question": "A policy has been written as code. How do you show that it holds?"
+ }
+]

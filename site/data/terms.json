@@ -1,4 +1,27 @@
 {
+ "actionable-error": {
+  "aliases": [
+   "actionable error",
+   "actionable errors"
+  ],
+  "definition": "A tool result that says what went wrong and what to do next, in few words.",
+  "id": "actionable-error",
+  "module": "C7",
+  "strict": true,
+  "term": "actionable error",
+  "wire": "tools"
+ },
+ "additional-properties": {
+  "aliases": [
+   "additionalProperties"
+  ],
+  "definition": "A schema setting. Set to false, it refuses a field the schema does not name. This course's checker refuses it.",
+  "id": "additional-properties",
+  "module": "A5",
+  "strict": true,
+  "term": "additionalProperties",
+  "wire": "tools"
+ },
  "agent": {
   "aliases": [
    "agent",
@@ -10,6 +33,18 @@
   "strict": true,
   "term": "agent",
   "wire": "loop"
+ },
+ "agent-computer-interface": {
+  "aliases": [
+   "agent-computer interface",
+   "agent-computer interfaces"
+  ],
+  "definition": "The tools as a model sees them: their names, descriptions, inputs and results. It is a user interface for the model.",
+  "id": "agent-computer-interface",
+  "module": "C7",
+  "strict": true,
+  "term": "agent-computer interface",
+  "wire": "tools"
  },
  "agent-loop": {
   "aliases": [
@@ -23,6 +58,379 @@
   "term": "agent loop",
   "wire": "loop"
  },
+ "agents-md": {
+  "aliases": [
+   "AGENTS.md"
+  ],
+  "definition": "A rules file in the repository, named by a convention. Which product reads it is a fact the course lists, not a claim made here.",
+  "id": "agents-md",
+  "module": "C1",
+  "strict": true,
+  "term": "AGENTS.md",
+  "wire": "control"
+ },
+ "allow": {
+  "aliases": [
+   "allow"
+  ],
+  "definition": "A decision that lets a tool call run without asking anyone.",
+  "id": "allow",
+  "module": "C9",
+  "strict": false,
+  "term": "allow",
+  "wire": "permissions"
+ },
+ "allow-list": {
+  "aliases": [
+   "allow-list",
+   "allow-lists"
+  ],
+  "definition": "A list of commands or tools that may run without asking. Naming a command is not enough on its own: its target still matters.",
+  "id": "allow-list",
+  "module": "C9",
+  "strict": true,
+  "term": "allow-list",
+  "wire": "permissions"
+ },
+ "altitude": {
+  "aliases": [
+   "altitude"
+  ],
+  "definition": "How specific an instruction is. Too low and it is a lookup table; too high and it is a slogan. Good instructions are specific enough to act on and general enough to transfer.",
+  "id": "altitude",
+  "module": "C1",
+  "strict": false,
+  "term": "altitude",
+  "wire": "control"
+ },
+ "append-only-history": {
+  "aliases": [
+   "append-only history",
+   "append-only"
+  ],
+  "definition": "A history that only grows at the end. Earlier messages are never changed or removed.",
+  "id": "append-only-history",
+  "module": "C5",
+  "strict": true,
+  "term": "append-only history",
+  "wire": "loop"
+ },
+ "approval-fatigue": {
+  "aliases": [
+   "approval fatigue"
+  ],
+  "definition": "The loss of care that follows many prompts, so that the one dangerous prompt is approved without a look.",
+  "id": "approval-fatigue",
+  "module": "C9",
+  "strict": true,
+  "term": "approval fatigue",
+  "wire": "permissions"
+ },
+ "ask": {
+  "aliases": [
+   "ask"
+  ],
+  "definition": "A decision that sends the call to a person before it runs. Asking is a cost: every prompt is a chance to approve by habit.",
+  "id": "ask",
+  "module": "C9",
+  "strict": false,
+  "term": "ask",
+  "wire": "permissions"
+ },
+ "attention-budget": {
+  "aliases": [
+   "attention budget",
+   "attention budgets"
+  ],
+  "definition": "The limited capacity of a model to draw on a large context when it reads it.",
+  "id": "attention-budget",
+  "module": "C2",
+  "strict": true,
+  "term": "attention budget",
+  "wire": "context"
+ },
+ "blast-radius": {
+  "aliases": [
+   "blast radius"
+  ],
+  "definition": "How much a single mistake can reach: the files, the network and the secrets it could touch.",
+  "id": "blast-radius",
+  "module": "C10",
+  "strict": true,
+  "term": "blast radius",
+  "wire": "permissions"
+ },
+ "cache-breakpoint": {
+  "aliases": [
+   "cache breakpoint",
+   "cache breakpoints"
+  ],
+  "definition": "The point up to which a request asks to be cached. The course's model of caching uses one, at the end of the request.",
+  "id": "cache-breakpoint",
+  "module": "C4",
+  "strict": true,
+  "term": "cache breakpoint",
+  "wire": "context"
+ },
+ "cache-hit": {
+  "aliases": [
+   "cache hit",
+   "cache hits"
+  ],
+  "definition": "A call that reads some of its input from the cache. The hit rate is the share of the input that was read.",
+  "id": "cache-hit",
+  "module": "C4",
+  "strict": true,
+  "term": "cache hit",
+  "wire": "context"
+ },
+ "cache-invalidation": {
+  "aliases": [
+   "cache invalidation",
+   "invalidator",
+   "invalidates"
+  ],
+  "definition": "A change that makes earlier cache entries stop matching, so the next call writes the request again.",
+  "id": "cache-invalidation",
+  "module": "C4",
+  "strict": true,
+  "term": "cache invalidation",
+  "wire": "context"
+ },
+ "cache-prefix": {
+  "aliases": [
+   "cache prefix",
+   "cache prefixes"
+  ],
+  "definition": "The part of a request that comes before a point. A cache matches a prefix whole, or not at all.",
+  "id": "cache-prefix",
+  "module": "C4",
+  "strict": true,
+  "term": "cache prefix",
+  "wire": "context"
+ },
+ "cache-read": {
+  "aliases": [
+   "cache read",
+   "cache reads"
+  ],
+  "definition": "Input that a call takes from the cache instead of processing it again.",
+  "id": "cache-read",
+  "module": "C4",
+  "strict": true,
+  "term": "cache read",
+  "wire": "context"
+ },
+ "cache-ttl": {
+  "aliases": [
+   "cache TTL",
+   "cache lifetime"
+  ],
+  "definition": "How long a cache entry lasts after it was last written or read.",
+  "id": "cache-ttl",
+  "module": "C4",
+  "strict": true,
+  "term": "cache TTL",
+  "wire": "context"
+ },
+ "cache-write": {
+  "aliases": [
+   "cache write",
+   "cache writes"
+  ],
+  "definition": "Input that a call stores in the cache, so that a later call can read it.",
+  "id": "cache-write",
+  "module": "C4",
+  "strict": true,
+  "term": "cache write",
+  "wire": "context"
+ },
+ "circuit-breaker": {
+  "aliases": [
+   "circuit breaker",
+   "breaker"
+  ],
+  "definition": "A switch that opens after a set number of failures in a row, and holds calls back for a cooldown.",
+  "id": "circuit-breaker",
+  "module": "C6",
+  "strict": true,
+  "term": "circuit breaker",
+  "wire": "errors"
+ },
+ "claude-md": {
+  "aliases": [
+   "CLAUDE.md"
+  ],
+  "definition": "A rules file in the repository, named by a convention. Which product reads it is a fact the course lists, not a claim made here.",
+  "id": "claude-md",
+  "module": "C1",
+  "strict": true,
+  "term": "CLAUDE.md",
+  "wire": "control"
+ },
+ "clean-reset": {
+  "aliases": [
+   "clean reset",
+   "clean resets"
+  ],
+  "definition": "Starting a new run with only the task and a handoff note, instead of compacting the old one.",
+  "id": "clean-reset",
+  "module": "C3",
+  "strict": true,
+  "term": "clean reset",
+  "wire": "context"
+ },
+ "commit": {
+  "aliases": [
+   "commit",
+   "commits"
+  ],
+  "definition": "One saved change, with a message that says what it does. This course asks for small commits, each one explainable in a line.",
+  "id": "commit",
+  "module": "T8",
+  "strict": false,
+  "term": "commit"
+ },
+ "compaction": {
+  "aliases": [
+   "compaction",
+   "compactions"
+  ],
+  "definition": "Replacing the older messages with a summary, so the desk has room again. The summary keeps only what the harness chose to keep.",
+  "id": "compaction",
+  "module": "C3",
+  "strict": true,
+  "term": "compaction",
+  "wire": "context"
+ },
+ "compaction-threshold": {
+  "aliases": [
+   "compaction threshold",
+   "compaction thresholds"
+  ],
+  "definition": "The share of the window at which a compaction runs. A low threshold compacts often; a high one lets the desk fill.",
+  "id": "compaction-threshold",
+  "module": "C3",
+  "strict": true,
+  "term": "compaction threshold",
+  "wire": "context"
+ },
+ "compounding-error": {
+  "aliases": [
+   "compounding error",
+   "compounding errors",
+   "compounds"
+  ],
+  "definition": "When each step can fail, the chance that all the steps succeed falls with every step.",
+  "id": "compounding-error",
+  "module": "A7",
+  "strict": true,
+  "term": "compounding error",
+  "wire": "verify"
+ },
+ "computational-check": {
+  "aliases": [
+   "computational check",
+   "computational checks"
+  ],
+  "definition": "A check a program can run and decide: tests, linters and type checks. Its answer does not depend on who asks.",
+  "id": "computational-check",
+  "module": "C11",
+  "strict": true,
+  "term": "computational check",
+  "wire": "verify"
+ },
+ "concurrency": {
+  "aliases": [
+   "concurrency",
+   "concurrent"
+  ],
+  "definition": "Doing more than one thing in the same period, so that a program does other work while it waits.",
+  "id": "concurrency",
+  "module": "T10",
+  "strict": false,
+  "term": "concurrency"
+ },
+ "constrained-decoding": {
+  "aliases": [
+   "constrained decoding"
+  ],
+  "definition": "Generating a reply so that only the tokens a schema allows can be chosen. A method, compared in this module.",
+  "id": "constrained-decoding",
+  "module": "A5",
+  "strict": true,
+  "term": "constrained decoding",
+  "wire": "tools"
+ },
+ "container": {
+  "aliases": [
+   "container",
+   "containers"
+  ],
+  "definition": "A process with its own smaller view of the machine. The course treats it as one wall among others, not as the whole of the wall.",
+  "id": "container",
+  "module": "C10",
+  "strict": false,
+  "term": "container",
+  "wire": "permissions"
+ },
+ "content-block": {
+  "aliases": [
+   "content block",
+   "content blocks"
+  ],
+  "definition": "One typed part of a response: text, or a tool request. Each block has a type that says what fields it has.",
+  "id": "content-block",
+  "module": "A4",
+  "strict": true,
+  "term": "content block",
+  "wire": "loop"
+ },
+ "context-budget": {
+  "aliases": [
+   "context budget",
+   "context budgets"
+  ],
+  "definition": "The share of the window that each part of the desk takes, counted before the model sees any of it.",
+  "id": "context-budget",
+  "module": "C2",
+  "strict": true,
+  "term": "context budget",
+  "wire": "context"
+ },
+ "context-engineering": {
+  "aliases": [
+   "context engineering"
+  ],
+  "definition": "Choosing what goes on the desk for each call, and what gets cut or saved.",
+  "id": "context-engineering",
+  "module": "B3",
+  "strict": true,
+  "term": "context engineering",
+  "wire": "context"
+ },
+ "context-management": {
+  "aliases": [
+   "context management"
+  ],
+  "definition": "The wire that answers what is on the desk this call, and what is saved.",
+  "id": "context-management",
+  "module": "B4",
+  "strict": true,
+  "term": "context management",
+  "wire": "context"
+ },
+ "context-rot": {
+  "aliases": [
+   "context rot"
+  ],
+  "definition": "The fall in answer quality as the window fills, well before the hard limit is reached.",
+  "id": "context-rot",
+  "module": "C2",
+  "strict": true,
+  "term": "context rot",
+  "wire": "context"
+ },
  "context-window": {
   "aliases": [
    "context window",
@@ -34,6 +442,18 @@
   "strict": true,
   "term": "context window",
   "wire": "context"
+ },
+ "control-plane": {
+  "aliases": [
+   "control plane",
+   "control planes"
+  ],
+  "definition": "The wire that answers what the model is told, and which instruction wins.",
+  "id": "control-plane",
+  "module": "B4",
+  "strict": true,
+  "term": "control plane",
+  "wire": "control"
  },
  "conversation-history": {
   "aliases": [
@@ -58,6 +478,28 @@
   "strict": true,
   "term": "coroutine"
  },
+ "cost-attribution": {
+  "aliases": [
+   "cost attribution"
+  ],
+  "definition": "Splitting a model call's cost into its parts, and naming the largest part of the request.",
+  "id": "cost-attribution",
+  "module": "C12",
+  "strict": true,
+  "term": "cost attribution",
+  "wire": "observe"
+ },
+ "cost-per-completed-task": {
+  "aliases": [
+   "cost per completed task"
+  ],
+  "definition": "The cost of a task's calls, divided by the share of tasks that finish. A cheap call that often fails is not cheap.",
+  "id": "cost-per-completed-task",
+  "module": "A6",
+  "strict": true,
+  "term": "cost per completed task",
+  "wire": "observe"
+ },
  "dataclass": {
   "aliases": [
    "dataclass",
@@ -69,6 +511,62 @@
   "strict": true,
   "term": "dataclass",
   "wire": "loop"
+ },
+ "decision-order": {
+  "aliases": [
+   "decision order"
+  ],
+  "definition": "The fixed order a policy is checked in: all deny rules, then all ask rules, then all allow rules, then the mode's default.",
+  "id": "decision-order",
+  "module": "C9",
+  "strict": true,
+  "term": "decision order",
+  "wire": "permissions"
+ },
+ "deferred-loading": {
+  "aliases": [
+   "deferred loading"
+  ],
+  "definition": "Keeping a tool's definition out of the request until a step needs it.",
+  "id": "deferred-loading",
+  "module": "C8",
+  "strict": true,
+  "term": "deferred loading",
+  "wire": "tools"
+ },
+ "deny": {
+  "aliases": [
+   "deny"
+  ],
+  "definition": "A decision that stops the tool call. It runs nothing, and the model gets the reason.",
+  "id": "deny",
+  "module": "C9",
+  "strict": false,
+  "term": "deny",
+  "wire": "permissions"
+ },
+ "destructive-tool": {
+  "aliases": [
+   "destructive tool",
+   "destructive tools"
+  ],
+  "definition": "A tool that may change or delete things in its environment.",
+  "id": "destructive-tool",
+  "module": "C7",
+  "strict": true,
+  "term": "destructive tool",
+  "wire": "tools"
+ },
+ "diff": {
+  "aliases": [
+   "diff",
+   "diffs"
+  ],
+  "definition": "The text that shows which lines a change adds, removes or leaves alone, file by file.",
+  "id": "diff",
+  "module": "T8",
+  "strict": false,
+  "term": "diff"
  },
  "done-claim": {
   "aliases": [
@@ -82,6 +580,87 @@
   "term": "done claim",
   "wire": "loop"
  },
+ "drift": {
+  "aliases": [
+   "drift"
+  ],
+  "definition": "Slow change in what a model does over time, so that a result that worked stops working without any change in the harness.",
+  "id": "drift",
+  "module": "A7",
+  "strict": false,
+  "term": "drift",
+  "wire": "verify"
+ },
+ "effort": {
+  "aliases": [
+   "effort"
+  ],
+  "definition": "A setting that tells the model how much to work before it answers. The harness sets it on each request.",
+  "id": "effort",
+  "module": "A6",
+  "strict": false,
+  "term": "effort",
+  "wire": "control"
+ },
+ "egress-allow-list": {
+  "aliases": [
+   "egress allow-list",
+   "egress allow-lists"
+  ],
+  "definition": "The hosts a network call may reach. A call to any other host is refused.",
+  "id": "egress-allow-list",
+  "module": "C10",
+  "strict": true,
+  "term": "egress allow-list",
+  "wire": "permissions"
+ },
+ "end-turn": {
+  "aliases": [
+   "end_turn"
+  ],
+  "definition": "The stop reason for a response that finished on its own. It is a done claim, not proof.",
+  "id": "end-turn",
+  "module": "A4",
+  "strict": true,
+  "term": "end_turn",
+  "wire": "loop"
+ },
+ "enum": {
+  "aliases": [
+   "enum",
+   "enums"
+  ],
+  "definition": "A field that may take only one of a short list of values.",
+  "id": "enum",
+  "module": "A5",
+  "strict": true,
+  "term": "enum",
+  "wire": "tools"
+ },
+ "event": {
+  "aliases": [
+   "event",
+   "events"
+  ],
+  "definition": "One record the harness writes as it runs: a model call, a tool call, a permission decision. Each has a sequence number and a time.",
+  "id": "event",
+  "module": "C12",
+  "strict": false,
+  "term": "event",
+  "wire": "observe"
+ },
+ "exfiltration": {
+  "aliases": [
+   "exfiltration",
+   "exfiltrate"
+  ],
+  "definition": "A secret leaving the sandbox through a network call.",
+  "id": "exfiltration",
+  "module": "C10",
+  "strict": true,
+  "term": "exfiltration",
+  "wire": "permissions"
+ },
  "exit": {
   "aliases": [
    "exit",
@@ -93,6 +672,42 @@
   "strict": false,
   "term": "exit",
   "wire": "loop"
+ },
+ "exponential-backoff": {
+  "aliases": [
+   "exponential backoff",
+   "backoff"
+  ],
+  "definition": "Waiting longer after each failed try, doubling the wait each time up to a cap.",
+  "id": "exponential-backoff",
+  "module": "C6",
+  "strict": true,
+  "term": "exponential backoff",
+  "wire": "errors"
+ },
+ "extended-thinking": {
+  "aliases": [
+   "extended thinking"
+  ],
+  "definition": "Extra tokens the model writes before it answers, to work a problem out. The thinking is billed as output.",
+  "id": "extended-thinking",
+  "module": "A6",
+  "strict": true,
+  "term": "extended thinking",
+  "wire": "loop"
+ },
+ "fail-closed": {
+  "aliases": [
+   "fail closed",
+   "fails closed",
+   "failing closed"
+  ],
+  "definition": "When a check cannot decide, it denies the action. A check that fails open lets the action through when it breaks.",
+  "id": "fail-closed",
+  "module": "C1",
+  "strict": true,
+  "term": "fail closed",
+  "wire": "permissions"
  },
  "failure-family": {
   "aliases": [
@@ -106,6 +721,110 @@
   "term": "failure family",
   "wire": "verify"
  },
+ "failure-mode": {
+  "aliases": [
+   "failure mode",
+   "failure modes"
+  ],
+  "definition": "A way a model's answer can go wrong. The course names six that a harness has to plan for.",
+  "id": "failure-mode",
+  "module": "A7",
+  "strict": false,
+  "term": "failure mode",
+  "wire": "verify"
+ },
+ "file-permissions": {
+  "aliases": [
+   "file permissions",
+   "file permission"
+  ],
+  "definition": "The rules that say which user may read, write or run a file, given its owner, its group and its mode.",
+  "id": "file-permissions",
+  "module": "T9",
+  "strict": true,
+  "term": "file permissions"
+ },
+ "final-status": {
+  "aliases": [
+   "final status",
+   "final statuses"
+  ],
+  "definition": "The one word that says how a run ended, such as done, max turns, interrupted or error.",
+  "id": "final-status",
+  "module": "C5",
+  "strict": true,
+  "term": "final status",
+  "wire": "loop"
+ },
+ "fixture": {
+  "aliases": [
+   "fixture",
+   "fixtures"
+  ],
+  "definition": "A helper that builds the setup a test needs, so each test starts from the same known state.",
+  "id": "fixture",
+  "module": "T6",
+  "strict": true,
+  "term": "fixture"
+ },
+ "framework": {
+  "aliases": [
+   "framework",
+   "frameworks"
+  ],
+  "definition": "A library of ready-made parts for building a harness. It supplies parts; it does not decide your harness for you.",
+  "id": "framework",
+  "module": "B3",
+  "strict": false,
+  "term": "framework",
+  "wire": "control"
+ },
+ "function-calling": {
+  "aliases": [
+   "function calling"
+  ],
+  "definition": "Another name for a tool call: the model writes a structured request for a named function with its arguments.",
+  "id": "function-calling",
+  "module": "B1",
+  "strict": false,
+  "term": "function calling",
+  "wire": "tools"
+ },
+ "genai-conventions": {
+  "aliases": [
+   "GenAI semantic conventions",
+   "GenAI conventions"
+  ],
+  "definition": "OpenTelemetry's names for generative AI spans and attributes. The registry declares them in development, so names can still change.",
+  "id": "genai-conventions",
+  "module": "C12",
+  "strict": true,
+  "term": "GenAI semantic conventions",
+  "wire": "observe"
+ },
+ "ground-truth": {
+  "aliases": [
+   "ground truth"
+  ],
+  "definition": "A check that does not depend on the model's words: a test, a file, a number that can be looked up.",
+  "id": "ground-truth",
+  "module": "A7",
+  "strict": true,
+  "term": "ground truth",
+  "wire": "verify"
+ },
+ "guide": {
+  "aliases": [
+   "guide",
+   "guides"
+  ],
+  "definition": "A control that steers the model before the work, such as a rule in the prompt or a template.",
+  "id": "guide",
+  "module": "C11",
+  "strict": false,
+  "term": "guide",
+  "wire": "verify"
+ },
  "hallucination": {
   "aliases": [
    "hallucination",
@@ -117,6 +836,18 @@
   "strict": true,
   "term": "hallucination",
   "wire": "verify"
+ },
+ "handoff-note": {
+  "aliases": [
+   "handoff note",
+   "handoff notes"
+  ],
+  "definition": "A short written record of the goal, the constraints, the decisions, the progress and the files, that a new run reads first.",
+  "id": "handoff-note",
+  "module": "C3",
+  "strict": true,
+  "term": "handoff note",
+  "wire": "context"
  },
  "harness": {
   "aliases": [
@@ -142,6 +873,98 @@
   "term": "Harness Board",
   "wire": "control"
  },
+ "harness-engineering": {
+  "aliases": [
+   "harness engineering"
+  ],
+  "definition": "Building and tuning the code around the model: the loop, tools, permissions, checks and limits.",
+  "id": "harness-engineering",
+  "module": "B3",
+  "strict": true,
+  "term": "harness engineering",
+  "wire": "control"
+ },
+ "header": {
+  "aliases": [
+   "header",
+   "headers"
+  ],
+  "definition": "A named line of metadata in an HTTP request or response, such as a content type or a retry-after value, sent before the body.",
+  "id": "header",
+  "module": "T5",
+  "strict": true,
+  "term": "header"
+ },
+ "hook": {
+  "aliases": [
+   "hook",
+   "hooks"
+  ],
+  "definition": "Code the harness runs at a fixed point, such as before a tool call, so the rule holds whatever the prompt says.",
+  "id": "hook",
+  "module": "C1",
+  "strict": false,
+  "term": "hook",
+  "wire": "permissions"
+ },
+ "http-status-code": {
+  "aliases": [
+   "HTTP status code",
+   "status code",
+   "status codes"
+  ],
+  "definition": "The three-digit number in an HTTP response that says what happened to the request, such as 200 or 429.",
+  "id": "http-status-code",
+  "module": "T5",
+  "strict": true,
+  "term": "HTTP status code"
+ },
+ "idempotency": {
+  "aliases": [
+   "idempotency"
+  ],
+  "definition": "A property of an action: doing it again with the same request has the same effect as doing it once.",
+  "id": "idempotency",
+  "module": "C6",
+  "strict": true,
+  "term": "idempotency",
+  "wire": "errors"
+ },
+ "idempotency-key": {
+  "aliases": [
+   "idempotency key",
+   "idempotency keys"
+  ],
+  "definition": "A value sent with a request, so that a repeated request can be recognised and not run twice.",
+  "id": "idempotency-key",
+  "module": "C6",
+  "strict": true,
+  "term": "idempotency key",
+  "wire": "errors"
+ },
+ "image": {
+  "aliases": [
+   "image",
+   "images"
+  ],
+  "definition": "The name of the starting point a container runs from, such as python:3.",
+  "id": "image",
+  "module": "T7",
+  "strict": true,
+  "term": "image"
+ },
+ "independent-reviewer": {
+  "aliases": [
+   "independent reviewer",
+   "independent reviewers"
+  ],
+  "definition": "A reviewer that sees the task and the diff, not the author's reasoning, so it judges the result and not the story.",
+  "id": "independent-reviewer",
+  "module": "C11",
+  "strict": true,
+  "term": "independent reviewer",
+  "wire": "verify"
+ },
  "inference": {
   "aliases": [
    "inference"
@@ -153,6 +976,30 @@
   "term": "inference",
   "wire": "control"
  },
+ "inferential-check": {
+  "aliases": [
+   "inferential check",
+   "inferential checks"
+  ],
+  "definition": "A check that judges with a model or a person: a review of the code or of the claim. Useful where no program can decide.",
+  "id": "inferential-check",
+  "module": "C11",
+  "strict": true,
+  "term": "inferential check",
+  "wire": "verify"
+ },
+ "input-schema": {
+  "aliases": [
+   "input_schema",
+   "input schema"
+  ],
+  "definition": "The part of a tool definition that says which fields the tool takes, their types, and which fields are required.",
+  "id": "input-schema",
+  "module": "B1",
+  "strict": true,
+  "term": "input_schema",
+  "wire": "tools"
+ },
  "input-tokens": {
   "aliases": [
    "input tokens",
@@ -163,6 +1010,88 @@
   "module": "A2",
   "strict": true,
   "term": "input tokens",
+  "wire": "context"
+ },
+ "instruction-hierarchy": {
+  "aliases": [
+   "instruction hierarchy"
+  ],
+  "definition": "The order that decides which layer wins when two of them disagree. It is set by who wrote each layer, not by what it says.",
+  "id": "instruction-hierarchy",
+  "module": "C1",
+  "strict": true,
+  "term": "instruction hierarchy",
+  "wire": "control"
+ },
+ "instruction-layer": {
+  "aliases": [
+   "instruction layer",
+   "instruction layers"
+  ],
+  "definition": "One block of text in the prompt that tells the model what to do: the system prompt, the project rules, the user's message or a tool result.",
+  "id": "instruction-layer",
+  "module": "C1",
+  "strict": true,
+  "term": "instruction layer",
+  "wire": "control"
+ },
+ "interrupt": {
+  "aliases": [
+   "interrupt",
+   "interrupts"
+  ],
+  "definition": "A stop that a person asks for while a run is going. The harness must still answer what the run had started.",
+  "id": "interrupt",
+  "module": "C5",
+  "strict": true,
+  "term": "interrupt",
+  "wire": "loop"
+ },
+ "is-error": {
+  "aliases": [
+   "is_error"
+  ],
+  "definition": "An optional field of a tool_result. It is set to true when the tool call failed, and says so to the model.",
+  "id": "is-error",
+  "module": "B1",
+  "strict": true,
+  "term": "is_error",
+  "wire": "tools"
+ },
+ "jitter": {
+  "aliases": [
+   "jitter"
+  ],
+  "definition": "A random part of the wait, so that many clients that failed together do not retry together.",
+  "id": "jitter",
+  "module": "C6",
+  "strict": true,
+  "term": "jitter",
+  "wire": "errors"
+ },
+ "json-schema": {
+  "aliases": [
+   "JSON Schema",
+   "JSON schema",
+   "JSON schemas"
+  ],
+  "definition": "A way to write down the shape of a JSON object: its fields, their types, which are required and which values are allowed.",
+  "id": "json-schema",
+  "module": "A5",
+  "strict": true,
+  "term": "JSON Schema",
+  "wire": "tools"
+ },
+ "just-in-time-retrieval": {
+  "aliases": [
+   "just-in-time retrieval",
+   "just in time retrieval"
+  ],
+  "definition": "Loading a piece of material when the task needs it, instead of loading everything at the start.",
+  "id": "just-in-time-retrieval",
+  "module": "C2",
+  "strict": true,
+  "term": "just-in-time retrieval",
   "wire": "context"
  },
  "language-model": {
@@ -188,6 +1117,77 @@
   "term": "latency",
   "wire": "loop"
  },
+ "loop-detection": {
+  "aliases": [
+   "loop detection",
+   "detect a loop"
+  ],
+  "definition": "Noticing that the run repeats the same action, and stopping it before the turn limit does.",
+  "id": "loop-detection",
+  "module": "C5",
+  "strict": true,
+  "term": "loop detection",
+  "wire": "loop"
+ },
+ "max-tokens": {
+  "aliases": [
+   "max_tokens"
+  ],
+  "definition": "The stop reason for a response that hit the request's length limit. The reply may be cut off in the middle.",
+  "id": "max-tokens",
+  "module": "A4",
+  "strict": true,
+  "term": "max_tokens",
+  "wire": "loop"
+ },
+ "mcp-client": {
+  "aliases": [
+   "MCP client",
+   "MCP clients"
+  ],
+  "definition": "The part of a host that keeps one connection to one server. This is the course's model; the facts registry defines no client role.",
+  "id": "mcp-client",
+  "module": "C8",
+  "strict": true,
+  "term": "MCP client",
+  "wire": "tools"
+ },
+ "mcp-host": {
+  "aliases": [
+   "MCP host",
+   "MCP hosts"
+  ],
+  "definition": "The application the user runs. It decides which servers to connect to. This is the course's model; the facts registry defines no host role.",
+  "id": "mcp-host",
+  "module": "C8",
+  "strict": true,
+  "term": "MCP host",
+  "wire": "tools"
+ },
+ "mcp-resource": {
+  "aliases": [
+   "MCP resource",
+   "MCP resources"
+  ],
+  "definition": "Data that a server offers for the model to read, such as a file or a record.",
+  "id": "mcp-resource",
+  "module": "C8",
+  "strict": true,
+  "term": "MCP resource",
+  "wire": "tools"
+ },
+ "mcp-server": {
+  "aliases": [
+   "MCP server",
+   "MCP servers"
+  ],
+  "definition": "A program that offers tools, resources or prompts to a client.",
+  "id": "mcp-server",
+  "module": "C8",
+  "strict": true,
+  "term": "MCP server",
+  "wire": "tools"
+ },
  "memory": {
   "aliases": [
    "memory",
@@ -199,6 +1199,41 @@
   "strict": false,
   "term": "memory",
   "wire": "context"
+ },
+ "memory-file": {
+  "aliases": [
+   "memory file",
+   "memory files"
+  ],
+  "definition": "A file in the project that holds standing facts, read by every run in that project.",
+  "id": "memory-file",
+  "module": "C3",
+  "strict": true,
+  "term": "memory file",
+  "wire": "context"
+ },
+ "memory-tier": {
+  "aliases": [
+   "memory tier",
+   "memory tiers"
+  ],
+  "definition": "One of the four places a harness keeps what a model needs: the window, the session log, the project files and the long-term store.",
+  "id": "memory-tier",
+  "module": "C3",
+  "strict": true,
+  "term": "memory tier",
+  "wire": "context"
+ },
+ "messages-api": {
+  "aliases": [
+   "Messages API"
+  ],
+  "definition": "The API this course calls for every model call. A3 showed what each request holds.",
+  "id": "messages-api",
+  "module": "A4",
+  "strict": true,
+  "term": "Messages API",
+  "wire": "loop"
  },
  "messages-array": {
   "aliases": [
@@ -213,6 +1248,30 @@
   "term": "messages array",
   "wire": "context"
  },
+ "model-context-protocol": {
+  "aliases": [
+   "Model Context Protocol",
+   "MCP"
+  ],
+  "definition": "An open protocol through which an application connects a model to tools, resources and prompts that other programs offer.",
+  "id": "model-context-protocol",
+  "module": "C8",
+  "strict": true,
+  "term": "Model Context Protocol",
+  "wire": "tools"
+ },
+ "model-id": {
+  "aliases": [
+   "model ID",
+   "model IDs"
+  ],
+  "definition": "The name that picks the model in a request. A run's trace records it.",
+  "id": "model-id",
+  "module": "A4",
+  "strict": true,
+  "term": "model ID",
+  "wire": "control"
+ },
  "model-interface": {
   "aliases": [
    "model interface",
@@ -225,6 +1284,40 @@
   "term": "model interface",
   "wire": "loop"
  },
+ "mount": {
+  "aliases": [
+   "mount",
+   "mounts"
+  ],
+  "definition": "A folder you name in the command so the command can use it. This course mounts one folder per task.",
+  "id": "mount",
+  "module": "T7",
+  "strict": true,
+  "term": "mount"
+ },
+ "nested-schema": {
+  "aliases": [
+   "nested schema",
+   "nested schemas"
+  ],
+  "definition": "A schema whose properties are schemas themselves, so the check goes into the value one level at a time.",
+  "id": "nested-schema",
+  "module": "T4",
+  "strict": true,
+  "term": "nested schema"
+ },
+ "network-egress": {
+  "aliases": [
+   "network egress",
+   "egress"
+  ],
+  "definition": "A network call that leaves the machine, to a host outside the sandbox.",
+  "id": "network-egress",
+  "module": "C10",
+  "strict": true,
+  "term": "network egress",
+  "wire": "permissions"
+ },
  "next-token-prediction": {
   "aliases": [
    "next-token prediction",
@@ -236,6 +1329,53 @@
   "strict": true,
   "term": "next-token prediction",
   "wire": "loop"
+ },
+ "observability": {
+  "aliases": [
+   "observability"
+  ],
+  "definition": "The wire that answers what exactly happened, and where time and money went.",
+  "id": "observability",
+  "module": "B4",
+  "strict": false,
+  "term": "observability",
+  "wire": "observe"
+ },
+ "opentelemetry": {
+  "aliases": [
+   "OpenTelemetry"
+  ],
+  "definition": "An open standard for traces, metrics and logs. This course takes its names for spans and attributes.",
+  "id": "opentelemetry",
+  "module": "C12",
+  "strict": true,
+  "term": "OpenTelemetry",
+  "wire": "observe"
+ },
+ "orphaned-tool-call": {
+  "aliases": [
+   "orphaned tool call",
+   "orphaned tool calls",
+   "orphaned call"
+  ],
+  "definition": "A tool call with no result after it. A request that holds one is refused.",
+  "id": "orphaned-tool-call",
+  "module": "C5",
+  "strict": true,
+  "term": "orphaned tool call",
+  "wire": "loop"
+ },
+ "output-cap": {
+  "aliases": [
+   "output cap",
+   "output caps"
+  ],
+  "definition": "A limit on how much of one tool output the model sees. It keeps the start and the end, and says how much was cut.",
+  "id": "output-cap",
+  "module": "C2",
+  "strict": true,
+  "term": "output cap",
+  "wire": "context"
  },
  "output-limit": {
   "aliases": [
@@ -261,6 +1401,53 @@
   "term": "output tokens",
   "wire": "context"
  },
+ "overloaded-error": {
+  "aliases": [
+   "overloaded error",
+   "overloaded errors"
+  ],
+  "definition": "The error the API returns when it is temporarily overloaded. It is a transient error.",
+  "id": "overloaded-error",
+  "module": "C6",
+  "strict": true,
+  "term": "overloaded error",
+  "wire": "errors"
+ },
+ "parallel-safe": {
+  "aliases": [
+   "parallel-safe",
+   "parallel safe"
+  ],
+  "definition": "Two tool calls are parallel-safe when neither writes a resource that the other reads or writes.",
+  "id": "parallel-safe",
+  "module": "C7",
+  "strict": true,
+  "term": "parallel-safe",
+  "wire": "tools"
+ },
+ "parallel-tool-calls": {
+  "aliases": [
+   "parallel tool calls",
+   "parallel tool call"
+  ],
+  "definition": "Several tool_use blocks in one reply, so the harness runs them together and answers all of them in one message.",
+  "id": "parallel-tool-calls",
+  "module": "B1",
+  "strict": true,
+  "term": "parallel tool calls",
+  "wire": "tools"
+ },
+ "parametrize": {
+  "aliases": [
+   "parametrize",
+   "parametrized"
+  ],
+  "definition": "Running one test body over a table of cases, so each case is checked on its own.",
+  "id": "parametrize",
+  "module": "T6",
+  "strict": true,
+  "term": "parametrize"
+ },
  "pass-rate": {
   "aliases": [
    "pass rate",
@@ -272,6 +1459,101 @@
   "strict": true,
   "term": "pass rate",
   "wire": "observe"
+ },
+ "path-traversal": {
+  "aliases": [
+   "path traversal",
+   "traversal"
+  ],
+  "definition": "A path that climbs out of the workspace root with ../, or that names a link leading out of it.",
+  "id": "path-traversal",
+  "module": "C10",
+  "strict": true,
+  "term": "path traversal",
+  "wire": "permissions"
+ },
+ "pause-and-resume": {
+  "aliases": [
+   "pause and resume",
+   "resume"
+  ],
+  "definition": "Saving the run state, stopping, and later starting again from the saved state instead of from the beginning.",
+  "id": "pause-and-resume",
+  "module": "C5",
+  "strict": true,
+  "term": "pause and resume",
+  "wire": "loop"
+ },
+ "pause-turn": {
+  "aliases": [
+   "pause_turn"
+  ],
+  "definition": "The stop reason for a server-side loop that reached its iteration limit. The harness decides whether to continue.",
+  "id": "pause-turn",
+  "module": "A4",
+  "strict": true,
+  "term": "pause_turn",
+  "wire": "loop"
+ },
+ "permanent-error": {
+  "aliases": [
+   "permanent error",
+   "permanent errors"
+  ],
+  "definition": "A failure that will repeat on every try, such as a request that is badly formed. A retry does not help.",
+  "id": "permanent-error",
+  "module": "C6",
+  "strict": true,
+  "term": "permanent error",
+  "wire": "errors"
+ },
+ "permission-mode": {
+  "aliases": [
+   "permission mode",
+   "permission modes"
+  ],
+  "definition": "The default decision for a call that no rule matches: allow, ask or deny.",
+  "id": "permission-mode",
+  "module": "C9",
+  "strict": true,
+  "term": "permission mode",
+  "wire": "permissions"
+ },
+ "permission-policy": {
+  "aliases": [
+   "permission policy",
+   "permission policies"
+  ],
+  "definition": "The rules that decide, for each tool call, whether it runs, asks a person, or is denied, written down as code.",
+  "id": "permission-policy",
+  "module": "C9",
+  "strict": true,
+  "term": "permission policy",
+  "wire": "permissions"
+ },
+ "permissions": {
+  "aliases": [
+   "permissions",
+   "permission"
+  ],
+  "definition": "The wire that answers which actions are allowed, and how bad a mistake can get.",
+  "id": "permissions",
+  "module": "B4",
+  "strict": false,
+  "term": "permissions",
+  "wire": "permissions"
+ },
+ "pre-tool-hook": {
+  "aliases": [
+   "pre-tool hook",
+   "pre-tool hooks"
+  ],
+  "definition": "A hook that runs before each tool call and decides whether the call may run.",
+  "id": "pre-tool-hook",
+  "module": "C1",
+  "strict": true,
+  "term": "pre-tool hook",
+  "wire": "permissions"
  },
  "probability": {
   "aliases": [
@@ -285,6 +1567,121 @@
   "term": "probability",
   "wire": "loop"
  },
+ "process": {
+  "aliases": [
+   "process",
+   "processes"
+  ],
+  "definition": "A running program, with its own id, its parent's id, a user and a working folder.",
+  "id": "process",
+  "module": "T9",
+  "strict": false,
+  "term": "process"
+ },
+ "product-harness": {
+  "aliases": [
+   "product harness",
+   "product harnesses"
+  ],
+  "definition": "The harness a vendor ships with its model product, with its own loop, tools and limits.",
+  "id": "product-harness",
+  "module": "B3",
+  "strict": true,
+  "term": "product harness",
+  "wire": "control"
+ },
+ "programmatic-tool-calling": {
+  "aliases": [
+   "programmatic tool calling",
+   "programmatic tool call"
+  ],
+  "definition": "The model writes a short program that calls several tools, so that only the program's result returns to the context. The idea only; the course makes no product claim.",
+  "id": "programmatic-tool-calling",
+  "module": "C8",
+  "strict": true,
+  "term": "programmatic tool calling",
+  "wire": "tools"
+ },
+ "progressive-disclosure": {
+  "aliases": [
+   "progressive disclosure"
+  ],
+  "definition": "Loading detail only when a task needs it: the short description first, the full procedure when it is used.",
+  "id": "progressive-disclosure",
+  "module": "C8",
+  "strict": true,
+  "term": "progressive disclosure",
+  "wire": "context"
+ },
+ "project-rules": {
+  "aliases": [
+   "project rules"
+  ],
+  "definition": "The standing instructions for one repository, written down so every run in it reads them.",
+  "id": "project-rules",
+  "module": "C1",
+  "strict": true,
+  "term": "project rules",
+  "wire": "control"
+ },
+ "prompt-caching": {
+  "aliases": [
+   "prompt caching",
+   "prompt cache"
+  ],
+  "definition": "Keeping the start of a request, so that a later call with the same start can read it back instead of processing it again.",
+  "id": "prompt-caching",
+  "module": "C4",
+  "strict": true,
+  "term": "prompt caching",
+  "wire": "context"
+ },
+ "prompt-engineering": {
+  "aliases": [
+   "prompt engineering"
+  ],
+  "definition": "Choosing the words of the prompt and the instructions. Words guide the model; they do not enforce anything.",
+  "id": "prompt-engineering",
+  "module": "B3",
+  "strict": true,
+  "term": "prompt engineering",
+  "wire": "control"
+ },
+ "race-condition": {
+  "aliases": [
+   "race condition",
+   "race conditions",
+   "race"
+  ],
+  "definition": "A bug where the result depends on which of two steps runs first.",
+  "id": "race-condition",
+  "module": "T10",
+  "strict": true,
+  "term": "race condition"
+ },
+ "randomness": {
+  "aliases": [
+   "randomness"
+  ],
+  "definition": "The model can give different answers to the same prompt. One good run says little about the next.",
+  "id": "randomness",
+  "module": "A7",
+  "strict": true,
+  "term": "randomness",
+  "wire": "verify"
+ },
+ "rate-limit": {
+  "aliases": [
+   "rate limit",
+   "rate limits"
+  ],
+  "definition": "A cap on how many requests or tokens a client may use in a period. Going over it returns an error.",
+  "id": "rate-limit",
+  "module": "C6",
+  "strict": true,
+  "term": "rate limit",
+  "wire": "errors"
+ },
  "react": {
   "aliases": [
    "ReAct"
@@ -295,6 +1692,99 @@
   "strict": true,
   "term": "ReAct",
   "wire": "loop"
+ },
+ "read-only-tool": {
+  "aliases": [
+   "read-only tool",
+   "read-only tools"
+  ],
+  "definition": "A tool that does not change its environment. A read-only hint says so; it is still a hint.",
+  "id": "read-only-tool",
+  "module": "C7",
+  "strict": true,
+  "term": "read-only tool",
+  "wire": "tools"
+ },
+ "recovery": {
+  "aliases": [
+   "recovery"
+  ],
+  "definition": "The wire that answers how a failure is handled, so the run continues without spinning.",
+  "id": "recovery",
+  "module": "B4",
+  "strict": false,
+  "term": "recovery",
+  "wire": "errors"
+ },
+ "redaction": {
+  "aliases": [
+   "redaction",
+   "redact"
+  ],
+  "definition": "Replacing secret text with a placeholder before the event is stored. It changes the trace, not what the model is sent.",
+  "id": "redaction",
+  "module": "C12",
+  "strict": false,
+  "term": "redaction",
+  "wire": "observe"
+ },
+ "refusal": {
+  "aliases": [
+   "refusal",
+   "refusals"
+  ],
+  "definition": "The stop reason for a response where the model declined to answer. It arrives as a normal reply, not an error.",
+  "id": "refusal",
+  "module": "A4",
+  "strict": true,
+  "term": "refusal",
+  "wire": "loop"
+ },
+ "reliability": {
+  "aliases": [
+   "reliability"
+  ],
+  "definition": "How often a task works all the way through. In this course it comes from the system around the model.",
+  "id": "reliability",
+  "module": "A7",
+  "strict": false,
+  "term": "reliability",
+  "wire": "verify"
+ },
+ "request": {
+  "aliases": [
+   "request",
+   "requests"
+  ],
+  "definition": "What the harness sends for one model call: the system prompt, the tools and the messages.",
+  "id": "request",
+  "module": "A4",
+  "strict": false,
+  "term": "request",
+  "wire": "loop"
+ },
+ "response": {
+  "aliases": [
+   "response",
+   "responses"
+  ],
+  "definition": "What the model sends back for one call: a list of content blocks and a stop reason.",
+  "id": "response",
+  "module": "A4",
+  "strict": false,
+  "term": "response",
+  "wire": "loop"
+ },
+ "retry-budget": {
+  "aliases": [
+   "retry budget"
+  ],
+  "definition": "A limit on the retries a run or a client may make, so that retries cannot grow without end.",
+  "id": "retry-budget",
+  "module": "C6",
+  "strict": true,
+  "term": "retry budget",
+  "wire": "errors"
  },
  "role": {
   "aliases": [
@@ -308,6 +1798,18 @@
   "term": "role",
   "wire": "context"
  },
+ "rules-file": {
+  "aliases": [
+   "rules file",
+   "rules files"
+  ],
+  "definition": "A file that holds the project rules. Kept short, it is a map of where things are and how to check them.",
+  "id": "rules-file",
+  "module": "C1",
+  "strict": true,
+  "term": "rules file",
+  "wire": "control"
+ },
  "run": {
   "aliases": [
    "run",
@@ -318,6 +1820,17 @@
   "module": "S0",
   "strict": false,
   "term": "run",
+  "wire": "loop"
+ },
+ "run-state": {
+  "aliases": [
+   "run state"
+  ],
+  "definition": "Everything a run remembers between calls: its messages, its turn count and its status. The harness keeps it in one place.",
+  "id": "run-state",
+  "module": "C5",
+  "strict": true,
+  "term": "run state",
   "wire": "loop"
  },
  "sampling": {
@@ -331,6 +1844,43 @@
   "term": "sampling",
   "wire": "loop"
  },
+ "sandbox": {
+  "aliases": [
+   "sandbox",
+   "sandboxes"
+  ],
+  "definition": "The limit on where an action can reach, such as files and the network.",
+  "id": "sandbox",
+  "module": "B4",
+  "strict": true,
+  "term": "sandbox",
+  "wire": "permissions"
+ },
+ "schema-validation": {
+  "aliases": [
+   "schema validation",
+   "validate",
+   "validating"
+  ],
+  "definition": "Checking a value against a schema before the harness uses it. The checker returns the first reason the value fails.",
+  "id": "schema-validation",
+  "module": "A5",
+  "strict": true,
+  "term": "schema validation",
+  "wire": "tools"
+ },
+ "secret": {
+  "aliases": [
+   "secret",
+   "secrets"
+  ],
+  "definition": "A value that must not reach the model's reply or the trace, such as an API key.",
+  "id": "secret",
+  "module": "C10",
+  "strict": false,
+  "term": "secret",
+  "wire": "permissions"
+ },
  "seed": {
   "aliases": [
    "seed",
@@ -343,6 +1893,112 @@
   "term": "seed",
   "wire": "observe"
  },
+ "self-praise": {
+  "aliases": [
+   "self-praise",
+   "self-praising"
+  ],
+  "definition": "A model saying its work is good when it is not. A model checking its own work has the same blind spots.",
+  "id": "self-praise",
+  "module": "A7",
+  "strict": true,
+  "term": "self-praise",
+  "wire": "verify"
+ },
+ "self-report": {
+  "aliases": [
+   "self-report",
+   "self-reports"
+  ],
+  "definition": "The model's own statement about its work, such as \"the tests pass\". A self-report is a claim until a check confirms it.",
+  "id": "self-report",
+  "module": "C11",
+  "strict": true,
+  "term": "self-report",
+  "wire": "verify"
+ },
+ "sensor": {
+  "aliases": [
+   "sensor",
+   "sensors"
+  ],
+  "definition": "A control that checks after the work, such as a test run, a linter or a review of the diff.",
+  "id": "sensor",
+  "module": "C11",
+  "strict": false,
+  "term": "sensor",
+  "wire": "verify"
+ },
+ "server-sent-events": {
+  "aliases": [
+   "server-sent events",
+   "server-sent event"
+  ],
+  "definition": "The name for the events in a stream. This course shows them as plain Python dictionaries.",
+  "id": "server-sent-events",
+  "module": "A4",
+  "strict": true,
+  "term": "server-sent events",
+  "wire": "observe"
+ },
+ "session-log": {
+  "aliases": [
+   "session log",
+   "session logs"
+  ],
+  "definition": "A record of one session's events, kept so a later session or a reader can see what happened.",
+  "id": "session-log",
+  "module": "C3",
+  "strict": true,
+  "term": "session log",
+  "wire": "observe"
+ },
+ "skill": {
+  "aliases": [
+   "skill",
+   "skills"
+  ],
+  "definition": "A folder with a SKILL.md file: a short description, and the procedure for one kind of task.",
+  "id": "skill",
+  "module": "C8",
+  "strict": false,
+  "term": "skill",
+  "wire": "context"
+ },
+ "skill-md": {
+  "aliases": [
+   "SKILL.md"
+  ],
+  "definition": "The file in a skill's folder: YAML frontmatter followed by the procedure in Markdown.",
+  "id": "skill-md",
+  "module": "C8",
+  "strict": true,
+  "term": "SKILL.md",
+  "wire": "context"
+ },
+ "span": {
+  "aliases": [
+   "span",
+   "spans"
+  ],
+  "definition": "A timed piece of work in a trace: a name, a start, an end, its attributes, and the span it sits under.",
+  "id": "span",
+  "module": "C12",
+  "strict": true,
+  "term": "span",
+  "wire": "observe"
+ },
+ "stale-knowledge": {
+  "aliases": [
+   "stale knowledge"
+  ],
+  "definition": "Facts the model holds that have changed since it learned them. The model does not know they are out of date.",
+  "id": "stale-knowledge",
+  "module": "A7",
+  "strict": true,
+  "term": "stale knowledge",
+  "wire": "verify"
+ },
  "stateless": {
   "aliases": [
    "stateless"
@@ -353,6 +2009,68 @@
   "strict": true,
   "term": "stateless",
   "wire": "context"
+ },
+ "stop-reason": {
+  "aliases": [
+   "stop_reason",
+   "stop reason",
+   "stop reasons"
+  ],
+  "definition": "The field in every response that says why the model stopped: end_turn, tool_use, max_tokens and a few others.",
+  "id": "stop-reason",
+  "module": "A4",
+  "strict": true,
+  "term": "stop_reason",
+  "wire": "loop"
+ },
+ "streaming": {
+  "aliases": [
+   "streaming"
+  ],
+  "definition": "Receiving a reply as a sequence of events, instead of one whole response. The events build the same message.",
+  "id": "streaming",
+  "module": "A4",
+  "strict": true,
+  "term": "streaming",
+  "wire": "observe"
+ },
+ "structured-output": {
+  "aliases": [
+   "structured output",
+   "structured outputs"
+  ],
+  "definition": "A reply in a shape you asked for, such as a JSON object with named fields. It is still a model's reply: the shape can be right and the values wrong.",
+  "id": "structured-output",
+  "module": "A5",
+  "strict": true,
+  "term": "structured output",
+  "wire": "tools"
+ },
+ "sub-agent": {
+  "aliases": [
+   "sub-agent",
+   "sub-agents",
+   "subagent"
+  ],
+  "definition": "A second agent run by the harness for one job, such as review. It is a separate run, with its own context.",
+  "id": "sub-agent",
+  "module": "C11",
+  "strict": true,
+  "term": "sub-agent",
+  "wire": "verify"
+ },
+ "symlink": {
+  "aliases": [
+   "symlink",
+   "symlinks",
+   "symbolic link"
+  ],
+  "definition": "A file that names another path. In this course's sandbox, a link's target is relative to the link's own folder, and the sandbox follows it.",
+  "id": "symlink",
+  "module": "C10",
+  "strict": true,
+  "term": "symlink",
+  "wire": "permissions"
  },
  "system-prompt": {
   "aliases": [
@@ -376,6 +2094,41 @@
   "strict": false,
   "term": "temperature",
   "wire": "control"
+ },
+ "test-tampering": {
+  "aliases": [
+   "test tampering"
+  ],
+  "definition": "Changing the tests so that they pass for the wrong reason: editing an assertion, clearing a marker, or special-casing the answer.",
+  "id": "test-tampering",
+  "module": "C11",
+  "strict": true,
+  "term": "test tampering",
+  "wire": "verify"
+ },
+ "text-block": {
+  "aliases": [
+   "text block",
+   "text blocks"
+  ],
+  "definition": "A content block of type text. It holds words, and no tool request.",
+  "id": "text-block",
+  "module": "A4",
+  "strict": true,
+  "term": "text block",
+  "wire": "loop"
+ },
+ "thinking-block": {
+  "aliases": [
+   "thinking block",
+   "thinking blocks"
+  ],
+  "definition": "The part of a reply that holds the model's thinking. In a tool loop, it goes back to the model unchanged with the tool call.",
+  "id": "thinking-block",
+  "module": "A6",
+  "strict": true,
+  "term": "thinking block",
+  "wire": "loop"
  },
  "token": {
   "aliases": [
@@ -425,6 +2178,42 @@
   "term": "tool",
   "wire": "tools"
  },
+ "tool-annotation": {
+  "aliases": [
+   "tool annotation",
+   "tool annotations"
+  ],
+  "definition": "A hint a tool server gives about a tool, such as read-only or destructive. A hint is not a check.",
+  "id": "tool-annotation",
+  "module": "C7",
+  "strict": true,
+  "term": "tool annotation",
+  "wire": "tools"
+ },
+ "tool-definition": {
+  "aliases": [
+   "tool definition",
+   "tool definitions"
+  ],
+  "definition": "The name, the description and the input schema that tell the model a tool exists and what to pass it.",
+  "id": "tool-definition",
+  "module": "B1",
+  "strict": true,
+  "term": "tool definition",
+  "wire": "tools"
+ },
+ "tool-description": {
+  "aliases": [
+   "tool description",
+   "tool descriptions"
+  ],
+  "definition": "The text that tells the model what a tool does and when to use it. The model reads it on every call.",
+  "id": "tool-description",
+  "module": "C7",
+  "strict": true,
+  "term": "tool description",
+  "wire": "tools"
+ },
  "tool-registry": {
   "aliases": [
    "tool registry",
@@ -435,6 +2224,54 @@
   "module": "H2",
   "strict": true,
   "term": "tool registry",
+  "wire": "tools"
+ },
+ "tool-result": {
+  "aliases": [
+   "tool_result",
+   "tool_results"
+  ],
+  "definition": "The block that answers one tool_use. It carries the tool_use_id of the call and the output the harness got back.",
+  "id": "tool-result",
+  "module": "B1",
+  "strict": true,
+  "term": "tool_result",
+  "wire": "tools"
+ },
+ "tool-search": {
+  "aliases": [
+   "tool search"
+  ],
+  "definition": "Finding a tool's definition by keyword, and loading it for the next call. The course's simulator does it, and it makes no product claim.",
+  "id": "tool-search",
+  "module": "C8",
+  "strict": true,
+  "term": "tool search",
+  "wire": "tools"
+ },
+ "tool-use": {
+  "aliases": [
+   "tool_use",
+   "tool_uses"
+  ],
+  "definition": "A block in the model's reply that asks the harness to run a named tool with an input. The model writes it; the harness runs it.",
+  "id": "tool-use",
+  "module": "B1",
+  "strict": true,
+  "term": "tool_use",
+  "wire": "tools"
+ },
+ "tool-use-id": {
+  "aliases": [
+   "tool_use_id",
+   "tool_use ids",
+   "tool_use id"
+  ],
+  "definition": "The id of a tool_use block. A tool_result names the id of the call it answers.",
+  "id": "tool-use-id",
+  "module": "B1",
+  "strict": true,
+  "term": "tool_use_id",
   "wire": "tools"
  },
  "trace": {
@@ -449,6 +2286,18 @@
   "term": "trace",
   "wire": "observe"
  },
+ "trace-id": {
+  "aliases": [
+   "trace id",
+   "trace ids"
+  ],
+  "definition": "The identifier that ties the spans and events of one run together, so one trace reads as one run.",
+  "id": "trace-id",
+  "module": "C12",
+  "strict": true,
+  "term": "trace id",
+  "wire": "observe"
+ },
  "training": {
   "aliases": [
    "training"
@@ -459,6 +2308,30 @@
   "strict": false,
   "term": "training",
   "wire": "control"
+ },
+ "transient-error": {
+  "aliases": [
+   "transient error",
+   "transient errors"
+  ],
+  "definition": "A failure that is likely to pass on its own, such as a busy provider. A retry may succeed.",
+  "id": "transient-error",
+  "module": "C6",
+  "strict": true,
+  "term": "transient error",
+  "wire": "errors"
+ },
+ "transport": {
+  "aliases": [
+   "transport",
+   "transports"
+  ],
+  "definition": "How messages move between a client and a server. Stdio uses newline-delimited messages over the standard streams of a subprocess.",
+  "id": "transport",
+  "module": "C8",
+  "strict": false,
+  "term": "transport",
+  "wire": "tools"
  },
  "trial": {
   "aliases": [
@@ -484,6 +2357,18 @@
   "term": "turn",
   "wire": "loop"
  },
+ "turn-clock": {
+  "aliases": [
+   "Turn Clock",
+   "turn clock"
+  ],
+  "definition": "The clock face that shows one turn of a run as eight wires in order, with the harness settings beside them.",
+  "id": "turn-clock",
+  "module": "B4",
+  "strict": true,
+  "term": "Turn Clock",
+  "wire": "observe"
+ },
  "turn-limit": {
   "aliases": [
    "turn limit",
@@ -507,6 +2392,64 @@
   "strict": true,
   "term": "type hint"
  },
+ "usage": {
+  "aliases": [
+   "usage"
+  ],
+  "definition": "The counts in a response: how many input and output tokens the call used. The cost of a call comes from them.",
+  "id": "usage",
+  "module": "A4",
+  "strict": true,
+  "term": "usage",
+  "wire": "observe"
+ },
+ "user-harness": {
+  "aliases": [
+   "user harness",
+   "user harnesses"
+  ],
+  "definition": "The harness you add around a model product or API: your loop, your tools and your checks.",
+  "id": "user-harness",
+  "module": "B3",
+  "strict": true,
+  "term": "user harness",
+  "wire": "control"
+ },
+ "verification": {
+  "aliases": [
+   "verification"
+  ],
+  "definition": "The wire that answers whether a done claim is really done, and whether a change helped.",
+  "id": "verification",
+  "module": "B4",
+  "strict": false,
+  "term": "verification",
+  "wire": "verify"
+ },
+ "verification-gate": {
+  "aliases": [
+   "verification gate",
+   "verification gates"
+  ],
+  "definition": "The check that sits between the model's done claim and the run's success. A claim passes only when the gate runs and passes.",
+  "id": "verification-gate",
+  "module": "C11",
+  "strict": true,
+  "term": "verification gate",
+  "wire": "verify"
+ },
+ "virtual-machine": {
+  "aliases": [
+   "virtual machine",
+   "virtual machines"
+  ],
+  "definition": "A whole guest system that runs on a host. The course compares it with a container and an OS sandbox, by cost and by isolation.",
+  "id": "virtual-machine",
+  "module": "C10",
+  "strict": false,
+  "term": "virtual machine",
+  "wire": "permissions"
+ },
  "weights": {
   "aliases": [
    "weights",
@@ -518,5 +2461,39 @@
   "strict": false,
   "term": "weights",
   "wire": "context"
+ },
+ "wire": {
+  "aliases": [
+   "wire",
+   "wires"
+  ],
+  "definition": "One of the eight parts of a harness, and one spoke of the Turn Clock. Each wire answers one question about a turn.",
+  "id": "wire",
+  "module": "B4",
+  "strict": false,
+  "term": "wire",
+  "wire": "observe"
+ },
+ "workspace-root": {
+  "aliases": [
+   "workspace root"
+  ],
+  "definition": "The folder the agent may use. A path that leaves it is outside the workspace.",
+  "id": "workspace-root",
+  "module": "C10",
+  "strict": true,
+  "term": "workspace root",
+  "wire": "permissions"
+ },
+ "worktree": {
+  "aliases": [
+   "worktree",
+   "worktrees"
+  ],
+  "definition": "A separate folder for one line of work, so an agent's files stay apart from yours in this course's practice.",
+  "id": "worktree",
+  "module": "T8",
+  "strict": true,
+  "term": "worktree"
  }
 }

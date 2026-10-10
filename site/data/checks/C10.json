@@ -1,0 +1,129 @@
+[
+ {
+  "answer": 1,
+  "id": "C10-p1",
+  "mode": "predict",
+  "objective": "C10.o2",
+  "options": [
+   {
+    "text": "An error, because links are never followed.",
+    "why": "No. Reads follow links here, with or without the sandbox."
+   },
+   {
+    "text": "The file the link points to, with the key in it.",
+    "why": "Right. With no sandbox, the link is followed out of the workspace, so the key comes back to the model."
+   },
+   {
+    "text": "An empty string.",
+    "why": "No. The read returns the file the link names."
+   }
+  ],
+  "outcome": "The harness followed the link out of the workspace and returned the key. The summary and the post then carried it.",
+  "question": "The model reads a credentials file in the workspace. The file is a link, and the sandbox is off. What does the harness return?"
+ },
+ {
+  "answer": 0,
+  "id": "C10-c1",
+  "mode": "check",
+  "objective": "C10.o1",
+  "options": [
+   {
+    "text": "Whatever the permissions said.",
+    "why": "Right. The wall is a limit on the damage, not a permission setting."
+   },
+   {
+    "text": "Only the commands on the permission list.",
+    "why": "No. The wall is not a list of allowed commands."
+   },
+   {
+    "text": "Only mistakes made by the model's first reply.",
+    "why": "No. The wall applies to every call in the run."
+   }
+  ],
+  "question": "What does the blast wall hold against?"
+ },
+ {
+  "answer": 1,
+  "id": "C10-c2",
+  "mode": "check",
+  "objective": "C10.o2",
+  "options": [
+   {
+    "text": "Yes, it starts with notes.",
+    "why": "No. A check on the raw text is fooled by the prefix. Normalized, the path is ../secrets.env."
+   },
+   {
+    "text": "No. Normalized, it is ../secrets.env, which leaves the root.",
+    "why": "Right. The check normalizes first, then tests where the path lands."
+   },
+   {
+    "text": "Yes, because ../ is always allowed.",
+    "why": "No. ../ is allowed only while the path stays inside the root."
+   }
+  ],
+  "question": "A path is notes/../../secrets.env. Is it inside the workspace root?"
+ },
+ {
+  "answer": 1,
+  "id": "C10-c3",
+  "mode": "check",
+  "objective": "C10.o3",
+  "options": [
+   {
+    "text": "The post runs, and the allow-list only logs it.",
+    "why": "No. The allow-list refuses a call to an unlisted host."
+   },
+   {
+    "text": "The sandbox refuses the post, because the host is not on the list.",
+    "why": "Right. A network call to a host not on the list is refused."
+   },
+   {
+    "text": "The post runs with the key removed.",
+    "why": "No. The allow-list does not edit the body of the post."
+   }
+  ],
+  "question": "The allow-list names docs.example. The model posts to collect.example. What happens?"
+ },
+ {
+  "answer": 1,
+  "id": "C10-c4",
+  "mode": "check",
+  "objective": "C10.o4",
+  "options": [
+   {
+    "text": "No, the redact module removes it from the file.",
+    "why": "No. The redact module works on the trace, not on the files."
+   },
+   {
+    "text": "Yes. The redact module changes what the trace shows, not the file.",
+    "why": "Right. The file still holds the key."
+   },
+   {
+    "text": "Yes, but only in the summary.",
+    "why": "No. The key is in the file, wherever the summary is."
+   }
+  ],
+  "question": "The redact module is on, and the model wrote the key into a file. Is the key still in the file?"
+ },
+ {
+  "answer": 1,
+  "id": "C10-c5",
+  "mode": "check",
+  "objective": "C10.o5",
+  "options": [
+   {
+    "text": "No. The container replaces them.",
+    "why": "No. A container is one wall among others. The sandbox rules still apply."
+   },
+   {
+    "text": "Yes. The container is one more wall; the sandbox rules still apply.",
+    "why": "Right. The course treats a container as one wall, not the whole of the wall."
+   },
+   {
+    "text": "Only for network calls.",
+    "why": "No. The rules apply to paths and calls alike."
+   }
+  ],
+  "question": "A tool runs in a container. Do the sandbox rules still apply?"
+ }
+]

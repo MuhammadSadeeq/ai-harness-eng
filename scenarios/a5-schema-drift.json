@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "id": "a5-schema-drift",
+  "title": "A write with the wrong shape",
+  "task": "Add Grace to names.txt. Keep the other names.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a careful assistant. Use the file tools to read and write files.",
+  "rules": [],
+  "workspace": {
+    "names.txt": "Ada\nLin\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "names.txt",
+      "contains": "Grace"
+    },
+    {
+      "file": "names.txt",
+      "contains": "Ada"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed: names.txt is wrong"
+  },
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "seed_base": 20261010,
+  "boards": [
+    "a5-old",
+    "a5-new"
+  ],
+  "script": [
+    {
+      "say": "I will add Grace to names.txt.",
+      "tools": [
+        [
+          "write_file",
+          {
+            "path": "names.txt",
+            "text": "Ada\nLin\nGrace\n"
+          }
+        ]
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "last_result_error",
+          "then": [
+            {
+              "say": "The input was missing content. I will write the whole file.",
+              "tools": [
+                [
+                  "write_file",
+                  {
+                    "path": "names.txt",
+                    "content": "Ada\nLin\nGrace\n"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "Done. Grace is in names.txt.",
+              "stop": "end_turn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "Done.",
+      "stop": "end_turn"
+    }
+  ],
+  "incident": {
+    "family": "schema-drift",
+    "wire": "tools",
+    "board": "a5-old",
+    "seed": 0,
+    "first_bad_seq": 7,
+    "accept_seqs": [
+      6
+    ],
+    "why": "The model asked to write names.txt with the new names in a field called text. The tool wants content. With no check, the harness ran the call with no content, and the file was written empty. The run then ended as done, and the checks failed.",
+    "hint": "Compare the field names in the request with the tool's schema. Which call ran with nothing in it?",
+    "notes": [
+      {
+        "seq": 5,
+        "text": "The reply names the right file and the right name, so it reads as correct. Only the field name is wrong. Check the input against the schema before you trust the reply."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Validate each call's input against the tool's schema before it runs",
+        "why": "A wrong shape is refused with a reason the model can read, so the model fixes the input. Nothing runs on a bad input."
+      },
+      {
+        "text": "Tell the model in the prompt to use the field name content",
+        "why": "Tempting. The prompt may help, but the harness still runs whatever the model sends. Only a check stops a wrong shape."
+      },
+      {
+        "text": "Use a bigger model",
+        "why": "Tempting. The reply is fluent and the content is right; the shape is wrong, and no model size makes the harness check it."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 60
+  }
+}

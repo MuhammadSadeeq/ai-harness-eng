@@ -1,0 +1,111 @@
+- id: messages-api
+  term: Messages API
+  aliases: [Messages API]
+  strict: true
+  wire: loop
+  definition: >-
+    The API this course calls for every model call. A3 showed what each request holds.
+
+- id: request
+  term: request
+  aliases: [request, requests]
+  strict: false
+  wire: loop
+  definition: >-
+    What the harness sends for one model call: the system prompt, the tools and the messages.
+
+- id: response
+  term: response
+  aliases: [response, responses]
+  strict: false
+  wire: loop
+  definition: >-
+    What the model sends back for one call: a list of content blocks and a stop reason.
+
+- id: model-id
+  term: model ID
+  aliases: [model ID, model IDs]
+  strict: true
+  wire: control
+  definition: >-
+    The name that picks the model in a request. A run's trace records it.
+
+- id: content-block
+  term: content block
+  aliases: [content block, content blocks]
+  strict: true
+  wire: loop
+  definition: >-
+    One typed part of a response: text, or a tool request. Each block has a type that says what fields it has.
+
+- id: text-block
+  term: text block
+  aliases: [text block, text blocks]
+  strict: true
+  wire: loop
+  definition: >-
+    A content block of type text. It holds words, and no tool request.
+
+- id: stop-reason
+  term: stop_reason
+  aliases: [stop_reason, stop reason, stop reasons]
+  strict: true
+  wire: loop
+  definition: >-
+    The field in every response that says why the model stopped: end_turn, tool_use, max_tokens and a few others.
+
+- id: end-turn
+  term: end_turn
+  aliases: [end_turn]
+  strict: true
+  wire: loop
+  definition: >-
+    The stop reason for a response that finished on its own. It is a done claim, not proof.
+
+- id: max-tokens
+  term: max_tokens
+  aliases: [max_tokens]
+  strict: true
+  wire: loop
+  definition: >-
+    The stop reason for a response that hit the request's length limit. The reply may be cut off in the middle.
+
+- id: refusal
+  term: refusal
+  aliases: [refusal, refusals]
+  strict: true
+  wire: loop
+  definition: >-
+    The stop reason for a response where the model declined to answer. It arrives as a normal reply, not an error.
+
+- id: pause-turn
+  term: pause_turn
+  aliases: [pause_turn]
+  strict: true
+  wire: loop
+  definition: >-
+    The stop reason for a server-side loop that reached its iteration limit. The harness decides whether to continue.
+
+- id: usage
+  term: usage
+  aliases: [usage]
+  strict: true
+  wire: observe
+  definition: >-
+    The counts in a response: how many input and output tokens the call used. The cost of a call comes from them.
+
+- id: streaming
+  term: streaming
+  aliases: [streaming]
+  strict: true
+  wire: observe
+  definition: >-
+    Receiving a reply as a sequence of events, instead of one whole response. The events build the same message.
+
+- id: server-sent-events
+  term: server-sent events
+  aliases: [server-sent events, server-sent event]
+  strict: true
+  wire: observe
+  definition: >-
+    The name for the events in a stream. This course shows them as plain Python dictionaries.

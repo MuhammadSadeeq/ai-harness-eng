@@ -1,0 +1,9 @@
+{
+ "id": "a6-new",
+ "label": "New board",
+ "modules": {
+  "effort": {
+   "level": "low"
+  }
+ }
+}

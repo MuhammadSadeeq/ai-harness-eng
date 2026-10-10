@@ -1,0 +1,31 @@
+[
+ {
+  "id": "A6-s1",
+  "model_answer": "Low. A rename is easy work, so extra thinking adds cost and wait without a better answer. I would measure cost per completed task at low and at high on a few renames. If the tests pass at low, and the tasks finish at the same rate, the lower cost per completed task wins.",
+  "objectives": [
+   "A6.o4"
+  ],
+  "prompt": "Pick an effort level for easy rename work, and justify it with cost per completed task.",
+  "rubric": [
+   "Chooses a level and says it fits easy work",
+   "Says extra thinking adds cost and wait, and that the answer may not change",
+   "Justifies the choice with cost per completed task, not cost per call",
+   "Says the choice holds only if the tasks still finish at the same rate"
+  ]
+ },
+ {
+  "id": "A6-s2",
+  "model_answer": "Extended thinking is extra output the model writes before it answers, and the docs say it is billed as output. In a tool loop, the thinking block must go back to the model complete and unmodified, with the tool call it belongs to. If the harness trims it, the next call is built on a changed history.",
+  "objectives": [
+   "A6.o1",
+   "A6.o3"
+  ],
+  "prompt": "What is extended thinking, and what must happen to a thinking block during a tool loop?",
+  "rubric": [
+   "Says extended thinking is extra output written before the answer, billed as output",
+   "Says the thinking block goes back complete and unmodified in a tool loop",
+   "Says the thinking is billed as output, so it has a cost",
+   "Says a harness that edits the block changes what the model sees next"
+  ]
+ }
+]

@@ -1,0 +1,112 @@
+[
+ {
+  "answer": 1,
+  "id": "B1-p1",
+  "mode": "predict",
+  "objective": "B1.o3",
+  "options": [
+   {
+    "text": "It sends them all back in one user message, as the model expects.",
+    "why": "That is the right shape. The run in this module did not do this, so the next reply changed."
+   },
+   {
+    "fact": "api.split-results-teach-serial",
+    "text": "It sends each result in its own user message, one after another.",
+    "why": "Right. The results split across messages, and the model reads one note per turn from then on."
+   },
+   {
+    "text": "It drops every result after the first.",
+    "why": "No. The results all reach the history; they just arrive in the wrong shape."
+   }
+  ],
+  "outcome": "The harness split the results across messages. The model read one note per turn, so the run took more turns and cost more.",
+  "question": "This run reads several notes. The model asks for them one reply at a time, not all at once. What does the harness do with the results of its first reply?"
+ },
+ {
+  "answer": 1,
+  "id": "B1-c1",
+  "mode": "check",
+  "objective": "B1.o1",
+  "options": [
+   {
+    "text": "The model runs it, then reports the result.",
+    "why": "No. The model only writes the request. The harness runs the tool."
+   },
+   {
+    "fact": "api.stop-reason-tool-use",
+    "text": "The harness runs it, then sends the result back to the model.",
+    "why": "Right. The model asks; the harness acts."
+   },
+   {
+    "text": "Nobody. The reply is the answer.",
+    "why": "No. A tool_use block is a request that needs a result before the model can go on."
+   }
+  ],
+  "question": "The model wants a file read. Who runs the read?"
+ },
+ {
+  "answer": 0,
+  "id": "B1-c2",
+  "mode": "check",
+  "objective": "B1.o2",
+  "options": [
+   {
+    "text": "A name, a description and an input schema.",
+    "why": "Right. The model sees these three, and nothing else about the tool."
+   },
+   {
+    "text": "A name and a function body.",
+    "why": "No. The model never sees the function body. It sees the definition."
+   },
+   {
+    "text": "A prompt that explains the tool.",
+    "why": "No. The prompt is separate. The definition is what the request carries for the tool."
+   }
+  ],
+  "question": "Which set is the whole of a tool definition?"
+ },
+ {
+  "answer": 1,
+  "id": "B1-c3",
+  "mode": "check",
+  "objective": "B1.o3",
+  "options": [
+   {
+    "fact": "api.split-results-teach-serial",
+    "text": "Three, one for each result.",
+    "why": "No. That is the split shape. It teaches the model to stop asking in parallel."
+   },
+   {
+    "fact": "api.tool-results-single-user-message",
+    "text": "One, with all three results in it.",
+    "why": "Right. The docs say all tool_results for one turn go together in the next user message."
+   },
+   {
+    "text": "None. The results go into the model's reply.",
+    "why": "No. Results are sent back by the harness, in a user message."
+   }
+  ],
+  "question": "One reply asks for three tools. How many user messages should hold the three results?"
+ },
+ {
+  "answer": 0,
+  "id": "B1-c4",
+  "mode": "check",
+  "objective": "B1.o4",
+  "options": [
+   {
+    "text": "A clearer description and a described input schema.",
+    "why": "Right. These are the parts the model reads when it writes the call."
+   },
+   {
+    "text": "A higher turn limit.",
+    "why": "No. The limit stops runs; it does not change what the model sends."
+   },
+   {
+    "text": "Removing the tool from the list.",
+    "why": "A last resort. It fixes the misuse by removing the capability, so note it as a trade-off."
+   }
+  ],
+  "question": "A model keeps calling a tool with the wrong argument. What most likely helps?"
+ }
+]

@@ -1,0 +1,42 @@
+- id: A7-c1
+  type: term
+  objective: A7.o1
+  front: "What is self-praise, as a failure mode?"
+  back: "A model saying its work is good when it is not. Checking its own work does not catch it."
+
+- id: A7-c2
+  type: term
+  objective: A7.o1
+  front: "What is ground truth?"
+  back: "A check that does not depend on the model's words: a test, a file, a number you can look up."
+
+- id: A7-c3
+  type: term
+  objective: A7.o2
+  front: "What is a compounding error?"
+  back: "When each step can fail, the chance that all the steps work falls with every step."
+
+- id: A7-c4
+  type: term
+  objective: A7.o3
+  front: "Where does reliability come from in this course?"
+  back: "From the system around the model, checked from outside the model."
+
+- id: A7-c5
+  type: term
+  objective: A7.o1
+  front: "What is stale knowledge?"
+  back: "Facts the model holds that have changed since it learned them. The model does not know they are out of date."
+
+- id: A7-c6
+  type: which-wire
+  objective: A7.o3
+  wire: verify
+  front: "A check that runs the tests after the model says done. Which wire is it?"
+  back: "Verification and evals. The check is outside the model's words."
+
+- id: A7-c7
+  type: term
+  objective: A7.o2
+  front: "What is randomness, as a failure mode?"
+  back: "The model can give different answers to the same prompt, so one good run says little about the next."

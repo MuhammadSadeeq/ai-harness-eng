@@ -1,0 +1,54 @@
+id: C10-confine
+module: C10
+title: Confine file paths to the workspace root
+objectives:
+- C10.o2
+minutes: 25
+hints:
+- 'Read test_kata.py. Each test names one rule: a plain path, a path that leaves, an absolute path, a link inside, a link
+  outside, a chain, a loop.'
+- Start with posixpath.normpath on the path. Refuse it if it is absolute or starts with "../". Then loop while the current
+  path is a link, counting hops.
+- 'Nearly the code: target = posixpath.normpath(posixpath.join(posixpath.dirname(current), links[current])). Check the target
+  with the same outside test, then set current = target.'
+from_memory: true
+wrong_solutions:
+- name: raw-prefix
+  code: "import posixpath\n\nMAX_HOPS = 8\n\n\ndef _outside(path: str) -> bool:\n    return path.startswith(\"/\") or path\
+    \ == \"..\" or path.startswith(\"../\")\n\n\ndef confine(path: str, links: dict[str, str]) -> str:\n    \"\"\"Resolve\
+    \ path inside the workspace root, following links; refuse an escape.\n\n    links maps a link's path (inside the root)\
+    \ to its target, which is relative\n    to the link's own folder. Returns the normal form of the final path.\n    \"\"\
+    \"\n    current = posixpath.normpath(path)\n    if path.startswith(\"..\"):\n        raise ValueError(f\"path outside\
+    \ the workspace: {path}\")\n    hops = 0\n    while current in links:\n        hops += 1\n        if hops > MAX_HOPS:\n\
+    \            raise ValueError(f\"too many levels of links: {path}\")\n        target = posixpath.normpath(posixpath.join(posixpath.dirname(current),\
+    \ links[current]))\n        if _outside(target):\n            raise ValueError(f\"path outside the workspace: {path} ->\
+    \ {target}\")\n        current = target\n    return current\n"
+- name: no-links
+  code: "import posixpath\n\nMAX_HOPS = 8\n\n\ndef _outside(path: str) -> bool:\n    return path.startswith(\"/\") or path\
+    \ == \"..\" or path.startswith(\"../\")\n\n\ndef confine(path: str, links: dict[str, str]) -> str:\n    \"\"\"Resolve\
+    \ path inside the workspace root, following links; refuse an escape.\n\n    links maps a link's path (inside the root)\
+    \ to its target, which is relative\n    to the link's own folder. Returns the normal form of the final path.\n    \"\"\
+    \"\n    current = posixpath.normpath(path)\n    if _outside(current):\n        raise ValueError(f\"path outside the workspace:\
+    \ {path}\")\n    hops = 0\n    while False:\n        hops += 1\n        if hops > MAX_HOPS:\n            raise ValueError(f\"\
+    too many levels of links: {path}\")\n        target = posixpath.normpath(posixpath.join(posixpath.dirname(current), links[current]))\n\
+    \        if _outside(target):\n            raise ValueError(f\"path outside the workspace: {path} -> {target}\")\n   \
+    \     current = target\n    return current\n"
+- name: no-absolute-check
+  code: "import posixpath\n\nMAX_HOPS = 8\n\n\ndef _outside(path: str) -> bool:\n    return path == \"..\" or path.startswith(\"\
+    ../\")\n\n\ndef confine(path: str, links: dict[str, str]) -> str:\n    \"\"\"Resolve path inside the workspace root, following\
+    \ links; refuse an escape.\n\n    links maps a link's path (inside the root) to its target, which is relative\n    to\
+    \ the link's own folder. Returns the normal form of the final path.\n    \"\"\"\n    current = posixpath.normpath(path)\n\
+    \    if _outside(current):\n        raise ValueError(f\"path outside the workspace: {path}\")\n    hops = 0\n    while\
+    \ current in links:\n        hops += 1\n        if hops > MAX_HOPS:\n            raise ValueError(f\"too many levels of\
+    \ links: {path}\")\n        target = posixpath.normpath(posixpath.join(posixpath.dirname(current), links[current]))\n\
+    \        if _outside(target):\n            raise ValueError(f\"path outside the workspace: {path} -> {target}\")\n   \
+    \     current = target\n    return current\n"
+- name: no-target-check
+  code: "import posixpath\n\nMAX_HOPS = 8\n\n\ndef _outside(path: str) -> bool:\n    return path.startswith(\"/\") or path\
+    \ == \"..\" or path.startswith(\"../\")\n\n\ndef confine(path: str, links: dict[str, str]) -> str:\n    \"\"\"Resolve\
+    \ path inside the workspace root, following links; refuse an escape.\n\n    links maps a link's path (inside the root)\
+    \ to its target, which is relative\n    to the link's own folder. Returns the normal form of the final path.\n    \"\"\
+    \"\n    current = posixpath.normpath(path)\n    if _outside(current):\n        raise ValueError(f\"path outside the workspace:\
+    \ {path}\")\n    hops = 0\n    while current in links:\n        hops += 1\n        if hops > MAX_HOPS:\n            raise\
+    \ ValueError(f\"too many levels of links: {path}\")\n        target = posixpath.normpath(posixpath.join(posixpath.dirname(current),\
+    \ links[current]))\n        current = target\n    return current\n"

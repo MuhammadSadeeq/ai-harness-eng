@@ -1,0 +1,76 @@
+- id: C8-p1
+  objective: C8.o3
+  mode: predict
+  question: On the old board, seed 0, the request sends sixteen tool definitions. The task needs one of them, ticket_lookup. What does the run do?
+  options:
+  - text: It picks ticket_lookup, gets the ticket and writes the answer.
+    why: Tempting. The right tool is in the list. On this seed the reply picks the other one.
+  - text: It picks ticket_list, gets an error, and ends without the answer.
+    why: Right. ticket_list is a look-alike. Its error names ticket_lookup, but the scripted reply stops there, so the run says done with no answer written.
+  - text: It searches for the tool first, then loads it.
+    why: Tempting. That is the fix. This board sends all sixteen and does not search.
+  answer: 1
+  outcome: The reply picked ticket_list, the error came back, and the run ended as done with no answer written.
+- id: C8-c1
+  objective: C8.o1
+  mode: check
+  question: In MCP, which part offers tools, resources and prompts?
+  options:
+  - text: The host.
+    why: Tempting. The host runs the application and decides what to connect; it does not offer the tools.
+  - text: The server.
+    fact: mcp.server-features
+    why: Right. The index lists Resources, Prompts and Tools as the features servers offer to clients.
+  - text: The model.
+    why: Tempting. The model calls the tools; it does not offer them.
+  answer: 1
+- id: C8-c2
+  objective: C8.o2
+  mode: check
+  question: With progressive disclosure, what is loaded at startup for each skill?
+  options:
+  - text: The whole procedure.
+    why: Tempting. The whole procedure is what progressive disclosure avoids loading up front.
+  - text: The name and the description.
+    fact: skills.progressive-tier1
+    why: Right. The name and description of every skill are loaded at startup, and the detail follows when it is needed.
+  - text: Nothing until the model asks for the skill by name.
+    why: Tempting. The description has to be there for the model to know when to ask.
+  answer: 1
+- id: C8-c3
+  objective: C8.o3
+  mode: check
+  question: You add ten tools to a run and the pass rate drops. What do you measure first?
+  options:
+  - text: The number of tools, and nothing else.
+    why: Tempting. The count is the cause to test, but it does not show the cost or the accuracy.
+  - text: The tokens each call carries, and the pass rate with and without the tools.
+    why: 'Right. Both costs are visible in the bench: each definition adds tokens to every call, and a longer list makes the choice harder.'
+  - text: The speed of the model.
+    why: Tempting. The model's speed is not what the tool list changes.
+  answer: 1
+- id: C8-c4
+  objective: C8.o4
+  mode: check
+  question: What does programmatic tool calling change?
+  options:
+  - text: The model writes a short program that calls several tools and returns one result.
+    why: Right. The idea is fewer round trips, each with its own result. The course makes no product claim about it.
+  - text: The model writes its own tool definitions.
+    why: Tempting. Writing a program that calls the tools is different from defining them.
+  - text: The tools run without a permission check.
+    why: Tempting. A program that calls tools still goes through the harness's permission checks.
+  answer: 0
+- id: C8-c5
+  objective: C8.o5
+  mode: check
+  question: A new server marks its tools as read-only. What do you do before you connect it?
+  options:
+  - text: Connect it, because the server says the tools are read-only.
+    why: Tempting. The annotation is a hint from the server, and it is untrusted until you check the server.
+  - text: Check who wrote it, what it can reach, and how it is pinned, and treat its annotations as hints.
+    fact: mcp.annotations-untrusted-tools
+    why: Right. The annotations are untrusted unless the server is trusted, so the check comes first.
+  - text: Connect it, then check the annotations when the run fails.
+    why: Tempting. A failure is too late to learn what the server can reach.
+  answer: 1

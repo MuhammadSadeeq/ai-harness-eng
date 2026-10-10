@@ -1,0 +1,30 @@
+[
+ {
+  "back": "It raises AssertionError, and the test fails.",
+  "front": "What does a plain assert do when it is false?",
+  "id": "T6-k1",
+  "objective": "T6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A helper that builds the setup for a test, fresh each time.",
+  "front": "What is a fixture?",
+  "id": "T6-k2",
+  "objective": "T6.o2",
+  "type": "term"
+ },
+ {
+  "back": "A list of inputs and expected outputs, checked in one loop.",
+  "front": "What is a case table?",
+  "id": "T6-k3",
+  "objective": "T6.o2",
+  "type": "term"
+ },
+ {
+  "back": "A test that passes for a broken function proves nothing, so run it against one first.",
+  "front": "Why check that a test fails on purpose?",
+  "id": "T6-k4",
+  "objective": "T6.o3",
+  "type": "term"
+ }
+]

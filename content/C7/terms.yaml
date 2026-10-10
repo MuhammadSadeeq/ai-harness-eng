@@ -1,0 +1,56 @@
+- id: agent-computer-interface
+  term: agent-computer interface
+  aliases:
+  - agent-computer interface
+  - agent-computer interfaces
+  strict: true
+  wire: tools
+  definition: 'The tools as a model sees them: their names, descriptions, inputs and results. It is a user interface for the model.'
+- id: tool-description
+  term: tool description
+  aliases:
+  - tool description
+  - tool descriptions
+  strict: true
+  wire: tools
+  definition: The text that tells the model what a tool does and when to use it. The model reads it on every call.
+- id: actionable-error
+  term: actionable error
+  aliases:
+  - actionable error
+  - actionable errors
+  strict: true
+  wire: tools
+  definition: A tool result that says what went wrong and what to do next, in few words.
+- id: tool-annotation
+  term: tool annotation
+  aliases:
+  - tool annotation
+  - tool annotations
+  strict: true
+  wire: tools
+  definition: A hint a tool server gives about a tool, such as read-only or destructive. A hint is not a check.
+- id: read-only-tool
+  term: read-only tool
+  aliases:
+  - read-only tool
+  - read-only tools
+  strict: true
+  wire: tools
+  definition: A tool that does not change its environment. A read-only hint says so; it is still a hint.
+- id: destructive-tool
+  term: destructive tool
+  aliases:
+  - destructive tool
+  - destructive tools
+  strict: true
+  wire: tools
+  definition: A tool that may change or delete things in its environment.
+- id: parallel-safe
+  term: parallel-safe
+  aliases:
+  - parallel-safe
+  - parallel safe
+  strict: true
+  wire: tools
+  definition: Two tool calls are parallel-safe when neither writes a resource that the other reads or writes.

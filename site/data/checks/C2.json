@@ -1,0 +1,130 @@
+[
+ {
+  "answer": 1,
+  "id": "C2-p1",
+  "mode": "predict",
+  "objective": "C2.o4",
+  "options": [
+   {
+    "text": "It fits, because the model reads the log in pieces.",
+    "why": "Tempting. Nothing in this board reads in pieces. The whole log stays in the prompt."
+   },
+   {
+    "text": "It is too big to send, and the run fails.",
+    "why": "Right. The log comes back whole, and the prompt grows past the window."
+   },
+   {
+    "text": "The model cuts the log to fit, and the run goes on.",
+    "why": "Tempting. The model cannot cut what it has not been sent. The harness decides what it sees."
+   }
+  ],
+  "outcome": "The log came back whole. The next prompt was too big to send, and the run failed.",
+  "question": "A tool returns a 40 KB log, and nothing caps it. What happens to the next prompt?"
+ },
+ {
+  "answer": 0,
+  "id": "C2-c1",
+  "mode": "check",
+  "objective": "C2.o1",
+  "options": [
+   {
+    "fact": "anthropic.ctx-context-rot",
+    "text": "Quality can fall well before the window is full.",
+    "why": "Right. Anthropic describes context rot: recall accuracy decreases as the number of tokens in the context window increases."
+   },
+   {
+    "text": "Quality stays the same until the window is full.",
+    "why": "Wrong. Recall falls as the window fills, before the limit is reached."
+   },
+   {
+    "text": "Context rot only happens at the hard limit.",
+    "why": "Wrong. It happens as the window fills, not only at the limit."
+   }
+  ],
+  "question": "Which statement about context rot is right?"
+ },
+ {
+  "answer": 0,
+  "id": "C2-c2",
+  "mode": "check",
+  "objective": "C2.o2",
+  "options": [
+   {
+    "text": "Whether every tool definition is needed on this call.",
+    "why": "Right. The audit points at the part that eats the budget, and the first lever is to not load what is not needed."
+   },
+   {
+    "text": "Whether the window can be made bigger.",
+    "why": "Tempting. A bigger window moves the edge, but the desk is still full of what is not needed."
+   },
+   {
+    "text": "Whether the model should read the tools again.",
+    "why": "Wrong. Reading again does not take anything off the desk."
+   }
+  ],
+  "question": "An audit finds that tool definitions take more of the desk than the rules file. What is the first thing to ask?"
+ },
+ {
+  "answer": 0,
+  "id": "C2-c3",
+  "mode": "check",
+  "objective": "C2.o3",
+  "options": [
+   {
+    "text": "Don't load it.",
+    "why": "Right. The first lever is to keep the material off the desk when the call does not need it."
+   },
+   {
+    "text": "Shrink it.",
+    "why": "Tempting. Shrinking comes second: first ask whether the material belongs on the desk at all."
+   },
+   {
+    "text": "Summarize it.",
+    "why": "Tempting. Summarizing comes last, because it can lose a detail."
+   }
+  ],
+  "question": "Which lever comes first?"
+ },
+ {
+  "answer": 0,
+  "id": "C2-c4",
+  "mode": "check",
+  "objective": "C2.o4",
+  "options": [
+   {
+    "text": "The start and the end, and how many characters were cut.",
+    "why": "Right. The reader sees how the output begins and ends, and knows how much is missing."
+   },
+   {
+    "text": "Only the start.",
+    "why": "Wrong. A start alone hides the end, where the result often is."
+   },
+   {
+    "text": "Nothing; cut silently to keep it short.",
+    "why": "Wrong. A silent cut hides that anything was removed."
+   }
+  ],
+  "question": "A tool output is capped. What must the cap keep, and what must it say?"
+ },
+ {
+  "answer": 0,
+  "id": "C2-c5",
+  "mode": "check",
+  "objective": "C2.o5",
+  "options": [
+   {
+    "text": "First, so the changing parts come after it, and the current task last.",
+    "why": "Right. Stable material first, the current task last."
+   },
+   {
+    "text": "Last, next to the question.",
+    "why": "Tempting. The current task goes last, but stable material does not."
+   },
+   {
+    "text": "Anywhere: the order does not matter.",
+    "why": "Wrong. Order matters for attention, so it is worth choosing."
+   }
+  ],
+  "question": "Where should stable material go in the context?"
+ }
+]

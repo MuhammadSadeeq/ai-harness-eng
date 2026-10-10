@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "id": "c4-cold-cache",
+  "title": "Cold cache",
+  "task": "Fix add() in calc.py",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a coding agent working in one repository for one team. Use the tools to read files, change them and run the tests. Keep each change small and say what you changed. Read a file before you edit it, and read the result of every tool call before you act on it. Do not edit the tests to make them pass. When the tests pass and the work is done, say done. If a tool fails, read the error, fix the cause and try again. Never print secrets or keys in a reply. Prefer the smallest edit that makes the check pass, and keep the names the team already uses. The repository keeps its helpers in calc.py and its notes in notes.txt. Stay inside the workspace.",
+  "rules": [],
+  "workspace": {
+    "calc.py": "def add(a, b):\n    return a - b\n",
+    "notes.txt": "The add helper is used by the report code.\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "edit_file",
+    "run_command",
+    "list_files"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "calc.py",
+      "contains": "a + b"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed, add() returns a - b"
+  },
+  "script": [
+    {
+      "say": "I'll read calc.py first.",
+      "tools": [
+        [
+          "read_file",
+          {
+            "path": "calc.py"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "add() subtracts. I'll make it add.",
+      "tools": [
+        [
+          "edit_file",
+          {
+            "path": "calc.py",
+            "old_text": "return a - b",
+            "new_text": "return a + b"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Checking the result.",
+      "tools": [
+        [
+          "run_command",
+          {
+            "cmd": "pytest -q"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "The tests pass. Done."
+    }
+  ],
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "seed_base": 20261010,
+  "cache_rules": {
+    "min_tokens": 512,
+    "ttl_ms": 300000
+  },
+  "boards": [
+    "c4-old",
+    "c4-new"
+  ],
+  "incident": {
+    "family": "cold-cache",
+    "wire": "context",
+    "board": "c4-old",
+    "seed": 1,
+    "first_bad_seq": 14,
+    "accept_seqs": [
+      10
+    ],
+    "why": "Turn 2 starts with the clock line at the top of the system prompt, and the clock has changed since turn 1. The cache matches nothing before the end of the request, so it writes all of it again and reads none. Every later call does the same.",
+    "hint": "Compare the first lines of the request on turn 1 with turn 2. What changed at the top, and what is after it?",
+    "notes": [
+      {
+        "seq": 5,
+        "text": "The first call writes the cache. Every cache starts with a write, so this one is fine."
+      },
+      {
+        "seq": 23,
+        "text": "Turn 3 misses too. The history grows at the end, where a miss costs nothing new. Look at the top of the request."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Move the clock out of the system prompt, and stamp it into the newest message",
+        "why": "Everything before the newest message stays the same, so the cache reads it on every call."
+      },
+      {
+        "text": "Turn caching off, so the cache stops writing",
+        "why": "Tempting and wrong: with the clock at the top, caching off still pays the full price for every call. The order is the fault."
+      },
+      {
+        "text": "Use a longer cache lifetime",
+        "why": "Tempting and wrong: the lifetime is not the problem. Nothing matches, so a longer lifetime holds nothing that can be read."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 60
+  }
+}

@@ -1,0 +1,67 @@
+id: A5-validate
+module: A5
+title: Check the input before the tool runs
+objectives: [A5.o1, A5.o2]
+minutes: 20
+hints:
+  - "Work through the docstring in its order: the shape first, then the required fields, then each field of the value."
+  - "For each field, check additionalProperties, then the type, then the enum. Return the first reason you find, as a string."
+  - "Nearly the code: if not isinstance(value, dict): return 'input must be an object'; then loop schema.get('required', []); then loop value.items() and check the three rules in that order."
+from_memory: true
+wrong_solutions:
+  - name: types-before-required
+    code: |
+      def check_value(schema, value):
+          if not isinstance(value, dict):
+              return "input must be an object"
+          for key, item in value.items():
+              spec = schema.get("properties", {}).get(key, {})
+              if "type" in spec and spec["type"] == "string" and not isinstance(item, str):
+                  return f"field {key} must be string"
+          for name in schema.get("required", []):
+              if name not in value:
+                  return f"missing required field: {name}"
+          return ""
+  - name: bool-is-an-integer
+    code: |
+      def check_value(schema, value):
+          if not isinstance(value, dict):
+              return "input must be an object"
+          for name in schema.get("required", []):
+              if name not in value:
+                  return f"missing required field: {name}"
+          for key, item in value.items():
+              spec = schema.get("properties", {}).get(key, {})
+              if schema.get("additionalProperties") is False and key not in schema.get("properties", {}):
+                  return f"unknown field: {key}"
+              if spec.get("type") == "integer" and not isinstance(item, int):
+                  return f"field {key} must be integer"
+          return ""
+  - name: unknown-fields-ignored
+    code: |
+      def check_value(schema, value):
+          if not isinstance(value, dict):
+              return "input must be an object"
+          for name in schema.get("required", []):
+              if name not in value:
+                  return f"missing required field: {name}"
+          for key, item in value.items():
+              spec = schema.get("properties", {}).get(key, {})
+              if "type" in spec and spec["type"] == "string" and not isinstance(item, str):
+                  return f"field {key} must be string"
+          return ""
+  - name: enum-with-repr
+    code: |
+      def check_value(schema, value):
+          if not isinstance(value, dict):
+              return "input must be an object"
+          for name in schema.get("required", []):
+              if name not in value:
+                  return f"missing required field: {name}"
+          for key, item in value.items():
+              if schema.get("additionalProperties") is False and key not in schema.get("properties", {}):
+                  return f"unknown field: {key}"
+              spec = schema.get("properties", {}).get(key, {})
+              if "enum" in spec and item not in spec["enum"]:
+                  return f"field {key} must be one of: " + ", ".join(repr(v) for v in spec["enum"])
+          return ""

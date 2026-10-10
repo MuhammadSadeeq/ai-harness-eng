@@ -1,0 +1,24 @@
+- id: C4-s1
+  objectives:
+  - C4.o1
+  - C4.o2
+  prompt: Your agent pays full price for the same system prompt on every call. What do you check first, and what do you change?
+  model_answer: I check whether anything before the end of the request changes between calls. A clock line or a random id in the system prompt breaks the cache at that point. I move the changing text to
+    the newest message and keep the tools and the system prompt byte for byte the same. Then I read the usage fields to see whether reads appear.
+  rubric:
+  - Names the changing block and where it sits in the request
+  - Keeps the tools and the system prompt stable and moves the changing text to the end
+  - Says that one changed byte invalidates everything after it
+  - Checks the usage fields to confirm that reads now appear
+- id: C4-s2
+  objectives:
+  - C4.o3
+  - C4.o4
+  prompt: A response shows 40 input tokens and 960 cache read tokens. What is the hit rate, and what would make the cache cheaper still?
+  model_answer: The hit rate is 960 out of 1,000 input tokens, so 96 percent. To make it cheaper still, keep the prefix stable for longer than the cache lifetime allows, so that fewer calls write again,
+    and make sure the changing parts sit after the last breakpoint.
+  rubric:
+  - Computes the hit rate from the read tokens over all input tokens (96 percent)
+  - Counts the write tokens in the total when there are any
+  - Names one thing that keeps the prefix stable across calls
+  - Says what a changing block after the breakpoint costs, and what it does not

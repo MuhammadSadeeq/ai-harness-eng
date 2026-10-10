@@ -1,0 +1,15 @@
+{
+  "id": "c12-new",
+  "label": "Readable trace, output capped, secret redacted",
+  "modules": {
+    "cost_attribution": {},
+    "output_cap": {
+      "max_tokens": 400
+    },
+    "redact": {
+      "patterns": [
+        "sk-test-deploy-7f3a"
+      ]
+    }
+  }
+}

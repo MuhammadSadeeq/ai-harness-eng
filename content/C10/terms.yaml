@@ -1,0 +1,82 @@
+- id: blast-radius
+  term: blast radius
+  aliases:
+  - blast radius
+  strict: true
+  wire: permissions
+  definition: 'How much a single mistake can reach: the files, the network and the secrets it could touch.'
+- id: workspace-root
+  term: workspace root
+  aliases:
+  - workspace root
+  strict: true
+  wire: permissions
+  definition: The folder the agent may use. A path that leaves it is outside the workspace.
+- id: path-traversal
+  term: path traversal
+  aliases:
+  - path traversal
+  - traversal
+  strict: true
+  wire: permissions
+  definition: A path that climbs out of the workspace root with ../, or that names a link leading out of it.
+- id: symlink
+  term: symlink
+  aliases:
+  - symlink
+  - symlinks
+  - symbolic link
+  strict: true
+  wire: permissions
+  definition: A file that names another path. In this course's sandbox, a link's target is relative to the link's
+    own folder, and the sandbox follows it.
+- id: network-egress
+  term: network egress
+  aliases:
+  - network egress
+  - egress
+  strict: true
+  wire: permissions
+  definition: A network call that leaves the machine, to a host outside the sandbox.
+- id: egress-allow-list
+  term: egress allow-list
+  aliases:
+  - egress allow-list
+  - egress allow-lists
+  strict: true
+  wire: permissions
+  definition: The hosts a network call may reach. A call to any other host is refused.
+- id: container
+  term: container
+  aliases:
+  - container
+  - containers
+  strict: false
+  wire: permissions
+  definition: A process with its own smaller view of the machine. The course treats it as one wall among others,
+    not as the whole of the wall.
+- id: virtual-machine
+  term: virtual machine
+  aliases:
+  - virtual machine
+  - virtual machines
+  strict: false
+  wire: permissions
+  definition: A whole guest system that runs on a host. The course compares it with a container and an OS sandbox,
+    by cost and by isolation.
+- id: secret
+  term: secret
+  aliases:
+  - secret
+  - secrets
+  strict: false
+  wire: permissions
+  definition: A value that must not reach the model's reply or the trace, such as an API key.
+- id: exfiltration
+  term: exfiltration
+  aliases:
+  - exfiltration
+  - exfiltrate
+  strict: true
+  wire: permissions
+  definition: A secret leaving the sandbox through a network call.

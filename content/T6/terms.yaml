@@ -1,0 +1,14 @@
+- id: fixture
+  term: fixture
+  aliases:
+  - fixture
+  - fixtures
+  strict: true
+  definition: A helper that builds the setup a test needs, so each test starts from the same known state.
+- id: parametrize
+  term: parametrize
+  aliases:
+  - parametrize
+  - parametrized
+  strict: true
+  definition: Running one test body over a table of cases, so each case is checked on its own.

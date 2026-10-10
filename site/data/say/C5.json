@@ -1,0 +1,33 @@
+[
+ {
+  "id": "C5-s1",
+  "model_answer": "All the run's state is in one object. Each way out of the loop is an exit: the done claim, the turn limit, the budget, a loop detected, an interrupt and an error. Each exit sets the final status once, and a second exit is refused. Nothing else writes the status.",
+  "objectives": [
+   "C5.o1",
+   "C5.o2"
+  ],
+  "prompt": "Walk me through how your loop decides to stop, and where the run's status is set.",
+  "rubric": [
+   "Keeps the run's state in one object, changed in one place",
+   "Lists every exit the loop can take, each with its own status",
+   "Sets the final status once, and refuses a second exit",
+   "Names the turn limit and the budget as exits, not as errors"
+  ]
+ },
+ {
+  "id": "C5-s2",
+  "model_answer": "On an interrupt I answer every pending tool call with an error result, in one message, so the history stays valid. I save the state and the history, and on resume I continue from the saved turn without rewriting earlier messages. For loops, I compare the last few calls, and stop the run when they are the same.",
+  "objectives": [
+   "C5.o3",
+   "C5.o4",
+   "C5.o5"
+  ],
+  "prompt": "A person interrupts a run in the middle of a tool call. How do you resume it safely, and how do you spot a run that is going in circles?",
+  "rubric": [
+   "Answers each pending tool call with an error result before anything else",
+   "Saves the state and the history together, and resumes from the saved turn",
+   "Never rewrites an earlier message to make the history look clean",
+   "Detects a loop by comparing recent calls, and stops it on purpose"
+  ]
+ }
+]

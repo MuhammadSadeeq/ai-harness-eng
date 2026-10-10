@@ -1,0 +1,27 @@
+- id: C3-s1
+  objectives: [C3.o1, C3.o2]
+  prompt: "Write the compactor's keep list for a long task, and say what it drops and why."
+  model_answer: >-
+    I would keep the goal, the constraints, the decisions, the progress and the file pointers. Those are the
+    commitments the next calls need. I would drop the raw tool output, because it is the bulk and the
+    commitments are already written down in the notes. The keep list is the part to check: a constraint that is
+    missing from it is gone after the next compaction.
+  rubric:
+    - "Keeps the goal, constraints, decisions, progress and file pointers"
+    - "Drops raw tool output and says why"
+    - "Says a constraint missing from the keep list is lost after compaction"
+    - "Says the keep list is the part to check after each compaction"
+
+- id: C3-s2
+  objectives: [C3.o3, C3.o4]
+  prompt: "A run has drifted off its goal after many turns. Compact it, or start a clean reset with a handoff note? Where does each fact live?"
+  model_answer: >-
+    I would start a clean reset with a handoff note, because the run has drifted and a fresh start is clearer than a
+    summary of a tangled thread. The handoff note goes to a file, so the next run reads it first. The session log keeps
+    the record of what happened, the project files keep the standing facts, and the window holds only what this call
+    needs.
+  rubric:
+    - "Chooses compaction or a clean reset and gives a reason"
+    - "Says what goes in the handoff note"
+    - "Places facts in the memory tiers: window, session log, project files, long-term store"
+    - "Says a drifted run is not repaired by a summary of its tangle"

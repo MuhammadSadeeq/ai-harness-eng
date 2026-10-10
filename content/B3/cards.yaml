@@ -1,0 +1,41 @@
+- id: B3-k1
+  type: term
+  objective: B3.o2
+  front: "What is prompt engineering?"
+  back: "Choosing the words of the prompt and the instructions. Words guide the model; they do not enforce anything."
+
+- id: B3-k2
+  type: term
+  objective: B3.o2
+  front: "What is context engineering?"
+  back: "Choosing what goes on the desk for each call, and what gets cut or saved."
+
+- id: B3-k3
+  type: term
+  objective: B3.o2
+  front: "What is harness engineering?"
+  back: "Building and tuning the code around the model: the loop, tools, permissions, checks and limits."
+
+- id: B3-k4
+  type: term
+  objective: B3.o4
+  front: "What is a product harness?"
+  back: "The harness a vendor ships with its model product, with its own loop, tools and limits."
+
+- id: B3-k5
+  type: term
+  objective: B3.o4
+  front: "What is a user harness?"
+  back: "The harness you add around a model product or API: your loop, your tools and your checks."
+
+- id: B3-k6
+  type: term
+  objective: B3.o3
+  front: "Where does the operating-system picture of an agent break down?"
+  back: "A process runs the same steps each time. A model writes different text each run, so the harness must check its output."
+
+- id: B3-k7
+  type: term
+  objective: B3.o1
+  front: "What is a framework?"
+  back: "A library of ready-made parts for building a harness. It does not decide your harness for you."

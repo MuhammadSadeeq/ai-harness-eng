@@ -1,0 +1,121 @@
+{
+  "id": "c12-unexplained-bill",
+  "schema": 1,
+  "title": "The unexplained bill",
+  "task": "Find the cause of the failed deploy in logs/deploy.log and write it to answer.txt.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a deploy assistant. Read the log you are given, find the cause, and write it down. Say done when the answer is written.",
+  "rules": [],
+  "workspace": {
+    "logs/deploy.log": "2026-10-09T10:10:00Z INFO build step 0 ok in 20s, cache hit yes, artifacts 1\n2026-10-09T10:10:01Z INFO test step 1 ok in 27s, cache hit no, artifacts 5\n2026-10-09T10:10:02Z INFO env DEPLOY_TOKEN=sk-test-deploy-7f3a loaded for stage\n2026-10-09T10:10:03Z INFO package step 2 ok in 34s, cache hit no, artifacts 9\n2026-10-09T10:10:04Z INFO push step 3 ok in 41s, cache hit yes, artifacts 4\n2026-10-09T10:10:05Z INFO stage step 4 ok in 48s, cache hit no, artifacts 8\n2026-10-09T10:10:06Z INFO smoke step 5 ok in 55s, cache hit no, artifacts 3\n2026-10-09T10:10:07Z INFO build step 6 ok in 22s, cache hit yes, artifacts 7\n2026-10-09T10:10:08Z INFO test step 7 ok in 29s, cache hit no, artifacts 2\n2026-10-09T10:10:09Z INFO package step 8 ok in 36s, cache hit no, artifacts 6\n2026-10-09T10:10:10Z INFO push step 9 ok in 43s, cache hit yes, artifacts 1\n2026-10-09T10:10:11Z INFO stage step 10 ok in 50s, cache hit no, artifacts 5\n2026-10-09T10:10:12Z INFO smoke step 11 ok in 57s, cache hit no, artifacts 9\n2026-10-09T10:10:13Z INFO build step 12 ok in 24s, cache hit yes, artifacts 4\n2026-10-09T10:10:14Z INFO test step 13 ok in 31s, cache hit no, artifacts 8\n2026-10-09T10:10:15Z INFO package step 14 ok in 38s, cache hit no, artifacts 3\n2026-10-09T10:10:16Z INFO push step 15 ok in 45s, cache hit yes, artifacts 7\n2026-10-09T10:10:17Z INFO stage step 16 ok in 52s, cache hit no, artifacts 2\n2026-10-09T10:10:18Z INFO smoke step 17 ok in 59s, cache hit no, artifacts 6\n2026-10-09T10:10:19Z INFO build step 18 ok in 26s, cache hit yes, artifacts 1\n2026-10-09T10:10:20Z INFO test step 19 ok in 33s, cache hit no, artifacts 5\n2026-10-09T10:10:21Z INFO package step 20 ok in 40s, cache hit no, artifacts 9\n2026-10-09T10:10:22Z INFO push step 21 ok in 47s, cache hit yes, artifacts 4\n2026-10-09T10:10:23Z INFO stage step 22 ok in 54s, cache hit no, artifacts 8\n2026-10-09T10:10:24Z INFO smoke step 23 ok in 21s, cache hit no, artifacts 3\n2026-10-09T10:10:25Z INFO build step 24 ok in 28s, cache hit yes, artifacts 7\n2026-10-09T10:10:26Z INFO test step 25 ok in 35s, cache hit no, artifacts 2\n2026-10-09T10:10:27Z INFO package step 26 ok in 42s, cache hit no, artifacts 6\n2026-10-09T10:10:28Z INFO push step 27 ok in 49s, cache hit yes, artifacts 1\n2026-10-09T10:10:29Z INFO stage step 28 ok in 56s, cache hit no, artifacts 5\n2026-10-09T10:10:30Z INFO smoke step 29 ok in 23s, cache hit no, artifacts 9\n2026-10-09T10:10:31Z INFO build step 30 ok in 30s, cache hit yes, artifacts 4\n2026-10-09T10:10:32Z INFO test step 31 ok in 37s, cache hit no, artifacts 8\n2026-10-09T10:10:33Z INFO package step 32 ok in 44s, cache hit no, artifacts 3\n2026-10-09T10:10:34Z INFO push step 33 ok in 51s, cache hit yes, artifacts 7\n2026-10-09T10:10:35Z INFO stage step 34 ok in 58s, cache hit no, artifacts 2\n2026-10-09T10:10:36Z INFO smoke step 35 ok in 25s, cache hit no, artifacts 6\n2026-10-09T10:10:37Z INFO build step 36 ok in 32s, cache hit yes, artifacts 1\n2026-10-09T10:10:38Z INFO test step 37 ok in 39s, cache hit no, artifacts 5\n2026-10-09T10:10:39Z INFO package step 38 ok in 46s, cache hit no, artifacts 9\n2026-10-09T10:10:40Z INFO push step 39 ok in 53s, cache hit yes, artifacts 4\n2026-10-09T10:10:41Z INFO stage step 40 ok in 20s, cache hit no, artifacts 8\n2026-10-09T10:10:42Z INFO smoke step 41 ok in 27s, cache hit no, artifacts 3\n2026-10-09T10:10:43Z INFO build step 42 ok in 34s, cache hit yes, artifacts 7\n2026-10-09T10:10:44Z INFO test step 43 ok in 41s, cache hit no, artifacts 2\n2026-10-09T10:10:45Z INFO package step 44 ok in 48s, cache hit no, artifacts 6\n2026-10-09T10:10:46Z INFO push step 45 ok in 55s, cache hit yes, artifacts 1\n2026-10-09T10:10:47Z INFO stage step 46 ok in 22s, cache hit no, artifacts 5\n2026-10-09T10:10:48Z INFO smoke step 47 ok in 29s, cache hit no, artifacts 9\n2026-10-09T10:10:49Z INFO build step 48 ok in 36s, cache hit yes, artifacts 4\n2026-10-09T10:10:50Z INFO test step 49 ok in 43s, cache hit no, artifacts 8\n2026-10-09T10:10:51Z INFO package step 50 ok in 50s, cache hit no, artifacts 3\n2026-10-09T10:10:52Z INFO push step 51 ok in 57s, cache hit yes, artifacts 7\n2026-10-09T10:10:53Z INFO stage step 52 ok in 24s, cache hit no, artifacts 2\n2026-10-09T10:10:54Z INFO smoke step 53 ok in 31s, cache hit no, artifacts 6\n2026-10-09T10:10:55Z INFO build step 54 ok in 38s, cache hit yes, artifacts 1\n2026-10-09T10:10:56Z INFO test step 55 ok in 45s, cache hit no, artifacts 5\n2026-10-09T10:10:57Z INFO package step 56 ok in 52s, cache hit no, artifacts 9\n2026-10-09T10:10:58Z INFO push step 57 ok in 59s, cache hit yes, artifacts 4\n2026-10-09T10:10:59Z INFO stage step 58 ok in 26s, cache hit no, artifacts 8\n2026-10-09T10:11:00Z INFO smoke step 59 ok in 33s, cache hit no, artifacts 3\n2026-10-09T10:11:01Z INFO build step 60 ok in 40s, cache hit yes, artifacts 7\n2026-10-09T10:11:02Z INFO test step 61 ok in 47s, cache hit no, artifacts 2\n2026-10-09T10:11:03Z INFO package step 62 ok in 54s, cache hit no, artifacts 6\n2026-10-09T10:11:04Z INFO push step 63 ok in 21s, cache hit yes, artifacts 1\n2026-10-09T10:11:05Z INFO stage step 64 ok in 28s, cache hit no, artifacts 5\n2026-10-09T10:11:06Z INFO smoke step 65 ok in 35s, cache hit no, artifacts 9\n2026-10-09T10:11:07Z INFO build step 66 ok in 42s, cache hit yes, artifacts 4\n2026-10-09T10:11:08Z INFO test step 67 ok in 49s, cache hit no, artifacts 8\n2026-10-09T10:11:09Z INFO package step 68 ok in 56s, cache hit no, artifacts 3\n2026-10-09T10:11:10Z INFO push step 69 ok in 23s, cache hit yes, artifacts 7\n2026-10-09T10:11:11Z INFO stage step 70 ok in 30s, cache hit no, artifacts 2\n2026-10-09T10:11:12Z INFO smoke step 71 ok in 37s, cache hit no, artifacts 6\n2026-10-09T10:11:13Z INFO build step 72 ok in 44s, cache hit yes, artifacts 1\n2026-10-09T10:11:14Z INFO test step 73 ok in 51s, cache hit no, artifacts 5\n2026-10-09T10:11:15Z INFO package step 74 ok in 58s, cache hit no, artifacts 9\n2026-10-09T10:11:16Z INFO push step 75 ok in 25s, cache hit yes, artifacts 4\n2026-10-09T10:11:17Z INFO stage step 76 ok in 32s, cache hit no, artifacts 8\n2026-10-09T10:11:18Z INFO smoke step 77 ok in 39s, cache hit no, artifacts 3\n2026-10-09T10:11:19Z INFO build step 78 ok in 46s, cache hit yes, artifacts 7\n2026-10-09T10:11:20Z INFO test step 79 ok in 53s, cache hit no, artifacts 2\n2026-10-09T10:11:21Z INFO package step 80 ok in 20s, cache hit no, artifacts 6\n2026-10-09T10:11:22Z INFO push step 81 ok in 27s, cache hit yes, artifacts 1\n2026-10-09T10:11:23Z INFO stage step 82 ok in 34s, cache hit no, artifacts 5\n2026-10-09T10:11:24Z INFO smoke step 83 ok in 41s, cache hit no, artifacts 9\n2026-10-09T10:11:25Z INFO build step 84 ok in 48s, cache hit yes, artifacts 4\n2026-10-09T10:11:26Z INFO test step 85 ok in 55s, cache hit no, artifacts 8\n2026-10-09T10:11:27Z INFO package step 86 ok in 22s, cache hit no, artifacts 3\n2026-10-09T10:11:28Z INFO push step 87 ok in 29s, cache hit yes, artifacts 7\n2026-10-09T10:11:29Z INFO stage step 88 ok in 36s, cache hit no, artifacts 2\n2026-10-09T10:11:30Z INFO smoke step 89 ok in 43s, cache hit no, artifacts 6\n2026-10-09T10:11:31Z INFO build step 90 ok in 50s, cache hit yes, artifacts 1\n2026-10-09T10:11:32Z INFO test step 91 ok in 57s, cache hit no, artifacts 5\n2026-10-09T10:11:33Z INFO package step 92 ok in 24s, cache hit no, artifacts 9\n2026-10-09T10:11:34Z INFO push step 93 ok in 31s, cache hit yes, artifacts 4\n2026-10-09T10:11:35Z INFO stage step 94 ok in 38s, cache hit no, artifacts 8\n2026-10-09T10:11:36Z INFO smoke step 95 ok in 45s, cache hit no, artifacts 3\n2026-10-09T10:11:37Z INFO build step 96 ok in 52s, cache hit yes, artifacts 7\n2026-10-09T10:11:38Z INFO test step 97 ok in 59s, cache hit no, artifacts 2\n2026-10-09T10:11:39Z INFO package step 98 ok in 26s, cache hit no, artifacts 6\n2026-10-09T10:11:40Z INFO push step 99 ok in 33s, cache hit yes, artifacts 1\n2026-10-09T10:11:41Z WARN migrate 0041 took 3s, lock wait 0ms\n2026-10-09T10:11:42Z ERROR migrate 0042 failed: column users.email is missing\n2026-10-09T10:11:43Z ERROR deploy rolled back to 2026.10.08-3\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "answer.txt",
+      "contains": "column users.email"
+    }
+  ],
+  "canaries": [],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "script": [
+    {
+      "say": "I will read the deploy log.",
+      "tools": [
+        [
+          "read_file",
+          {
+            "path": "logs/deploy.log"
+          }
+        ]
+      ],
+      "stop": "tool_use"
+    },
+    {
+      "say": "The migration failed. I will write the cause down.",
+      "tools": [
+        [
+          "write_file",
+          {
+            "path": "answer.txt",
+            "content": "Deploy failed: migration 0042 could not find column users.email.\n"
+          }
+        ]
+      ],
+      "stop": "tool_use"
+    },
+    {
+      "say": "Done. The cause is in answer.txt.",
+      "stop": "end_turn"
+    }
+  ],
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "boards": [
+    "c12-old",
+    "c12-new"
+  ],
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "seed_base": 20261010,
+  "incident": {
+    "family": "unexplained-bill",
+    "wire": "observe",
+    "board": "c12-old",
+    "seed": 0,
+    "first_bad_seq": 15,
+    "accept_seqs": [
+      15,
+      24
+    ],
+    "why": "The run is expensive, and the first call is not the reason. From turn 2 on, the cost event names messages[2] as the largest part, 2056 tokens: the deploy log, sent again on every call after the read.",
+    "hint": "Find the cost event with the largest call cost. Which part of the request does it name?",
+    "notes": [
+      {
+        "seq": 6,
+        "text": "The first call is the cheap one. Tempting: blame the model's price. This call names the tools, not the log."
+      },
+      {
+        "seq": 15,
+        "text": "The bill shows here. The largest part is messages[2], the tool result that holds the log, at 2056 tokens."
+      },
+      {
+        "seq": 26,
+        "text": "The run ends done and the check passes. The bill is the sum of the call costs, and most of it is the log resent."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Cap what the read returns, and read only the lines the task needs",
+        "why": "The log is sent again on every later call. A smaller read lowers each of those calls."
+      },
+      {
+        "text": "Turn off cost attribution, so the bill stops",
+        "why": "Tempting and wrong. The cost event only reports the bill. The calls still send the log, so the bill is the same."
+      },
+      {
+        "text": "Remove the redact module, so the trace shows the whole log",
+        "why": "Tempting and wrong. The trace would then hold the deploy token. Redaction changes what the trace stores, not what the model gets or the bill."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 60
+  }
+}

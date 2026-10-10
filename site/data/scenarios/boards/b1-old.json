@@ -1,0 +1,7 @@
+{
+  "id": "b1-old",
+  "label": "Results split across messages",
+  "modules": {
+    "split_results": {}
+  }
+}

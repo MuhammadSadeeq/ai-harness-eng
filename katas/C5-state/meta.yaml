@@ -1,0 +1,24 @@
+id: C5-state
+module: C5
+title: 'Close the books: one state, one exit'
+objectives:
+- C5.o1
+- C5.o2
+- C5.o3
+minutes: 25
+hints:
+- Keep one dict for the run. Every change goes through a function that takes it, and nothing else writes to it.
+- An exit sets the status once. Check the status before you set it, and refuse an unknown status first.
+- 'Nearly the code: close_books appends one user message with one tool_result per pending id, each with is_error True. It never touches an earlier message.'
+from_memory: true
+wrong_solutions:
+- name: end-overwrites-the-status
+  code: "ALLOWED = (\"done\", \"max_turns\", \"interrupted\", \"error\")\n\n\ndef new_state(task):\n    return {\"messages\": [{\"role\": \"user\", \"content\": task}], \"turn\": 0, \"status\": None}\n\n\ndef end(state, status):\n    if status not in ALLOWED:\n        raise ValueError(f\"unknown status: {status}\")\n    state[\"status\"] = status\n    return state\n\n\ndef close_books(state, pending_ids):\n    results = [{\"type\": \"tool_result\", \"tool_use_id\": t, \"content\": \"Interrupted by the user before this ran.\", \"is_error\": True} for t in pending_ids]\n    if results:\n        state[\"messages\"].append({\"role\": \"user\", \"content\": results})\n    return state\n"
+- name: one-message-per-result
+  code: "ALLOWED = (\"done\", \"max_turns\", \"interrupted\", \"error\")\n\n\ndef new_state(task):\n    return {\"messages\": [{\"role\": \"user\", \"content\": task}], \"turn\": 0, \"status\": None}\n\n\ndef end(state, status):\n    if status not in ALLOWED:\n        raise ValueError(f\"unknown status: {status}\")\n    if state[\"status\"] is not None:\n        raise RuntimeError(f\"the run already ended: {state['status']}\")\n    state[\"status\"] = status\n    return state\n\n\ndef close_books(state, pending_ids):\n    for t in pending_ids:\n        state[\"messages\"].append({\"role\": \"user\", \"content\": [{\"type\": \"tool_result\", \"tool_use_id\": t, \"content\": \"Interrupted by the user before this ran.\", \"is_error\": True}]})\n    return state\n"
+- name: edits-the-history
+  code: "ALLOWED = (\"done\", \"max_turns\", \"interrupted\", \"error\")\n\n\ndef new_state(task):\n    return {\"messages\": [{\"role\": \"user\", \"content\": task}], \"turn\": 0, \"status\": None}\n\n\ndef end(state, status):\n    if status not in ALLOWED:\n        raise ValueError(f\"unknown status: {status}\")\n    if state[\"status\"] is not None:\n        raise RuntimeError(f\"the run already ended: {state['status']}\")\n    state[\"status\"] = status\n    return state\n\n\ndef close_books(state, pending_ids):\n    if pending_ids and state[\"messages\"]:\n        last = state[\"messages\"][-1]\n        if isinstance(last.get(\"content\"), list):\n            last[\"content\"] = [b for b in last[\"content\"] if b.get(\"type\") != \"tool_use\"]\n    return state\n"
+- name: results-without-the-error-flag
+  code: "ALLOWED = (\"done\", \"max_turns\", \"interrupted\", \"error\")\n\n\ndef new_state(task):\n    return {\"messages\": [{\"role\": \"user\", \"content\": task}], \"turn\": 0, \"status\": None}\n\n\ndef end(state, status):\n    if status not in ALLOWED:\n        raise ValueError(f\"unknown status: {status}\")\n    if state[\"status\"] is not None:\n        raise RuntimeError(f\"the run already ended: {state['status']}\")\n    state[\"status\"] = status\n    return state\n\n\ndef close_books(state, pending_ids):\n    if pending_ids:\n        state[\"messages\"].append({\"role\": \"user\", \"content\": [{\"type\": \"tool_result\", \"tool_use_id\": t, \"content\": \"Interrupted by the user before this ran.\", \"is_error\": False} for t in pending_ids]})\n    return state\n"
+- name: unknown-status-accepted
+  code: "def new_state(task):\n    return {\"messages\": [{\"role\": \"user\", \"content\": task}], \"turn\": 0, \"status\": None}\n\n\ndef end(state, status):\n    if state[\"status\"] is not None:\n        raise RuntimeError(f\"the run already ended: {state['status']}\")\n    state[\"status\"] = status\n    return state\n\n\ndef close_books(state, pending_ids):\n    if pending_ids:\n        state[\"messages\"].append({\"role\": \"user\", \"content\": [{\"type\": \"tool_result\", \"tool_use_id\": t, \"content\": \"Interrupted by the user before this ran.\", \"is_error\": True} for t in pending_ids]})\n    return state\n"

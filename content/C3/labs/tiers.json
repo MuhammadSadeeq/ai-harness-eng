@@ -1,0 +1,17 @@
+{
+  "prompt": "Sort each kind of memory into its tier.",
+  "buckets": [
+    {"id": "window", "label": "The window", "hint": "What is on the desk for this one call."},
+    {"id": "session", "label": "The session log", "hint": "A record of one session, kept for reading later."},
+    {"id": "files", "label": "Project files", "hint": "Standing facts about the repository, read by every run in it."},
+    {"id": "store", "label": "Long-term store", "hint": "Facts kept across projects, looked up when needed."}
+  ],
+  "items": [
+    {"id": "c3-t1", "text": "The tool results of the current call", "bucket": "window", "why": "They are on the desk now. They are not kept once the call is over unless something writes them down."},
+    {"id": "c3-t2", "text": "The commands run in yesterday's session", "bucket": "session", "why": "A session log records what one session did, so the next session can read it."},
+    {"id": "c3-t3", "text": "The project's conventions for tests", "bucket": "files", "why": "Standing facts about one repository belong in its project files, where every run reads them."},
+    {"id": "c3-t4", "text": "A note that a user prefers short answers", "bucket": "store", "why": "A fact about a person that applies across projects belongs in the long-term store."},
+    {"id": "c3-t5", "text": "The summary of the story so far, after a compaction", "bucket": "window", "why": "It is on the desk for the next calls. It is not a file, so a new session does not see it."},
+    {"id": "c3-t6", "text": "The handoff note a clean reset writes", "bucket": "files", "why": "A handoff note written to a file is read by the next run; the window is cleared at the reset."}
+  ]
+}

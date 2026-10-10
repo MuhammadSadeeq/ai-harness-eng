@@ -1,0 +1,19 @@
+{
+ "from_memory": true,
+ "hints": [
+  "Read test_kata.py. Each test names one part of the list: the start, the network, the read-only flag, the one mount, the image and command at the end.",
+  "Build one list literal. Put \"docker\", \"run\" first, then the flags, then -v with f\"{folder}:/work\", then the image, then unpack the command with *command.",
+  "Nearly the code: return [\"docker\", \"run\", \"--network\", \"none\", \"--read-only\", \"-v\", f\"{folder}:/work\", image, *command]."
+ ],
+ "id": "T7-docker-args",
+ "minutes": 25,
+ "module": "T7",
+ "objectives": [
+  "T7.o2",
+  "T7.o3"
+ ],
+ "solution": "def build_args(folder: str, image: str, command: list[str]) -> list[str]:\n    \"\"\"The argument list of one docker run: no network, a read-only root, one mount.\"\"\"\n    return [\"docker\", \"run\", \"--network\", \"none\", \"--read-only\",\n            \"-v\", f\"{folder}:/work\", image, *command]\n",
+ "starter": "def build_args(folder: str, image: str, command: list[str]) -> list[str]:\n    \"\"\"Build the argument list of one `docker run` command, as a list of strings.\n\n    The list starts with \"docker\", \"run\". It turns the network off with\n    \"--network\", \"none\"; it makes the root filesystem read-only with\n    \"--read-only\"; it mounts one folder with \"-v\", \"<folder>:/work\"; then the\n    image, then the command.\n    \"\"\"\n    raise NotImplementedError(\"return the list: docker run, the network, the read-only flag, one mount, the image, the command\")\n",
+ "tests": "from kata import build_args\n\nFOLDER = \"/home/me/notes\"\n\n\ndef test_the_list_starts_with_docker_run():\n    args = build_args(FOLDER, \"python:3\", [\"python\", \"count.py\"])\n    assert args[:2] == [\"docker\", \"run\"], \"the command starts with docker run\"\n\n\ndef test_the_network_is_off():\n    args = build_args(FOLDER, \"python:3\", [\"python\", \"count.py\"])\n    assert \"--network\" in args, \"a network setting is in the list\"\n    assert args[args.index(\"--network\") + 1] == \"none\", \"the network setting is none\"\n\n\ndef test_the_root_filesystem_is_read_only():\n    args = build_args(FOLDER, \"python:3\", [\"python\", \"count.py\"])\n    assert \"--read-only\" in args, \"the root filesystem flag is in the list\"\n\n\ndef test_exactly_one_mount_of_the_folder():\n    args = build_args(FOLDER, \"python:3\", [\"python\", \"count.py\"])\n    assert args.count(\"-v\") == 1, \"one mount, and only one\"\n    assert args[args.index(\"-v\") + 1] == \"/home/me/notes:/work\", \"the mount is the folder the task needs\"\n\n\ndef test_no_other_mount_flag():\n    args = build_args(FOLDER, \"python:3\", [\"python\", \"count.py\"])\n    assert \"--mount\" not in args, \"use the one -v mount, not a second kind of mount\"\n\n\ndef test_the_image_then_the_command_come_last():\n    args = build_args(FOLDER, \"python:3\", [\"python\", \"count.py\"])\n    assert args[-3:] == [\"python:3\", \"python\", \"count.py\"], \"the image is followed by the command\"\n",
+ "title": "Build a docker run argument list"
+}

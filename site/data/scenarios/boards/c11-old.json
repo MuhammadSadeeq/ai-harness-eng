@@ -1,0 +1,9 @@
+{
+ "id": "c11-old",
+ "label": "Old board",
+ "modules": {
+  "verify_gate": {
+   "max_feedback": 1
+  }
+ }
+}

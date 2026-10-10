@@ -1,0 +1,47 @@
+- id: json-schema
+  term: JSON Schema
+  aliases: [JSON Schema, JSON schema, JSON schemas]
+  strict: true
+  wire: tools
+  definition: >-
+    A way to write down the shape of a JSON object: its fields, their types, which are required and which values are allowed.
+
+- id: additional-properties
+  term: additionalProperties
+  aliases: [additionalProperties]
+  strict: true
+  wire: tools
+  definition: >-
+    A schema setting. Set to false, it refuses a field the schema does not name. This course's checker refuses it.
+
+- id: schema-validation
+  term: schema validation
+  aliases: [schema validation, validate, validating]
+  strict: true
+  wire: tools
+  definition: >-
+    Checking a value against a schema before the harness uses it. The checker returns the first reason the value fails.
+
+- id: structured-output
+  term: structured output
+  aliases: [structured output, structured outputs]
+  strict: true
+  wire: tools
+  definition: >-
+    A reply in a shape you asked for, such as a JSON object with named fields. It is still a model's reply: the shape can be right and the values wrong.
+
+- id: constrained-decoding
+  term: constrained decoding
+  aliases: [constrained decoding]
+  strict: true
+  wire: tools
+  definition: >-
+    Generating a reply so that only the tokens a schema allows can be chosen. A method, compared in this module.
+
+- id: enum
+  term: enum
+  aliases: [enum, enums]
+  strict: true
+  wire: tools
+  definition: >-
+    A field that may take only one of a short list of values.

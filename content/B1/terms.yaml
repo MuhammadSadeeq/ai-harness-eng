@@ -1,0 +1,70 @@
+- id: tool-definition
+  term: tool definition
+  aliases:
+  - tool definition
+  - tool definitions
+  strict: true
+  wire: tools
+  definition: The name, the description and the input schema that tell the model a tool exists and what to pass
+    it.
+- id: input-schema
+  term: input_schema
+  aliases:
+  - input_schema
+  - input schema
+  strict: true
+  wire: tools
+  definition: The part of a tool definition that says which fields the tool takes, their types, and which fields
+    are required.
+- id: tool-use
+  term: tool_use
+  aliases:
+  - tool_use
+  - tool_uses
+  strict: true
+  wire: tools
+  definition: A block in the model's reply that asks the harness to run a named tool with an input. The model writes
+    it; the harness runs it.
+- id: tool-result
+  term: tool_result
+  aliases:
+  - tool_result
+  - tool_results
+  strict: true
+  wire: tools
+  definition: The block that answers one tool_use. It carries the tool_use_id of the call and the output the harness
+    got back.
+- id: tool-use-id
+  term: tool_use_id
+  aliases:
+  - tool_use_id
+  - tool_use ids
+  - tool_use id
+  strict: true
+  wire: tools
+  definition: The id of a tool_use block. A tool_result names the id of the call it answers.
+- id: is-error
+  term: is_error
+  aliases:
+  - is_error
+  strict: true
+  wire: tools
+  definition: An optional field of a tool_result. It is set to true when the tool call failed, and says so to the
+    model.
+- id: parallel-tool-calls
+  term: parallel tool calls
+  aliases:
+  - parallel tool calls
+  - parallel tool call
+  strict: true
+  wire: tools
+  definition: Several tool_use blocks in one reply, so the harness runs them together and answers all of them in
+    one message.
+- id: function-calling
+  term: function calling
+  aliases:
+  - function calling
+  strict: false
+  wire: tools
+  definition: 'Another name for a tool call: the model writes a structured request for a named function with its
+    arguments.'

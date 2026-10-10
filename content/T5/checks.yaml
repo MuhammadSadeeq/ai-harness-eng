@@ -1,0 +1,41 @@
+- id: T5-c1
+  objective: T5.o1
+  mode: check
+  question: A response has status 429 and a retry-after header. Which part tells the client how long to wait?
+  options:
+  - text: The status code, 429.
+    why: No. The code names the error; it does not say how long to wait.
+    fact: api.error-429-rate-limit
+  - text: The retry-after header.
+    why: Right. The header says how long to wait, when it is present.
+    fact: api.error-429-retry-after
+  - text: The body, because it is always the last line.
+    why: No. Where the body sits does not tell the client a wait time.
+  answer: 1
+- id: T5-c2
+  objective: T5.o2
+  mode: check
+  question: Which status code means the API is temporarily overloaded?
+  options:
+  - text: '500'
+    why: No. 500 is an unexpected internal error.
+    fact: api.error-500-api-error
+  - text: '529'
+    why: Right. The error type is overloaded_error.
+    fact: api.error-529-overloaded
+  - text: '400'
+    why: No. 400 is a request format or content problem.
+    fact: api.error-400-invalid-request
+  answer: 1
+- id: T5-c3
+  objective: T5.o3
+  mode: check
+  question: What ends a server-sent event in this course's parser?
+  options:
+  - text: The end of the text, even without a blank line.
+    why: No. An event with no blank line after it is not returned yet.
+  - text: A blank line.
+    why: Right. In this course's parser a blank line ends the event, and only an event with data is returned.
+  - text: A line that starts with a colon.
+    why: No. A line that starts with a colon is a comment, and the parser skips it.
+  answer: 1

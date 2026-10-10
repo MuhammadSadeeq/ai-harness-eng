@@ -1,0 +1,98 @@
+id: T4-schema
+module: T4
+title: Check a value against a small schema
+objectives:
+- T4.o1
+- T4.o2
+minutes: 20
+hints:
+- 'Read test_kata.py. Each test names one rule: the path, the array items, the enum, the required list, the extra fields.'
+- Check the type first and return early on a mismatch. Then the enum. Then, for an object, the required fields, the properties
+  and the extra fields.
+- 'Nearly the code: in _check_object, loop over schema[''required''] and append a message when the name is not in value. Then
+  loop over the properties, and when additionalProperties is False, report each name not in properties.'
+from_memory: true
+wrong_solutions:
+- name: top-level-only
+  code: "from typing import Any\n\nTYPES: dict[str, Any] = {\n    \"object\": dict,\n    \"array\": list,\n    \"string\"\
+    : str,\n    \"boolean\": bool,\n    \"number\": (int, float),\n    \"integer\": int,\n}\n\n\ndef check(value: Any, schema:\
+    \ dict[str, Any], path: str = \"$\") -> list[str]:\n    \"\"\"Return the errors of value against schema, each as '<path>:\
+    \ <what is wrong>'.\"\"\"\n    kind = schema.get(\"type\")\n    if kind is not None and not _has_type(value, kind):\n\
+    \        return [f\"{path}: expected {kind}\"]\n    errors: list[str] = []\n    if \"enum\" in schema and value not in\
+    \ schema[\"enum\"]:\n        errors.append(f\"{path}: must be one of {schema['enum']}\")\n    if kind == \"object\":\n\
+    \        errors.extend(_check_object(value, schema, path))\n    if kind == \"array\" and \"items\" in schema:\n      \
+    \  for index, item in enumerate(value):\n            errors.extend(check(item, schema[\"items\"], f\"{path}[{index}]\"\
+    ))\n    return errors\n\n\ndef _has_type(value: Any, kind: str) -> bool:\n    if isinstance(value, bool) and kind in (\"\
+    integer\", \"number\"):\n        return False  # a JSON boolean is not a number, though Python makes bool an int\n   \
+    \ return isinstance(value, TYPES[kind])\n\n\ndef _check_object(value: dict[str, Any], schema: dict[str, Any], path: str)\
+    \ -> list[str]:\n    errors: list[str] = []\n    properties = schema.get(\"properties\", {})\n    for name in schema.get(\"\
+    required\", []):\n        if name not in value:\n            errors.append(f\"{path}: missing required field {name!r}\"\
+    )\n    if schema.get(\"additionalProperties\") is False:\n        for name in value:\n            if name not in properties:\n\
+    \                errors.append(f\"{path}: unexpected field {name!r}\")\n    return errors\n"
+- name: bool-is-integer
+  code: "from typing import Any\n\nTYPES: dict[str, Any] = {\n    \"object\": dict,\n    \"array\": list,\n    \"string\"\
+    : str,\n    \"boolean\": bool,\n    \"number\": (int, float),\n    \"integer\": int,\n}\n\n\ndef check(value: Any, schema:\
+    \ dict[str, Any], path: str = \"$\") -> list[str]:\n    \"\"\"Return the errors of value against schema, each as '<path>:\
+    \ <what is wrong>'.\"\"\"\n    kind = schema.get(\"type\")\n    if kind is not None and not _has_type(value, kind):\n\
+    \        return [f\"{path}: expected {kind}\"]\n    errors: list[str] = []\n    if \"enum\" in schema and value not in\
+    \ schema[\"enum\"]:\n        errors.append(f\"{path}: must be one of {schema['enum']}\")\n    if kind == \"object\":\n\
+    \        errors.extend(_check_object(value, schema, path))\n    if kind == \"array\" and \"items\" in schema:\n      \
+    \  for index, item in enumerate(value):\n            errors.extend(check(item, schema[\"items\"], f\"{path}[{index}]\"\
+    ))\n    return errors\n\n\ndef _has_type(value: Any, kind: str) -> bool:\n    return isinstance(value, TYPES[kind])\n\n\
+    \ndef _check_object(value: dict[str, Any], schema: dict[str, Any], path: str) -> list[str]:\n    errors: list[str] = []\n\
+    \    properties = schema.get(\"properties\", {})\n    for name in schema.get(\"required\", []):\n        if name not in\
+    \ value:\n            errors.append(f\"{path}: missing required field {name!r}\")\n    for name, sub in properties.items():\n\
+    \        if name in value:\n            errors.extend(check(value[name], sub, f\"{path}.{name}\"))\n    if schema.get(\"\
+    additionalProperties\") is False:\n        for name in value:\n            if name not in properties:\n              \
+    \  errors.append(f\"{path}: unexpected field {name!r}\")\n    return errors\n"
+- name: ignores-extra-fields
+  code: "from typing import Any\n\nTYPES: dict[str, Any] = {\n    \"object\": dict,\n    \"array\": list,\n    \"string\"\
+    : str,\n    \"boolean\": bool,\n    \"number\": (int, float),\n    \"integer\": int,\n}\n\n\ndef check(value: Any, schema:\
+    \ dict[str, Any], path: str = \"$\") -> list[str]:\n    \"\"\"Return the errors of value against schema, each as '<path>:\
+    \ <what is wrong>'.\"\"\"\n    kind = schema.get(\"type\")\n    if kind is not None and not _has_type(value, kind):\n\
+    \        return [f\"{path}: expected {kind}\"]\n    errors: list[str] = []\n    if \"enum\" in schema and value not in\
+    \ schema[\"enum\"]:\n        errors.append(f\"{path}: must be one of {schema['enum']}\")\n    if kind == \"object\":\n\
+    \        errors.extend(_check_object(value, schema, path))\n    if kind == \"array\" and \"items\" in schema:\n      \
+    \  for index, item in enumerate(value):\n            errors.extend(check(item, schema[\"items\"], f\"{path}[{index}]\"\
+    ))\n    return errors\n\n\ndef _has_type(value: Any, kind: str) -> bool:\n    if isinstance(value, bool) and kind in (\"\
+    integer\", \"number\"):\n        return False  # a JSON boolean is not a number, though Python makes bool an int\n   \
+    \ return isinstance(value, TYPES[kind])\n\n\ndef _check_object(value: dict[str, Any], schema: dict[str, Any], path: str)\
+    \ -> list[str]:\n    errors: list[str] = []\n    properties = schema.get(\"properties\", {})\n    for name in schema.get(\"\
+    required\", []):\n        if name not in value:\n            errors.append(f\"{path}: missing required field {name!r}\"\
+    )\n    for name, sub in properties.items():\n        if name in value:\n            errors.extend(check(value[name], sub,\
+    \ f\"{path}.{name}\"))\n    if False:\n        for name in value:\n            if name not in properties:\n          \
+    \      errors.append(f\"{path}: unexpected field {name!r}\")\n    return errors\n"
+- name: everything-required
+  code: "from typing import Any\n\nTYPES: dict[str, Any] = {\n    \"object\": dict,\n    \"array\": list,\n    \"string\"\
+    : str,\n    \"boolean\": bool,\n    \"number\": (int, float),\n    \"integer\": int,\n}\n\n\ndef check(value: Any, schema:\
+    \ dict[str, Any], path: str = \"$\") -> list[str]:\n    \"\"\"Return the errors of value against schema, each as '<path>:\
+    \ <what is wrong>'.\"\"\"\n    kind = schema.get(\"type\")\n    if kind is not None and not _has_type(value, kind):\n\
+    \        return [f\"{path}: expected {kind}\"]\n    errors: list[str] = []\n    if \"enum\" in schema and value not in\
+    \ schema[\"enum\"]:\n        errors.append(f\"{path}: must be one of {schema['enum']}\")\n    if kind == \"object\":\n\
+    \        errors.extend(_check_object(value, schema, path))\n    if kind == \"array\" and \"items\" in schema:\n      \
+    \  for index, item in enumerate(value):\n            errors.extend(check(item, schema[\"items\"], f\"{path}[{index}]\"\
+    ))\n    return errors\n\n\ndef _has_type(value: Any, kind: str) -> bool:\n    if isinstance(value, bool) and kind in (\"\
+    integer\", \"number\"):\n        return False  # a JSON boolean is not a number, though Python makes bool an int\n   \
+    \ return isinstance(value, TYPES[kind])\n\n\ndef _check_object(value: dict[str, Any], schema: dict[str, Any], path: str)\
+    \ -> list[str]:\n    errors: list[str] = []\n    properties = schema.get(\"properties\", {})\n    for name in list(properties):\n\
+    \        if name not in value:\n            errors.append(f\"{path}: missing required field {name!r}\")\n    for name,\
+    \ sub in properties.items():\n        if name in value:\n            errors.extend(check(value[name], sub, f\"{path}.{name}\"\
+    ))\n    if schema.get(\"additionalProperties\") is False:\n        for name in value:\n            if name not in properties:\n\
+    \                errors.append(f\"{path}: unexpected field {name!r}\")\n    return errors\n"
+- name: no-enum
+  code: "from typing import Any\n\nTYPES: dict[str, Any] = {\n    \"object\": dict,\n    \"array\": list,\n    \"string\"\
+    : str,\n    \"boolean\": bool,\n    \"number\": (int, float),\n    \"integer\": int,\n}\n\n\ndef check(value: Any, schema:\
+    \ dict[str, Any], path: str = \"$\") -> list[str]:\n    \"\"\"Return the errors of value against schema, each as '<path>:\
+    \ <what is wrong>'.\"\"\"\n    kind = schema.get(\"type\")\n    if kind is not None and not _has_type(value, kind):\n\
+    \        return [f\"{path}: expected {kind}\"]\n    errors: list[str] = []\n    if False:\n        errors.append(f\"{path}:\
+    \ must be one of {schema['enum']}\")\n    if kind == \"object\":\n        errors.extend(_check_object(value, schema, path))\n\
+    \    if kind == \"array\" and \"items\" in schema:\n        for index, item in enumerate(value):\n            errors.extend(check(item,\
+    \ schema[\"items\"], f\"{path}[{index}]\"))\n    return errors\n\n\ndef _has_type(value: Any, kind: str) -> bool:\n  \
+    \  if isinstance(value, bool) and kind in (\"integer\", \"number\"):\n        return False  # a JSON boolean is not a\
+    \ number, though Python makes bool an int\n    return isinstance(value, TYPES[kind])\n\n\ndef _check_object(value: dict[str,\
+    \ Any], schema: dict[str, Any], path: str) -> list[str]:\n    errors: list[str] = []\n    properties = schema.get(\"properties\"\
+    , {})\n    for name in schema.get(\"required\", []):\n        if name not in value:\n            errors.append(f\"{path}:\
+    \ missing required field {name!r}\")\n    for name, sub in properties.items():\n        if name in value:\n          \
+    \  errors.extend(check(value[name], sub, f\"{path}.{name}\"))\n    if schema.get(\"additionalProperties\") is False:\n\
+    \        for name in value:\n            if name not in properties:\n                errors.append(f\"{path}: unexpected\
+    \ field {name!r}\")\n    return errors\n"

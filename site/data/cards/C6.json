@@ -1,0 +1,51 @@
+[
+ {
+  "back": "A failure likely to pass on its own. A retry may succeed, so the harness retries it with a limit.",
+  "front": "What is a transient error?",
+  "id": "C6-k1",
+  "objective": "C6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A failure that repeats on every try. The harness does not retry it: it fixes the request, or stops.",
+  "front": "What is a permanent error?",
+  "id": "C6-k2",
+  "objective": "C6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A wait that doubles after each failed try, up to a cap.",
+  "front": "What is exponential backoff?",
+  "id": "C6-k3",
+  "objective": "C6.o2",
+  "type": "term"
+ },
+ {
+  "back": "Clients that failed together would retry together. A random part of the wait spreads their retries out.",
+  "front": "Why does jitter matter?",
+  "id": "C6-k4",
+  "objective": "C6.o2",
+  "type": "term"
+ },
+ {
+  "back": "After a set number of failures in a row, it opens and holds calls back for a cooldown, so retries stop adding load.",
+  "front": "What does a circuit breaker do?",
+  "id": "C6-k5",
+  "objective": "C6.o3",
+  "type": "term"
+ },
+ {
+  "back": "A limit on the retries a run or client may make, so retries cannot grow without end.",
+  "front": "What is a retry budget?",
+  "id": "C6-k6",
+  "objective": "C6.o3",
+  "type": "term"
+ },
+ {
+  "back": "A value sent with a request, so a repeated request is recognised and not run twice.",
+  "front": "What is an idempotency key?",
+  "id": "C6-k7",
+  "objective": "C6.o5",
+  "type": "term"
+ }
+]

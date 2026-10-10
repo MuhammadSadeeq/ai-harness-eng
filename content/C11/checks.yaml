@@ -1,0 +1,78 @@
+- id: C11-p1
+  objective: C11.o1
+  mode: predict
+  question: "The model clears a marker that keeps a test on, and the gate reads the live markers. What does the gate say?"
+  options:
+    - text: "It fails, because the marker is gone."
+      why: "Tempting. A missing marker looks like a failure, but a switched-off test has nothing to fail."
+    - text: "It passes: with the test switched off, the live suite has nothing left to fail."
+      why: "Right. The gate reads the live file, and the live file no longer keeps the test on."
+    - text: "It asks the model to restore the marker."
+      why: "Tempting. The gate has no way to ask; it only passes or fails."
+  answer: 1
+  outcome: "The gate passed. The run ended as done while the work was still wrong."
+
+- id: C11-c1
+  objective: C11.o1
+  mode: check
+  question: "Where does a verification gate sit?"
+  options:
+    - text: "Between the model's done claim and the run's success."
+      why: "Right. A claim passes only when the gate runs and passes."
+    - text: "Before the first model call."
+      why: "Wrong. Before the work there is no claim to check."
+    - text: "Inside the model's reply."
+      why: "Wrong. The gate is in the harness; the reply is what it checks."
+  answer: 0
+
+- id: C11-c2
+  objective: C11.o2
+  mode: check
+  question: "Which of these is a computational check?"
+  options:
+    - text: "Running the tests."
+      why: "Right. A program runs the tests and decides, whoever asks."
+    - text: "Asking the model whether its code is correct."
+      why: "Wrong. That is a self-report, not a check a program decides."
+    - text: "Reading the code and judging it."
+      why: "Tempting. A reading is an inferential check: useful, but not a decision a program makes."
+  answer: 0
+
+- id: C11-c3
+  objective: C11.o3
+  mode: check
+  question: "A check runs after the diff is written, and compares the tests with the original. Is it a guide or a sensor?"
+  options:
+    - text: "A guide, because it is a rule about the work."
+      why: "Tempting. A rule in the prompt is a guide; a check that runs after the diff is a sensor."
+    - text: "A sensor, because it checks after the work."
+      why: "Right. Sensors check after the work; guides steer before it."
+    - text: "Neither: checks are not controls."
+      why: "Wrong. Both guides and sensors are controls on the run."
+  answer: 1
+
+- id: C11-c4
+  objective: C11.o4
+  mode: check
+  question: "An independent reviewer is set up. What should it see?"
+  options:
+    - text: "The task and the diff, not the author's reasoning."
+      why: "Right. The reviewer judges the result, not the story that led to it."
+    - text: "The author's full reasoning and the diff."
+      why: "Wrong. Then the reviewer reads the same story, and is not independent."
+    - text: "Only the final message."
+      why: "Wrong. A message is a claim; the reviewer needs the diff to judge it."
+  answer: 0
+
+- id: C11-c5
+  objective: C11.o5
+  mode: check
+  question: "Which of these is test tampering?"
+  options:
+    - text: "Clearing a marker so a test is switched off."
+      why: "Right. The test still exists, but it no longer runs, so it cannot fail."
+    - text: "Adding a new test for the change."
+      why: "Wrong. A new test that checks the change is good practice, not tampering."
+    - text: "Running the tests twice."
+      why: "Wrong. Running the tests again changes nothing about what they check."
+  answer: 0

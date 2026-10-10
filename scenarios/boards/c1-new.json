@@ -1,0 +1,20 @@
+{
+ "id": "c1-new",
+ "label": "New board",
+ "modules": {
+  "rules_file": {},
+  "permissions": {
+   "mode": "allow",
+   "rules": [
+    {
+     "decision": "deny",
+     "tool": "edit_file",
+     "match": {
+      "path": "tests/**"
+     },
+     "reason": "tests are off limits: this rule holds in code"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,22 @@
+id: C7-errors
+module: C7
+title: Errors that say what to do next
+objectives:
+- C7.o3
+minutes: 20
+hints:
+- Each text names the thing that went wrong and the next thing to do. Build the sentence in that order.
+- For the field error, quote each bad field, then join the allowed fields in the tool's own order.
+- 'Nearly the code: f"{tool} has no {noun} {names}. It takes: {'', ''.join(allowed)}. Send again with only those fields."; the counts use f"{n:,}".'
+from_memory: true
+wrong_solutions:
+- name: no-next-step
+  code: "def input_error(tool, allowed, bad):\n    return f\"{tool} has no field {bad[0]}.\"\n\n\ndef no_match(query, path):\n    return \"No match.\"\n\n\ndef truncated(shown, total):\n    return f\"Showing {shown} of {total} lines.\"\n"
+- name: bad-field-not-named
+  code: "def input_error(tool, allowed, bad):\n    return f\"Invalid input. It takes: {', '.join(allowed)}. Send again with only those fields.\"\n\n\ndef no_match(query, path):\n    return f\"No match for '{query}' in {path}. Try a shorter query, or path '.' for the whole repository.\"\n\n\ndef truncated(shown, total):\n    return f\"Showing the first {shown:,} of {total:,} lines. Ask for a narrower range, or search for the text you need.\"\n"
+- name: sorted-allowed-fields
+  code: "def input_error(tool, allowed, bad):\n    noun = \"field\" if len(bad) == 1 else \"fields\"\n    names = \", \".join(f\"'{field}'\" for field in bad)\n    return f\"{tool} has no {noun} {names}. It takes: {', '.join(sorted(allowed))}. Send again with only those fields.\"\n\n\ndef no_match(query, path):\n    return f\"No match for '{query}' in {path}. Try a shorter query, or path '.' for the whole repository.\"\n\n\ndef truncated(shown, total):\n    return f\"Showing the first {shown:,} of {total:,} lines. Ask for a narrower range, or search for the text you need.\"\n"
+- name: no-thousands-commas
+  code: "def input_error(tool, allowed, bad):\n    noun = \"field\" if len(bad) == 1 else \"fields\"\n    names = \", \".join(f\"'{field}'\" for field in bad)\n    return f\"{tool} has no {noun} {names}. It takes: {', '.join(allowed)}. Send again with only those fields.\"\n\n\ndef no_match(query, path):\n    return f\"No match for '{query}' in {path}. Try a shorter query, or path '.' for the whole repository.\"\n\n\ndef truncated(shown, total):\n    return f\"Showing the first {shown} of {total} lines. Ask for a narrower range, or search for the text you need.\"\n"
+- name: verbose-error
+  code: "def input_error(tool, allowed, bad):\n    return (f\"The tool {tool} was called with a field that it does not recognise: {', '.join(bad)}. \"\n            f\"The fields that the tool accepts are {', '.join(allowed)}. Please try the call again using only the accepted fields, \"\n            \"and make sure that every field name is spelled exactly as listed above.\")\n\n\ndef no_match(query, path):\n    return f\"No match for '{query}' in {path}. Try a shorter query, or path '.' for the whole repository.\"\n\n\ndef truncated(shown, total):\n    return f\"Showing the first {shown:,} of {total:,} lines. Ask for a narrower range, or search for the text you need.\"\n"

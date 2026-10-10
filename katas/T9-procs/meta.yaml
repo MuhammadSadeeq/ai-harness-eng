@@ -1,0 +1,113 @@
+id: T9-procs
+module: T9
+title: Read a process table and check who may write
+objectives:
+- T9.o1
+- T9.o2
+- T9.o3
+minutes: 25
+hints:
+- Read test_kata.py. The table tests check the columns; the runaway tests check the walk down the tree; the write tests check
+  which triple applies.
+- 'parse_table: split each row with line.split(None, 5), so the first five words and the rest of the line come apart. runaway_children:
+  collect the children of each pid, then walk down from the parent.'
+- 'Nearly the code: in can_write, pick mode[0:3] for the owner, mode[3:6] for the group, mode[6:9] for others, and return
+  triple[1] == ''w''. In runaway_children, return sorted(pid for pid in found if cpu[pid] > cpu_limit).'
+from_memory: true
+wrong_solutions:
+- name: command-first-word
+  code: "from typing import Any\n\nRow = dict[str, Any]\n\n\ndef parse_table(text: str) -> list[Row]:\n    \"\"\"Read a process\
+    \ table: a header line, then one row per process.\"\"\"\n    rows: list[Row] = []\n    for line in text.split(\"\\n\"\
+    ):\n        if not line.strip() or line.split()[0] == \"PID\":\n            continue\n        parts = line.split(None,\
+    \ 5)\n        pid, ppid, user, cpu, cwd = parts[:5]\n        command = parts[5].split()[0] if len(parts) > 5 else \"\"\
+    \n        rows.append({\"pid\": int(pid), \"ppid\": int(ppid), \"user\": user,\n                     \"cpu\": float(cpu),\
+    \ \"cwd\": cwd, \"command\": command})\n    return rows\n\n\ndef runaway_children(rows: list[Row], parent: int, cpu_limit:\
+    \ float) -> list[int]:\n    \"\"\"The pids of the parent's children and grandchildren (any depth) above the cpu limit.\"\
+    \"\"\n    children: dict[int, list[int]] = {}\n    for row in rows:\n        children.setdefault(row[\"ppid\"], []).append(row[\"\
+    pid\"])\n    found: set[int] = set()\n    frontier = [parent]\n    while frontier:\n        current = frontier.pop()\n\
+    \        for child in children.get(current, []):\n            if child not in found:\n                found.add(child)\n\
+    \                frontier.append(child)\n    cpu = {row[\"pid\"]: row[\"cpu\"] for row in rows}\n    return sorted(pid\
+    \ for pid in found if cpu[pid] > cpu_limit)\n\n\ndef can_write(mode: str, owner: str, group: str, user: str, user_groups:\
+    \ list[str]) -> bool:\n    \"\"\"Whether user may write a file with this mode, owner and group.\"\"\"\n    if user ==\
+    \ owner:\n        triple = mode[0:3]\n    elif group in user_groups:\n        triple = mode[3:6]\n    else:\n        triple\
+    \ = mode[6:9]\n    return triple[1] == \"w\"\n"
+- name: top-level-only
+  code: "from typing import Any\n\nRow = dict[str, Any]\n\n\ndef parse_table(text: str) -> list[Row]:\n    \"\"\"Read a process\
+    \ table: a header line, then one row per process.\"\"\"\n    rows: list[Row] = []\n    for line in text.split(\"\\n\"\
+    ):\n        if not line.strip() or line.split()[0] == \"PID\":\n            continue\n        parts = line.split(None,\
+    \ 5)\n        pid, ppid, user, cpu, cwd = parts[:5]\n        command = parts[5] if len(parts) > 5 else \"\"\n        rows.append({\"\
+    pid\": int(pid), \"ppid\": int(ppid), \"user\": user,\n                     \"cpu\": float(cpu), \"cwd\": cwd, \"command\"\
+    : command})\n    return rows\n\n\ndef runaway_children(rows: list[Row], parent: int, cpu_limit: float) -> list[int]:\n\
+    \    \"\"\"The pids of the parent's children and grandchildren (any depth) above the cpu limit.\"\"\"\n    children: dict[int,\
+    \ list[int]] = {}\n    for row in rows:\n        children.setdefault(row[\"ppid\"], []).append(row[\"pid\"])\n    found:\
+    \ set[int] = set()\n    frontier = [parent]\n    while frontier:\n        current = frontier.pop()\n        for child\
+    \ in children.get(current, []):\n            if child not in found:\n                found.add(child)\n              \
+    \  pass\n    cpu = {row[\"pid\"]: row[\"cpu\"] for row in rows}\n    return sorted(pid for pid in found if cpu[pid] >\
+    \ cpu_limit)\n\n\ndef can_write(mode: str, owner: str, group: str, user: str, user_groups: list[str]) -> bool:\n    \"\
+    \"\"Whether user may write a file with this mode, owner and group.\"\"\"\n    if user == owner:\n        triple = mode[0:3]\n\
+    \    elif group in user_groups:\n        triple = mode[3:6]\n    else:\n        triple = mode[6:9]\n    return triple[1]\
+    \ == \"w\"\n"
+- name: parent-listed
+  code: "from typing import Any\n\nRow = dict[str, Any]\n\n\ndef parse_table(text: str) -> list[Row]:\n    \"\"\"Read a process\
+    \ table: a header line, then one row per process.\"\"\"\n    rows: list[Row] = []\n    for line in text.split(\"\\n\"\
+    ):\n        if not line.strip() or line.split()[0] == \"PID\":\n            continue\n        parts = line.split(None,\
+    \ 5)\n        pid, ppid, user, cpu, cwd = parts[:5]\n        command = parts[5] if len(parts) > 5 else \"\"\n        rows.append({\"\
+    pid\": int(pid), \"ppid\": int(ppid), \"user\": user,\n                     \"cpu\": float(cpu), \"cwd\": cwd, \"command\"\
+    : command})\n    return rows\n\n\ndef runaway_children(rows: list[Row], parent: int, cpu_limit: float) -> list[int]:\n\
+    \    \"\"\"The pids of the parent's children and grandchildren (any depth) above the cpu limit.\"\"\"\n    children: dict[int,\
+    \ list[int]] = {}\n    for row in rows:\n        children.setdefault(row[\"ppid\"], []).append(row[\"pid\"])\n    found:\
+    \ set[int] = set()\n    frontier = [parent]\n    while frontier:\n        current = frontier.pop()\n        for child\
+    \ in children.get(current, []):\n            if child not in found:\n                found.add(child)\n              \
+    \  frontier.append(child)\n    cpu = {row[\"pid\"]: row[\"cpu\"] for row in rows}\n    return sorted(pid for pid in found\
+    \ | {parent} if cpu.get(pid, 0.0) > cpu_limit)\n\n\ndef can_write(mode: str, owner: str, group: str, user: str, user_groups:\
+    \ list[str]) -> bool:\n    \"\"\"Whether user may write a file with this mode, owner and group.\"\"\"\n    if user ==\
+    \ owner:\n        triple = mode[0:3]\n    elif group in user_groups:\n        triple = mode[3:6]\n    else:\n        triple\
+    \ = mode[6:9]\n    return triple[1] == \"w\"\n"
+- name: at-limit-listed
+  code: "from typing import Any\n\nRow = dict[str, Any]\n\n\ndef parse_table(text: str) -> list[Row]:\n    \"\"\"Read a process\
+    \ table: a header line, then one row per process.\"\"\"\n    rows: list[Row] = []\n    for line in text.split(\"\\n\"\
+    ):\n        if not line.strip() or line.split()[0] == \"PID\":\n            continue\n        parts = line.split(None,\
+    \ 5)\n        pid, ppid, user, cpu, cwd = parts[:5]\n        command = parts[5] if len(parts) > 5 else \"\"\n        rows.append({\"\
+    pid\": int(pid), \"ppid\": int(ppid), \"user\": user,\n                     \"cpu\": float(cpu), \"cwd\": cwd, \"command\"\
+    : command})\n    return rows\n\n\ndef runaway_children(rows: list[Row], parent: int, cpu_limit: float) -> list[int]:\n\
+    \    \"\"\"The pids of the parent's children and grandchildren (any depth) above the cpu limit.\"\"\"\n    children: dict[int,\
+    \ list[int]] = {}\n    for row in rows:\n        children.setdefault(row[\"ppid\"], []).append(row[\"pid\"])\n    found:\
+    \ set[int] = set()\n    frontier = [parent]\n    while frontier:\n        current = frontier.pop()\n        for child\
+    \ in children.get(current, []):\n            if child not in found:\n                found.add(child)\n              \
+    \  frontier.append(child)\n    cpu = {row[\"pid\"]: row[\"cpu\"] for row in rows}\n    return sorted(pid for pid in found\
+    \ if cpu[pid] >= cpu_limit)\n\n\ndef can_write(mode: str, owner: str, group: str, user: str, user_groups: list[str]) ->\
+    \ bool:\n    \"\"\"Whether user may write a file with this mode, owner and group.\"\"\"\n    if user == owner:\n     \
+    \   triple = mode[0:3]\n    elif group in user_groups:\n        triple = mode[3:6]\n    else:\n        triple = mode[6:9]\n\
+    \    return triple[1] == \"w\"\n"
+- name: group-skipped
+  code: "from typing import Any\n\nRow = dict[str, Any]\n\n\ndef parse_table(text: str) -> list[Row]:\n    \"\"\"Read a process\
+    \ table: a header line, then one row per process.\"\"\"\n    rows: list[Row] = []\n    for line in text.split(\"\\n\"\
+    ):\n        if not line.strip() or line.split()[0] == \"PID\":\n            continue\n        parts = line.split(None,\
+    \ 5)\n        pid, ppid, user, cpu, cwd = parts[:5]\n        command = parts[5] if len(parts) > 5 else \"\"\n        rows.append({\"\
+    pid\": int(pid), \"ppid\": int(ppid), \"user\": user,\n                     \"cpu\": float(cpu), \"cwd\": cwd, \"command\"\
+    : command})\n    return rows\n\n\ndef runaway_children(rows: list[Row], parent: int, cpu_limit: float) -> list[int]:\n\
+    \    \"\"\"The pids of the parent's children and grandchildren (any depth) above the cpu limit.\"\"\"\n    children: dict[int,\
+    \ list[int]] = {}\n    for row in rows:\n        children.setdefault(row[\"ppid\"], []).append(row[\"pid\"])\n    found:\
+    \ set[int] = set()\n    frontier = [parent]\n    while frontier:\n        current = frontier.pop()\n        for child\
+    \ in children.get(current, []):\n            if child not in found:\n                found.add(child)\n              \
+    \  frontier.append(child)\n    cpu = {row[\"pid\"]: row[\"cpu\"] for row in rows}\n    return sorted(pid for pid in found\
+    \ if cpu[pid] > cpu_limit)\n\n\ndef can_write(mode: str, owner: str, group: str, user: str, user_groups: list[str]) ->\
+    \ bool:\n    \"\"\"Whether user may write a file with this mode, owner and group.\"\"\"\n    if user == owner:\n     \
+    \   triple = mode[0:3]\n    elif False:\n        triple = mode[3:6]\n    else:\n        triple = mode[6:9]\n    return\
+    \ triple[1] == \"w\"\n"
+- name: reads-not-writes
+  code: "from typing import Any\n\nRow = dict[str, Any]\n\n\ndef parse_table(text: str) -> list[Row]:\n    \"\"\"Read a process\
+    \ table: a header line, then one row per process.\"\"\"\n    rows: list[Row] = []\n    for line in text.split(\"\\n\"\
+    ):\n        if not line.strip() or line.split()[0] == \"PID\":\n            continue\n        parts = line.split(None,\
+    \ 5)\n        pid, ppid, user, cpu, cwd = parts[:5]\n        command = parts[5] if len(parts) > 5 else \"\"\n        rows.append({\"\
+    pid\": int(pid), \"ppid\": int(ppid), \"user\": user,\n                     \"cpu\": float(cpu), \"cwd\": cwd, \"command\"\
+    : command})\n    return rows\n\n\ndef runaway_children(rows: list[Row], parent: int, cpu_limit: float) -> list[int]:\n\
+    \    \"\"\"The pids of the parent's children and grandchildren (any depth) above the cpu limit.\"\"\"\n    children: dict[int,\
+    \ list[int]] = {}\n    for row in rows:\n        children.setdefault(row[\"ppid\"], []).append(row[\"pid\"])\n    found:\
+    \ set[int] = set()\n    frontier = [parent]\n    while frontier:\n        current = frontier.pop()\n        for child\
+    \ in children.get(current, []):\n            if child not in found:\n                found.add(child)\n              \
+    \  frontier.append(child)\n    cpu = {row[\"pid\"]: row[\"cpu\"] for row in rows}\n    return sorted(pid for pid in found\
+    \ if cpu[pid] > cpu_limit)\n\n\ndef can_write(mode: str, owner: str, group: str, user: str, user_groups: list[str]) ->\
+    \ bool:\n    \"\"\"Whether user may write a file with this mode, owner and group.\"\"\"\n    if user == owner:\n     \
+    \   triple = mode[0:3]\n    elif group in user_groups:\n        triple = mode[3:6]\n    else:\n        triple = mode[6:9]\n\
+    \    return triple[0] == \"w\"\n"

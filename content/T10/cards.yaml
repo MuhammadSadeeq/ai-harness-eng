@@ -1,0 +1,30 @@
+- id: T10-k1
+  type: term
+  objective: T10.o1
+  front: What kind of call fits async?
+  back: A call that mostly waits, such as a web request.
+- id: T10-k2
+  type: term
+  objective: T10.o2
+  front: Which calls may overlap in run_tool_calls?
+  back: The safe calls, which are started together.
+- id: T10-k3
+  type: term
+  objective: T10.o2
+  front: Which calls run one at a time?
+  back: The unsafe calls, which change shared state, in the order given.
+- id: T10-k4
+  type: term
+  objective: T10.o2
+  front: In what order do results come back?
+  back: The order the calls were given, whatever finished first.
+- id: T10-k5
+  type: term
+  objective: T10.o3
+  front: What is a race condition?
+  back: A bug where the result depends on which of two steps runs first.
+- id: T10-k6
+  type: term
+  objective: T10.o3
+  front: Why did the two increments in the snippet end at 1?
+  back: Both read 0 before either wrote, so the second write overwrote the first.

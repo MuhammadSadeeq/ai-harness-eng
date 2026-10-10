@@ -1,0 +1,42 @@
+- id: A4-c1
+  type: term
+  objective: A4.o1
+  front: "What is a request?"
+  back: "What the harness sends for one model call: the system prompt, the tools and the messages."
+
+- id: A4-c2
+  type: term
+  objective: A4.o2
+  front: "What is a content block?"
+  back: "One typed part of a response: text, or a tool request. Its type says what fields it has."
+
+- id: A4-c3
+  type: term
+  objective: A4.o3
+  front: "What does stop_reason tell the harness?"
+  back: "Why the model stopped: end_turn, tool_use, max_tokens and a few others. The harness acts on each one."
+
+- id: A4-c4
+  type: term
+  objective: A4.o3
+  front: "What is max_tokens as a stop reason?"
+  back: "The response hit the request's length limit, so it may be cut off. Do not run a half-written tool request."
+
+- id: A4-c5
+  type: term
+  objective: A4.o4
+  front: "What is usage?"
+  back: "The counts in a response: the input and output tokens of the call. The cost of a call comes from them."
+
+- id: A4-c6
+  type: term
+  objective: A4.o5
+  front: "What is streaming?"
+  back: "A reply that arrives as a sequence of events. The events build the same message, in order."
+
+- id: A4-c7
+  type: wire-question
+  objective: A4.o2
+  wire: loop
+  front: "Why is a reply a list of typed blocks, not one string?"
+  back: "Because a reply can mix text and tool requests. Each block says which it is, so the harness reads them one by one."

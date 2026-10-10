@@ -1,0 +1,63 @@
+- id: permission-policy
+  term: permission policy
+  aliases: [permission policy, permission policies]
+  strict: true
+  wire: permissions
+  definition: >-
+    The rules that decide, for each tool call, whether it runs, asks a person, or is denied, written down as code.
+
+- id: allow
+  term: allow
+  aliases: [allow]
+  strict: false
+  wire: permissions
+  definition: >-
+    A decision that lets a tool call run without asking anyone.
+
+- id: ask
+  term: ask
+  aliases: [ask]
+  strict: false
+  wire: permissions
+  definition: >-
+    A decision that sends the call to a person before it runs. Asking is a cost: every prompt is a chance to approve by habit.
+
+- id: deny
+  term: deny
+  aliases: [deny]
+  strict: false
+  wire: permissions
+  definition: >-
+    A decision that stops the tool call. It runs nothing, and the model gets the reason.
+
+- id: permission-mode
+  term: permission mode
+  aliases: [permission mode, permission modes]
+  strict: true
+  wire: permissions
+  definition: >-
+    The default decision for a call that no rule matches: allow, ask or deny.
+
+- id: approval-fatigue
+  term: approval fatigue
+  aliases: [approval fatigue]
+  strict: true
+  wire: permissions
+  definition: >-
+    The loss of care that follows many prompts, so that the one dangerous prompt is approved without a look.
+
+- id: allow-list
+  term: allow-list
+  aliases: [allow-list, allow-lists]
+  strict: true
+  wire: permissions
+  definition: >-
+    A list of commands or tools that may run without asking. Naming a command is not enough on its own: its target still matters.
+
+- id: decision-order
+  term: decision order
+  aliases: [decision order]
+  strict: true
+  wire: permissions
+  definition: >-
+    The fixed order a policy is checked in: all deny rules, then all ask rules, then all allow rules, then the mode's default.

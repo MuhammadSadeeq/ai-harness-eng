@@ -1,0 +1,65 @@
+[
+ {
+  "answer": 0,
+  "id": "T8-c1",
+  "mode": "check",
+  "objective": "T8.o1",
+  "options": [
+   {
+    "text": "The lines that start with +",
+    "why": "Right. The kata counts the + lines as added, with their line numbers in the new file."
+   },
+   {
+    "text": "The lines that start with -",
+    "why": "No. A - line is removed, so it is not in the new file."
+   },
+   {
+    "text": "The lines that have a number in them",
+    "why": "No. A number in a line's text does not make it new."
+   }
+  ],
+  "question": "In this course's diff, which lines are new in the file?"
+ },
+ {
+  "answer": 0,
+  "id": "T8-c2",
+  "mode": "check",
+  "objective": "T8.o2",
+  "options": [
+   {
+    "text": "Read the diff, so you know what the undo will remove.",
+    "why": "Right. In this course, you read the change before you undo it."
+   },
+   {
+    "text": "Delete the whole folder.",
+    "why": "No. That removes more than the agent's change, and your own work with it."
+   },
+   {
+    "text": "Push the commit with force, so the history is rewritten.",
+    "why": "No. A force push is one of the dangerous actions the course names in its gatekeeper."
+   }
+  ],
+  "question": "An agent changed a file and you want the change gone. What is the first step?"
+ },
+ {
+  "answer": 0,
+  "id": "T8-c3",
+  "mode": "check",
+  "objective": "T8.o3",
+  "options": [
+   {
+    "text": "So its changes can be reviewed apart from your own work.",
+    "why": "Right. Separate work is easier to review, which is the course's reason."
+   },
+   {
+    "text": "So it runs faster.",
+    "why": "No. The course does not claim speed for this practice."
+   },
+   {
+    "text": "So the diff is always empty.",
+    "why": "No. The point is to see the agent's diff, not to hide it."
+   }
+  ],
+  "question": "Why keep an agent's work on its own line, in a branch or a worktree?"
+ }
+]

@@ -1,0 +1,52 @@
+[
+ {
+  "back": "One of the eight parts of a harness. Each wire answers one question about a turn.",
+  "front": "What is a wire?",
+  "id": "B4-k1",
+  "objective": "B4.o1",
+  "type": "term"
+ },
+ {
+  "back": "One turn of a run as eight wires in order, with the harness settings beside them.",
+  "front": "What does the Turn Clock show?",
+  "id": "B4-k2",
+  "objective": "B4.o1",
+  "type": "term"
+ },
+ {
+  "back": "Permissions & sandbox.",
+  "front": "Which wire comes right after Tools on the clock?",
+  "id": "B4-k3",
+  "objective": "B4.o1",
+  "type": "term"
+ },
+ {
+  "back": "What happens next, what do we carry, and when do we stop?",
+  "front": "What does the Loop & state wire answer?",
+  "id": "B4-k4",
+  "objective": "B4.o2",
+  "type": "term"
+ },
+ {
+  "back": "If it isn't in the trace, it didn't happen.",
+  "front": "Which law goes with Observability?",
+  "id": "B4-k5",
+  "objective": "B4.o4",
+  "type": "term"
+ },
+ {
+  "back": "A tool is a user interface for a model.",
+  "front": "Which law goes with Tools?",
+  "id": "B4-k6",
+  "objective": "B4.o4",
+  "type": "term"
+ },
+ {
+  "back": "Verification & evals. Nothing checked the done claim.",
+  "front": "The model says the tests pass, and nothing ran them. Which wire is at fault?",
+  "id": "B4-k7",
+  "objective": "B4.o3",
+  "type": "which-wire",
+  "wire": "verify"
+ }
+]

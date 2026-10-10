@@ -1,0 +1,8 @@
+- id: nested-schema
+  term: nested schema
+  aliases:
+  - nested schema
+  - nested schemas
+  strict: true
+  definition: A schema whose properties are schemas themselves, so the check goes into the value one level at a
+    time.

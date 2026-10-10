@@ -1,0 +1,59 @@
+id: T5-sse
+module: T5
+title: Parse a stream of server-sent events
+objectives:
+- T5.o3
+minutes: 20
+hints:
+- 'Read test_kata.py. Each test names one rule: the event name, the joined data, the comments, the end of the text.'
+- Split the text on newlines. Keep the current event name and the data lines until a blank line.
+- 'Nearly the code: for a line that is not blank and not a comment, use line.partition('':''). Set event for the field event,
+  append the value for the field data, and drop one leading space from the value.'
+from_memory: true
+wrong_solutions:
+- name: join-overwrites
+  code: "def parse_events(text: str) -> list[dict[str, str]]:\n    \"\"\"Parse a server-sent events stream (the rules the\
+    \ kata tests) into events.\"\"\"\n    events: list[dict[str, str]] = []\n    event = \"message\"\n    data: list[str]\
+    \ = []\n    for line in text.split(\"\\n\"):\n        if line == \"\":  # a blank line ends an event\n            if data:\n\
+    \                events.append({\"event\": event, \"data\": \"\\n\".join(data)})\n            event = \"message\"\n  \
+    \          data = []\n            continue\n        if line.startswith(\":\"):  # a comment, such as a keep-alive\n  \
+    \          continue\n        field, _, value = line.partition(\":\")\n        if value.startswith(\" \"):  # one space\
+    \ after the colon is not part of the value\n            value = value[1:]\n        if field == \"event\":\n          \
+    \  event = value\n        elif field == \"data\":\n            data = [value]\n    return events\n"
+- name: comment-as-data
+  code: "def parse_events(text: str) -> list[dict[str, str]]:\n    \"\"\"Parse a server-sent events stream (the rules the\
+    \ kata tests) into events.\"\"\"\n    events: list[dict[str, str]] = []\n    event = \"message\"\n    data: list[str]\
+    \ = []\n    for line in text.split(\"\\n\"):\n        if line == \"\":  # a blank line ends an event\n            if data:\n\
+    \                events.append({\"event\": event, \"data\": \"\\n\".join(data)})\n            event = \"message\"\n  \
+    \          data = []\n            continue\n        if line.startswith(\":\"):\n            data.append(line[1:])\n  \
+    \          continue\n        field, _, value = line.partition(\":\")\n        if value.startswith(\" \"):  # one space\
+    \ after the colon is not part of the value\n            value = value[1:]\n        if field == \"event\":\n          \
+    \  event = value\n        elif field == \"data\":\n            data.append(value)\n    return events\n"
+- name: unfinished-dispatched
+  code: "def parse_events(text: str) -> list[dict[str, str]]:\n    \"\"\"Parse a server-sent events stream (the rules the\
+    \ kata tests) into events.\"\"\"\n    events: list[dict[str, str]] = []\n    event = \"message\"\n    data: list[str]\
+    \ = []\n    for line in text.split(\"\\n\"):\n        if line == \"\":  # a blank line ends an event\n            if data:\n\
+    \                events.append({\"event\": event, \"data\": \"\\n\".join(data)})\n            event = \"message\"\n  \
+    \          data = []\n            continue\n        if line.startswith(\":\"):  # a comment, such as a keep-alive\n  \
+    \          continue\n        field, _, value = line.partition(\":\")\n        if value.startswith(\" \"):  # one space\
+    \ after the colon is not part of the value\n            value = value[1:]\n        if field == \"event\":\n          \
+    \  event = value\n        elif field == \"data\":\n            data.append(value)\n    if data:\n        events.append({\"\
+    event\": event, \"data\": \"\\n\".join(data)})\n    return events\n"
+- name: strips-all-spaces
+  code: "def parse_events(text: str) -> list[dict[str, str]]:\n    \"\"\"Parse a server-sent events stream (the rules the\
+    \ kata tests) into events.\"\"\"\n    events: list[dict[str, str]] = []\n    event = \"message\"\n    data: list[str]\
+    \ = []\n    for line in text.split(\"\\n\"):\n        if line == \"\":  # a blank line ends an event\n            if data:\n\
+    \                events.append({\"event\": event, \"data\": \"\\n\".join(data)})\n            event = \"message\"\n  \
+    \          data = []\n            continue\n        if line.startswith(\":\"):  # a comment, such as a keep-alive\n  \
+    \          continue\n        field, _, value = line.partition(\":\")\n        value = value.lstrip()\n        if field\
+    \ == \"event\":\n            event = value\n        elif field == \"data\":\n            data.append(value)\n    return\
+    \ events\n"
+- name: no-default-event
+  code: "def parse_events(text: str) -> list[dict[str, str]]:\n    \"\"\"Parse a server-sent events stream (the rules the\
+    \ kata tests) into events.\"\"\"\n    events: list[dict[str, str]] = []\n    event = None\n    data: list[str] = []\n\
+    \    for line in text.split(\"\\n\"):\n        if line == \"\":  # a blank line ends an event\n            if data:\n\
+    \                events.append({\"event\": event, \"data\": \"\\n\".join(data)})\n            event = \"message\"\n  \
+    \          data = []\n            continue\n        if line.startswith(\":\"):  # a comment, such as a keep-alive\n  \
+    \          continue\n        field, _, value = line.partition(\":\")\n        if value.startswith(\" \"):  # one space\
+    \ after the colon is not part of the value\n            value = value[1:]\n        if field == \"event\":\n          \
+    \  event = value\n        elif field == \"data\":\n            data.append(value)\n    return events\n"

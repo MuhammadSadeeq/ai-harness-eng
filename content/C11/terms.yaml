@@ -1,0 +1,71 @@
+- id: verification-gate
+  term: verification gate
+  aliases: [verification gate, verification gates]
+  strict: true
+  wire: verify
+  definition: >-
+    The check that sits between the model's done claim and the run's success. A claim passes only when the gate runs and passes.
+
+- id: computational-check
+  term: computational check
+  aliases: [computational check, computational checks]
+  strict: true
+  wire: verify
+  definition: >-
+    A check a program can run and decide: tests, linters and type checks. Its answer does not depend on who asks.
+
+- id: inferential-check
+  term: inferential check
+  aliases: [inferential check, inferential checks]
+  strict: true
+  wire: verify
+  definition: >-
+    A check that judges with a model or a person: a review of the code or of the claim. Useful where no program can decide.
+
+- id: guide
+  term: guide
+  aliases: [guide, guides]
+  strict: false
+  wire: verify
+  definition: >-
+    A control that steers the model before the work, such as a rule in the prompt or a template.
+
+- id: sensor
+  term: sensor
+  aliases: [sensor, sensors]
+  strict: false
+  wire: verify
+  definition: >-
+    A control that checks after the work, such as a test run, a linter or a review of the diff.
+
+- id: independent-reviewer
+  term: independent reviewer
+  aliases: [independent reviewer, independent reviewers]
+  strict: true
+  wire: verify
+  definition: >-
+    A reviewer that sees the task and the diff, not the author's reasoning, so it judges the result and not the story.
+
+- id: sub-agent
+  term: sub-agent
+  aliases: [sub-agent, sub-agents, subagent]
+  strict: true
+  wire: verify
+  definition: >-
+    A second agent run by the harness for one job, such as review. It is a separate run, with its own context.
+
+- id: self-report
+  term: self-report
+  aliases: [self-report, self-reports]
+  strict: true
+  wire: verify
+  definition: >-
+    The model's own statement about its work, such as "the tests pass". A self-report is a claim until a check confirms it.
+
+- id: test-tampering
+  term: test tampering
+  aliases: [test tampering]
+  strict: true
+  wire: verify
+  definition: >-
+    Changing the tests so that they pass for the wrong reason: editing an assertion, clearing a marker, or special-casing the answer.

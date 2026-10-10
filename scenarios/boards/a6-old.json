@@ -1,0 +1,9 @@
+{
+ "id": "a6-old",
+ "label": "Old board",
+ "modules": {
+  "effort": {
+   "level": "max"
+  }
+ }
+}

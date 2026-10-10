@@ -1,0 +1,63 @@
+- id: failure-mode
+  term: failure mode
+  aliases: [failure mode, failure modes]
+  strict: false
+  wire: verify
+  definition: >-
+    A way a model's answer can go wrong. The course names six that a harness has to plan for.
+
+- id: randomness
+  term: randomness
+  aliases: [randomness]
+  strict: true
+  wire: verify
+  definition: >-
+    The model can give different answers to the same prompt. One good run says little about the next.
+
+- id: drift
+  term: drift
+  aliases: [drift]
+  strict: false
+  wire: verify
+  definition: >-
+    Slow change in what a model does over time, so that a result that worked stops working without any change in the harness.
+
+- id: self-praise
+  term: self-praise
+  aliases: [self-praise, self-praising]
+  strict: true
+  wire: verify
+  definition: >-
+    A model saying its work is good when it is not. A model checking its own work has the same blind spots.
+
+- id: ground-truth
+  term: ground truth
+  aliases: [ground truth]
+  strict: true
+  wire: verify
+  definition: >-
+    A check that does not depend on the model's words: a test, a file, a number that can be looked up.
+
+- id: stale-knowledge
+  term: stale knowledge
+  aliases: [stale knowledge]
+  strict: true
+  wire: verify
+  definition: >-
+    Facts the model holds that have changed since it learned them. The model does not know they are out of date.
+
+- id: compounding-error
+  term: compounding error
+  aliases: [compounding error, compounding errors, compounds]
+  strict: true
+  wire: verify
+  definition: >-
+    When each step can fail, the chance that all the steps succeed falls with every step.
+
+- id: reliability
+  term: reliability
+  aliases: [reliability]
+  strict: false
+  wire: verify
+  definition: >-
+    How often a task works all the way through. In this course it comes from the system around the model.

@@ -1,0 +1,27 @@
+- id: A5-s1
+  objectives: [A5.o2, A5.o4]
+  prompt: "A tool call comes back with the wrong field name. Walk me through what your harness does."
+  model_answer: >-
+    The harness checks the input against the tool's schema before it runs anything. A wrong field name
+    fails the check with a reason, such as a missing required field. The harness sends that reason back
+    as an error result, so the model can send the call again with the right fields. A passing check
+    still does not prove the values are right, so the work is checked as well.
+  rubric:
+    - "Checks the input against the schema before the tool runs"
+    - "Sends the reason back as an error the model can act on"
+    - "Says a valid shape does not make the values correct"
+    - "Says the wrong field becomes an error result, not a run of the tool"
+
+- id: A5-s2
+  objectives: [A5.o3]
+  prompt: "Compare asking for JSON in the prompt, validating afterwards, and constrained decoding."
+  model_answer: >-
+    Asking in the prompt is cheap and often works, but nothing enforces it. Validating afterwards checks
+    each reply and sends failures back, so the harness is in charge of the shape. Constrained decoding
+    limits what the model can produce, so the shape is enforced while the reply is made. I would start
+    with validation, because it works with any model and shows me each failure.
+  rubric:
+    - "Says the prompt asks but does not enforce"
+    - "Says validation checks each reply and sends failures back"
+    - "Says constrained decoding enforces the shape while the reply is made"
+    - "Gives a reason for the choice"

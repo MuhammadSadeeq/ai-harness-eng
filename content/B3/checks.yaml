@@ -1,0 +1,92 @@
+- id: B3-p1
+  objective: B3.o5
+  mode: predict
+  question: "The model stays the same, but the output cap is changed. What happens to the results?"
+  options:
+    - text: "Nothing changes, because the model is the same."
+      why: "Tempting. The model is the same, but the harness is not, and the harness decides what the model sees."
+    - text: "The model got worse, so the results drop."
+      why: "Tempting, and it is the misconception: the model did not change, so it cannot have got worse."
+    - text: "The results drop, because the harness hides a line the model needs."
+      why: "Right. Only the harness changed. The cut output is what the model could not see."
+  answer: 2
+  outcome: "The run guessed a port and ended as done. The test still failed. Only the harness had changed."
+
+- id: B3-c1
+  objective: B3.o2
+  mode: check
+  question: "Which of these is context engineering?"
+  options:
+    - text: "Choosing which tool results the model sees on each call."
+      why: "Right. Anthropic defines context engineering as curating and maintaining the optimal set of tokens during inference."
+      fact: anthropic.ctx-definition
+    - text: "Writing the instruction at the top of the prompt."
+      why: "Tempting. That is prompt engineering: the words guide the model, but they do not choose what is on the desk."
+    - text: "Adding a retry after a timeout."
+      why: "Tempting. That is part of harness engineering, which is wider than the desk."
+  answer: 0
+
+- id: B3-c2
+  objective: B3.o1
+  mode: check
+  question: "Which of these does the harness do, and not the model?"
+  options:
+    - text: "Chooses the next token."
+      why: "Tempting. The model scores the tokens and chooses one. The harness does not choose words."
+    - text: "Enforces a permission before a command runs."
+      why: "Right. The harness checks the action against the permissions before it runs."
+    - text: "Writes a sentence that sounds sure."
+      why: "Tempting. The model writes the words; fluency is in the model's output."
+  answer: 1
+
+- id: B3-c3
+  objective: B3.o3
+  mode: check
+  question: "Where does the operating-system picture of an agent break down?"
+  options:
+    - text: "An operating system has a scheduler, and a harness does not."
+      why: "Tempting. A harness can schedule work too. The picture breaks elsewhere."
+    - text: "A program runs the same steps each time, but a model writes different text on each run, so the harness must check it."
+      why: "Right. The picture hides the check: the output changes each run, so it needs one."
+    - text: "A process has no memory, and a model has none either."
+      why: "Tempting. Both can hold state, in different places, so the picture breaks elsewhere."
+  answer: 1
+
+- id: B3-c4
+  objective: B3.o4
+  mode: check
+  question: "A vendor ships a model product, and your team adds its own checks around it. Which harness are the checks?"
+  options:
+    - text: "The product harness."
+      why: "Tempting. The vendor ships that. Your checks are the code you add."
+    - text: "The user harness."
+      why: "Right. The user harness is the code you add around a product or API."
+    - text: "The framework."
+      why: "Tempting. A framework can supply parts, but the checks are yours."
+  answer: 1
+
+- id: B3-c5
+  objective: B3.o5
+  mode: check
+  question: "What would count as evidence that a harness change alone moves results?"
+  options:
+    - text: "The same model, the same tasks and seeds, two harnesses, and different pass rates."
+      why: "Right. Only the harness changed, so the difference comes from the harness."
+    - text: "A new model in the old harness that scores higher."
+      why: "Tempting. That changes the model, so it cannot show the harness alone."
+    - text: "One run with a worse answer."
+      why: "Tempting. One run is an anecdote; it does not show the harness is the cause."
+  answer: 0
+
+- id: B3-c6
+  objective: B3.o5
+  mode: check
+  question: "Which statement is a fair counterpoint to 'harness changes move results'?"
+  options:
+    - text: "A harness change can help one kind of task and do nothing for another, so the effect depends on the task."
+      why: "Right. The claim is about this task and this model, not every change on every task."
+    - text: "Harness changes never move results once the model is strong."
+      why: "Wrong. Nothing in the course shows that; a strong model still runs through the harness."
+    - text: "Only the model matters; the harness is a wrapper."
+      why: "Wrong. The harness decides what the model sees and what happens to its output."
+  answer: 0

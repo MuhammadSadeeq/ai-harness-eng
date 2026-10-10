@@ -1,0 +1,30 @@
+- id: T5-k1
+  type: term
+  objective: T5.o1
+  front: What does a response have besides its body?
+  back: A status code and headers, sent before the body.
+- id: T5-k2
+  type: term
+  objective: T5.o2
+  front: Which status code says the API is temporarily overloaded?
+  back: 529, with the error type overloaded_error.
+- id: T5-k3
+  type: term
+  objective: T5.o2
+  front: Which status code carries the error type rate_limit_error?
+  back: '429.'
+- id: T5-k4
+  type: term
+  objective: T5.o2
+  front: What does a 400 mean?
+  back: The request has a format or content problem. Fix the request; a retry without a change fails again.
+- id: T5-k5
+  type: term
+  objective: T5.o3
+  front: What ends a server-sent event?
+  back: A blank line. Only an event with data is returned.
+- id: T5-k6
+  type: term
+  objective: T5.o3
+  front: What is a line that starts with a colon?
+  back: A comment, such as a keep-alive. The parser skips it.

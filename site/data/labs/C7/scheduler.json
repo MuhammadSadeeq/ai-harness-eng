@@ -1,0 +1,99 @@
+{
+ "calls": [
+  {
+   "annotations": {
+    "idempotentHint": true,
+    "readOnlyHint": true
+   },
+   "id": "read-calc",
+   "label": "Read calc.py",
+   "ms": 300,
+   "reads": [
+    "calc.py"
+   ],
+   "tool": "read_file",
+   "writes": []
+  },
+  {
+   "annotations": {
+    "idempotentHint": true,
+    "readOnlyHint": true
+   },
+   "id": "read-test",
+   "label": "Read tests/test_calc.py",
+   "ms": 300,
+   "reads": [
+    "tests/test_calc.py"
+   ],
+   "tool": "read_file",
+   "writes": []
+  },
+  {
+   "annotations": {
+    "idempotentHint": true,
+    "readOnlyHint": true
+   },
+   "id": "search",
+   "label": "Search the tests for the import",
+   "ms": 300,
+   "reads": [
+    "tests"
+   ],
+   "tool": "search_text",
+   "writes": []
+  },
+  {
+   "annotations": {
+    "destructiveHint": true
+   },
+   "id": "edit-calc",
+   "label": "Edit calc.py",
+   "ms": 500,
+   "reads": [
+    "calc.py"
+   ],
+   "tool": "edit_file",
+   "writes": [
+    "calc.py"
+   ]
+  },
+  {
+   "id": "run-tests",
+   "label": "Run the tests",
+   "ms": 2000,
+   "reads": [
+    "calc.py",
+    "tests/test_calc.py"
+   ],
+   "tool": "run_command",
+   "writes": [
+    ".pytest_cache"
+   ]
+  },
+  {
+   "id": "write-answer",
+   "label": "Write answer.txt",
+   "ms": 400,
+   "reads": [],
+   "tool": "write_file",
+   "writes": [
+    "answer.txt"
+   ]
+  },
+  {
+   "annotations": {
+    "openWorldHint": true,
+    "readOnlyHint": true
+   },
+   "id": "fetch-docs",
+   "label": "Fetch the library docs",
+   "ms": 900,
+   "reads": [
+    "web"
+   ],
+   "tool": "fetch_url",
+   "writes": []
+  }
+ ],
+ "note": "The calls, their reads and writes, and the times are the course's example run, not a captured trace. The annotations are hints."
+}

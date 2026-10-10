@@ -1,0 +1,8 @@
+{
+  "id": "c4-old",
+  "label": "Old board",
+  "modules": {
+    "system_clock": {},
+    "cache": {}
+  }
+}

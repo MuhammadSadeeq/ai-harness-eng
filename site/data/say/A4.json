@@ -1,0 +1,32 @@
+[
+ {
+  "id": "A4-s1",
+  "model_answer": "I read every content block in order and keep the text blocks and the tool requests separately. Then I read the stop reason. If it is tool_use, I run each tool request and send one result for each, matched by id. If it is end_turn, I treat the reply as a done claim and check the work. For max_tokens, I do not run a half-written request. Every other stop reason gets its own rule, and none is ignored.",
+  "objectives": [
+   "A4.o2",
+   "A4.o3"
+  ],
+  "prompt": "A reply has a text block and then a tool request. Walk me through how your harness reads it.",
+  "rubric": [
+   "Reads every content block, not only the first",
+   "Separates the text from the tool requests",
+   "Handles the stop reason on purpose, with a rule for each value it can take",
+   "Does not run a tool request from a reply cut off by max_tokens"
+  ]
+ },
+ {
+  "id": "A4-s2",
+  "model_answer": "The usage counts give the input and output tokens, and the prices turn them into a cost. For a streamed reply, the harness adds each event to the message as it arrives, and it reads the stop reason at the end. The cost is the same when the events have built the same message.",
+  "objectives": [
+   "A4.o4",
+   "A4.o5"
+  ],
+  "prompt": "How does your harness know what a call cost, and what changes if the reply streams?",
+  "rubric": [
+   "Takes the cost from the usage counts and the prices",
+   "Says a stream is events that build one message",
+   "Reads the stop reason once the message is complete",
+   "Says the stream's events must be read in order before the stop reason is used"
+  ]
+ }
+]

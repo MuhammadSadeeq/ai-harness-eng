@@ -49,12 +49,15 @@
     <nav class="glossary-index" aria-label="Letters">
       <ul>
         <li><a href="#letter-a">A</a></li>
+        <li><a href="#letter-b">B</a></li>
         <li><a href="#letter-c">C</a></li>
         <li><a href="#letter-d">D</a></li>
         <li><a href="#letter-e">E</a></li>
         <li><a href="#letter-f">F</a></li>
+        <li><a href="#letter-g">G</a></li>
         <li><a href="#letter-h">H</a></li>
         <li><a href="#letter-i">I</a></li>
+        <li><a href="#letter-j">J</a></li>
         <li><a href="#letter-l">L</a></li>
         <li><a href="#letter-m">M</a></li>
         <li><a href="#letter-n">N</a></li>
@@ -63,12 +66,31 @@
         <li><a href="#letter-r">R</a></li>
         <li><a href="#letter-s">S</a></li>
         <li><a href="#letter-t">T</a></li>
+        <li><a href="#letter-u">U</a></li>
+        <li><a href="#letter-v">V</a></li>
         <li><a href="#letter-w">W</a></li>
       </ul>
     </nav>
     <div id="glossary-list" class="glossary-list">
     <section class="glossary-group" id="letter-a" data-filter-group>
       <h2>A</h2>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-actionable-error">
+        <h3 class="term-name"><dfn id="term-actionable-error">actionable error</dfn></h3>
+        <p class="term-def">A tool result that says what went wrong and what to do next, in few words.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tool-design.html">C7 · Tool design is agent UX</a></span>
+        </p>
+        <p class="term-alias">Also written: actionable errors</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-additional-properties">
+        <h3 class="term-name"><dfn id="term-additional-properties">additionalProperties</dfn></h3>
+        <p class="term-def">A schema setting. Set to false, it refuses a field the schema does not name. This course&#x27;s checker refuses it.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/structured-outputs.html">A5 · Structured outputs and schemas</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-agent">
         <h3 class="term-name"><dfn id="term-agent">agent</dfn></h3>
         <p class="term-def">A model that is called in a loop, asks for tools, and is stopped by the code around it. The model is one part of the agent.</p>
@@ -87,9 +109,298 @@
         </p>
         <p class="term-alias">Also written: agent loops</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-agent-computer-interface">
+        <h3 class="term-name"><dfn id="term-agent-computer-interface">agent-computer interface</dfn></h3>
+        <p class="term-def">The tools as a model sees them: their names, descriptions, inputs and results. It is a user interface for the model.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tool-design.html">C7 · Tool design is agent UX</a></span>
+        </p>
+        <p class="term-alias">Also written: agent-computer interfaces</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-agents-md">
+        <h3 class="term-name"><dfn id="term-agents-md">AGENTS.md</dfn></h3>
+        <p class="term-def">A rules file in the repository, named by a convention. Which product reads it is a fact the course lists, not a claim made here.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-allow">
+        <h3 class="term-name"><dfn id="term-allow">allow</dfn></h3>
+        <p class="term-def">A decision that lets a tool call run without asking anyone.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/permissions.html">C9 · Permissions</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-allow-list">
+        <h3 class="term-name"><dfn id="term-allow-list">allow-list</dfn></h3>
+        <p class="term-def">A list of commands or tools that may run without asking. Naming a command is not enough on its own: its target still matters.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/permissions.html">C9 · Permissions</a></span>
+        </p>
+        <p class="term-alias">Also written: allow-lists</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-altitude">
+        <h3 class="term-name"><dfn id="term-altitude">altitude</dfn></h3>
+        <p class="term-def">How specific an instruction is. Too low and it is a lookup table; too high and it is a slogan. Good instructions are specific enough to act on and general enough to transfer.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-append-only-history">
+        <h3 class="term-name"><dfn id="term-append-only-history">append-only history</dfn></h3>
+        <p class="term-def">A history that only grows at the end. Earlier messages are never changed or removed.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/loop-state-and-stopping.html">C5 · Loop state and stopping well</a></span>
+        </p>
+        <p class="term-alias">Also written: append-only</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-approval-fatigue">
+        <h3 class="term-name"><dfn id="term-approval-fatigue">approval fatigue</dfn></h3>
+        <p class="term-def">The loss of care that follows many prompts, so that the one dangerous prompt is approved without a look.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/permissions.html">C9 · Permissions</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-ask">
+        <h3 class="term-name"><dfn id="term-ask">ask</dfn></h3>
+        <p class="term-def">A decision that sends the call to a person before it runs. Asking is a cost: every prompt is a chance to approve by habit.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/permissions.html">C9 · Permissions</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-attention-budget">
+        <h3 class="term-name"><dfn id="term-attention-budget">attention budget</dfn></h3>
+        <p class="term-def">The limited capacity of a model to draw on a large context when it reads it.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/context-budget.html">C2 · Context budget</a></span>
+        </p>
+        <p class="term-alias">Also written: attention budgets</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-b" data-filter-group>
+      <h2>B</h2>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-blast-radius">
+        <h3 class="term-name"><dfn id="term-blast-radius">blast radius</dfn></h3>
+        <p class="term-def">How much a single mistake can reach: the files, the network and the secrets it could touch.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-c" data-filter-group>
       <h2>C</h2>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-breakpoint">
+        <h3 class="term-name"><dfn id="term-cache-breakpoint">cache breakpoint</dfn></h3>
+        <p class="term-def">The point up to which a request asks to be cached. The course&#x27;s model of caching uses one, at the end of the request.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
+        </p>
+        <p class="term-alias">Also written: cache breakpoints</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-hit">
+        <h3 class="term-name"><dfn id="term-cache-hit">cache hit</dfn></h3>
+        <p class="term-def">A call that reads some of its input from the cache. The hit rate is the share of the input that was read.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
+        </p>
+        <p class="term-alias">Also written: cache hits</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-invalidation">
+        <h3 class="term-name"><dfn id="term-cache-invalidation">cache invalidation</dfn></h3>
+        <p class="term-def">A change that makes earlier cache entries stop matching, so the next call writes the request again.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
+        </p>
+        <p class="term-alias">Also written: invalidator, invalidates</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-prefix">
+        <h3 class="term-name"><dfn id="term-cache-prefix">cache prefix</dfn></h3>
+        <p class="term-def">The part of a request that comes before a point. A cache matches a prefix whole, or not at all.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
+        </p>
+        <p class="term-alias">Also written: cache prefixes</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-read">
+        <h3 class="term-name"><dfn id="term-cache-read">cache read</dfn></h3>
+        <p class="term-def">Input that a call takes from the cache instead of processing it again.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
+        </p>
+        <p class="term-alias">Also written: cache reads</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-ttl">
+        <h3 class="term-name"><dfn id="term-cache-ttl">cache TTL</dfn></h3>
+        <p class="term-def">How long a cache entry lasts after it was last written or read.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
+        </p>
+        <p class="term-alias">Also written: cache lifetime</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-write">
+        <h3 class="term-name"><dfn id="term-cache-write">cache write</dfn></h3>
+        <p class="term-def">Input that a call stores in the cache, so that a later call can read it.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
+        </p>
+        <p class="term-alias">Also written: cache writes</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-circuit-breaker">
+        <h3 class="term-name"><dfn id="term-circuit-breaker">circuit breaker</dfn></h3>
+        <p class="term-def">A switch that opens after a set number of failures in a row, and holds calls back for a cooldown.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
+        </p>
+        <p class="term-alias">Also written: breaker</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-claude-md">
+        <h3 class="term-name"><dfn id="term-claude-md">CLAUDE.md</dfn></h3>
+        <p class="term-def">A rules file in the repository, named by a convention. Which product reads it is a fact the course lists, not a claim made here.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-clean-reset">
+        <h3 class="term-name"><dfn id="term-clean-reset">clean reset</dfn></h3>
+        <p class="term-def">Starting a new run with only the task and a handoff note, instead of compacting the old one.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/compaction-and-memory.html">C3 · Compaction and memory</a></span>
+        </p>
+        <p class="term-alias">Also written: clean resets</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-commit">
+        <h3 class="term-name"><dfn id="term-commit">commit</dfn></h3>
+        <p class="term-def">One saved change, with a message that says what it does. This course asks for small commits, each one explainable in a line.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/git-primer.html">T8 · git for agent work</a></span>
+        </p>
+        <p class="term-alias">Also written: commits</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-compaction">
+        <h3 class="term-name"><dfn id="term-compaction">compaction</dfn></h3>
+        <p class="term-def">Replacing the older messages with a summary, so the desk has room again. The summary keeps only what the harness chose to keep.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/compaction-and-memory.html">C3 · Compaction and memory</a></span>
+        </p>
+        <p class="term-alias">Also written: compactions</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-compaction-threshold">
+        <h3 class="term-name"><dfn id="term-compaction-threshold">compaction threshold</dfn></h3>
+        <p class="term-def">The share of the window at which a compaction runs. A low threshold compacts often; a high one lets the desk fill.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/compaction-and-memory.html">C3 · Compaction and memory</a></span>
+        </p>
+        <p class="term-alias">Also written: compaction thresholds</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-compounding-error">
+        <h3 class="term-name"><dfn id="term-compounding-error">compounding error</dfn></h3>
+        <p class="term-def">When each step can fail, the chance that all the steps succeed falls with every step.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></span>
+        </p>
+        <p class="term-alias">Also written: compounding errors, compounds</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-computational-check">
+        <h3 class="term-name"><dfn id="term-computational-check">computational check</dfn></h3>
+        <p class="term-def">A check a program can run and decide: tests, linters and type checks. Its answer does not depend on who asks.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
+        </p>
+        <p class="term-alias">Also written: computational checks</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-concurrency">
+        <h3 class="term-name"><dfn id="term-concurrency">concurrency</dfn></h3>
+        <p class="term-def">Doing more than one thing in the same period, so that a program does other work while it waits.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/threads-vs-async.html">T10 · Threads vs. async</a></span>
+        </p>
+        <p class="term-alias">Also written: concurrent</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-constrained-decoding">
+        <h3 class="term-name"><dfn id="term-constrained-decoding">constrained decoding</dfn></h3>
+        <p class="term-def">Generating a reply so that only the tokens a schema allows can be chosen. A method, compared in this module.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/structured-outputs.html">A5 · Structured outputs and schemas</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-container">
+        <h3 class="term-name"><dfn id="term-container">container</dfn></h3>
+        <p class="term-def">A process with its own smaller view of the machine. The course treats it as one wall among others, not as the whole of the wall.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+        <p class="term-alias">Also written: containers</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-content-block">
+        <h3 class="term-name"><dfn id="term-content-block">content block</dfn></h3>
+        <p class="term-def">One typed part of a response: text, or a tool request. Each block has a type that says what fields it has.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+        <p class="term-alias">Also written: content blocks</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-context-budget">
+        <h3 class="term-name"><dfn id="term-context-budget">context budget</dfn></h3>
+        <p class="term-def">The share of the window that each part of the desk takes, counted before the model sees any of it.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/context-budget.html">C2 · Context budget</a></span>
+        </p>
+        <p class="term-alias">Also written: context budgets</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-context-engineering">
+        <h3 class="term-name"><dfn id="term-context-engineering">context engineering</dfn></h3>
+        <p class="term-def">Choosing what goes on the desk for each call, and what gets cut or saved.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/what-a-harness-is.html">B3 · What a harness is</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-context-management">
+        <h3 class="term-name"><dfn id="term-context-management">context management</dfn></h3>
+        <p class="term-def">The wire that answers what is on the desk this call, and what is saved.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/the-turn-clock.html">B4 · The Turn Clock</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-context-rot">
+        <h3 class="term-name"><dfn id="term-context-rot">context rot</dfn></h3>
+        <p class="term-def">The fall in answer quality as the window fills, well before the hard limit is reached.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/context-budget.html">C2 · Context budget</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-context-window">
         <h3 class="term-name"><dfn id="term-context-window">context window</dfn></h3>
         <p class="term-def">The fixed-size desk the model reads on each call. Instructions, earlier messages, tool results and the reply all share it.</p>
@@ -98,6 +409,15 @@
           <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
         </p>
         <p class="term-alias">Also written: context windows</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-control-plane">
+        <h3 class="term-name"><dfn id="term-control-plane">control plane</dfn></h3>
+        <p class="term-def">The wire that answers what the model is told, and which instruction wins.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/the-turn-clock.html">B4 · The Turn Clock</a></span>
+        </p>
+        <p class="term-alias">Also written: control planes</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-conversation-history">
         <h3 class="term-name"><dfn id="term-conversation-history">conversation history</dfn></h3>
@@ -117,6 +437,22 @@
         </p>
         <p class="term-alias">Also written: coroutines</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-cost-attribution">
+        <h3 class="term-name"><dfn id="term-cost-attribution">cost attribution</dfn></h3>
+        <p class="term-def">Splitting a model call&#x27;s cost into its parts, and naming the largest part of the request.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/observability.html">C12 · Observability: traces you can read</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-cost-per-completed-task">
+        <h3 class="term-name"><dfn id="term-cost-per-completed-task">cost per completed task</dfn></h3>
+        <p class="term-def">The cost of a task&#x27;s calls, divided by the share of tasks that finish. A cheap call that often fails is not cheap.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/reasoning-and-effort.html">A6 · Reasoning and effort as harness knobs</a></span>
+        </p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-d" data-filter-group>
       <h2>D</h2>
@@ -129,6 +465,48 @@
         </p>
         <p class="term-alias">Also written: dataclasses</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-decision-order">
+        <h3 class="term-name"><dfn id="term-decision-order">decision order</dfn></h3>
+        <p class="term-def">The fixed order a policy is checked in: all deny rules, then all ask rules, then all allow rules, then the mode&#x27;s default.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/permissions.html">C9 · Permissions</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-deferred-loading">
+        <h3 class="term-name"><dfn id="term-deferred-loading">deferred loading</dfn></h3>
+        <p class="term-def">Keeping a tool&#x27;s definition out of the request until a step needs it.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-deny">
+        <h3 class="term-name"><dfn id="term-deny">deny</dfn></h3>
+        <p class="term-def">A decision that stops the tool call. It runs nothing, and the model gets the reason.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/permissions.html">C9 · Permissions</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-destructive-tool">
+        <h3 class="term-name"><dfn id="term-destructive-tool">destructive tool</dfn></h3>
+        <p class="term-def">A tool that may change or delete things in its environment.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tool-design.html">C7 · Tool design is agent UX</a></span>
+        </p>
+        <p class="term-alias">Also written: destructive tools</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-diff">
+        <h3 class="term-name"><dfn id="term-diff">diff</dfn></h3>
+        <p class="term-def">The text that shows which lines a change adds, removes or leaves alone, file by file.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/git-primer.html">T8 · git for agent work</a></span>
+        </p>
+        <p class="term-alias">Also written: diffs</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-done-claim">
         <h3 class="term-name"><dfn id="term-done-claim">done claim</dfn></h3>
         <p class="term-def">The model&#x27;s own statement that it has finished, carried by end_turn. The loop treats it as a claim to check. It is not proof that the task is done.</p>
@@ -138,9 +516,69 @@
         </p>
         <p class="term-alias">Also written: done claims</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-drift">
+        <h3 class="term-name"><dfn id="term-drift">drift</dfn></h3>
+        <p class="term-def">Slow change in what a model does over time, so that a result that worked stops working without any change in the harness.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></span>
+        </p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-e" data-filter-group>
       <h2>E</h2>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-effort">
+        <h3 class="term-name"><dfn id="term-effort">effort</dfn></h3>
+        <p class="term-def">A setting that tells the model how much to work before it answers. The harness sets it on each request.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/reasoning-and-effort.html">A6 · Reasoning and effort as harness knobs</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-egress-allow-list">
+        <h3 class="term-name"><dfn id="term-egress-allow-list">egress allow-list</dfn></h3>
+        <p class="term-def">The hosts a network call may reach. A call to any other host is refused.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+        <p class="term-alias">Also written: egress allow-lists</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-end-turn">
+        <h3 class="term-name"><dfn id="term-end-turn">end_turn</dfn></h3>
+        <p class="term-def">The stop reason for a response that finished on its own. It is a done claim, not proof.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-enum">
+        <h3 class="term-name"><dfn id="term-enum">enum</dfn></h3>
+        <p class="term-def">A field that may take only one of a short list of values.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/structured-outputs.html">A5 · Structured outputs and schemas</a></span>
+        </p>
+        <p class="term-alias">Also written: enums</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-event">
+        <h3 class="term-name"><dfn id="term-event">event</dfn></h3>
+        <p class="term-def">One record the harness writes as it runs: a model call, a tool call, a permission decision. Each has a sequence number and a time.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/observability.html">C12 · Observability: traces you can read</a></span>
+        </p>
+        <p class="term-alias">Also written: events</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-exfiltration">
+        <h3 class="term-name"><dfn id="term-exfiltration">exfiltration</dfn></h3>
+        <p class="term-def">A secret leaving the sandbox through a network call.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+        <p class="term-alias">Also written: exfiltrate</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-exit">
         <h3 class="term-name"><dfn id="term-exit">exit</dfn></h3>
         <p class="term-def">A reason the loop stops. A loop with one exit stops only when that one exit is taken.</p>
@@ -150,9 +588,35 @@
         </p>
         <p class="term-alias">Also written: exits</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-exponential-backoff">
+        <h3 class="term-name"><dfn id="term-exponential-backoff">exponential backoff</dfn></h3>
+        <p class="term-def">Waiting longer after each failed try, doubling the wait each time up to a cap.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
+        </p>
+        <p class="term-alias">Also written: backoff</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-extended-thinking">
+        <h3 class="term-name"><dfn id="term-extended-thinking">extended thinking</dfn></h3>
+        <p class="term-def">Extra tokens the model writes before it answers, to work a problem out. The thinking is billed as output.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/reasoning-and-effort.html">A6 · Reasoning and effort as harness knobs</a></span>
+        </p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-f" data-filter-group>
       <h2>F</h2>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-fail-closed">
+        <h3 class="term-name"><dfn id="term-fail-closed">fail closed</dfn></h3>
+        <p class="term-def">When a check cannot decide, it denies the action. A check that fails open lets the action through when it breaks.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+        <p class="term-alias">Also written: fails closed, failing closed</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-failure-family">
         <h3 class="term-name"><dfn id="term-failure-family">failure family</dfn></h3>
         <p class="term-def">A named kind of failure that recurs across runs, such as a false done. Each module teaches one family.</p>
@@ -161,6 +625,88 @@
           <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
         </p>
         <p class="term-alias">Also written: failure families</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-failure-mode">
+        <h3 class="term-name"><dfn id="term-failure-mode">failure mode</dfn></h3>
+        <p class="term-def">A way a model&#x27;s answer can go wrong. The course names six that a harness has to plan for.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></span>
+        </p>
+        <p class="term-alias">Also written: failure modes</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-file-permissions">
+        <h3 class="term-name"><dfn id="term-file-permissions">file permissions</dfn></h3>
+        <p class="term-def">The rules that say which user may read, write or run a file, given its owner, its group and its mode.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/linux-processes.html">T9 · Linux processes</a></span>
+        </p>
+        <p class="term-alias">Also written: file permission</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-final-status">
+        <h3 class="term-name"><dfn id="term-final-status">final status</dfn></h3>
+        <p class="term-def">The one word that says how a run ended, such as done, max turns, interrupted or error.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/loop-state-and-stopping.html">C5 · Loop state and stopping well</a></span>
+        </p>
+        <p class="term-alias">Also written: final statuses</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-fixture">
+        <h3 class="term-name"><dfn id="term-fixture">fixture</dfn></h3>
+        <p class="term-def">A helper that builds the setup a test needs, so each test starts from the same known state.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/pytest-primer.html">T6 · pytest</a></span>
+        </p>
+        <p class="term-alias">Also written: fixtures</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-framework">
+        <h3 class="term-name"><dfn id="term-framework">framework</dfn></h3>
+        <p class="term-def">A library of ready-made parts for building a harness. It supplies parts; it does not decide your harness for you.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/what-a-harness-is.html">B3 · What a harness is</a></span>
+        </p>
+        <p class="term-alias">Also written: frameworks</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-function-calling">
+        <h3 class="term-name"><dfn id="term-function-calling">function calling</dfn></h3>
+        <p class="term-def">Another name for a tool call: the model writes a structured request for a named function with its arguments.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
+        </p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-g" data-filter-group>
+      <h2>G</h2>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-genai-conventions">
+        <h3 class="term-name"><dfn id="term-genai-conventions">GenAI semantic conventions</dfn></h3>
+        <p class="term-def">OpenTelemetry&#x27;s names for generative AI spans and attributes. The registry declares them in development, so names can still change.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/observability.html">C12 · Observability: traces you can read</a></span>
+        </p>
+        <p class="term-alias">Also written: GenAI conventions</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-ground-truth">
+        <h3 class="term-name"><dfn id="term-ground-truth">ground truth</dfn></h3>
+        <p class="term-def">A check that does not depend on the model&#x27;s words: a test, a file, a number that can be looked up.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-guide">
+        <h3 class="term-name"><dfn id="term-guide">guide</dfn></h3>
+        <p class="term-def">A control that steers the model before the work, such as a rule in the prompt or a template.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
+        </p>
+        <p class="term-alias">Also written: guides</p>
       </div>
     </section>
     <section class="glossary-group" id="letter-h" data-filter-group>
@@ -173,6 +719,15 @@
           <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
         </p>
         <p class="term-alias">Also written: hallucinations</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-handoff-note">
+        <h3 class="term-name"><dfn id="term-handoff-note">handoff note</dfn></h3>
+        <p class="term-def">A short written record of the goal, the constraints, the decisions, the progress and the files, that a new run reads first.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/compaction-and-memory.html">C3 · Compaction and memory</a></span>
+        </p>
+        <p class="term-alias">Also written: handoff notes</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-harness">
         <h3 class="term-name"><dfn id="term-harness">harness</dfn></h3>
@@ -192,9 +747,79 @@
         </p>
         <p class="term-alias">Also written: Harness Boards</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-harness-engineering">
+        <h3 class="term-name"><dfn id="term-harness-engineering">harness engineering</dfn></h3>
+        <p class="term-def">Building and tuning the code around the model: the loop, tools, permissions, checks and limits.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/what-a-harness-is.html">B3 · What a harness is</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-header">
+        <h3 class="term-name"><dfn id="term-header">header</dfn></h3>
+        <p class="term-def">A named line of metadata in an HTTP request or response, such as a content type or a retry-after value, sent before the body.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/http-and-sse.html">T5 · HTTP and SSE streaming</a></span>
+        </p>
+        <p class="term-alias">Also written: headers</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-hook">
+        <h3 class="term-name"><dfn id="term-hook">hook</dfn></h3>
+        <p class="term-def">Code the harness runs at a fixed point, such as before a tool call, so the rule holds whatever the prompt says.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+        <p class="term-alias">Also written: hooks</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-http-status-code">
+        <h3 class="term-name"><dfn id="term-http-status-code">HTTP status code</dfn></h3>
+        <p class="term-def">The three-digit number in an HTTP response that says what happened to the request, such as 200 or 429.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/http-and-sse.html">T5 · HTTP and SSE streaming</a></span>
+        </p>
+        <p class="term-alias">Also written: status code, status codes</p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-i" data-filter-group>
       <h2>I</h2>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-idempotency">
+        <h3 class="term-name"><dfn id="term-idempotency">idempotency</dfn></h3>
+        <p class="term-def">A property of an action: doing it again with the same request has the same effect as doing it once.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-idempotency-key">
+        <h3 class="term-name"><dfn id="term-idempotency-key">idempotency key</dfn></h3>
+        <p class="term-def">A value sent with a request, so that a repeated request can be recognised and not run twice.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
+        </p>
+        <p class="term-alias">Also written: idempotency keys</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-image">
+        <h3 class="term-name"><dfn id="term-image">image</dfn></h3>
+        <p class="term-def">The name of the starting point a container runs from, such as python:3.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/containers-primer.html">T7 · Containers</a></span>
+        </p>
+        <p class="term-alias">Also written: images</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-independent-reviewer">
+        <h3 class="term-name"><dfn id="term-independent-reviewer">independent reviewer</dfn></h3>
+        <p class="term-def">A reviewer that sees the task and the diff, not the author&#x27;s reasoning, so it judges the result and not the story.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
+        </p>
+        <p class="term-alias">Also written: independent reviewers</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-inference">
         <h3 class="term-name"><dfn id="term-inference">inference</dfn></h3>
         <p class="term-def">A model call that reads the weights and the prompt and produces a reply. The weights stay the same during inference.</p>
@@ -202,6 +827,15 @@
           <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
           <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
         </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-inferential-check">
+        <h3 class="term-name"><dfn id="term-inferential-check">inferential check</dfn></h3>
+        <p class="term-def">A check that judges with a model or a person: a review of the code or of the claim. Useful where no program can decide.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
+        </p>
+        <p class="term-alias">Also written: inferential checks</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-input-tokens">
         <h3 class="term-name"><dfn id="term-input-tokens">input tokens</dfn></h3>
@@ -211,6 +845,78 @@
           <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
         </p>
         <p class="term-alias">Also written: input token</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-input-schema">
+        <h3 class="term-name"><dfn id="term-input-schema">input_schema</dfn></h3>
+        <p class="term-def">The part of a tool definition that says which fields the tool takes, their types, and which fields are required.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
+        </p>
+        <p class="term-alias">Also written: input schema</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-instruction-hierarchy">
+        <h3 class="term-name"><dfn id="term-instruction-hierarchy">instruction hierarchy</dfn></h3>
+        <p class="term-def">The order that decides which layer wins when two of them disagree. It is set by who wrote each layer, not by what it says.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-instruction-layer">
+        <h3 class="term-name"><dfn id="term-instruction-layer">instruction layer</dfn></h3>
+        <p class="term-def">One block of text in the prompt that tells the model what to do: the system prompt, the project rules, the user&#x27;s message or a tool result.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+        <p class="term-alias">Also written: instruction layers</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-interrupt">
+        <h3 class="term-name"><dfn id="term-interrupt">interrupt</dfn></h3>
+        <p class="term-def">A stop that a person asks for while a run is going. The harness must still answer what the run had started.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/loop-state-and-stopping.html">C5 · Loop state and stopping well</a></span>
+        </p>
+        <p class="term-alias">Also written: interrupts</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-is-error">
+        <h3 class="term-name"><dfn id="term-is-error">is_error</dfn></h3>
+        <p class="term-def">An optional field of a tool_result. It is set to true when the tool call failed, and says so to the model.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
+        </p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-j" data-filter-group>
+      <h2>J</h2>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-jitter">
+        <h3 class="term-name"><dfn id="term-jitter">jitter</dfn></h3>
+        <p class="term-def">A random part of the wait, so that many clients that failed together do not retry together.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-json-schema">
+        <h3 class="term-name"><dfn id="term-json-schema">JSON Schema</dfn></h3>
+        <p class="term-def">A way to write down the shape of a JSON object: its fields, their types, which are required and which values are allowed.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/structured-outputs.html">A5 · Structured outputs and schemas</a></span>
+        </p>
+        <p class="term-alias">Also written: JSON schema, JSON schemas</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-just-in-time-retrieval">
+        <h3 class="term-name"><dfn id="term-just-in-time-retrieval">just-in-time retrieval</dfn></h3>
+        <p class="term-def">Loading a piece of material when the task needs it, instead of loading everything at the start.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/context-budget.html">C2 · Context budget</a></span>
+        </p>
+        <p class="term-alias">Also written: just in time retrieval</p>
       </div>
     </section>
     <section class="glossary-group" id="letter-l" data-filter-group>
@@ -232,9 +938,62 @@
           <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
         </p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-loop-detection">
+        <h3 class="term-name"><dfn id="term-loop-detection">loop detection</dfn></h3>
+        <p class="term-def">Noticing that the run repeats the same action, and stopping it before the turn limit does.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/loop-state-and-stopping.html">C5 · Loop state and stopping well</a></span>
+        </p>
+        <p class="term-alias">Also written: detect a loop</p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-m" data-filter-group>
       <h2>M</h2>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-max-tokens">
+        <h3 class="term-name"><dfn id="term-max-tokens">max_tokens</dfn></h3>
+        <p class="term-def">The stop reason for a response that hit the request&#x27;s length limit. The reply may be cut off in the middle.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-mcp-client">
+        <h3 class="term-name"><dfn id="term-mcp-client">MCP client</dfn></h3>
+        <p class="term-def">The part of a host that keeps one connection to one server. This is the course&#x27;s model; the facts registry defines no client role.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+        <p class="term-alias">Also written: MCP clients</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-mcp-host">
+        <h3 class="term-name"><dfn id="term-mcp-host">MCP host</dfn></h3>
+        <p class="term-def">The application the user runs. It decides which servers to connect to. This is the course&#x27;s model; the facts registry defines no host role.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+        <p class="term-alias">Also written: MCP hosts</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-mcp-resource">
+        <h3 class="term-name"><dfn id="term-mcp-resource">MCP resource</dfn></h3>
+        <p class="term-def">Data that a server offers for the model to read, such as a file or a record.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+        <p class="term-alias">Also written: MCP resources</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-mcp-server">
+        <h3 class="term-name"><dfn id="term-mcp-server">MCP server</dfn></h3>
+        <p class="term-def">A program that offers tools, resources or prompts to a client.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+        <p class="term-alias">Also written: MCP servers</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-memory">
         <h3 class="term-name"><dfn id="term-memory">memory</dfn></h3>
         <p class="term-def">Anything a run can use later: what is in the window, what is in saved files, or what is in the model&#x27;s weights.</p>
@@ -243,6 +1002,32 @@
           <span class="taught">Taught in <a href="modules/the-stateless-model.html">A3 · The stateless model</a></span>
         </p>
         <p class="term-alias">Also written: memories</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-memory-file">
+        <h3 class="term-name"><dfn id="term-memory-file">memory file</dfn></h3>
+        <p class="term-def">A file in the project that holds standing facts, read by every run in that project.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/compaction-and-memory.html">C3 · Compaction and memory</a></span>
+        </p>
+        <p class="term-alias">Also written: memory files</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-memory-tier">
+        <h3 class="term-name"><dfn id="term-memory-tier">memory tier</dfn></h3>
+        <p class="term-def">One of the four places a harness keeps what a model needs: the window, the session log, the project files and the long-term store.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/compaction-and-memory.html">C3 · Compaction and memory</a></span>
+        </p>
+        <p class="term-alias">Also written: memory tiers</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-messages-api">
+        <h3 class="term-name"><dfn id="term-messages-api">Messages API</dfn></h3>
+        <p class="term-def">The API this course calls for every model call. A3 showed what each request holds.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-messages-array">
         <h3 class="term-name"><dfn id="term-messages-array">messages array</dfn></h3>
@@ -253,6 +1038,24 @@
         </p>
         <p class="term-alias">Also written: messages arrays, messages list</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-model-context-protocol">
+        <h3 class="term-name"><dfn id="term-model-context-protocol">Model Context Protocol</dfn></h3>
+        <p class="term-def">An open protocol through which an application connects a model to tools, resources and prompts that other programs offer.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+        <p class="term-alias">Also written: MCP</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-model-id">
+        <h3 class="term-name"><dfn id="term-model-id">model ID</dfn></h3>
+        <p class="term-def">The name that picks the model in a request. A run&#x27;s trace records it.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+        <p class="term-alias">Also written: model IDs</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-model-interface">
         <h3 class="term-name"><dfn id="term-model-interface">model interface</dfn></h3>
         <p class="term-def">One function that Rein calls to get a reply. A scripted model and a real model both sit behind it, with the same inputs and the same kind of result.</p>
@@ -262,9 +1065,36 @@
         </p>
         <p class="term-alias">Also written: model interfaces</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-mount">
+        <h3 class="term-name"><dfn id="term-mount">mount</dfn></h3>
+        <p class="term-def">A folder you name in the command so the command can use it. This course mounts one folder per task.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/containers-primer.html">T7 · Containers</a></span>
+        </p>
+        <p class="term-alias">Also written: mounts</p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-n" data-filter-group>
       <h2>N</h2>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-nested-schema">
+        <h3 class="term-name"><dfn id="term-nested-schema">nested schema</dfn></h3>
+        <p class="term-def">A schema whose properties are schemas themselves, so the check goes into the value one level at a time.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/json-schema-primer.html">T4 · JSON Schema in depth</a></span>
+        </p>
+        <p class="term-alias">Also written: nested schemas</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-network-egress">
+        <h3 class="term-name"><dfn id="term-network-egress">network egress</dfn></h3>
+        <p class="term-def">A network call that leaves the machine, to a host outside the sandbox.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+        <p class="term-alias">Also written: egress</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-next-token-prediction">
         <h3 class="term-name"><dfn id="term-next-token-prediction">next-token prediction</dfn></h3>
         <p class="term-def">The model&#x27;s one job on each step: score every possible next token. Nothing in this step checks whether a token is true.</p>
@@ -277,6 +1107,40 @@
     </section>
     <section class="glossary-group" id="letter-o" data-filter-group>
       <h2>O</h2>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-observability">
+        <h3 class="term-name"><dfn id="term-observability">observability</dfn></h3>
+        <p class="term-def">The wire that answers what exactly happened, and where time and money went.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/the-turn-clock.html">B4 · The Turn Clock</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-opentelemetry">
+        <h3 class="term-name"><dfn id="term-opentelemetry">OpenTelemetry</dfn></h3>
+        <p class="term-def">An open standard for traces, metrics and logs. This course takes its names for spans and attributes.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/observability.html">C12 · Observability: traces you can read</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-orphaned-tool-call">
+        <h3 class="term-name"><dfn id="term-orphaned-tool-call">orphaned tool call</dfn></h3>
+        <p class="term-def">A tool call with no result after it. A request that holds one is refused.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/loop-state-and-stopping.html">C5 · Loop state and stopping well</a></span>
+        </p>
+        <p class="term-alias">Also written: orphaned tool calls, orphaned call</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-output-cap">
+        <h3 class="term-name"><dfn id="term-output-cap">output cap</dfn></h3>
+        <p class="term-def">A limit on how much of one tool output the model sees. It keeps the start and the end, and says how much was cut.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/context-budget.html">C2 · Context budget</a></span>
+        </p>
+        <p class="term-alias">Also written: output caps</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-output-limit">
         <h3 class="term-name"><dfn id="term-output-limit">output limit</dfn></h3>
         <p class="term-def">The most tokens one reply may use. A reply that reaches it stops there, and the reply says why.</p>
@@ -295,9 +1159,45 @@
         </p>
         <p class="term-alias">Also written: output token</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-overloaded-error">
+        <h3 class="term-name"><dfn id="term-overloaded-error">overloaded error</dfn></h3>
+        <p class="term-def">The error the API returns when it is temporarily overloaded. It is a transient error.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
+        </p>
+        <p class="term-alias">Also written: overloaded errors</p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-p" data-filter-group>
       <h2>P</h2>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-parallel-tool-calls">
+        <h3 class="term-name"><dfn id="term-parallel-tool-calls">parallel tool calls</dfn></h3>
+        <p class="term-def">Several tool_use blocks in one reply, so the harness runs them together and answers all of them in one message.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
+        </p>
+        <p class="term-alias">Also written: parallel tool call</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-parallel-safe">
+        <h3 class="term-name"><dfn id="term-parallel-safe">parallel-safe</dfn></h3>
+        <p class="term-def">Two tool calls are parallel-safe when neither writes a resource that the other reads or writes.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tool-design.html">C7 · Tool design is agent UX</a></span>
+        </p>
+        <p class="term-alias">Also written: parallel safe</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-parametrize">
+        <h3 class="term-name"><dfn id="term-parametrize">parametrize</dfn></h3>
+        <p class="term-def">Running one test body over a table of cases, so each case is checked on its own.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/pytest-primer.html">T6 · pytest</a></span>
+        </p>
+        <p class="term-alias">Also written: parametrized</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-pass-rate">
         <h3 class="term-name"><dfn id="term-pass-rate">pass rate</dfn></h3>
         <p class="term-def">The share of trials that pass their checks. It is a measure over many runs, not the result of one.</p>
@@ -306,6 +1206,77 @@
           <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
         </p>
         <p class="term-alias">Also written: pass rates</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-path-traversal">
+        <h3 class="term-name"><dfn id="term-path-traversal">path traversal</dfn></h3>
+        <p class="term-def">A path that climbs out of the workspace root with ../, or that names a link leading out of it.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+        <p class="term-alias">Also written: traversal</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-pause-and-resume">
+        <h3 class="term-name"><dfn id="term-pause-and-resume">pause and resume</dfn></h3>
+        <p class="term-def">Saving the run state, stopping, and later starting again from the saved state instead of from the beginning.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/loop-state-and-stopping.html">C5 · Loop state and stopping well</a></span>
+        </p>
+        <p class="term-alias">Also written: resume</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-pause-turn">
+        <h3 class="term-name"><dfn id="term-pause-turn">pause_turn</dfn></h3>
+        <p class="term-def">The stop reason for a server-side loop that reached its iteration limit. The harness decides whether to continue.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-permanent-error">
+        <h3 class="term-name"><dfn id="term-permanent-error">permanent error</dfn></h3>
+        <p class="term-def">A failure that will repeat on every try, such as a request that is badly formed. A retry does not help.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
+        </p>
+        <p class="term-alias">Also written: permanent errors</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-permission-mode">
+        <h3 class="term-name"><dfn id="term-permission-mode">permission mode</dfn></h3>
+        <p class="term-def">The default decision for a call that no rule matches: allow, ask or deny.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/permissions.html">C9 · Permissions</a></span>
+        </p>
+        <p class="term-alias">Also written: permission modes</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-permission-policy">
+        <h3 class="term-name"><dfn id="term-permission-policy">permission policy</dfn></h3>
+        <p class="term-def">The rules that decide, for each tool call, whether it runs, asks a person, or is denied, written down as code.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/permissions.html">C9 · Permissions</a></span>
+        </p>
+        <p class="term-alias">Also written: permission policies</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-permissions">
+        <h3 class="term-name"><dfn id="term-permissions">permissions</dfn></h3>
+        <p class="term-def">The wire that answers which actions are allowed, and how bad a mistake can get.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/the-turn-clock.html">B4 · The Turn Clock</a></span>
+        </p>
+        <p class="term-alias">Also written: permission</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-pre-tool-hook">
+        <h3 class="term-name"><dfn id="term-pre-tool-hook">pre-tool hook</dfn></h3>
+        <p class="term-def">A hook that runs before each tool call and decides whether the call may run.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+        <p class="term-alias">Also written: pre-tool hooks</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-probability">
         <h3 class="term-name"><dfn id="term-probability">probability</dfn></h3>
@@ -316,15 +1287,170 @@
         </p>
         <p class="term-alias">Also written: probabilities</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-process">
+        <h3 class="term-name"><dfn id="term-process">process</dfn></h3>
+        <p class="term-def">A running program, with its own id, its parent&#x27;s id, a user and a working folder.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/linux-processes.html">T9 · Linux processes</a></span>
+        </p>
+        <p class="term-alias">Also written: processes</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-product-harness">
+        <h3 class="term-name"><dfn id="term-product-harness">product harness</dfn></h3>
+        <p class="term-def">The harness a vendor ships with its model product, with its own loop, tools and limits.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/what-a-harness-is.html">B3 · What a harness is</a></span>
+        </p>
+        <p class="term-alias">Also written: product harnesses</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-programmatic-tool-calling">
+        <h3 class="term-name"><dfn id="term-programmatic-tool-calling">programmatic tool calling</dfn></h3>
+        <p class="term-def">The model writes a short program that calls several tools, so that only the program&#x27;s result returns to the context. The idea only; the course makes no product claim.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+        <p class="term-alias">Also written: programmatic tool call</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-progressive-disclosure">
+        <h3 class="term-name"><dfn id="term-progressive-disclosure">progressive disclosure</dfn></h3>
+        <p class="term-def">Loading detail only when a task needs it: the short description first, the full procedure when it is used.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-project-rules">
+        <h3 class="term-name"><dfn id="term-project-rules">project rules</dfn></h3>
+        <p class="term-def">The standing instructions for one repository, written down so every run in it reads them.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-prompt-caching">
+        <h3 class="term-name"><dfn id="term-prompt-caching">prompt caching</dfn></h3>
+        <p class="term-def">Keeping the start of a request, so that a later call with the same start can read it back instead of processing it again.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
+        </p>
+        <p class="term-alias">Also written: prompt cache</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-prompt-engineering">
+        <h3 class="term-name"><dfn id="term-prompt-engineering">prompt engineering</dfn></h3>
+        <p class="term-def">Choosing the words of the prompt and the instructions. Words guide the model; they do not enforce anything.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/what-a-harness-is.html">B3 · What a harness is</a></span>
+        </p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-r" data-filter-group>
       <h2>R</h2>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-race-condition">
+        <h3 class="term-name"><dfn id="term-race-condition">race condition</dfn></h3>
+        <p class="term-def">A bug where the result depends on which of two steps runs first.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/threads-vs-async.html">T10 · Threads vs. async</a></span>
+        </p>
+        <p class="term-alias">Also written: race conditions, race</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-randomness">
+        <h3 class="term-name"><dfn id="term-randomness">randomness</dfn></h3>
+        <p class="term-def">The model can give different answers to the same prompt. One good run says little about the next.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-rate-limit">
+        <h3 class="term-name"><dfn id="term-rate-limit">rate limit</dfn></h3>
+        <p class="term-def">A cap on how many requests or tokens a client may use in a period. Going over it returns an error.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
+        </p>
+        <p class="term-alias">Also written: rate limits</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-react">
         <h3 class="term-name"><dfn id="term-react">ReAct</dfn></h3>
         <p class="term-def">A name for the loop of reasoning and acting in turns, from the paper ReAct: Synergizing Reasoning and Acting in Language Models.</p>
         <p class="term-meta">
           <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
           <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-read-only-tool">
+        <h3 class="term-name"><dfn id="term-read-only-tool">read-only tool</dfn></h3>
+        <p class="term-def">A tool that does not change its environment. A read-only hint says so; it is still a hint.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tool-design.html">C7 · Tool design is agent UX</a></span>
+        </p>
+        <p class="term-alias">Also written: read-only tools</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-recovery">
+        <h3 class="term-name"><dfn id="term-recovery">recovery</dfn></h3>
+        <p class="term-def">The wire that answers how a failure is handled, so the run continues without spinning.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/the-turn-clock.html">B4 · The Turn Clock</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-redaction">
+        <h3 class="term-name"><dfn id="term-redaction">redaction</dfn></h3>
+        <p class="term-def">Replacing secret text with a placeholder before the event is stored. It changes the trace, not what the model is sent.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/observability.html">C12 · Observability: traces you can read</a></span>
+        </p>
+        <p class="term-alias">Also written: redact</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-refusal">
+        <h3 class="term-name"><dfn id="term-refusal">refusal</dfn></h3>
+        <p class="term-def">The stop reason for a response where the model declined to answer. It arrives as a normal reply, not an error.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+        <p class="term-alias">Also written: refusals</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-reliability">
+        <h3 class="term-name"><dfn id="term-reliability">reliability</dfn></h3>
+        <p class="term-def">How often a task works all the way through. In this course it comes from the system around the model.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-request">
+        <h3 class="term-name"><dfn id="term-request">request</dfn></h3>
+        <p class="term-def">What the harness sends for one model call: the system prompt, the tools and the messages.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+        <p class="term-alias">Also written: requests</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-response">
+        <h3 class="term-name"><dfn id="term-response">response</dfn></h3>
+        <p class="term-def">What the model sends back for one call: a list of content blocks and a stop reason.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+        <p class="term-alias">Also written: responses</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-retry-budget">
+        <h3 class="term-name"><dfn id="term-retry-budget">retry budget</dfn></h3>
+        <p class="term-def">A limit on the retries a run or a client may make, so that retries cannot grow without end.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
         </p>
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-role">
@@ -336,6 +1462,15 @@
         </p>
         <p class="term-alias">Also written: roles</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-rules-file">
+        <h3 class="term-name"><dfn id="term-rules-file">rules file</dfn></h3>
+        <p class="term-def">A file that holds the project rules. Kept short, it is a map of where things are and how to check them.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/control-plane.html">C1 · Control plane: instructions as law</a></span>
+        </p>
+        <p class="term-alias">Also written: rules files</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-run">
         <h3 class="term-name"><dfn id="term-run">run</dfn></h3>
         <p class="term-def">One agent doing one task, from the first model call to a stop. A run has many turns.</p>
@@ -344,6 +1479,14 @@
           <span class="taught">Taught in <a href="modules/same-model-different-harness.html">S0 · Same model, different harness</a></span>
         </p>
         <p class="term-alias">Also written: runs</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-run-state">
+        <h3 class="term-name"><dfn id="term-run-state">run state</dfn></h3>
+        <p class="term-def">Everything a run remembers between calls: its messages, its turn count and its status. The harness keeps it in one place.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/loop-state-and-stopping.html">C5 · Loop state and stopping well</a></span>
+        </p>
       </div>
     </section>
     <section class="glossary-group" id="letter-s" data-filter-group>
@@ -356,6 +1499,33 @@
           <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
         </p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-sandbox">
+        <h3 class="term-name"><dfn id="term-sandbox">sandbox</dfn></h3>
+        <p class="term-def">The limit on where an action can reach, such as files and the network.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/the-turn-clock.html">B4 · The Turn Clock</a></span>
+        </p>
+        <p class="term-alias">Also written: sandboxes</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-schema-validation">
+        <h3 class="term-name"><dfn id="term-schema-validation">schema validation</dfn></h3>
+        <p class="term-def">Checking a value against a schema before the harness uses it. The checker returns the first reason the value fails.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/structured-outputs.html">A5 · Structured outputs and schemas</a></span>
+        </p>
+        <p class="term-alias">Also written: validate, validating</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-secret">
+        <h3 class="term-name"><dfn id="term-secret">secret</dfn></h3>
+        <p class="term-def">A value that must not reach the model&#x27;s reply or the trace, such as an API key.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+        <p class="term-alias">Also written: secrets</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-seed">
         <h3 class="term-name"><dfn id="term-seed">seed</dfn></h3>
         <p class="term-def">The number that sets the random draws of a scripted run. The same seed gives the same run, every time.</p>
@@ -365,6 +1535,85 @@
         </p>
         <p class="term-alias">Also written: seeds</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-self-praise">
+        <h3 class="term-name"><dfn id="term-self-praise">self-praise</dfn></h3>
+        <p class="term-def">A model saying its work is good when it is not. A model checking its own work has the same blind spots.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></span>
+        </p>
+        <p class="term-alias">Also written: self-praising</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-self-report">
+        <h3 class="term-name"><dfn id="term-self-report">self-report</dfn></h3>
+        <p class="term-def">The model&#x27;s own statement about its work, such as &quot;the tests pass&quot;. A self-report is a claim until a check confirms it.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
+        </p>
+        <p class="term-alias">Also written: self-reports</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-sensor">
+        <h3 class="term-name"><dfn id="term-sensor">sensor</dfn></h3>
+        <p class="term-def">A control that checks after the work, such as a test run, a linter or a review of the diff.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
+        </p>
+        <p class="term-alias">Also written: sensors</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-server-sent-events">
+        <h3 class="term-name"><dfn id="term-server-sent-events">server-sent events</dfn></h3>
+        <p class="term-def">The name for the events in a stream. This course shows them as plain Python dictionaries.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+        <p class="term-alias">Also written: server-sent event</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-session-log">
+        <h3 class="term-name"><dfn id="term-session-log">session log</dfn></h3>
+        <p class="term-def">A record of one session&#x27;s events, kept so a later session or a reader can see what happened.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/compaction-and-memory.html">C3 · Compaction and memory</a></span>
+        </p>
+        <p class="term-alias">Also written: session logs</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-skill">
+        <h3 class="term-name"><dfn id="term-skill">skill</dfn></h3>
+        <p class="term-def">A folder with a SKILL.md file: a short description, and the procedure for one kind of task.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+        <p class="term-alias">Also written: skills</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-skill-md">
+        <h3 class="term-name"><dfn id="term-skill-md">SKILL.md</dfn></h3>
+        <p class="term-def">The file in a skill&#x27;s folder: YAML frontmatter followed by the procedure in Markdown.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-span">
+        <h3 class="term-name"><dfn id="term-span">span</dfn></h3>
+        <p class="term-def">A timed piece of work in a trace: a name, a start, an end, its attributes, and the span it sits under.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/observability.html">C12 · Observability: traces you can read</a></span>
+        </p>
+        <p class="term-alias">Also written: spans</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-stale-knowledge">
+        <h3 class="term-name"><dfn id="term-stale-knowledge">stale knowledge</dfn></h3>
+        <p class="term-def">Facts the model holds that have changed since it learned them. The model does not know they are out of date.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-stateless">
         <h3 class="term-name"><dfn id="term-stateless">stateless</dfn></h3>
         <p class="term-def">Keeping nothing between calls. A stateless call starts from what it is sent, and nothing else.</p>
@@ -372,6 +1621,50 @@
           <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
           <span class="taught">Taught in <a href="modules/the-stateless-model.html">A3 · The stateless model</a></span>
         </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-stop-reason">
+        <h3 class="term-name"><dfn id="term-stop-reason">stop_reason</dfn></h3>
+        <p class="term-def">The field in every response that says why the model stopped: end_turn, tool_use, max_tokens and a few others.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+        <p class="term-alias">Also written: stop reason, stop reasons</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-streaming">
+        <h3 class="term-name"><dfn id="term-streaming">streaming</dfn></h3>
+        <p class="term-def">Receiving a reply as a sequence of events, instead of one whole response. The events build the same message.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-structured-output">
+        <h3 class="term-name"><dfn id="term-structured-output">structured output</dfn></h3>
+        <p class="term-def">A reply in a shape you asked for, such as a JSON object with named fields. It is still a model&#x27;s reply: the shape can be right and the values wrong.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/structured-outputs.html">A5 · Structured outputs and schemas</a></span>
+        </p>
+        <p class="term-alias">Also written: structured outputs</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-sub-agent">
+        <h3 class="term-name"><dfn id="term-sub-agent">sub-agent</dfn></h3>
+        <p class="term-def">A second agent run by the harness for one job, such as review. It is a separate run, with its own context.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
+        </p>
+        <p class="term-alias">Also written: sub-agents, subagent</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-symlink">
+        <h3 class="term-name"><dfn id="term-symlink">symlink</dfn></h3>
+        <p class="term-def">A file that names another path. In this course&#x27;s sandbox, a link&#x27;s target is relative to the link&#x27;s own folder, and the sandbox follows it.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+        <p class="term-alias">Also written: symlinks, symbolic link</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-system-prompt">
         <h3 class="term-name"><dfn id="term-system-prompt">system prompt</dfn></h3>
@@ -392,6 +1685,32 @@
           <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
           <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
         </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-test-tampering">
+        <h3 class="term-name"><dfn id="term-test-tampering">test tampering</dfn></h3>
+        <p class="term-def">Changing the tests so that they pass for the wrong reason: editing an assertion, clearing a marker, or special-casing the answer.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-text-block">
+        <h3 class="term-name"><dfn id="term-text-block">text block</dfn></h3>
+        <p class="term-def">A content block of type text. It holds words, and no tool request.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+        <p class="term-alias">Also written: text blocks</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-thinking-block">
+        <h3 class="term-name"><dfn id="term-thinking-block">thinking block</dfn></h3>
+        <p class="term-def">The part of a reply that holds the model&#x27;s thinking. In a tool loop, it goes back to the model unchanged with the tool call.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/reasoning-and-effort.html">A6 · Reasoning and effort as harness knobs</a></span>
+        </p>
+        <p class="term-alias">Also written: thinking blocks</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-token">
         <h3 class="term-name"><dfn id="term-token">token</dfn></h3>
@@ -429,6 +1748,33 @@
         </p>
         <p class="term-alias">Also written: tools</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-annotation">
+        <h3 class="term-name"><dfn id="term-tool-annotation">tool annotation</dfn></h3>
+        <p class="term-def">A hint a tool server gives about a tool, such as read-only or destructive. A hint is not a check.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tool-design.html">C7 · Tool design is agent UX</a></span>
+        </p>
+        <p class="term-alias">Also written: tool annotations</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-definition">
+        <h3 class="term-name"><dfn id="term-tool-definition">tool definition</dfn></h3>
+        <p class="term-def">The name, the description and the input schema that tell the model a tool exists and what to pass it.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
+        </p>
+        <p class="term-alias">Also written: tool definitions</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-description">
+        <h3 class="term-name"><dfn id="term-tool-description">tool description</dfn></h3>
+        <p class="term-def">The text that tells the model what a tool does and when to use it. The model reads it on every call.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tool-design.html">C7 · Tool design is agent UX</a></span>
+        </p>
+        <p class="term-alias">Also written: tool descriptions</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-registry">
         <h3 class="term-name"><dfn id="term-tool-registry">tool registry</dfn></h3>
         <p class="term-def">A table from each tool name to the Python function that runs it. The loop looks up the name the model asked for. A name that is not in the table gets an error result.</p>
@@ -437,6 +1783,41 @@
           <span class="taught">Taught in <a href="modules/rein-2-one-tool-and-the-loop.html">H2 · Rein 2: one tool and the loop</a></span>
         </p>
         <p class="term-alias">Also written: tool registries</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-search">
+        <h3 class="term-name"><dfn id="term-tool-search">tool search</dfn></h3>
+        <p class="term-def">Finding a tool&#x27;s definition by keyword, and loading it for the next call. The course&#x27;s simulator does it, and it makes no product claim.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-result">
+        <h3 class="term-name"><dfn id="term-tool-result">tool_result</dfn></h3>
+        <p class="term-def">The block that answers one tool_use. It carries the tool_use_id of the call and the output the harness got back.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
+        </p>
+        <p class="term-alias">Also written: tool_results</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-use">
+        <h3 class="term-name"><dfn id="term-tool-use">tool_use</dfn></h3>
+        <p class="term-def">A block in the model&#x27;s reply that asks the harness to run a named tool with an input. The model writes it; the harness runs it.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
+        </p>
+        <p class="term-alias">Also written: tool_uses</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-use-id">
+        <h3 class="term-name"><dfn id="term-tool-use-id">tool_use_id</dfn></h3>
+        <p class="term-def">The id of a tool_use block. A tool_result names the id of the call it answers.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
+        </p>
+        <p class="term-alias">Also written: tool_use ids, tool_use id</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-trace">
         <h3 class="term-name"><dfn id="term-trace">trace</dfn></h3>
@@ -447,6 +1828,15 @@
         </p>
         <p class="term-alias">Also written: traces</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-trace-id">
+        <h3 class="term-name"><dfn id="term-trace-id">trace id</dfn></h3>
+        <p class="term-def">The identifier that ties the spans and events of one run together, so one trace reads as one run.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/observability.html">C12 · Observability: traces you can read</a></span>
+        </p>
+        <p class="term-alias">Also written: trace ids</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-training">
         <h3 class="term-name"><dfn id="term-training">training</dfn></h3>
         <p class="term-def">The process that sets the model&#x27;s weights, from many example texts. It happens before any chat, and a chat does not run it.</p>
@@ -454,6 +1844,24 @@
           <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
           <span class="taught">Taught in <a href="modules/what-a-model-does.html">A1 · What a model does</a></span>
         </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-transient-error">
+        <h3 class="term-name"><dfn id="term-transient-error">transient error</dfn></h3>
+        <p class="term-def">A failure that is likely to pass on its own, such as a busy provider. A retry may succeed.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
+        </p>
+        <p class="term-alias">Also written: transient errors</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-transport">
+        <h3 class="term-name"><dfn id="term-transport">transport</dfn></h3>
+        <p class="term-def">How messages move between a client and a server. Stdio uses newline-delimited messages over the standard streams of a subprocess.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
+        </p>
+        <p class="term-alias">Also written: transports</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-trial">
         <h3 class="term-name"><dfn id="term-trial">trial</dfn></h3>
@@ -472,6 +1880,15 @@
           <span class="taught">Taught in <a href="modules/the-agent-loop.html">B2 · The agent loop</a></span>
         </p>
         <p class="term-alias">Also written: turns</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-turn-clock">
+        <h3 class="term-name"><dfn id="term-turn-clock">Turn Clock</dfn></h3>
+        <p class="term-def">The clock face that shows one turn of a run as eight wires in order, with the harness settings beside them.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/the-turn-clock.html">B4 · The Turn Clock</a></span>
+        </p>
+        <p class="term-alias">Also written: turn clock</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-turn-limit">
         <h3 class="term-name"><dfn id="term-turn-limit">turn limit</dfn></h3>
@@ -492,6 +1909,55 @@
         <p class="term-alias">Also written: type hints</p>
       </div>
     </section>
+    <section class="glossary-group" id="letter-u" data-filter-group>
+      <h2>U</h2>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-usage">
+        <h3 class="term-name"><dfn id="term-usage">usage</dfn></h3>
+        <p class="term-def">The counts in a response: how many input and output tokens the call used. The cost of a call comes from them.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-user-harness">
+        <h3 class="term-name"><dfn id="term-user-harness">user harness</dfn></h3>
+        <p class="term-def">The harness you add around a model product or API: your loop, your tools and your checks.</p>
+        <p class="term-meta">
+          <span class="wire w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"></use></svg> Control</span>
+          <span class="taught">Taught in <a href="modules/what-a-harness-is.html">B3 · What a harness is</a></span>
+        </p>
+        <p class="term-alias">Also written: user harnesses</p>
+      </div>
+    </section>
+    <section class="glossary-group" id="letter-v" data-filter-group>
+      <h2>V</h2>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-verification">
+        <h3 class="term-name"><dfn id="term-verification">verification</dfn></h3>
+        <p class="term-def">The wire that answers whether a done claim is really done, and whether a change helped.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/the-turn-clock.html">B4 · The Turn Clock</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-verification-gate">
+        <h3 class="term-name"><dfn id="term-verification-gate">verification gate</dfn></h3>
+        <p class="term-def">The check that sits between the model&#x27;s done claim and the run&#x27;s success. A claim passes only when the gate runs and passes.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
+        </p>
+        <p class="term-alias">Also written: verification gates</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-virtual-machine">
+        <h3 class="term-name"><dfn id="term-virtual-machine">virtual machine</dfn></h3>
+        <p class="term-def">A whole guest system that runs on a host. The course compares it with a container and an OS sandbox, by cost and by isolation.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+        <p class="term-alias">Also written: virtual machines</p>
+      </div>
+    </section>
     <section class="glossary-group" id="letter-w" data-filter-group>
       <h2>W</h2>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-weights">
@@ -503,9 +1969,35 @@
         </p>
         <p class="term-alias">Also written: weight</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-wire">
+        <h3 class="term-name"><dfn id="term-wire">wire</dfn></h3>
+        <p class="term-def">One of the eight parts of a harness, and one spoke of the Turn Clock. Each wire answers one question about a turn.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/the-turn-clock.html">B4 · The Turn Clock</a></span>
+        </p>
+        <p class="term-alias">Also written: wires</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-workspace-root">
+        <h3 class="term-name"><dfn id="term-workspace-root">workspace root</dfn></h3>
+        <p class="term-def">The folder the agent may use. A path that leaves it is outside the workspace.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/sandboxes.html">C10 · Sandboxes: blast walls</a></span>
+        </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-worktree">
+        <h3 class="term-name"><dfn id="term-worktree">worktree</dfn></h3>
+        <p class="term-def">A separate folder for one line of work, so an agent&#x27;s files stay apart from yours in this course&#x27;s practice.</p>
+        <p class="term-meta">
+          <span class="wire">Not on a wire</span>
+          <span class="taught">Taught in <a href="modules/git-primer.html">T8 · git for agent work</a></span>
+        </p>
+        <p class="term-alias">Also written: worktrees</p>
+      </div>
     </section>
     </div>
-    <p class="glossary-count" data-glossary-count>44 terms</p>
+    <p class="glossary-count" data-glossary-count>213 terms</p>
     <!-- /gen:glossary -->
   </section>
 </main>

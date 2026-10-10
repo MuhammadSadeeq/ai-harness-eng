@@ -1,0 +1,25 @@
+- id: T6-c1
+  objective: T6.o3
+  mode: check
+  question: A test passes for a function that always returns 0. What is the likely fault?
+  options:
+  - text: The test checks nothing that the function's output would change.
+    why: Right. A test that passes for a constant result has no case that differs. Add a case with a different expected
+      value.
+  - text: The function is correct, so the test is correct.
+    why: Tempting, but wrong. Green tests mean the check passed, not that the code is right.
+  - text: pytest is wrong to report a pass.
+    why: No. The runner reports what the test asserts.
+  answer: 0
+- id: T6-c2
+  objective: T6.o1
+  mode: check
+  question: What does `assert total == 675, 'after 10 percent'` do when total is 700?
+  options:
+  - text: It fails, and the message says after 10 percent.
+    why: Right. The assert is false, so the test fails with the message.
+  - text: It passes, because a message is only a comment.
+    why: No. The message is shown on failure; the check still runs.
+  - text: It skips the test.
+    why: No. A failing assert fails the test; nothing is skipped.
+  answer: 0

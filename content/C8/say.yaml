@@ -1,0 +1,25 @@
+- id: C8-s1
+  objectives:
+  - C8.o1
+  - C8.o2
+  prompt: A colleague wants to connect a new server and add a skill for deploy checks. Walk me through what each one puts into the context, and when.
+  model_answer: A server adds its tools, resources and prompts as the client asks for them, over a transport the client starts. A skill adds only its name and description up front, and loads the full procedure
+    when a task needs it. So a server is the cost you pay per tool, and a skill is cheap until it is used. I would check what the server can reach before I connect it.
+  rubric:
+  - 'Names what a server offers: tools, resources and prompts'
+  - 'Says how the client reaches the server: a transport'
+  - Says what a skill loads up front, and what waits until it is used
+  - Says to check what a server can reach before connecting it
+- id: C8-s2
+  objectives:
+  - C8.o3
+  - C8.o4
+  - C8.o5
+  prompt: Your run sends forty tool definitions with every call, and a lookup step takes five round trips. What do you change, and what do you check before you connect a new server?
+  model_answer: I load each tool only when a step needs it, by keyword, so each call carries a few definitions. For the five round trips, I would ask whether one short program could call the tools and return
+    one result. Before a new server connects, I read what it can reach and treat its annotations as hints, not as permissions.
+  rubric:
+  - Loads tools on demand instead of sending every definition
+  - Measures the tokens and the accuracy before and after
+  - Names programmatic calling as a way to cut round trips, without a product claim
+  - Checks what a server can reach, and does not trust its annotations alone

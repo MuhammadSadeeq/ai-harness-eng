@@ -1,0 +1,17 @@
+{
+ "prompt": "Sort each behavior: is it the model, or the harness?",
+ "buckets": [
+  {"id": "model", "label": "The model", "hint": "What the model writes or chooses."},
+  {"id": "harness", "label": "The harness", "hint": "The code around the model that runs, limits or checks."}
+ ],
+ "items": [
+  {"id": "b3-s1", "text": "Chooses the next token from its scores", "bucket": "model", "why": "The model scores the next tokens and chooses from them. The harness does not choose words."},
+  {"id": "b3-s2", "text": "Runs the tests after an edit", "bucket": "harness", "why": "The model can ask for a test, but the harness runs it and reads the result."},
+  {"id": "b3-s3", "text": "Caps a tool output at a set size", "bucket": "harness", "why": "A cap is a harness setting. The model never sees the cut part."},
+  {"id": "b3-s4", "text": "Writes a sentence that sounds sure", "bucket": "model", "why": "Tone and fluency come from the model's writing. The sentence does not prove the claim."},
+  {"id": "b3-s5", "text": "Decides when the run stops", "bucket": "harness", "why": "The model can say it is done. The harness decides what that means for the run."},
+  {"id": "b3-s6", "text": "Blocks a shell command that the permissions do not allow", "bucket": "harness", "why": "Permissions are enforced by the harness, not by a line in the prompt."},
+  {"id": "b3-s7", "text": "Picks which tool to call next", "bucket": "model", "why": "The model asks for a tool. The harness runs it."},
+  {"id": "b3-s8", "text": "Adds the earlier messages to each call", "bucket": "harness", "why": "The harness builds the request. The model only reads what it is sent."}
+ ]
+}

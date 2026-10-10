@@ -1,0 +1,80 @@
+- id: A4-p1
+  objective: A4.o3
+  mode: predict
+  question: "The reply has a text block, then a tool request. The harness reads only the first block. What does the run do?"
+  options:
+    - text: "It runs the tool request, because the reply asked for it."
+      why: "Tempting. The request is in the reply, but a harness that reads one block never sees it."
+    - text: "It ends the run as done, because the first block has no tool request."
+      why: "Right. The first block is text, so the harness finds no call and ends the run as done. The tests never run."
+    - text: "It asks the model to write the reply again."
+      why: "Tempting. That would fix it, but the harness has no reason to ask: it has already decided the reply is done."
+  answer: 1
+  outcome: "It ended as done on turn 1. The tests never ran, and the checks still fail."
+
+- id: A4-c1
+  objective: A4.o1
+  mode: check
+  question: "In the Wire view of a call, which part is the response?"
+  options:
+    - text: "The system prompt and the tool definitions."
+      why: "Tempting. Those are sent with the call, so they sit in the request, not the response."
+    - text: "The content blocks and the stop reason the model sent back."
+      why: "Right. The response is what came back: the content blocks, the stop reason and the usage."
+    - text: "The task the harness wrote on turn 1."
+      why: "Wrong. The task is a message in the request."
+  answer: 1
+
+- id: A4-c2
+  objective: A4.o2
+  mode: check
+  question: "A reply's content is a list. Why can it not be one string?"
+  options:
+    - text: "Because a string is slower to send."
+      why: "Tempting. Speed is not the reason. The reason is what the reply can hold."
+    - text: "Because each block has a type that decides its shape, so the blocks in a reply can differ."
+      fact: api.content-multiple-blocks
+      why: "Right. The docs say a response's content is an array of content blocks, each with a type that determines its shape."
+    - text: "Because the model cannot write more than one sentence."
+      why: "Wrong. A reply can hold several sentences in one text block."
+  answer: 1
+
+- id: A4-c3
+  objective: A4.o3
+  mode: check
+  question: "A reply comes back with stop_reason max_tokens, halfway through a tool request. What should the harness do?"
+  options:
+    - text: "Run the part of the tool request it has."
+      why: "Tempting. Most of it is there, but a half-written request has no complete input."
+    - text: "Do not run the half-written request; retry with a higher max_tokens value."
+      fact: api.max-tokens-incomplete-tool-use
+      why: "Right. The docs say to retry with a higher max_tokens value to get the full tool use."
+    - text: "Treat it as end_turn and check the work."
+      why: "Wrong. end_turn means the model finished. max_tokens means the reply was cut off."
+  answer: 1
+
+- id: A4-c4
+  objective: A4.o4
+  mode: check
+  question: "In this course's trace, where are a call's token counts?"
+  options:
+    - text: "In the usage of the response, as input and output tokens."
+      why: "Right. The trace records the counts from the reply's usage, and the cost is computed from them."
+    - text: "In the file the tool wrote."
+      why: "Wrong. The file holds the work, not the counts."
+    - text: "Nowhere; the cost is a fixed price per call."
+      why: "Tempting. A fixed price would hide the counts, and the course computes the cost from them."
+  answer: 0
+
+- id: A4-c5
+  objective: A4.o5
+  mode: check
+  question: "In the course's sketch of a stream, what makes the message?"
+  options:
+    - text: "The events, added to the message in order."
+      why: "Right. Each text event adds to the text, and the stop event sets the reason. The snippet shows this."
+    - text: "Only the last event, which holds the whole reply."
+      why: "Tempting. The last event alone does not hold the text the earlier events sent."
+    - text: "The model, which writes the message once at the end."
+      why: "Wrong. In the sketch the harness builds the message from the events."
+  answer: 0

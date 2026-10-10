@@ -1,0 +1,26 @@
+- id: C1-s1
+  objectives: [C1.o1, C1.o3]
+  prompt: "A rule in the project file conflicts with a user request. Which layer wins, and what makes the rule hold?"
+  model_answer: >-
+    The project rules win, because they are the team's standing decision and one request does not change
+    them. Which layer wins follows from who wrote it, not from what it says. A rule that must hold does not
+    depend on the model reading it: I would put it in code, as a pre-tool hook that denies the call and
+    fails closed.
+  rubric:
+    - "Names the winning layer and why it wins"
+    - "Says a tool result or a user message does not override the standing rules"
+    - "Says a rule that must hold goes in code, not only in words"
+    - "Names a pre-tool hook and what fail closed means for it"
+
+- id: C1-s2
+  objectives: [C1.o2, C1.o4, C1.o5]
+  prompt: "How would you write the rules file for a repo, and how would you know a rule line works?"
+  model_answer: >-
+    A short map: where the tests live, the command that runs them, and the few rules that must hold, each
+    with its reason. I would keep it at the altitude of a checkable rule, not a slogan. I would version it,
+    review changes to it, and test the rules that must hold, as I test code.
+  rubric:
+    - "Describes a short map, not a manual"
+    - "Gives the rule's altitude: specific enough to act on, general enough to transfer"
+    - "Says prompt lines are versioned, reviewed and tested, like code"
+    - "Says a rule that must hold is tested or enforced, not just written"

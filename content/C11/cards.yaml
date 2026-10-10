@@ -1,0 +1,42 @@
+- id: C11-k1
+  type: term
+  objective: C11.o1
+  front: "Where does a verification gate sit?"
+  back: "Between the model's done claim and the run's success. A claim passes only when the gate runs and passes."
+
+- id: C11-k2
+  type: term
+  objective: C11.o2
+  front: "What is a computational check?"
+  back: "A check a program can run and decide, such as tests, a linter or a type check."
+
+- id: C11-k3
+  type: term
+  objective: C11.o3
+  front: "What is the difference between a guide and a sensor?"
+  back: "A guide steers before the work. A sensor checks after it."
+
+- id: C11-k4
+  type: term
+  objective: C11.o4
+  front: "What should an independent reviewer see?"
+  back: "The task and the diff, not the author's reasoning."
+
+- id: C11-k5
+  type: term
+  objective: C11.o5
+  front: "What is test tampering?"
+  back: "Changing the tests so they pass for the wrong reason: an edited assertion, a cleared marker, or a special-cased answer."
+
+- id: C11-k6
+  type: which-wire
+  objective: C11.o1
+  wire: verify
+  front: "The model says the tests pass, and no run backs it. Which wire is that?"
+  back: "Verification. The self-report is a claim until a gate confirms it."
+
+- id: C11-k7
+  type: term
+  objective: C11.o1
+  front: "Is a self-report evidence that the work is done?"
+  back: "No. It is a claim, and only a gate that runs can confirm it."

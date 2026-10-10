@@ -1,0 +1,19 @@
+{
+ "from_memory": true,
+ "hints": [
+  "Read test_kata.py. The fixture is a helper that builds the setup. The cases are one loop over a table.",
+  "apply_discount: check the percent, then subtract price * percent // 100 from the price. cart_total adds the prices, then calls apply_discount once.",
+  "Nearly the code: if not 0 <= percent <= 100, raise ValueError. Return price_cents - price_cents * percent // 100. For cart_total, return apply_discount(sum(price for _, price in items), percent)."
+ ],
+ "id": "T6-fixtures",
+ "minutes": 20,
+ "module": "T6",
+ "objectives": [
+  "T6.o1",
+  "T6.o2"
+ ],
+ "solution": "def apply_discount(price_cents: int, percent: int) -> int:\n    \"\"\"The price after a percent discount. The discount rounds down, in cents.\"\"\"\n    if not 0 <= percent <= 100:\n        raise ValueError(f\"percent must be 0 to 100, got {percent}\")\n    return price_cents - price_cents * percent // 100\n\n\ndef cart_total(items: list[tuple[str, int]], percent: int) -> int:\n    \"\"\"The total of the items in cents, after one discount on the whole cart.\"\"\"\n    return apply_discount(sum(price for _, price in items), percent)\n",
+ "starter": "def apply_discount(price_cents: int, percent: int) -> int:\n    \"\"\"The price after a percent discount. The discount rounds down, in cents.\n\n    A percent below 0 or above 100 raises ValueError.\n    \"\"\"\n    raise NotImplementedError(\"check the percent, then subtract the discount\")\n\n\ndef cart_total(items: list[tuple[str, int]], percent: int) -> int:\n    \"\"\"The total of (name, price) items in cents, after one discount on the whole cart.\"\"\"\n    raise NotImplementedError(\"add the prices, then apply_discount once\")\n",
+ "tests": "from kata import apply_discount, cart_total\n\n\ndef sample_cart():\n    \"\"\"A fixture: the setup every cart test needs, built fresh each time.\"\"\"\n    return [(\"tea\", 300), (\"cake\", 450)]\n\n\ndef test_each_case_is_checked_on_its_own():\n    cases = [(1000, 0, 1000), (1000, 10, 900), (999, 10, 900), (1, 100, 0)]\n    for price, percent, expected in cases:\n        assert apply_discount(price, percent) == expected, f\"{price} at {percent} percent\"\n\n\ndef test_a_percent_outside_0_to_100_is_refused():\n    for bad in (-1, 101):\n        try:\n            apply_discount(100, bad)\n        except ValueError:\n            continue\n        assert False, f\"percent {bad} should be refused\"\n\n\ndef test_the_cart_total_uses_the_fixture():\n    assert cart_total(sample_cart(), 10) == 675, \"750 less 10 percent is 675\"\n\n\ndef test_the_fixture_is_fresh_each_time():\n    first = sample_cart()\n    first.append((\"extra\", 1))\n    assert sample_cart() == [(\"tea\", 300), (\"cake\", 450)], \"a new cart each time, not the one changed above\"\n",
+ "title": "Test a discount with a fixture and a list of cases"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "c10-redact",
+  "label": "Redact only",
+  "modules": {
+    "redact": {
+      "patterns": [
+        "sk-test-planted"
+      ]
+    }
+  }
+}

@@ -1,0 +1,65 @@
+[
+ {
+  "answer": 0,
+  "id": "T10-c1",
+  "mode": "check",
+  "objective": "T10.o1",
+  "options": [
+   {
+    "text": "Async, because the call mostly waits.",
+    "why": "Right. Concurrency is about waiting, so a call that waits fits async."
+   },
+   {
+    "text": "Processes, because they are always faster.",
+    "why": "No. This course does not claim speed for any tool here."
+   },
+   {
+    "text": "No tool, because a call that waits needs none.",
+    "why": "No. The call still needs a way to wait beside other calls."
+   }
+  ],
+  "question": "A tool call sends a web request and waits for the reply. In this course's model, which tool fits?"
+ },
+ {
+  "answer": 0,
+  "id": "T10-c2",
+  "mode": "check",
+  "objective": "T10.o2",
+  "options": [
+   {
+    "text": "The two that only read; the writer runs alone.",
+    "why": "Right. Safe calls may overlap, and the writer changes shared state, so it runs one at a time."
+   },
+   {
+    "text": "All three, because they are all calls.",
+    "why": "No. The writer changes shared state, so it may not overlap."
+   },
+   {
+    "text": "None, because a read is unsafe.",
+    "why": "No. A read that changes nothing is safe to overlap."
+   }
+  ],
+  "question": "Two calls only read data, and a third writes a shared file. Which calls may overlap?"
+ },
+ {
+  "answer": 0,
+  "id": "T10-c3",
+  "mode": "check",
+  "objective": "T10.o3",
+  "options": [
+   {
+    "text": "A bug where the result depends on which of two steps runs first.",
+    "why": "Right. The snippet's final value depends on the order of the steps."
+   },
+   {
+    "text": "A program that crashes at random.",
+    "why": "No. A race is about order, not crashing."
+   },
+   {
+    "text": "Two files with the same name.",
+    "why": "No. A race concerns the order of steps on shared data."
+   }
+  ],
+  "question": "What is a race condition?"
+ }
+]

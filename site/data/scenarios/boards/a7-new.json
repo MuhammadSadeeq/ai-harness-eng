@@ -1,0 +1,9 @@
+{
+  "id": "a7-new",
+  "label": "New board",
+  "modules": {
+    "verify_gate": {
+      "max_feedback": 2
+    }
+  }
+}

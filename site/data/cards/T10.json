@@ -1,0 +1,44 @@
+[
+ {
+  "back": "A call that mostly waits, such as a web request.",
+  "front": "What kind of call fits async?",
+  "id": "T10-k1",
+  "objective": "T10.o1",
+  "type": "term"
+ },
+ {
+  "back": "The safe calls, which are started together.",
+  "front": "Which calls may overlap in run_tool_calls?",
+  "id": "T10-k2",
+  "objective": "T10.o2",
+  "type": "term"
+ },
+ {
+  "back": "The unsafe calls, which change shared state, in the order given.",
+  "front": "Which calls run one at a time?",
+  "id": "T10-k3",
+  "objective": "T10.o2",
+  "type": "term"
+ },
+ {
+  "back": "The order the calls were given, whatever finished first.",
+  "front": "In what order do results come back?",
+  "id": "T10-k4",
+  "objective": "T10.o2",
+  "type": "term"
+ },
+ {
+  "back": "A bug where the result depends on which of two steps runs first.",
+  "front": "What is a race condition?",
+  "id": "T10-k5",
+  "objective": "T10.o3",
+  "type": "term"
+ },
+ {
+  "back": "Both read 0 before either wrote, so the second write overwrote the first.",
+  "front": "Why did the two increments in the snippet end at 1?",
+  "id": "T10-k6",
+  "objective": "T10.o3",
+  "type": "term"
+ }
+]

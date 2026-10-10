@@ -1,0 +1,59 @@
+[
+ {
+  "back": "The tools as the model sees them: names, descriptions, inputs and results. Design it for the model, as you would a screen for a person.",
+  "front": "What is an agent-computer interface?",
+  "id": "C7-k1",
+  "objective": "C7.o1",
+  "type": "term"
+ },
+ {
+  "back": "It tells the model what the tool does and when to use it. The model reads it on every call, so vague words cost calls.",
+  "front": "What is a tool description for?",
+  "id": "C7-k2",
+  "objective": "C7.o2",
+  "type": "term"
+ },
+ {
+  "back": "It names what went wrong and what to do next, in a few words. A bare 'Invalid input' leaves the model guessing.",
+  "front": "What makes an error actionable?",
+  "id": "C7-k3",
+  "objective": "C7.o3",
+  "type": "term"
+ },
+ {
+  "back": "A tool that does not change its environment. A read-only hint says so, and a hint is not a check.",
+  "front": "What is a read-only tool?",
+  "id": "C7-k4",
+  "objective": "C7.o4",
+  "type": "term"
+ },
+ {
+  "back": "A tool that may change or delete things. Treat its call as a decision, not a read.",
+  "front": "What is a destructive tool?",
+  "id": "C7-k5",
+  "objective": "C7.o4",
+  "type": "term"
+ },
+ {
+  "back": "When neither writes a resource the other reads or writes. A read and an edit of the same file are not.",
+  "front": "When are two tool calls parallel-safe?",
+  "id": "C7-k6",
+  "objective": "C7.o5",
+  "type": "term"
+ },
+ {
+  "back": "The tools wire: the definitions are sent with every call.",
+  "front": "On which wire does a tool description sit?",
+  "id": "C7-k7",
+  "objective": "C7.o2",
+  "type": "which-wire",
+  "wire": "tools"
+ },
+ {
+  "back": "A hint a tool server gives about a tool. Clients should not make tool-use decisions on untrusted annotations.",
+  "front": "What is a tool annotation?",
+  "id": "C7-k8",
+  "objective": "C7.o4",
+  "type": "term"
+ }
+]

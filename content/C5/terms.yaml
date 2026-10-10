@@ -1,0 +1,56 @@
+- id: run-state
+  term: run state
+  aliases:
+  - run state
+  strict: true
+  wire: loop
+  definition: 'Everything a run remembers between calls: its messages, its turn count and its status. The harness keeps it in one place.'
+- id: final-status
+  term: final status
+  aliases:
+  - final status
+  - final statuses
+  strict: true
+  wire: loop
+  definition: The one word that says how a run ended, such as done, max turns, interrupted or error.
+- id: interrupt
+  term: interrupt
+  aliases:
+  - interrupt
+  - interrupts
+  strict: true
+  wire: loop
+  definition: A stop that a person asks for while a run is going. The harness must still answer what the run had started.
+- id: orphaned-tool-call
+  term: orphaned tool call
+  aliases:
+  - orphaned tool call
+  - orphaned tool calls
+  - orphaned call
+  strict: true
+  wire: loop
+  definition: A tool call with no result after it. A request that holds one is refused.
+- id: pause-and-resume
+  term: pause and resume
+  aliases:
+  - pause and resume
+  - resume
+  strict: true
+  wire: loop
+  definition: Saving the run state, stopping, and later starting again from the saved state instead of from the beginning.
+- id: append-only-history
+  term: append-only history
+  aliases:
+  - append-only history
+  - append-only
+  strict: true
+  wire: loop
+  definition: A history that only grows at the end. Earlier messages are never changed or removed.
+- id: loop-detection
+  term: loop detection
+  aliases:
+  - loop detection
+  - detect a loop
+  strict: true
+  wire: loop
+  definition: Noticing that the run repeats the same action, and stopping it before the turn limit does.

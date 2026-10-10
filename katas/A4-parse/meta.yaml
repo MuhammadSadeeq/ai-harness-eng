@@ -1,0 +1,45 @@
+id: A4-parse
+module: A4
+title: Read every block and every stop reason
+objectives: [A4.o2, A4.o3]
+minutes: 20
+hints:
+  - "Look at every block in reply['content'], not only the first. Then look at the stop reason on its own."
+  - "Make three passes or branches: collect the text blocks in order, collect the tool_use blocks in order, then choose the action from stop_reason. Only tool_use with a call runs tools."
+  - "Nearly the code: text = '\\n'.join(b['text'] for b in blocks if b['type'] == 'text'); calls = [(b['id'], b['name'], b['input']) for b in blocks if b['type'] == 'tool_use']; then if stop == 'tool_use' and calls: run_tools, elif stop == 'end_turn': done, else stop."
+from_memory: true
+wrong_solutions:
+  - name: first-block-only
+    code: |
+      def read_reply(reply):
+          first = reply["content"][0]
+          text = first["text"] if first["type"] == "text" else ""
+          calls = [(first["id"], first["name"], first["input"])] if first["type"] == "tool_use" else []
+          action = "run_tools" if calls else ("done" if reply["stop_reason"] == "end_turn" else "stop")
+          return text, calls, action
+  - name: runs-a-cut-off-call
+    code: |
+      def read_reply(reply):
+          blocks = reply["content"]
+          text = "\n".join(b["text"] for b in blocks if b["type"] == "text")
+          calls = [(b["id"], b["name"], b["input"]) for b in blocks if b["type"] == "tool_use"]
+          action = "run_tools" if calls else ("done" if reply["stop_reason"] == "end_turn" else "stop")
+          return text, calls, action
+  - name: end-turn-runs-tools
+    code: |
+      def read_reply(reply):
+          blocks = reply["content"]
+          text = "\n".join(b["text"] for b in blocks if b["type"] == "text")
+          calls = [(b["id"], b["name"], b["input"]) for b in blocks if b["type"] == "tool_use"]
+          if calls:
+              return text, calls, "run_tools"
+          return text, calls, "done" if reply["stop_reason"] == "end_turn" else "stop"
+  - name: text-joined-without-newlines
+    code: |
+      def read_reply(reply):
+          blocks = reply["content"]
+          text = "".join(b["text"] for b in blocks if b["type"] == "text")
+          calls = [(b["id"], b["name"], b["input"]) for b in blocks if b["type"] == "tool_use"]
+          stop = reply["stop_reason"]
+          action = "run_tools" if stop == "tool_use" and calls else ("done" if stop == "end_turn" else "stop")
+          return text, calls, action

@@ -1,0 +1,64 @@
+[
+ {
+  "back": "The part of a request before a point. The cache matches a whole prefix or none of it.",
+  "front": "What is a cache prefix?",
+  "id": "C4-k1",
+  "objective": "C4.o1",
+  "type": "term"
+ },
+ {
+  "back": "Stable first, changing last: the tools, then the system prompt, then the messages, with the new message at the end.",
+  "front": "Put the parts of a request in the order the cache reads them.",
+  "id": "C4-k2",
+  "items": [
+   "Tool definitions",
+   "System prompt",
+   "Earlier messages",
+   "The new message"
+  ],
+  "objective": "C4.o2",
+  "type": "order-turn"
+ },
+ {
+  "back": "A change that makes earlier cache entries stop matching. The next call writes the request again.",
+  "front": "What is cache invalidation?",
+  "id": "C4-k3",
+  "objective": "C4.o3",
+  "type": "term"
+ },
+ {
+  "back": "A read takes input from the cache at a low price. A write stores input in the cache at a higher price, once.",
+  "front": "What is a cache read, compared with a cache write?",
+  "id": "C4-k4",
+  "objective": "C4.o4",
+  "type": "term"
+ },
+ {
+  "back": "The share of the input that was read from the cache. Compute it from the read tokens over all the input tokens.",
+  "front": "What is a cache hit rate?",
+  "id": "C4-k5",
+  "objective": "C4.o4",
+  "type": "term"
+ },
+ {
+  "back": "The point up to which a request asks to be cached. The course's model uses one, at the end of the request.",
+  "front": "What is a cache breakpoint?",
+  "id": "C4-k6",
+  "objective": "C4.o1",
+  "type": "term"
+ },
+ {
+  "back": "A block that changes on every call, such as a clock line. Wherever it sits, the blocks after it miss.",
+  "front": "Which block breaks a cache when it changes on every call?",
+  "id": "C4-k7",
+  "objective": "C4.o3",
+  "type": "term"
+ },
+ {
+  "back": "How long a cache entry lasts after it was last written or read. The default is five minutes.",
+  "front": "What is a cache TTL?",
+  "id": "C4-k8",
+  "objective": "C4.o1",
+  "type": "term"
+ }
+]

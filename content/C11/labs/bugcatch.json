@@ -1,0 +1,26 @@
+{
+  "budget": 5,
+  "bugs": [
+    {"id": "marker-cleared", "label": "A test marker was cleared", "detail": "The marker kept the add test on. Clearing it switched the test off, so the live suite passes with nothing checked."},
+    {"id": "test-edited", "label": "A test was edited to pass", "detail": "The assertion was changed to match the wrong output, so the suite is green for the wrong reason."},
+    {"id": "special-case", "label": "The answer is special-cased", "detail": "The function returns the expected value for the visible inputs and nothing else."},
+    {"id": "says-done", "label": "It says done, but a test fails", "detail": "The final message claims success, and no run backs it."},
+    {"id": "wrong-type", "label": "The result has the wrong type", "detail": "add() returns the sum as a string, so a test that compares numbers fails, and a type check flags it."}
+  ],
+  "checks": [
+    {"id": "rules", "label": "Rules in the prompt: never edit or clear a test to pass", "kind": "guide", "cost": 0},
+    {"id": "general", "label": "Prompt: write a general solution, not special cases", "kind": "guide", "cost": 0},
+    {"id": "self-report", "label": "The model says it is done", "kind": "sensor", "cost": 0},
+    {"id": "type", "label": "Type check on add()", "kind": "sensor", "cost": 1},
+    {"id": "unit", "label": "Unit tests on the live suite", "kind": "sensor", "cost": 2},
+    {"id": "pristine", "label": "Tests from a pristine copy", "kind": "sensor", "cost": 3},
+    {"id": "reviewer", "label": "Independent reviewer: sees the task and the diff", "kind": "sensor", "cost": 4}
+  ],
+  "catches": {
+    "marker-cleared": ["pristine", "reviewer"],
+    "test-edited": ["pristine", "reviewer"],
+    "special-case": ["reviewer"],
+    "says-done": ["unit", "pristine"],
+    "wrong-type": ["type", "unit", "pristine"]
+  }
+}

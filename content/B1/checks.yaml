@@ -1,0 +1,67 @@
+- id: B1-p1
+  objective: B1.o3
+  mode: predict
+  question: This run reads several notes. The model asks for them one reply at a time, not all at once. What does
+    the harness do with the results of its first reply?
+  options:
+  - text: It sends them all back in one user message, as the model expects.
+    why: That is the right shape. The run in this module did not do this, so the next reply changed.
+  - text: It sends each result in its own user message, one after another.
+    why: Right. The results split across messages, and the model reads one note per turn from then on.
+    fact: api.split-results-teach-serial
+  - text: It drops every result after the first.
+    why: No. The results all reach the history; they just arrive in the wrong shape.
+  answer: 1
+  outcome: The harness split the results across messages. The model read one note per turn, so the run took more
+    turns and cost more.
+- id: B1-c1
+  objective: B1.o1
+  mode: check
+  question: The model wants a file read. Who runs the read?
+  options:
+  - text: The model runs it, then reports the result.
+    why: No. The model only writes the request. The harness runs the tool.
+  - text: The harness runs it, then sends the result back to the model.
+    why: Right. The model asks; the harness acts.
+    fact: api.stop-reason-tool-use
+  - text: Nobody. The reply is the answer.
+    why: No. A tool_use block is a request that needs a result before the model can go on.
+  answer: 1
+- id: B1-c2
+  objective: B1.o2
+  mode: check
+  question: Which set is the whole of a tool definition?
+  options:
+  - text: A name, a description and an input schema.
+    why: Right. The model sees these three, and nothing else about the tool.
+  - text: A name and a function body.
+    why: No. The model never sees the function body. It sees the definition.
+  - text: A prompt that explains the tool.
+    why: No. The prompt is separate. The definition is what the request carries for the tool.
+  answer: 0
+- id: B1-c3
+  objective: B1.o3
+  mode: check
+  question: One reply asks for three tools. How many user messages should hold the three results?
+  options:
+  - text: Three, one for each result.
+    why: No. That is the split shape. It teaches the model to stop asking in parallel.
+    fact: api.split-results-teach-serial
+  - text: One, with all three results in it.
+    why: Right. The docs say all tool_results for one turn go together in the next user message.
+    fact: api.tool-results-single-user-message
+  - text: None. The results go into the model's reply.
+    why: No. Results are sent back by the harness, in a user message.
+  answer: 1
+- id: B1-c4
+  objective: B1.o4
+  mode: check
+  question: A model keeps calling a tool with the wrong argument. What most likely helps?
+  options:
+  - text: A clearer description and a described input schema.
+    why: Right. These are the parts the model reads when it writes the call.
+  - text: A higher turn limit.
+    why: No. The limit stops runs; it does not change what the model sends.
+  - text: Removing the tool from the list.
+    why: A last resort. It fixes the misuse by removing the capability, so note it as a trade-off.
+  answer: 0

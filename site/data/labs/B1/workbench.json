@@ -1,0 +1,55 @@
+{
+ "base_misuse_percent": 40,
+ "board": "b1-workbench",
+ "checks": [
+  {
+   "id": "when",
+   "label": "The description says when to use it",
+   "test": {
+    "field": "description",
+    "kind": "contains",
+    "text": "when"
+   },
+   "weight": 15
+  },
+  {
+   "id": "params",
+   "label": "Every parameter is described",
+   "test": {
+    "kind": "has_description_for_every_property"
+   },
+   "weight": 20
+  },
+  {
+   "id": "name",
+   "label": "The name says what it acts on (a verb and a noun, like search_files)",
+   "test": {
+    "field": "name",
+    "kind": "contains",
+    "text": "_"
+   },
+   "weight": 10
+  }
+ ],
+ "misuse": {
+  "branch": "/script/0",
+  "option": 1
+ },
+ "tape": "b1-workbench",
+ "task": "Find the file that imports calc.py.",
+ "tool": {
+  "description": "Search files.",
+  "input_schema": {
+   "properties": {
+    "path": {
+     "type": "string"
+    },
+    "query": {
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "name": "search"
+ }
+}

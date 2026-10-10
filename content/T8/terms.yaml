@@ -1,0 +1,23 @@
+- id: commit
+  term: commit
+  aliases:
+  - commit
+  - commits
+  strict: false
+  definition: One saved change, with a message that says what it does. This course asks for small commits, each
+    one explainable in a line.
+- id: diff
+  term: diff
+  aliases:
+  - diff
+  - diffs
+  strict: false
+  definition: The text that shows which lines a change adds, removes or leaves alone, file by file.
+- id: worktree
+  term: worktree
+  aliases:
+  - worktree
+  - worktrees
+  strict: true
+  definition: A separate folder for one line of work, so an agent's files stay apart from yours in this course's
+    practice.

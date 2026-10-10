@@ -1,0 +1,54 @@
+id: C9-policy
+module: C9
+title: Write a permission policy as code, tested with a table
+objectives: [C9.o4, C9.o5]
+minutes: 25
+hints:
+  - "Read the decision order: deny rules first, then ask rules, then allow rules, then the mode's default. The first rule of the first group that matches decides."
+  - "A rule matches when its tool is the call's tool and its prefix is empty or the call's input path starts with it. A call with no path matches only a rule whose prefix is empty."
+  - "Nearly the code: for each group in order (deny, ask, allow), loop over the rules with that decision, and return the first that matches with its reason. If none matches, return the mode as the decision with the reason 'the mode default'."
+from_memory: false
+wrong_solutions:
+  - name: allow-before-ask
+    code: |
+      def decide(call, rules, mode):
+          path = call["input"].get("path")
+          for group in ("deny", "allow", "ask"):
+              for r in rules:
+                  if r["decision"] == group and r["tool"] == call["tool"] and (r["prefix"] == "" or (isinstance(path, str) and path.startswith(r["prefix"]))):
+                      return {"decision": r["decision"], "reason": r["reason"]}
+          return {"decision": mode, "reason": "the mode default"}
+  - name: ask-before-deny
+    code: |
+      def decide(call, rules, mode):
+          path = call["input"].get("path")
+          for group in ("ask", "deny", "allow"):
+              for r in rules:
+                  if r["decision"] == group and r["tool"] == call["tool"] and (r["prefix"] == "" or (isinstance(path, str) and path.startswith(r["prefix"]))):
+                      return {"decision": r["decision"], "reason": r["reason"]}
+          return {"decision": mode, "reason": "the mode default"}
+  - name: first-rule-wins
+    code: |
+      def decide(call, rules, mode):
+          path = call["input"].get("path")
+          for r in rules:
+              if r["tool"] == call["tool"] and (r["prefix"] == "" or (isinstance(path, str) and path.startswith(r["prefix"]))):
+                  return {"decision": r["decision"], "reason": r["reason"]}
+          return {"decision": mode, "reason": "the mode default"}
+  - name: mode-ignored
+    code: |
+      def decide(call, rules, mode):
+          path = call["input"].get("path")
+          for group in ("deny", "ask", "allow"):
+              for r in rules:
+                  if r["decision"] == group and r["tool"] == call["tool"] and (r["prefix"] == "" or (isinstance(path, str) and path.startswith(r["prefix"]))):
+                      return {"decision": r["decision"], "reason": r["reason"]}
+          return {"decision": "allow", "reason": "no rule"}
+  - name: prefix-ignored
+    code: |
+      def decide(call, rules, mode):
+          for group in ("deny", "ask", "allow"):
+              for r in rules:
+                  if r["decision"] == group and r["tool"] == call["tool"]:
+                      return {"decision": r["decision"], "reason": r["reason"]}
+          return {"decision": mode, "reason": "the mode default"}

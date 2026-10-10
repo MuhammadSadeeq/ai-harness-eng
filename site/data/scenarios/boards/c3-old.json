@@ -1,0 +1,10 @@
+{
+ "id": "c3-old",
+ "label": "Old board",
+ "modules": {
+  "compaction": {
+   "threshold_percent": 40,
+   "keep": []
+  }
+ }
+}

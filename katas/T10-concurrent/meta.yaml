@@ -1,0 +1,44 @@
+id: T10-concurrent
+module: T10
+title: 'Run tool calls: safe ones together, unsafe ones in turn'
+objectives:
+- T10.o2
+- T10.o3
+minutes: 25
+hints:
+- Read test_kata.py. The overlap test needs the safe calls to run together. The unsafe test needs them one at a time. The
+  order test needs results in call order, whatever finishes first.
+- Run the unsafe calls first, in a for loop with await. Collect the safe calls with their index, await asyncio.gather on them,
+  then put each output back at its index.
+- 'Nearly the code: results = [''''] * len(calls); for index, (ok, run) in enumerate(calls): if not ok: results[index] = await
+  run(). Then safe = [...], outputs = await asyncio.gather(*(run() for _, run in safe)), and zip the outputs back into results.'
+from_memory: true
+wrong_solutions:
+- name: all-sequential
+  code: "import asyncio\nfrom collections.abc import Awaitable, Callable\n\nCall = tuple[bool, Callable[[], Awaitable[str]]]\n\
+    \n\nasync def run_tool_calls(calls: list[Call]) -> list[str]:\n    \"\"\"Run the calls and return their results in the\
+    \ order they were given.\n\n    Each call is (safe, run). The safe calls may overlap, so they run together with\n    asyncio.gather.\
+    \ The unsafe calls change shared state, so they run one at a time,\n    in order, and never overlap with each other.\n\
+    \    \"\"\"\n    results: list[str] = [\"\"] * len(calls)\n    for index, (ok, run) in enumerate(calls):\n        if not\
+    \ ok:\n            results[index] = await run()\n    safe = [(index, run) for index, (ok, run) in enumerate(calls) if\
+    \ ok]\n    outputs = [await run() for _, run in safe]\n    for (index, _), output in zip(safe, outputs):\n        results[index]\
+    \ = output\n    return results\n"
+- name: unsafe-overlap
+  code: "import asyncio\nfrom collections.abc import Awaitable, Callable\n\nCall = tuple[bool, Callable[[], Awaitable[str]]]\n\
+    \n\nasync def run_tool_calls(calls: list[Call]) -> list[str]:\n    \"\"\"Run the calls and return their results in the\
+    \ order they were given.\n\n    Each call is (safe, run). The safe calls may overlap, so they run together with\n    asyncio.gather.\
+    \ The unsafe calls change shared state, so they run one at a time,\n    in order, and never overlap with each other.\n\
+    \    \"\"\"\n    results: list[str] = [\"\"] * len(calls)\n    unsafe = [(index, run) for index, (ok, run) in enumerate(calls)\
+    \ if not ok]\n    for (index, _), output in zip(unsafe, await asyncio.gather(*(run() for _, run in unsafe))):\n      \
+    \  results[index] = output\n    safe = [(index, run) for index, (ok, run) in enumerate(calls) if ok]\n    outputs = await\
+    \ asyncio.gather(*(run() for _, run in safe))\n    for (index, _), output in zip(safe, outputs):\n        results[index]\
+    \ = output\n    return results\n"
+- name: finish-order
+  code: "import asyncio\nfrom collections.abc import Awaitable, Callable\n\nCall = tuple[bool, Callable[[], Awaitable[str]]]\n\
+    \n\nasync def run_tool_calls(calls: list[Call]) -> list[str]:\n    \"\"\"Run the calls and return their results in the\
+    \ order they were given.\n\n    Each call is (safe, run). The safe calls may overlap, so they run together with\n    asyncio.gather.\
+    \ The unsafe calls change shared state, so they run one at a time,\n    in order, and never overlap with each other.\n\
+    \    \"\"\"\n    results: list[str] = [\"\"] * len(calls)\n    for index, (ok, run) in enumerate(calls):\n        if not\
+    \ ok:\n            results[index] = await run()\n    safe = [(index, run) for index, (ok, run) in enumerate(calls) if\
+    \ ok]\n    outputs = await asyncio.gather(*(run() for _, run in safe))\n    for (index, _), output in zip(safe, reversed(outputs)):\n\
+    \        results[index] = output\n    return results\n"

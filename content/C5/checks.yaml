@@ -1,0 +1,62 @@
+- id: C5-p1
+  objective: C5.o3
+  mode: predict
+  question: A person interrupts the run during a tool call. The harness does not answer that call, then the run resumes. What does the next request do?
+  options:
+  - text: It carries the call and the result is simply missing, and the API accepts it.
+    why: Tempting. A missing result looks harmless, but the API rejects a request with a call that has no result right after it.
+  - text: 'The API refuses the request: a tool call has no result immediately after it.'
+    fact: api.tool-use-without-result-error
+    why: Right. The standard error says the tool_use ids were found without tool_result blocks immediately after, and the run stops.
+  - text: The harness retries the same call, and it succeeds.
+    why: Tempting. A retry sends the same broken history, and the same refusal comes back.
+  answer: 1
+  outcome: The next request was refused with the missing-result error. The run ended as error on turn 3.
+- id: C5-c1
+  objective: C5.o2
+  mode: check
+  question: The turn limit is reached. Which final status should the run record?
+  options:
+  - text: error
+    why: Tempting. An error is a failure. Hitting the turn limit is one of the exits the loop plans for.
+  - text: max_turns
+    why: Right. The loop has an exit for the turn limit, and it records that exit as its final status.
+  - text: done
+    why: Tempting. The model did not claim it was done. The loop stopped it.
+  answer: 1
+- id: C5-c2
+  objective: C5.o1
+  mode: check
+  question: Which design keeps a run's state easy to trust?
+  options:
+  - text: Each function keeps its own copy of the messages and the status.
+    why: Tempting. Two copies drift apart, and no one can say which one is true.
+  - text: One state object, changed only through a few functions that take it.
+    why: Right. Every change goes through the same place, so the state is the one record of the run.
+  - text: The model keeps the status, and the harness reads it from the reply.
+    why: Tempting. The model does not hold the run's state between calls. The harness does.
+  answer: 1
+- id: C5-c3
+  objective: C5.o4
+  mode: check
+  question: A run is paused and must resume later. What must the saved state hold?
+  options:
+  - text: Only the final status.
+    why: Tempting. A status says how the run ended. It cannot restart a run that is still going.
+  - text: The messages, the turn count and the pending calls, saved together.
+    why: Right. The resumed run needs all three to continue from the saved turn with no gap.
+  - text: Nothing. The model remembers the run.
+    why: Tempting. The model does not hold state between calls, so the harness must save it.
+  answer: 1
+- id: C5-c4
+  objective: C5.o5
+  mode: check
+  question: The last five calls are identical, and the turn limit is far away. What should the loop do?
+  options:
+  - text: Keep going, because the turn limit will stop it.
+    why: Tempting. The turn limit is far off, and the run wastes every call until then.
+  - text: Stop the run, because the same action has repeated, and record why.
+    why: Right. Loop detection compares the recent calls and stops a run that is repeating itself.
+  - text: Clear the history so the model starts fresh.
+    why: Tempting. That rewrites history, and it discards the reason the run is stuck.
+  answer: 1

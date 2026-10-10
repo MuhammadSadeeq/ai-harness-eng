@@ -1,0 +1,17 @@
+- id: http-status-code
+  term: HTTP status code
+  aliases:
+  - HTTP status code
+  - status code
+  - status codes
+  strict: true
+  definition: The three-digit number in an HTTP response that says what happened to the request, such as 200 or
+    429.
+- id: header
+  term: header
+  aliases:
+  - header
+  - headers
+  strict: true
+  definition: A named line of metadata in an HTTP request or response, such as a content type or a retry-after value,
+    sent before the body.

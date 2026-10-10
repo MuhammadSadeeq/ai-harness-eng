@@ -1,0 +1,29 @@
+{
+  "id": "c7-new",
+  "label": "New board",
+  "modules": {
+    "tool_overrides": {
+      "search_text": {
+        "description": "Search the text of the files in the repository. Use it when you need the lines where a name is used or imported. Give the exact text to find in query and the folder in path.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "The exact text to find."
+            },
+            "path": {
+              "type": "string",
+              "description": "The folder to search, relative to the repository root."
+            }
+          },
+          "required": [
+            "query",
+            "path"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  }
+}

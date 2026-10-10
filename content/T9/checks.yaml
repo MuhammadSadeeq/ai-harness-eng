@@ -1,0 +1,37 @@
+- id: T9-c1
+  objective: T9.o1
+  mode: check
+  question: In this table, which column names a process's parent?
+  options:
+  - text: PID
+    why: No. PID names the process itself.
+  - text: PPID
+    why: Right. The parent's pid is in the PPID column of each row.
+  - text: USER
+    why: No. USER names the account that runs the process.
+  answer: 1
+- id: T9-c2
+  objective: T9.o2
+  mode: check
+  question: The agent runs as user agent. A file is owned by root, in group staff, with mode rw-r--r--. Can the
+    agent write it?
+  options:
+  - text: Yes, because the agent is the one writing.
+    why: No. The rule looks at the owner, the group and the mode, not at who is writing.
+  - text: No. The agent is not the owner or in staff, so the last triple applies, and it has no write.
+    why: Right. The last triple is r--, so the agent may read and not write.
+  - text: Only if the agent is root.
+    why: No. In this rule, root is not special.
+  answer: 1
+- id: T9-c3
+  objective: T9.o3
+  mode: check
+  question: The table lists a runaway child, pid 101, under its parent, pid 100. Which pid goes on the stop list?
+  options:
+  - text: '100'
+    why: No. The parent is not in the result of runaway_children.
+  - text: '101'
+    why: Right. The child is listed under its own pid, and the stop list names it.
+  - text: Both 100 and 101
+    why: No. The parent is not on the list; only the child is.
+  answer: 1

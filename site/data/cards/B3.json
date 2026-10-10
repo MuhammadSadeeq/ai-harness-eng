@@ -1,0 +1,51 @@
+[
+ {
+  "back": "Choosing the words of the prompt and the instructions. Words guide the model; they do not enforce anything.",
+  "front": "What is prompt engineering?",
+  "id": "B3-k1",
+  "objective": "B3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Choosing what goes on the desk for each call, and what gets cut or saved.",
+  "front": "What is context engineering?",
+  "id": "B3-k2",
+  "objective": "B3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Building and tuning the code around the model: the loop, tools, permissions, checks and limits.",
+  "front": "What is harness engineering?",
+  "id": "B3-k3",
+  "objective": "B3.o2",
+  "type": "term"
+ },
+ {
+  "back": "The harness a vendor ships with its model product, with its own loop, tools and limits.",
+  "front": "What is a product harness?",
+  "id": "B3-k4",
+  "objective": "B3.o4",
+  "type": "term"
+ },
+ {
+  "back": "The harness you add around a model product or API: your loop, your tools and your checks.",
+  "front": "What is a user harness?",
+  "id": "B3-k5",
+  "objective": "B3.o4",
+  "type": "term"
+ },
+ {
+  "back": "A process runs the same steps each time. A model writes different text each run, so the harness must check its output.",
+  "front": "Where does the operating-system picture of an agent break down?",
+  "id": "B3-k6",
+  "objective": "B3.o3",
+  "type": "term"
+ },
+ {
+  "back": "A library of ready-made parts for building a harness. It does not decide your harness for you.",
+  "front": "What is a framework?",
+  "id": "B3-k7",
+  "objective": "B3.o1",
+  "type": "term"
+ }
+]

@@ -1,0 +1,133 @@
+[
+ {
+  "answer": 1,
+  "id": "C6-p1",
+  "mode": "predict",
+  "objective": "C6.o2",
+  "options": [
+   {
+    "text": "The waits grow, the calls thin out, and the run recovers when the provider does.",
+    "why": "Tempting. That is what backoff does, but this harness waits the same 200 ms every time."
+   },
+   {
+    "text": "It sends about thirty calls into the outage, one every half second, and ends with error.",
+    "why": "Right. The wait stays at 200 ms, so each try takes about half a second, and the run stops after the thirtieth call."
+   },
+   {
+    "text": "It switches to a larger model and succeeds.",
+    "why": "Tempting. The overload is on the provider's side, and a larger model does not change that."
+   }
+  ],
+  "outcome": "It made thirty calls in about fifteen seconds, every one overloaded, and ended as error. The outage was still going.",
+  "question": "The provider is overloaded at the start. The harness retries, but it waits the same 200 ms after each failure, and the outage lasts 20 seconds. What happens?"
+ },
+ {
+  "answer": 1,
+  "id": "C6-c1",
+  "mode": "check",
+  "objective": "C6.o1",
+  "options": [
+   {
+    "fact": "api.error-529-overloaded",
+    "text": "An overloaded error.",
+    "why": "Tempting. The overloaded error is transient: the API says it is temporarily overloaded, so a retry can succeed."
+   },
+   {
+    "fact": "api.error-400-invalid-request",
+    "text": "An invalid request, a format or content problem.",
+    "why": "Right. A 400 carries invalid_request_error for a request format or content problem. The same request fails the same way."
+   },
+   {
+    "fact": "api.error-504-timeout",
+    "text": "A timeout.",
+    "why": "Tempting. A timeout means the request did not finish in time, which a later try may fix."
+   }
+  ],
+  "question": "Which error is a permanent error, the kind a retry never fixes?"
+ },
+ {
+  "answer": 1,
+  "id": "C6-c2",
+  "mode": "check",
+  "objective": "C6.o2",
+  "options": [
+   {
+    "text": "The retries spread out on their own, so nothing more is needed.",
+    "why": "Tempting. Identical waits keep the clients in step, so they retry together again."
+   },
+   {
+    "text": "They retry together again and load the provider at the same moments.",
+    "why": "Right. Without jitter, the same wait sends every retry at once. Jitter spreads them out."
+   },
+   {
+    "text": "The provider rejects all ten retries for good.",
+    "why": "Tempting. The provider can recover; the problem is the crowd of retries arriving at once."
+   }
+  ],
+  "question": "Ten clients fail at the same moment and retry with the same backoff and no jitter. What happens?"
+ },
+ {
+  "answer": 1,
+  "id": "C6-c3",
+  "mode": "check",
+  "objective": "C6.o3",
+  "options": [
+   {
+    "text": "It sends the call anyway, and counts it as a retry.",
+    "why": "Tempting. The point of an open breaker is that it does not send more calls at a failing provider."
+   },
+   {
+    "text": "It holds the call back for the cooldown, then lets a call through again.",
+    "why": "Right. The breaker stops retries from adding load while the provider recovers."
+   },
+   {
+    "text": "It ends the whole run for good.",
+    "why": "Tempting. The breaker holds calls back for a cooldown. It does not end the run."
+   }
+  ],
+  "question": "A circuit breaker opens after three failures in a row. What does an open breaker do with the next call?"
+ },
+ {
+  "answer": 1,
+  "id": "C6-c4",
+  "mode": "check",
+  "objective": "C6.o4",
+  "options": [
+   {
+    "text": "Nothing. A failed tool is hidden from the model so it does not get confused.",
+    "why": "Tempting. The model cannot correct a mistake it never sees."
+   },
+   {
+    "fact": "api.tool-result-is-error",
+    "text": "The error text as a tool result, marked as an error.",
+    "why": "Right. is_error is set to true when the tool execution resulted in an error, so the model knows the call failed and why."
+   },
+   {
+    "text": "A generic success message, so the run keeps moving.",
+    "why": "Tempting. A false success hides the error, and the model builds on it."
+   }
+  ],
+  "question": "A tool fails, and its error text is the only thing the model sees. What should the harness send back?"
+ },
+ {
+  "answer": 1,
+  "id": "C6-c5",
+  "mode": "check",
+  "objective": "C6.o5",
+  "options": [
+   {
+    "text": "Retrying less often, so the action is less likely to repeat.",
+    "why": "Tempting. Fewer retries does not stop a repeat. The request must say it is the same request."
+   },
+   {
+    "text": "An idempotency key sent with the request, so a repeat is recognised and not run twice.",
+    "why": "Right. A repeated request with the same key has the same effect as the first one."
+   },
+   {
+    "text": "Waiting longer before the retry.",
+    "why": "Tempting. A longer wait does not change what the server does with a repeated request."
+   }
+  ],
+  "question": "A retry might run an action twice, such as a charge. What makes the retry safe?"
+ }
+]

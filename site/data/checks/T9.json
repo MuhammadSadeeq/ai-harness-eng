@@ -1,0 +1,65 @@
+[
+ {
+  "answer": 1,
+  "id": "T9-c1",
+  "mode": "check",
+  "objective": "T9.o1",
+  "options": [
+   {
+    "text": "PID",
+    "why": "No. PID names the process itself."
+   },
+   {
+    "text": "PPID",
+    "why": "Right. The parent's pid is in the PPID column of each row."
+   },
+   {
+    "text": "USER",
+    "why": "No. USER names the account that runs the process."
+   }
+  ],
+  "question": "In this table, which column names a process's parent?"
+ },
+ {
+  "answer": 1,
+  "id": "T9-c2",
+  "mode": "check",
+  "objective": "T9.o2",
+  "options": [
+   {
+    "text": "Yes, because the agent is the one writing.",
+    "why": "No. The rule looks at the owner, the group and the mode, not at who is writing."
+   },
+   {
+    "text": "No. The agent is not the owner or in staff, so the last triple applies, and it has no write.",
+    "why": "Right. The last triple is r--, so the agent may read and not write."
+   },
+   {
+    "text": "Only if the agent is root.",
+    "why": "No. In this rule, root is not special."
+   }
+  ],
+  "question": "The agent runs as user agent. A file is owned by root, in group staff, with mode rw-r--r--. Can the agent write it?"
+ },
+ {
+  "answer": 1,
+  "id": "T9-c3",
+  "mode": "check",
+  "objective": "T9.o3",
+  "options": [
+   {
+    "text": "100",
+    "why": "No. The parent is not in the result of runaway_children."
+   },
+   {
+    "text": "101",
+    "why": "Right. The child is listed under its own pid, and the stop list names it."
+   },
+   {
+    "text": "Both 100 and 101",
+    "why": "No. The parent is not on the list; only the child is."
+   }
+  ],
+  "question": "The table lists a runaway child, pid 101, under its parent, pid 100. Which pid goes on the stop list?"
+ }
+]
