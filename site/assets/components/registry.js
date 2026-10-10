@@ -10,5 +10,6 @@ export const REGISTRY = Object.freeze({
   "hx-kata": "../../components/hx-kata.js",
   "hx-num": "../../components/hx-num.js",
   "hx-replay": "../../components/hx-replay.js",
+  "hx-say": "../../components/hx-say.js",
   "hx-wire": "../../components/hx-wire.js",
 });

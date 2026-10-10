@@ -10,3 +10,4 @@ labs/incident.html
 labs/replay.html
 labs/cards.html
 labs/kata.html
+labs/say.html
