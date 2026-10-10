@@ -53,14 +53,16 @@ test("runBench uses seed_base + i and agrees with runTrial for each trial", () =
   const bench = runBench(TAPE, NEW, 3, { facts: FACTS });
   assert.equal(bench.n, 3);
   assert.deepEqual(bench.trials.map((t) => t.seed), [20261010, 20261011, 20261012]);
-  const single = runTrial(TAPE, NEW, 20261011, { facts: FACTS }).result;
+  const single = runTrial(TAPE, NEW, 20261011, { facts: FACTS });
+  const end = single.events.find((e) => e.kind === "run_end");
   assert.deepEqual(bench.trials[1], {
     seed: 20261011,
-    status: single.status,
-    passed: single.passed,
-    turns: single.turns,
-    tokens: single.tokens,
-    cost: single.cost,
+    status: single.result.status,
+    passed: single.result.passed,
+    turns: single.result.turns,
+    tokens: single.result.tokens,
+    cost: single.result.cost,
+    ms: end.t,
   });
 });
 

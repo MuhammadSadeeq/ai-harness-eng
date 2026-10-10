@@ -12,18 +12,32 @@ export const TURN_EDGES = Array.from({ length: 13 }, (_, i) => i * 5);
 /** Stats for one board on one set of seeds (COMPONENTS §10). passed counts true passes; mean_cost is floored. */
 export function summarize(trials) {
   const n = trials.length;
-  if (n === 0) return { n: 0, passed: 0, worst_turns: 0, worst_cost: 0, mean_cost: 0 };
+  if (n === 0) return { n: 0, passed: 0, worst_turns: 0, worst_cost: 0, mean_cost: 0, worst_ms: 0, mean_ms: 0 };
   let passed = 0;
   let worstTurns = 0;
   let worstCost = 0;
+  let worstMs = 0;
   let total = 0;
+  let totalMs = 0;
   for (const t of trials) {
     if (isPass(t.status, t.passed)) passed += 1;
     if (t.turns > worstTurns) worstTurns = t.turns;
     if (t.cost > worstCost) worstCost = t.cost;
+    const ms = t.ms ?? 0;
+    if (ms > worstMs) worstMs = ms;
     total += t.cost;
+    totalMs += ms;
   }
-  return { n, passed, worst_turns: worstTurns, worst_cost: worstCost, mean_cost: Math.floor(total / n) };
+  // B-17: worst_ms is the longest run's clock at run_end; mean_ms is the floored mean, as mean_cost is.
+  return {
+    n,
+    passed,
+    worst_turns: worstTurns,
+    worst_cost: worstCost,
+    mean_cost: Math.floor(total / n),
+    worst_ms: worstMs,
+    mean_ms: Math.floor(totalMs / n),
+  };
 }
 
 /** Wilson score interval for `passed` passes in `n` trials, as fractions in [0, 1]. */

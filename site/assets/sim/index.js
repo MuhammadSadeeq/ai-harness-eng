@@ -57,7 +57,9 @@ export function runBench(tape, board, n, { facts } = {}) {
   const trials = [];
   for (let i = 0; i < n; i += 1) {
     const seed = T.seed_base + i;
-    const { result } = runCore(T, B, seed, facts);
+    const { result, events } = runCore(T, B, seed, facts);
+    // B-17: the run's clock at run_end (simulated milliseconds, as the trace records it).
+    const end = events.find((e) => e.kind === "run_end");
     trials.push({
       seed,
       status: result.status,
@@ -65,6 +67,7 @@ export function runBench(tape, board, n, { facts } = {}) {
       turns: result.turns,
       tokens: result.tokens,
       cost: result.cost,
+      ms: end.t,
     });
   }
   return { trials, passed: trials.filter((t) => t.passed).length, n };

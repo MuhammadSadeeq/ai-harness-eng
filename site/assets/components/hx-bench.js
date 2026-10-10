@@ -1,11 +1,12 @@
 // hx-bench: the Knob Bench (DESIGN §7.5–§7.6, COMPONENTS §10). Every number is computed from runBench results.
-// Attributes are read at upgrade. Values: knob, passed.*, worst_turns.*, worst_cost.*, trials; hxLabel(name).
+// Attributes are read at upgrade. Values: knob, passed.*, worst_turns.*, worst_cost.*, worst_ms.*, mean_ms.*, trials;
+// hxLabel(name).
 import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runBench } from "../sim/index.js";
 import { summarize, wilson, percent, histogram, TURN_EDGES, sweepPar } from "./lib/stats.js";
 import { historyWords } from "./lib/board-tags.js";
-import { formatCost, formatInt, plural, pricingIsUsd, statusWords, isPass } from "./lib/format.js";
+import { formatCost, formatInt, formatMs, plural, pricingIsUsd, statusWords, isPass } from "./lib/format.js";
 
 const KNOB_LABELS = {
   "turn_limit.max_turns": "Turn limit",
@@ -108,7 +109,15 @@ function markOf(trial) {
   return "pause";
 }
 
-const sameStats = (a, b) => ["n", "passed", "worst_turns", "worst_cost", "mean_cost"].every((k) => a[k] === b[k]);
+const sameStats = (a, b) => ["n", "passed", "worst_turns", "worst_cost", "mean_cost", "worst_ms", "mean_ms"]
+  .every((k) => a[k] === b[k]);
+
+// B-17: the run time in words, from the simulated clock: "worst 1.2 s, mean 800 ms".
+// The unit stays with its number (a non-breaking space), so the words wrap between the two times, not inside one.
+const withUnit = (ms) => formatMs(ms).replace(" ", "\u00a0");
+export function timeWords(s) {
+  return `worst ${withUnit(s.worst_ms)}, mean ${withUnit(s.mean_ms)}`;
+}
 
 function honestSentence(run, n, priced) {
   const o = run.old;
@@ -308,6 +317,10 @@ export class HxBench extends HxElement {
       "worst_turns.new": r ? r.new.worst_turns : null,
       "worst_cost.old": r ? r.old.worst_cost : null,
       "worst_cost.new": r ? r.new.worst_cost : null,
+      "worst_ms.old": r ? r.old.worst_ms : null,
+      "worst_ms.new": r ? r.new.worst_ms : null,
+      "mean_ms.old": r ? r.old.mean_ms : null,
+      "mean_ms.new": r ? r.new.mean_ms : null,
       trials: this.N ?? null,
     };
   }
@@ -534,10 +547,13 @@ export class HxBench extends HxElement {
     const dom = this.dom;
     const windows = [
       ["Pass rate", "pass"], ["Worst case, turns", "turns"], ["Worst case, cost", "cost"], ["Mean cost", "mean"],
+      ["Run time (simulated clock)", "time"],
     ];
     const cards = windows.map(([label, id]) => {
-      dom.windowValues[id] = { old: el("span", { class: "readout-value", text: "—" }), new: el("span", { class: "readout-value", text: "—" }) };
-      return el("div", { class: "readout" },
+      // B-17: the run time is words, so its values wrap at a smaller size and its card spans both columns.
+      const valueClass = id === "time" ? "readout-value readout-words" : "readout-value";
+      dom.windowValues[id] = { old: el("span", { class: valueClass, text: "—" }), new: el("span", { class: valueClass, text: "—" }) };
+      return el("div", { class: id === "time" ? "readout readout-wide" : "readout" },
         el("p", { class: "readout-label", text: label }),
         el("p", { class: "readout-line" }, el("span", { class: "readout-unit", text: "old" }), dom.windowValues[id].old),
         el("p", { class: "readout-line" }, el("span", { class: "readout-unit", text: "new" }), dom.windowValues[id].new));
@@ -695,6 +711,7 @@ export class HxBench extends HxElement {
       turns: [plural(o.worst_turns, "turn"), plural(w.worst_turns, "turn")],
       cost: [money(o.worst_cost, priced), money(w.worst_cost, priced)],
       mean: [money(o.mean_cost, priced), money(w.mean_cost, priced)],
+      time: [timeWords(o), timeWords(w)],
     };
     for (const [id, [oldText, newText]] of Object.entries(pair)) {
       dom.windowValues[id].old.textContent = oldText;

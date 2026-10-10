@@ -44,8 +44,12 @@ hx-bench .hx-ui { display: grid; gap: var(--sp-5); }
 @media (min-width: 700px) { .readout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .readout-line { display: flex; align-items: baseline; gap: var(--sp-2); margin: 0; min-width: 0; }
 .readout-unit { font: 600 var(--fs-small)/1.2 var(--font-sans); letter-spacing: .04em; color: var(--hx-inst-label); min-width: 2.5rem; }
-.readout .readout-value { margin-top: 0; font-size: var(--fs-readout); }
+/* Scoped to the bench: a bare .readout .readout-value also reached hx-replay's readouts (B-18). */
+hx-bench .readout .readout-value { margin-top: 0; font-size: var(--fs-readout); }
 .is-par .readout-label { color: var(--hx-inst-amber); }
+/* B-17: the run time card spans both columns, and its words wrap rather than run past the card. */
+hx-bench .readout.readout-wide { grid-column: 1 / -1; }
+hx-bench .readout .readout-value.readout-words { font-size: min(var(--fs-readout), 1.25rem); white-space: normal; overflow-wrap: anywhere; }
 
 .bench-results { display: grid; gap: var(--sp-3); }
 .honest { margin: var(--sp-3) 0 0; font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }

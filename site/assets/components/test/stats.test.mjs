@@ -14,15 +14,23 @@ test("isPass (D-045): only a true done counts", () => {
 
 test("summarize: passes are true dones, worst case, floored mean cost", () => {
   const trials = [
-    { status: "done", passed: true, turns: 6, cost: 9466000 },
-    { status: "max_turns", passed: true, turns: 4, cost: 5836000 },
-    { status: "interrupted", passed: false, turns: 60, cost: 398846000 },
+    { status: "done", passed: true, turns: 6, cost: 9466000, ms: 2100 },
+    { status: "max_turns", passed: true, turns: 4, cost: 5836000, ms: 1500 },
+    { status: "interrupted", passed: false, turns: 60, cost: 398846000, ms: 9001 },
   ];
   assert.deepEqual(summarize(trials), {
     n: 3, passed: 1, worst_turns: 60, worst_cost: 398846000,
     mean_cost: Math.floor((9466000 + 5836000 + 398846000) / 3),
+    worst_ms: 9001, mean_ms: Math.floor((2100 + 1500 + 9001) / 3),
   });
-  assert.deepEqual(summarize([]), { n: 0, passed: 0, worst_turns: 0, worst_cost: 0, mean_cost: 0 });
+  assert.deepEqual(summarize([]), { n: 0, passed: 0, worst_turns: 0, worst_cost: 0, mean_cost: 0, worst_ms: 0, mean_ms: 0 });
+});
+
+test("summarize (B-17): worst_ms is the longest run's clock; a trial without ms counts as 0", () => {
+  assert.equal(summarize([{ status: "done", passed: true, turns: 1, cost: 1, ms: 700 }, { status: "done", passed: true, turns: 1, cost: 1, ms: 1200 }]).worst_ms, 1200);
+  const partial = summarize([{ status: "done", passed: true, turns: 1, cost: 1, ms: 400 }, { status: "done", passed: true, turns: 1, cost: 1 }]);
+  assert.equal(partial.mean_ms, 200);
+  assert.equal(Number.isNaN(partial.mean_ms), false);
 });
 
 test("wilson: 13 of 20 matches the hand calculation (centre 0.6258, half-width 0.1930)", () => {
