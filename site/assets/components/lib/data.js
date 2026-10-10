@@ -44,11 +44,11 @@ export const getCourse = async () => JSON.parse(await fetchText("course.json"));
 export const getCourseCore = async () => JSON.parse(await fetchText("course-core.json"));
 export const getTerms = async () => JSON.parse(await fetchText("terms.json"));
 /**
- * kind is "cards", "say" or "checks". src is a module id such as "B2" (site/data/<kind>/B2.json) or, on
+ * kind is "cards", "say", "checks", "placement" or "design". src is a module id such as "B2" (site/data/<kind>/B2.json) or, on
  * demo pages, a path ending in .json relative to the page (COMPONENTS.md §11).
  */
 export async function getContent(kind, src) {
-  if (!["cards", "say", "checks", "placement"].includes(kind)) throw new Error(`bad content kind: ${kind}`);
+  if (!["cards", "say", "checks", "placement", "design"].includes(kind)) throw new Error(`bad content kind: ${kind}`);
   if (typeof src === "string" && src.endsWith(".json") && !src.includes("//")) {
     const url = new URL(src, document.baseURI).href;
     if (!cache.has(url)) {

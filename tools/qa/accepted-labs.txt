@@ -28,3 +28,4 @@ labs/placement.html
 labs/scheduler.html
 labs/bugcatch.html
 labs/gatekeeper.html
+labs/design.html

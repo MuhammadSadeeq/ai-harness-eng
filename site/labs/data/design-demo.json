@@ -1,0 +1,63 @@
+{
+ "prompts": [
+  {
+   "id": "ci-fixer",
+   "objectives": ["I5.o3"],
+   "title": "An agent that fixes failing CI",
+   "prompt": "Design an agent that picks up a failing CI run on a team's repository and opens a pull request that fixes it.",
+   "minutes": 25,
+   "clarify": [
+    "Which repositories and languages?",
+    "What counts as fixed: green checks, or a human approval?",
+    "What may the agent change, and what must it leave alone?",
+    "How much money and time can one run spend?"
+   ],
+   "wires": {
+    "control": {
+     "answer": "The system prompt says what the agent is for, what it may touch, and how to report. Project rules sit beside it in one file the agent reads at the start of each run, so the team can change them without a code change. The harness enforces the hard limits: a pull request opens only through one tool, and no push to the main branch appears in the tool list at all.",
+     "points": ["Words guide the agent; code enforces the limits.", "Project rules live in one file the team owns.", "The main branch is not in the tool list."]
+    },
+    "context": {
+     "answer": "Each call carries the failing log, cut to its first failure and the last twenty lines, the diff so far and the project rules, and nothing else. Earlier attempts are summarised, not resent in full, so a long repair does not fill the window and push the rules out of it.",
+     "points": ["Send the failing log, cut to the failure.", "Summarise earlier attempts instead of resending them.", "Keep the rules inside the window on every call."]
+    },
+    "loop": {
+     "answer": "The loop reads the failure, plans a fix, edits, runs the tests and reads the result. It stops when the tests pass, when a turn limit is reached, or when the budget is spent. Three identical edits in a row count as no progress and stop the run, so it cannot spin on the same change.",
+     "points": ["Stop on green, on the turn limit, or on the budget.", "Three identical edits in a row stop the run.", "Every stop writes its reason to the trace."]
+    },
+    "errors": {
+     "answer": "A flaky test, a network timeout or a rate limit is retried with backoff, a fixed number of times and no more. Repeated failures open a breaker, and the run ends as needs-human rather than retrying forever. The person reading the result sees a plain reason, not a stack trace.",
+     "points": ["Retry transient errors with backoff, a fixed number of times.", "A breaker stops repeated failure.", "End as needs-human, with a plain reason."]
+    },
+    "tools": {
+     "answer": "The tools are few and narrow: read a file, search the repository, run the test command, edit one file at a time, and open a pull request. Each has a schema, so a bad call is rejected with a clear message instead of changing a file by mistake. Results come back in one message per turn.",
+     "points": ["Few tools, each with a schema.", "A bad call is rejected with a reason.", "One result message per turn."]
+    },
+    "permissions": {
+     "answer": "The agent may read the repository and run the test command in a sandbox with no network. Editing is allowed in the working copy only. Opening the pull request asks a human the first time. Anything not on the list is denied by default, so a new tool starts closed until someone allows it.",
+     "points": ["Allow reads and tests; deny by default.", "Run tests in a sandbox with no network.", "Ask a human before the first pull request."]
+    },
+    "verify": {
+     "answer": "Done is a claim the harness checks. A run is done when the test command passes on a clean checkout, the diff touches only the files the task names, and no test was edited to pass. The verify gate runs these checks before the agent may say it has finished the job.",
+     "points": ["Re-run the tests on a clean checkout.", "Check the diff touches only the named files.", "Refuse a run that edited a test to pass."]
+    },
+    "observe": {
+     "answer": "Each run writes a trace: every model call, every tool call, the tokens and the cost, under one run id. A dashboard shows the pass rate and the cost per fix. A failed run can be replayed from its trace, so a bad fix can be explained without guessing what the agent saw.",
+     "points": ["Trace every call, with tokens and cost.", "Show pass rate and cost per fix.", "Replay a failed run from its trace."]
+    }
+   },
+   "risks": {
+    "answer": "The agent could edit a test until it passes, special-case the failing input, or delete the failing test. Each would look green. Guard against it: the verify gate reruns the original tests, a diff that touches test files needs a reason, and a human reviews every pull request before it merges.",
+    "points": ["A test edited to pass looks green.", "A special-cased answer passes one input only.", "Rerun the original tests, and review every pull request."]
+   },
+   "cost": {
+    "answer": "Cost is tokens per run times runs per day. A typical run reads the log, a few files and the rules, then makes several calls. Multiply the input and output tokens by the model's prices per million tokens, from its pricing page. Set a budget per run, so one bad run cannot spend the day's money.",
+    "points": ["Cost is tokens per run, times runs per day.", "Price input and output tokens separately.", "Set a budget per run."]
+   },
+   "rollout": {
+    "answer": "Start read-only: the agent posts its suggested diff as a comment, and no pull request opens. Then let it open pull requests on one low-risk repository, with a human approving each one. Widen the scope only after the pass rate and the review rate have held for several weeks.",
+    "points": ["Start read-only, as a comment.", "A human approves every pull request.", "Widen the scope only after the numbers hold for weeks."]
+   }
+  }
+ ]
+}

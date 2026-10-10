@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Design room lab · HARNESSED</title>
+<meta name="description" content="The design room in its demo: one system-design prompt, a timer you run, the eight-wire checklist, then the model answer beside your own.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module" src="../assets/components/hx-design.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar" data-topbar>
+  <a class="wordmark" href="../index.html" aria-label="HARNESSED, course home">
+    <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>
+    <span>HARNESSED</span>
+  </a>
+  <nav class="top-nav" aria-label="Pages">
+    <ol>
+      <li><a href="../index.html" aria-current="page">Course</a></li>
+    </ol>
+  </nav>
+  <a class="board-btn" href="../index.html#board" aria-label="Harness Board, cards due">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12V6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span><span class="board-word">Board · </span><span data-due-text>0 cards due</span></span>
+  </a>
+  <div class="settings">
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="menu-btn" type="button" data-menu-btn aria-haspopup="dialog" aria-expanded="false" aria-controls="menu-sheet" hidden>Menu</button>
+</header>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · design room, demo content</p>
+    <h1>Design room</h1>
+    <p class="lede">A system-design answer, said or written against eight wires. Time yourself, check your design against the model, then grade yourself. It is not a test.</p>
+  </header>
+
+  <section class="beat" id="design">
+    <h2>One demo prompt</h2>
+    <p>Demo content: one prompt, with the eight wires, cheating risks, cost and rollout. The real room has six or more prompts, written with the module pages.</p>
+    <hx-design src="data/design-demo.json">
+      <p>A design prompt with a timer, eight wire toggles, and a model answer after you reveal it. Without scripts you can read the prompt in the module.</p>
+    </hx-design>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <p class="live-status" data-store-status></p>
+    <div class="footer-actions">
+      <button class="btn" type="button" data-export>Export progress</button>
+      <label class="btn">Import progress<input class="sr-only" type="file" accept="application/json,.json" data-import></label>
+      <button class="btn btn-quiet" type="button" data-reset>Reset progress (keeps settings)</button>
+    </div>
+    <p><a href="../design.html">Design system</a></p>
+    <p>Fonts: Newsreader (SIL OFL 1.1). Harnessed Sans and Harnessed Mono (SIL OFL 1.1; renamed IBM Plex subsets). Licences in <a href="../assets/fonts/LICENSE-OFL.txt">LICENSE-OFL.txt</a> and <a href="../assets/fonts/LICENSE-newsreader.txt">LICENSE-newsreader.txt</a>.</p>
+    <p data-facts-line>Facts verified as of 10 Oct 2026.</p>
+  </div>
+</footer>
+</body>
+</html>
