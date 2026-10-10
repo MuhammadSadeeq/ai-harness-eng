@@ -13,7 +13,7 @@
 :root {
   --plate-edge: var(--hx-rule);
   --hx-gutter: 16px;
-  --hx-top-h: 52px;
+  --hx-top-h: 60px;
 }
 @media (min-width: 700px) { :root { --hx-gutter: 24px; } }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --plate-edge: var(--hx-rule-strong); } }
@@ -55,7 +55,7 @@ pre { margin: var(--sp-3) 0 0; padding: var(--sp-3) var(--sp-4); background: var
 pre code { background: none; padding: 0; color: inherit; }
 kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--hx-rule-strong); border-bottom-width: 2px; border-radius: 4px; background: var(--hx-panel); font-size: var(--fs-small); }
 
-/* ---------- top bar: one row (52 px; 56 px max on phones) ---------- */
+/* ---------- top bar: one row (60 px; 56 px on phones; sticky strips and rails clear --hx-top-h) ---------- */
 .topbar {
   position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: nowrap; align-items: center; gap: var(--sp-3);
   min-height: var(--hx-top-h); padding: 6px var(--hx-gutter); background: var(--hx-paper); border-bottom: 1px solid var(--hx-rule);
@@ -71,13 +71,16 @@ kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--hx-rule-s
 .board-btn { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 44px; padding: 0 var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 600 var(--fs-small)/1 var(--font-sans); text-decoration: none; }
 .board-btn svg { width: 22px; height: 22px; }
 .board-btn { white-space: nowrap; }
-@media (max-width: 699px) { .board-word { display: none; } }
+@media (max-width: 767px) { .board-word { display: none; } }
+@media (max-width: 1099px) { .topbar { gap: var(--sp-2); } .settings { gap: var(--sp-1); } }
 .menu-btn { display: none; min-width: 44px; min-height: 44px; margin-left: auto; padding: 0 var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 600 var(--fs-ui)/1 var(--font-sans); cursor: pointer; }
+@media (max-width: 739px) {
+  .top-nav, .settings { display: none; }
+  .menu-btn { display: inline-flex; align-items: center; justify-content: center; }
+}
 @media (max-width: 699px) {
   .topbar { min-height: 56px; padding: 5px var(--hx-gutter); }
-  .top-nav, .settings { display: none; }
   .module-id .mod-title { display: none; }
-  .menu-btn { display: inline-flex; align-items: center; justify-content: center; }
 }
 @media (max-width: 699px) { .topbar { position: static; } }
 
@@ -419,12 +422,18 @@ hx-clock { display: block; }
 .progress-line .path-mark { width: 20px; height: 20px; }
 .prereqs { margin: 0; font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); }
 .prereqs a { color: var(--hx-ink); text-decoration: underline; text-underline-offset: 3px; }
+.module-head > * { max-width: var(--measure); }
 .beat-strip { position: relative; margin-top: var(--sp-2); }
 .beat-strip ol { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin: 0; padding: 0; list-style: none; }
 .beat-strip a { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 44px; padding: 0 var(--sp-3); border-radius: var(--r-btn); color: var(--hx-ink); text-decoration: none; font: 600 var(--fs-ui) var(--font-sans); }
 .beat-strip a[aria-current="true"] { box-shadow: inset 0 -3px 0 var(--hx-ink); }
 .now-mark { font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); text-transform: uppercase; letter-spacing: .04em; }
 @media (min-width: 700px) {
+  /* sticky needs the whole page as its containing block, so the header and meta boxes stop being boxes; spacing moves to the children */
+  .module-head, .module-meta { display: contents; }
+  .module-meta > :first-child { margin-top: var(--sp-4); }
+  .module-meta > * + * { margin-top: var(--sp-3); }
+  .module-meta > .beat-strip { margin-top: var(--sp-2); }
   .beat-strip { position: sticky; top: var(--hx-top-h); z-index: 6; padding: var(--sp-1) 0; background: var(--hx-paper); }
 }
 section.beat > :not(aside.note):not(.step-out) { max-width: var(--measure); }

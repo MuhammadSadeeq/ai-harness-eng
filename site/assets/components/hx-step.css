@@ -1,0 +1,78 @@
+/* hx-step: one build step. Tokens only; keys, glyphs and the verdict line come from hx.css. */
+hx-step { display: block; margin: var(--sp-5) 0; }
+hx-step .hx-ui { display: block; }
+hx-step [hidden] { display: none !important; }
+
+.step { display: grid; gap: var(--sp-4); min-width: 0; }
+.step-head { display: grid; gap: var(--sp-1); }
+.step-title { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+.step-number { display: inline-block; min-width: 1.6em; margin-right: var(--sp-1); color: var(--hx-ink-2); }
+.step-goal, .step-theory, .step-size { margin: 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.step-goal b, .step-theory b { color: var(--hx-ink); font-weight: 600; }
+
+.step-loading { display: grid; gap: var(--sp-2); }
+.step-loading-line, .step-note, .step-status { margin: 0; font: 500 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink-2); }
+.step-progress { width: 100%; height: 6px; accent-color: var(--hx-ink); }
+
+.chunk { display: grid; gap: var(--sp-2); padding: var(--sp-4); border: 1px solid var(--plate-edge); border-radius: var(--r-plate); background: var(--hx-panel); min-width: 0; }
+.chunk-title { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+.chunk-id { margin-right: var(--sp-1); color: var(--hx-ink-2); font-family: var(--font-mono); }
+.chunk-explain { display: grid; gap: var(--sp-2); font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }
+.chunk-explain p, .chunk-explain ul { margin: 0; }
+.chunk-explain ul { padding-left: var(--sp-5); display: grid; gap: var(--sp-1); }
+
+.hunk { display: grid; gap: var(--sp-1); min-width: 0; }
+.hunk-where { margin: 0; font: 600 var(--fs-small)/1.3 var(--font-sans); color: var(--hx-ink-2); letter-spacing: .04em; text-transform: uppercase; }
+.diff {
+  list-style: none; margin: 0; padding: var(--sp-2) 0; min-width: 0; overflow-x: auto;
+  border: 1px solid var(--hx-rule-strong); border-radius: 6px; background: var(--hx-code-bg); color: var(--hx-code-ink);
+  font: 400 14px/1.45 var(--font-mono);
+}
+.dl { display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: start; padding: 0 var(--sp-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+.dl-mark { font-weight: 600; text-align: center; }
+.dl-add { background: color-mix(in srgb, var(--hx-pass) 22%, transparent); }
+.dl-add .dl-mark { color: var(--hx-pass); }
+.dl-del { background: color-mix(in srgb, var(--hx-fail) 22%, transparent); text-decoration: line-through; }
+.dl-del .dl-mark { color: var(--hx-fail); }
+.dl-ctx { color: var(--hx-ink-2); }
+
+.keys { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.step-script, .step-fullfile { border: 1px solid var(--hx-rule-strong); border-radius: 6px; background: var(--hx-panel); padding: var(--sp-2) var(--sp-3); min-width: 0; }
+.step-script > summary, .step-fullfile > summary { min-height: 44px; display: flex; align-items: center; font: 600 var(--fs-ui)/1.3 var(--font-sans); cursor: pointer; }
+.step-script[open] > summary, .step-fullfile[open] > summary { margin-bottom: var(--sp-2); }
+
+.code { margin: 0; padding: var(--sp-3); overflow: auto; max-height: 24rem; border-radius: 6px; background: var(--hx-code-bg); color: var(--hx-code-ink); font: 400 14px/1.5 var(--font-mono); white-space: pre; }
+.code:focus-visible, .diff:focus-visible { outline: 3px solid var(--hx-focus); outline-offset: 2px; }
+.step-command, .step-file { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.step-checkpoint, .step-breaks, .step-check { display: grid; gap: var(--sp-3); min-width: 0; }
+.step-checkpoint h4, .step-breaks h4 { margin: var(--sp-3) 0 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+.step-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); letter-spacing: .04em; text-transform: uppercase; color: var(--hx-ink-2); }
+.step-verdict { display: inline-flex; align-items: center; gap: var(--sp-2); margin: 0; font: 600 var(--fs-ui)/1.35 var(--font-sans); }
+.step-verdict .glyph { width: 20px; height: 20px; }
+.step-verdict.is-pass { color: var(--hx-pass); }
+.step-verdict.is-fail { color: var(--hx-fail); }
+.step-output { max-height: 20rem; }
+.step-explain { display: grid; gap: var(--sp-2); padding: var(--sp-3); border-left: 3px solid var(--hx-rule-strong); font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }
+.step-explain h5 { margin: 0; font: 600 var(--fs-ui)/1.3 var(--font-sans); }
+.step-explain p { margin: 0; }
+
+.step-pair { display: grid; gap: var(--sp-3); min-width: 0; }
+@media (min-width: 700px) { .step-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.step-pair > div { min-width: 0; display: grid; gap: var(--sp-1); }
+
+.step-editor .cm-editor { border: 1px solid var(--hx-rule-strong); border-radius: 6px; background: var(--hx-code-bg); color: var(--hx-code-ink); font: 400 14px/1.5 var(--font-mono); }
+.step-editor .cm-scroller { font-family: var(--font-mono); min-height: 12rem; }
+.step-editor .cm-gutters { min-height: 12rem !important; background: var(--hx-panel-2); color: var(--hx-ink-2); border-right: 1px solid var(--hx-rule); font: inherit; line-height: inherit; }
+.step-editor .tok-keyword { color: var(--syn-kw); font-weight: 600; }
+.step-editor .tok-comment { color: var(--syn-com); font-style: italic; }
+.step-editor .tok-string { color: var(--syn-str); }
+.step-editor .tok-number { color: var(--syn-num); }
+.step-editor .tok-operator { color: var(--syn-op); }
+.step-editor .tok-function { color: var(--syn-fn); }
+.step-code { display: block; width: 100%; min-height: 12rem; box-sizing: border-box; padding: var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: 6px; background: var(--hx-code-bg); color: var(--hx-code-ink); font: 400 14px/1.5 var(--font-mono); white-space: pre; }
+
+.step-break { display: grid; gap: var(--sp-2); padding: var(--sp-3) 0; border-top: 1px solid var(--hx-rule); min-width: 0; }
+.step-toggle[aria-pressed="true"] { border-color: var(--hx-ink); box-shadow: inset 0 0 0 1px var(--hx-ink), inset 0 -2px 0 var(--hx-rule-strong); }
+.step-toggle[aria-pressed="true"]::before { content: "On "; font-weight: 600; }
+.step-toggle[aria-pressed="false"]::before { content: "Off "; font-weight: 600; color: var(--hx-ink-2); }

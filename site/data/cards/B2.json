@@ -45,7 +45,7 @@
  },
  {
   "back": "The two results for one reply sit in two user messages. Send all of them together, in one user message.",
-  "bug_path": "messages[2]",
+  "bug_path": "/messages/2",
   "front": "Spot the bug in this history.",
   "id": "B2-k7",
   "json": {

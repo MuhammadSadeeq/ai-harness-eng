@@ -75,7 +75,7 @@
     <p>The pattern has a name from a research paper, <dfn data-term="react">ReAct</dfn>. <span class="fact" data-fact="papers.react-title-id">The authors' repo cites the paper as ReAct: Synergizing Reasoning and Acting in Language Models, ICLR 2023.</span></p>
     <p>Read the code from the top. Each comment marks one step.</p>
 
-    <pre data-run><code class="language-python">from collections.abc import Callable
+    <pre data-run tabindex="0" role="region" aria-label="Python code"><code class="language-python">from collections.abc import Callable
 from typing import Any
 
 Reply = dict[str, Any]
@@ -117,6 +117,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
 
     <h3>What the loop does with each stop reason</h3>
     <p>Each row is one stop reason. The loop handles each one on purpose.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Stop reasons and what the loop does">
     <table>
       <thead>
         <tr><th>stop_reason</th><th>What it means</th><th>What the loop does</th></tr>
@@ -130,6 +131,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
         <tr><td><code>stop_sequence</code></td><td><span class="fact" data-fact="api.stop-reason-stop-sequence">Claude emitted one of the request's stop_sequences.</span></td><td>Treat it as a stop you asked for. Check the reply, then decide.</td></tr>
       </tbody>
     </table>
+    </div>
 
     <h3>What the loop sends</h3>
     <p>This loop only grows the history. Each turn adds the reply and its results, and each call sends the whole history. <span class="fact" data-fact="api.tool-results-single-user-message">The docs say to return one tool_result for each tool_use block, all together in the next user message.</span> <span class="fact" data-fact="api.tool-result-unrun-call">A tool_use block that is not run still needs a tool_result with is_error true and a brief explanation.</span></p>

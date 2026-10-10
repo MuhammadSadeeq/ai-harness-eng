@@ -268,3 +268,33 @@ def test_check_detects_a_stale_kata_file(
     assert run(root, "--check") == 1
     out = capsys.readouterr().out
     assert "good-add.json" in out and "stale" in out
+
+
+REPO_STEPS = Path(__file__).resolve().parents[2] / "steps"
+
+
+def test_steps_compile_to_one_json_each_with_their_shared_script(tmp_path: Path) -> None:
+    root = copy_root(tmp_path)
+    shutil.copytree(REPO_STEPS, root / "steps")
+    assert run(root) == 0
+    data = json.loads((root / "site/data/steps/H1.json").read_text(encoding="utf-8"))
+    assert data["id"] == "H1" and data["size"] == "rein.py starts at 105 lines"
+    assert data["rein"] == (REPO_STEPS / "H1" / "rein.py").read_text(encoding="utf-8")
+    command = 'python rein.py "Say hello" --fake scenarios/01_hello.json'
+    assert data["checkpoint"]["command"] == command
+    h2 = json.loads((root / "site/data/steps/H2.json").read_text(encoding="utf-8"))
+    assert set(h2["shared"]) == {"reset_demo"} and h2["checkpoint"]["setup"] == ["reset_demo"]
+    assert len(h2["breaks"]) == 3 and "run" in h2["breaks"][0]
+    assert run(root, "--check") == 0
+
+
+def test_a_step_that_cannot_be_read_is_named_and_skipped(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = copy_root(tmp_path)
+    shutil.copytree(REPO_STEPS, root / "steps")
+    (root / "steps" / "H2" / "step.yaml").write_text("module: H2\nnumber: [\n", encoding="utf-8")
+    assert run(root) == 1
+    out = capsys.readouterr().out
+    assert "invalid YAML" in out
+    assert not (root / "site/data/steps/H2.json").exists()

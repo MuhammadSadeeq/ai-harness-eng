@@ -149,8 +149,7 @@ export class HxStep extends HxElement {
   // ---- copy ----
   copyText(text, key) {
     this.lastCopy = text;
-    const clip = navigator.clipboard?.writeText(text);
-    if (clip) clip.catch(() => {});
+    this.copyJob = navigator.clipboard?.writeText(text).catch(() => {}) ?? Promise.resolve();
     this.live(COPIED);
     clearTimeout(this.#copyTimer);
     this.patch({ copied: key });
@@ -200,16 +199,13 @@ export class HxStep extends HxElement {
   // ---- Check my file ----
   openCheck() {
     this.patch({ check: true });
-    this.ui.querySelector('[data-key="check-run"]')?.focus({ preventScroll: true });
+    this.ui.querySelector('[data-key="run-mine"]')?.focus({ preventScroll: true });
   }
 
   checkMine() {
     if (python.state !== "ready" || this.state.running) return null;
     this.patch({ running: true });
-    const mine = this.code();
-    const files = { "rein.py": mine, ...this.step.checkpoint.run.files };
-    delete files["rein.py"];
-    files["rein.py"] = mine;
+    const files = { ...this.step.checkpoint.run.files, "rein.py": this.code() };
     const job = this.execute(files, this.step.checkpoint.argv).then((outcome) => {
       const expected = this.step.checkpoint.expected;
       const match = matches(outcome, expected);
@@ -293,7 +289,6 @@ export class HxStep extends HxElement {
       autocomplete: "off", wrap: "off", "aria-label": "Your rein.py", "data-key": "mine",
     });
     dom.host = el("div", { class: "step-editor" }, dom.textarea);
-    dom.textarea.addEventListener("input", () => { this.lastMine = dom.textarea.value; });
     dom.runMine = el("button", { class: "key key-primary", type: "button", "data-key": "run-mine", text: RUN_MINE });
     dom.runMine.addEventListener("click", () => this.checkMine());
     dom.mineVerdict = el("p", { class: "step-verdict" });
@@ -352,7 +347,7 @@ export class HxStep extends HxElement {
     this.#editorReady = mountEditor(this.dom.host, {
       doc: this.dom.textarea.value,
       label: "Your rein.py",
-      onChange: (text) => { this.lastMine = text; },
+      onChange: () => {},
     }).then((editor) => {
       if (!editor) return null;
       this.#editor = editor;
@@ -373,7 +368,6 @@ export class HxStep extends HxElement {
     dom.loadingText.textContent = failed ? FAILED_COPY : slow ? SLOW_COPY : LOADING_COPY;
     dom.progress.hidden = failed;
     dom.retry.hidden = !(failed || slow);
-    const ready = py === "ready" && !s.running;
     dom.run.disabled = py !== "ready";
     dom.run.setAttribute("aria-disabled", String(s.running));
     dom.run.textContent = s.running ? RUNNING_COPY : RUN_HERE;
@@ -420,7 +414,51 @@ export class HxStep extends HxElement {
         broken.textContent = outcome ? showOutput(outcome) : "…";
       }
     }
-    void ready;
+  }
+
+  /** Clicks a control through the real UI and returns the job it started (or null). */
+  clickForJob(selector) {
+    const before = this.#last;
+    this.ui.querySelector(selector)?.click();
+    return this.#last !== before ? this.#last : null;
+  }
+
+  /**
+   * Copies a chunk (the copy must be exactly its added lines), runs the reference (it must match the book), turns
+   * a break on (its output must be the break's expected output), then pastes the reference into Check my file (it
+   * must match). Then it restores: the break goes off, the pasted file is cleared, and the check closes.
+   */
+  async selfTest() {
+    this.startPython();
+    if (!(await python.whenReady())) return false;
+    const chunk = this.step.chunks[0];
+    const copied = addedLines(chunk).join("\n") + "\n";
+    this.ui.querySelector(`[data-key="copy-${chunk.id}"]`)?.click();
+    if (this.lastCopy !== copied) return false;
+    try {
+      await this.copyJob;
+      if ((await navigator.clipboard.readText()) !== copied) return false;
+    } catch {
+      // The browser does not let the page read the clipboard here: the copied text was checked above.
+    }
+    const reference = await this.clickForJob('[data-key="run-here"]');
+    if (!reference || !reference.match) return false;
+    const brk = this.step.breaks[0];
+    if (brk) {
+      const job = this.clickForJob(`[data-key="break-${brk.id}"]`);
+      const outcome = job ? await job : null;
+      if (!outcome || !matches(outcome, brk.expected)) return false;
+      this.ui.querySelector(`[data-key="break-${brk.id}"]`)?.click();
+    }
+    this.openCheck();
+    await this.mountCheckEditor();
+    this.setCode(this.step.rein);
+    const mine = this.clickForJob('[data-key="run-mine"]');
+    const checked = mine ? await mine : null;
+    const ok = Boolean(checked && checked.match);
+    this.setCode("");
+    this.patch({ check: false, checkOutcome: null });
+    return ok;
   }
 }
 

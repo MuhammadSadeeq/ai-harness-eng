@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build Rein, one step at a time · HARNESSED</title>
+<meta name="description" content="Build a small coding-agent harness in one Python file: each step adds chunks, a checkpoint, and breaks to try.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">
+  import "../assets/components/hx-step.js";
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · build Rein</p>
+    <h1>Build Rein, one step at a time</h1>
+    <p class="lede">Each step adds a few lines to one file, runs it, and shows what to try next.</p>
+  </header>
+
+  <section class="row" aria-labelledby="step1-h">
+    <h2 id="step1-h">Step 1</h2>
+    <hx-step step="H1">
+      <p>Send one message to a model and print its reply, with a scripted model and a real one behind the same interface.</p>
+      <p>rein.py starts at 105 lines.</p>
+      <pre class="code"><code>python rein.py &quot;Say hello&quot; --fake scenarios/01_hello.json</code></pre>
+      <p>You should see exactly this:</p>
+      <pre class="code"><code>you      Say hello
+model    Hello! I am a scripted stand-in for Claude. I say what my script says.
+         stop_reason=end_turn tokens_in=10 tokens_out=25</code></pre>
+    </hx-step>
+  </section>
+
+  <section class="row" aria-labelledby="step2-h">
+    <h2 id="step2-h">Step 2</h2>
+    <hx-step step="H2">
+      <p>Give the model one tool, and a loop that keeps calling the model until it stops asking for tools.</p>
+      <p>rein.py grows to 172 lines.</p>
+      <pre class="code"><code>python rein.py &quot;Find the bug in demo/calc.py&quot; --fake scenarios/02_read.json</code></pre>
+      <p>You should see exactly this:</p>
+      <pre class="code"><code>task     Find the bug in demo/calc.py
+turn 1   model: I will read the code first.
+         tool   read_file {&quot;path&quot;: &quot;demo/calc.py&quot;}
+         result def add(a, b): | return a - b
+turn 2   model: Now the test.
+         tool   read_file {&quot;path&quot;: &quot;demo/test_calc.py&quot;}
+         result from calc import add | def test_add(): | result = add(2, 3) | assert result == 5, f&quot;
+turn 3   model: Found it: add() returns a - b, but the test expects a + b. I can only read, so I can
+done     after 3 model calls</code></pre>
+    </hx-step>
+  </section>
+
+</main>
+</body>
+</html>

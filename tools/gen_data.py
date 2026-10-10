@@ -172,7 +172,7 @@ def _readme(root: Path, course: dict[str, Any] | None, plan: Plan) -> str | None
 
 
 def _step_command(argv: list[str]) -> str:
-    """The command as the book prints it: python rein.py, with the arguments in double quotes when needed."""
+    """The command as the book prints it: python rein.py, arguments in double quotes when needed."""
     return " ".join(["python", "rein.py"] + [f'"{arg}"' if " " in arg else arg for arg in argv])
 
 
@@ -182,21 +182,28 @@ def _step_json(step: Any, shared: dict[str, str]) -> dict[str, Any]:
     breaks = []
     for brk in step.breaks:
         files, argv = cs.apply_change(step, brk.change)
-        breaks.append({"id": brk.id, "title": brk.title, "explain": brk.explain, "expected": brk.expected,
+        breaks.append(
+            {"id": brk.id, "title": brk.title, "explain": brk.explain, "expected": brk.expected,
+             "change": brk.change, "run": {"files": files, "argv": argv}}
+        )
                        "change": brk.change, "run": {"files": files, "argv": argv}})
     chunks = []
     for chunk in step.chunks:
         hunks = [{"where": h.where, "diff": "".join(sign + body + "\n" for sign, body in h.lines)}
                  for h in chunk.hunks]
-        chunks.append({"id": chunk.id, "title": chunk.title, "explain": chunk.explain, "hunks": hunks})
+        chunks.append(
+            {"id": chunk.id, "title": chunk.title, "explain": chunk.explain, "hunks": hunks}
+        )
     return {
         "id": step.module, "module": step.module, "number": step.number, "title": step.title,
-        "goal": step.goal, "theory": step.theory, "requires_python": step.requires_python, "size": step.size,
+        "goal": step.goal, "theory": step.theory,
+        "requires_python": step.requires_python, "size": step.size,
         "lines_after": step.lines_after, "runs_in_browser": step.runs_in_browser,
         "chunks": chunks,
         "checkpoint": {"command": _step_command(step.argv), "argv": step.argv, "setup": step.setup,
                        "expected": step.expected, "explain": step.explain,
-                       "run": {"files": {"rein.py": step.text, **step.scenarios}, "argv": step.argv}},
+                       "run": {"files": {"rein.py": step.text, **step.scenarios},
+                               "argv": step.argv}},
         "breaks": breaks,
         "rein": step.text,
         "scenarios": step.scenarios,
@@ -205,7 +212,7 @@ def _step_json(step: Any, shared: dict[str, str]) -> dict[str, Any]:
 
 
 def _steps(root: Path, plan: Plan) -> None:
-    """steps/<ID>/ compiles to site/data/steps/<ID>.json, with the shared setup scripts it uses (BP-2.3).
+    """steps/<ID>/ compiles to site/data/steps/<ID>.json, with the shared setup scripts (BP-2.3).
     The rules about the steps are check_steps.py's; a step it cannot read is named and skipped."""
     from tools import check_steps as cs
 
@@ -213,7 +220,10 @@ def _steps(root: Path, plan: Plan) -> None:
     if not folder.is_dir():
         return
     shared = cs.load_shared(folder)
-    dirs = [p for p in folder.iterdir() if p.is_dir() and p.name != cs.SHARED and not p.name.startswith(".")]
+    dirs = [
+        p for p in folder.iterdir()
+        if p.is_dir() and p.name != cs.SHARED and not p.name.startswith(".")
+    ]
     for step_dir in sorted(dirs):
         rel = f"site/data/steps/{step_dir.name}.json"
         found: list[Any] = []

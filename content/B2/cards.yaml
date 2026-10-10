@@ -51,7 +51,7 @@
       - role: user
         content:
           - {type: tool_result, tool_use_id: t2, content: "2 passed"}
-  bug_path: "messages[2]"
+  bug_path: "/messages/2"
   front: "Spot the bug in this history."
   back: "The two results for one reply sit in two user messages. Send all of them together, in one user message."
 

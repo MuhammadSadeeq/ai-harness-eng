@@ -3,11 +3,15 @@
 Usage: check_steps.py [--steps DIR] [--course PATH|none] [--pyodide]
 
 For each build module that has steps/<ID>/, in course.json path order:
-  1. the chunks, applied to the previous step's rein.py (empty for the first), give this step's rein.py
+  1. the chunks, applied to the previous step's rein.py (empty for the first), give
+     this step's rein.py byte for byte, with lines_after lines;
      byte for byte, with lines_after lines;
-  2. the checkpoint's stdout under CPython equals `expected` (`error: Name` means a traceback of that name);
+  2. the checkpoint's stdout under CPython equals `expected` (`error: Name` means
+     a traceback of that name);
   3. every break's output equals its `expected` and differs from the checkpoint's.
-With --pyodide, every step that runs in the browser also runs under Pyodide (one process for all of them,
+With --pyodide, every step that runs in the browser also runs under Pyodide (one
+process for all of them, DECISIONS D-015): the stdout and the error name must equal
+CPython's.
 DECISIONS D-015): the stdout and the error name must equal CPython's.
 A problem prints as path:line: message; the last line is the summary.
 """
@@ -36,7 +40,7 @@ RUN_TIMEOUT = 30.0
 SHARED = "_shared"
 CHANGE_KINDS = ("script", "patch", "argv")
 
-# One Node process: loads Pyodide once and runs each job in its own folder, reusing check_katas' Pyodide setup.
+# One Node process: loads Pyodide once and runs each job in its own folder.
 NODE_SCRIPT = """
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -52,7 +56,8 @@ const pyodide = await loadPyodide({
 pyodide.runPython(request.runner);
 const results = request.jobs.map((job) => {
   try {
-    return JSON.parse(pyodide.runPython(`run_job(json.loads(${JSON.stringify(JSON.stringify(job))}))`));
+    const text = pyodide.runPython(`run_job(json.loads(${JSON.stringify(JSON.stringify(job))}))`);
+    return JSON.parse(text);
   } catch (error) {
     return { error_python: String(error?.message ?? error).slice(0, 300) };
   }
@@ -60,7 +65,8 @@ const results = request.jobs.map((job) => {
 writeFileSync(request.result, JSON.stringify(results));
 """
 
-# Runs one job under Pyodide the way the CPython runner runs it: files written, setup scripts run, then
+# Runs one job under Pyodide the way the CPython runner does: files written, setup scripts
+# run, then rein.py with sys.argv set, stdout captured, and the exception's name as the error.
 # rein.py with sys.argv set, stdout captured, and the exception's name as the error.
 RUNNER = """
 import contextlib, io, json, os, runpy, sys
@@ -81,7 +87,10 @@ def run_job(job):
     for name in job["setup"]:
         # the setup scripts run in their own process under CPython: their output is not the step's
         try:
-            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            with (
+                contextlib.redirect_stdout(io.StringIO()),
+                contextlib.redirect_stderr(io.StringIO()),
+            ):
                 sys.argv = [name + ".py"]
                 runpy.run_path(name + ".py", run_name="__main__")
         except BaseException as exc:
@@ -192,7 +201,10 @@ def parse_diff(text: str, where: str) -> list[tuple[str, str]]:
 
 
 def apply_diff(text: str, lines: list[tuple[str, str]]) -> str:
-    """Puts the + lines where the grey (context) and - lines are. Those must be in the file exactly once."""
+    """Puts the + lines where the grey (context) and - lines are.
+
+    Those grey and - lines must be in the file exactly once.
+    """
     file_lines = text.split("\n")[:-1] if text else []
     old = [body for sign, body in lines if sign in " -"]
     new = [body for sign, body in lines if sign in " +"]
@@ -200,13 +212,15 @@ def apply_diff(text: str, lines: list[tuple[str, str]]) -> str:
         if file_lines:
             raise ChunkError("the chunk has no grey lines to place it, and the file is not empty")
         return "".join(line + "\n" for line in new)
-    hits = [i for i in range(len(file_lines) - len(old) + 1) if file_lines[i:i + len(old)] == old]
+    hits = [i for i in range(len(file_lines) - len(old) + 1) if file_lines[i : i + len(old)] == old]
     if not hits:
         raise ChunkError("the grey lines are not in the file (context not found)")
     if len(hits) > 1:
-        raise ChunkError(f"the grey lines are in the file twice (lines {hits[0] + 1} and {hits[1] + 1})")
+        raise ChunkError(
+            f"the grey lines are in the file twice (lines {hits[0] + 1} and {hits[1] + 1})"
+        )
     start = hits[0]
-    result = file_lines[:start] + new + file_lines[start + len(old):]
+    result = file_lines[:start] + new + file_lines[start + len(old) :]
     return "".join(line + "\n" for line in result)
 
 
@@ -244,7 +258,10 @@ def parse_step(data: Any, folder: Path) -> Step:
         raise StepError(f"module {data.get('module')!r} must equal the folder name {module!r}")
     chunks = []
     for item in data["chunks"]:
-        hunks = [Hunk(str(h["where"]), parse_diff(h["diff"], f"chunk {item['id']}")) for h in item["hunks"]]
+        hunks = [
+            Hunk(str(h["where"]), parse_diff(h["diff"], f"chunk {item['id']}"))
+            for h in item["hunks"]
+        ]
         chunks.append(Chunk(str(item["id"]), item["title"], hunks, str(item.get("explain", ""))))
     check = data["checkpoint"]
     breaks = []
@@ -252,14 +269,26 @@ def parse_step(data: Any, folder: Path) -> Step:
         change = item["change"]
         kinds = [kind for kind in CHANGE_KINDS if kind in change]
         if len(kinds) != 1:
-            raise StepError(f"break {item['id']}: change needs exactly one of {', '.join(CHANGE_KINDS)}")
-        breaks.append(Break(item["id"], item.get("title", item["id"]), change, item["expected"], str(item.get("explain", ""))))
+            raise StepError(
+                f"break {item['id']}: change needs exactly one of {', '.join(CHANGE_KINDS)}"
+            )
+        breaks.append(
+            Break(
+                item["id"],
+                item.get("title", item["id"]),
+                change,
+                item["expected"],
+                str(item.get("explain", "")),
+            )
+        )
     scenarios = {}
     scen_dir = folder / "scenarios"
     if scen_dir.is_dir():
         for file in sorted(scen_dir.glob("*.json")):
             scenarios[f"scenarios/{file.name}"] = file.read_text(encoding="utf-8")
-    text = (folder / "rein.py").read_text(encoding="utf-8") if (folder / "rein.py").is_file() else ""
+    text = (
+        (folder / "rein.py").read_text(encoding="utf-8") if (folder / "rein.py").is_file() else ""
+    )
     return Step(
         module=module,
         number=int(data["number"]),
@@ -305,7 +334,7 @@ def apply_change(step: Step, change: dict[str, Any]) -> tuple[dict[str, str], li
 
 def expected_error(expected: str) -> str | None:
     if expected.startswith("error: ") and "\n" not in expected.strip():
-        return expected[len("error: "):].strip()
+        return expected[len("error: ") :].strip()
     return None
 
 
@@ -317,22 +346,45 @@ def error_name_from_stderr(stderr: str) -> str:
     return last.split(":", 1)[0].strip()
 
 
-def run_cpython(files: dict[str, str], setup: dict[str, str], setup_names: list[str], argv: list[str]) -> Outcome:
+def run_cpython(
+    files: dict[str, str], setup: dict[str, str], setup_names: list[str], argv: list[str]
+) -> Outcome:
     with tempfile.TemporaryDirectory(prefix="rein-step-") as scratch:
         work = Path(scratch)
         for path, text in files.items():
             target = work / path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(text, encoding="utf-8")
-        env = {**os.environ, "PYTHONHASHSEED": "0", "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8"}
+        env = {
+            **os.environ,
+            "PYTHONHASHSEED": "0",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONIOENCODING": "utf-8",
+        }
         for name in setup_names:
             (work / f"{name}.py").write_text(setup[name], encoding="utf-8")
-            done = subprocess.run([sys.executable, f"{name}.py"], cwd=work, env=env, capture_output=True,
-                                  text=True, encoding="utf-8", timeout=RUN_TIMEOUT, check=False)
+            done = subprocess.run(
+                [sys.executable, f"{name}.py"],
+                cwd=work,
+                env=env,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                timeout=RUN_TIMEOUT,
+                check=False,
+            )
             if done.returncode != 0:
                 return Outcome(done.stdout, error_name_from_stderr(done.stderr))
-        completed = subprocess.run([sys.executable, "rein.py", *argv], cwd=work, env=env, capture_output=True,
-                                   text=True, encoding="utf-8", timeout=RUN_TIMEOUT, check=False)
+        completed = subprocess.run(
+            [sys.executable, "rein.py", *argv],
+            cwd=work,
+            env=env,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=RUN_TIMEOUT,
+            check=False,
+        )
     error = "" if completed.returncode == 0 else error_name_from_stderr(completed.stderr)
     return Outcome(completed.stdout, error)
 
@@ -354,47 +406,88 @@ def first_difference(left: str, right: str) -> str:
     return "the outputs differ"
 
 
-def check_pyodide(jobs: list[dict[str, Any]], pyodide_dir: Path, report: list[Problem]) -> list[dict[str, Any]] | None:
-    check_katas = _katas()  # the Pyodide setup (node, the pinned install) is shared with check_katas
+def check_pyodide(
+    jobs: list[dict[str, Any]], pyodide_dir: Path, report: list[Problem]
+) -> list[dict[str, Any]] | None:
+    check_katas = (
+        _katas()
+    )  # the Pyodide setup (node, the pinned install) is shared with check_katas
 
     node = shutil.which("node")
     if node is None:
         report.append(Problem(display(pyodide_dir), 0, "pyodide runner: node is not on PATH"))
         return None
     if not (pyodide_dir / "pyodide.mjs").is_file():
-        report.append(Problem(display(pyodide_dir), 0, "pyodide runner: Pyodide is not installed (run npm ci)"))
+        report.append(
+            Problem(
+                display(pyodide_dir), 0, "pyodide runner: Pyodide is not installed (run npm ci)"
+            )
+        )
         return None
     with tempfile.TemporaryDirectory(prefix="rein-pyodide-") as scratch:
         work = Path(scratch)
         result_path = work / "result.json"
-        request = {"pyodideDir": str(pyodide_dir), "runner": RUNNER, "result": str(result_path), "jobs": jobs}
+        request = {
+            "pyodideDir": str(pyodide_dir),
+            "runner": RUNNER,
+            "result": str(result_path),
+            "jobs": jobs,
+        }
         try:
-            completed = subprocess.run([node, "--input-type=module", "-e", NODE_SCRIPT], input=json.dumps(request),
-                                       cwd=work, capture_output=True, text=True, encoding="utf-8", errors="replace",
-                                       timeout=check_katas.PYODIDE_TIMEOUT, check=False)
+            completed = subprocess.run(
+                [node, "--input-type=module", "-e", NODE_SCRIPT],
+                input=json.dumps(request),
+                cwd=work,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=check_katas.PYODIDE_TIMEOUT,
+                check=False,
+            )
         except subprocess.TimeoutExpired:
             report.append(Problem(display(pyodide_dir), 0, "pyodide runner: timed out"))
             return None
         if not result_path.is_file():
             tail = (completed.stdout + completed.stderr).strip()[-300:] or "no output"
-            report.append(Problem(display(pyodide_dir), 0, f"pyodide runner wrote no result (exit {completed.returncode}): {tail}"))
+            report.append(
+                Problem(
+                    display(pyodide_dir),
+                    0,
+                    f"pyodide runner wrote no result (exit {completed.returncode}): {tail}",
+                )
+            )
             return None
         data = json.loads(result_path.read_text(encoding="utf-8"))
     if len(data) != len(jobs):
-        report.append(Problem(display(pyodide_dir), 0, "pyodide runner: result count differs from the jobs"))
+        report.append(
+            Problem(display(pyodide_dir), 0, "pyodide runner: result count differs from the jobs")
+        )
         return None
     for job, row in zip(jobs, data):
         if "error_python" in row:
-            report.append(Problem(display(pyodide_dir), 0, f"pyodide runner could not run {job['name']}: {row['error_python']}"))
+            report.append(
+                Problem(
+                    display(pyodide_dir),
+                    0,
+                    f"pyodide runner could not run {job['name']}: {row['error_python']}",
+                )
+            )
             return None
     return data
 
 
-def run(steps_dir: Path, course: Path | None, pyodide: bool = False, pyodide_dir: Path | None = None) -> tuple[list[Problem], int, int, int, bool]:
+def run(
+    steps_dir: Path, course: Path | None, pyodide: bool = False, pyodide_dir: Path | None = None
+) -> tuple[list[Problem], int, int, int, bool]:
     """Returns (problems, steps, breaks, checked_in_browser, pyodide_ran)."""
     problems: list[Problem] = []
     if sys.version_info < PYTHON_MIN:
-        problems.append(Problem("tools/check_steps.py", 0, f"needs Python {PYTHON_MIN[0]}.{PYTHON_MIN[1]} or newer"))
+        problems.append(
+            Problem(
+                "tools/check_steps.py", 0, f"needs Python {PYTHON_MIN[0]}.{PYTHON_MIN[1]} or newer"
+            )
+        )
         return problems, 0, 0, 0, False
     order = module_order(course, steps_dir, problems)
     shared = load_shared(steps_dir)
@@ -415,20 +508,54 @@ def run(steps_dir: Path, course: Path | None, pyodide: bool = False, pyodide_dir
             previous = ""
             continue
         if built != step.text:
-            problems.append(Problem(display(step.path / "rein.py"), 0,
-                                    f"the chunks give a different file: {first_difference(built, step.text)}"))
+            problems.append(
+                Problem(
+                    display(step.path / "rein.py"),
+                    0,
+                    f"the chunks give a different file: {first_difference(built, step.text)}",
+                )
+            )
         if len(step.text.splitlines()) != step.lines_after:
-            problems.append(Problem(step.shown, 0, f"rein.py has {len(step.text.splitlines())} lines, lines_after says {step.lines_after}"))
-        check_outcome = run_cpython({"rein.py": step.text, **step.scenarios}, shared, step.setup, step.argv)
+            problems.append(
+                Problem(
+                    step.shown,
+                    0,
+                    f"rein.py has {len(step.text.splitlines())} lines, "
+                    f"lines_after says {step.lines_after}",
+                )
+            )
+        check_outcome = run_cpython(
+            {"rein.py": step.text, **step.scenarios}, shared, step.setup, step.argv
+        )
         if not matches(check_outcome, step.expected):
-            problems.append(Problem(step.shown, 0, f"checkpoint output differs: {describe(check_outcome, step.expected)}"))
+            problems.append(
+                Problem(
+                    step.shown,
+                    0,
+                    f"checkpoint output differs: {describe(check_outcome, step.expected)}",
+                )
+            )
         for brk in step.breaks:
-            files, argv = apply_change(step, brk.change)
+            try:
+                files, argv = apply_change(step, brk.change)
+            except ChunkError as exc:
+                problems.append(
+                    Problem(step.shown, 0, f"break {brk.id} change does not apply: {exc}")
+                )
+                continue
             outcome = run_cpython(files, shared, step.setup, argv)
             if not matches(outcome, brk.expected):
-                problems.append(Problem(step.shown, 0, f"break {brk.id} output differs: {describe(outcome, brk.expected)}"))
+                problems.append(
+                    Problem(
+                        step.shown,
+                        0,
+                        f"break {brk.id} output differs: {describe(outcome, brk.expected)}",
+                    )
+                )
             if outcome.stdout == check_outcome.stdout and outcome.error == check_outcome.error:
-                problems.append(Problem(step.shown, 0, f"break {brk.id} gives the checkpoint's output"))
+                problems.append(
+                    Problem(step.shown, 0, f"break {brk.id} gives the checkpoint's output")
+                )
         if len(problems) == before:
             good.append(step)
         previous = step.text
@@ -439,10 +566,21 @@ def run(steps_dir: Path, course: Path | None, pyodide: bool = False, pyodide_dir
         jobs: list[dict[str, Any]] = []
         meta: list[tuple[Step, str, Break | None]] = []
         for step in in_browser:
-            jobs.append(_job(step, {"rein.py": step.text, **step.scenarios}, step.argv, shared, f"{step.module}-check"))
+            jobs.append(
+                _job(
+                    step,
+                    {"rein.py": step.text, **step.scenarios},
+                    step.argv,
+                    shared,
+                    f"{step.module}-check",
+                )
+            )
             meta.append((step, "check", None))
             for brk in step.breaks:
-                files, argv = apply_change(step, brk.change)
+                try:
+                    files, argv = apply_change(step, brk.change)
+                except ChunkError:
+                    continue  # reported above
                 jobs.append(_job(step, files, argv, shared, f"{step.module}-{brk.id}"))
                 meta.append((step, "break", brk))
         rows = check_pyodide(jobs, pyodide_dir or check_katas_dir(), problems)
@@ -453,9 +591,15 @@ def run(steps_dir: Path, course: Path | None, pyodide: bool = False, pyodide_dir
                 cpython = run_cpython_for(step, kind, brk, shared)
                 if same_output(outcome, cpython) is False:
                     label = "checkpoint" if kind == "check" else f"break {brk.id}"
-                    problems.append(Problem(step.shown, 0, f"{label}: Pyodide and CPython differ: "
-                                                           f"cpython={cpython.stdout!r}/{cpython.error!r} "
-                                                           f"pyodide={outcome.stdout!r}/{outcome.error!r}"))
+                    problems.append(
+                        Problem(
+                            step.shown,
+                            0,
+                            f"{label}: Pyodide and CPython differ: "
+                            f"cpython={cpython.stdout!r}/{cpython.error!r} "
+                            f"pyodide={outcome.stdout!r}/{outcome.error!r}",
+                        )
+                    )
     return problems, len(good), breaks, len(in_browser), ran
 
 
@@ -463,9 +607,16 @@ ERRNO = re.compile(r"\[Errno \d+\]")
 
 
 def same_output(left: Outcome, right: Outcome) -> bool:
-    """Equal stdout and error name. Pyodide numbers errno differently from CPython ([Errno 44] for a missing
+    """Equal stdout and error name.
+
+    Pyodide numbers errno differently from CPython ([Errno 44] for a missing file, where
+    CPython gives 2), so the number inside [Errno N] is not compared.
+    """
     file, where CPython gives 2), so the number inside [Errno N] is not compared."""
-    return ERRNO.sub("[Errno N]", left.stdout) == ERRNO.sub("[Errno N]", right.stdout) and left.error == right.error
+    return (
+        ERRNO.sub("[Errno N]", left.stdout) == ERRNO.sub("[Errno N]", right.stdout)
+        and left.error == right.error
+    )
 
 
 def _fails(previous: str, chunks: list[Chunk], chunk: Chunk) -> bool:
@@ -482,11 +633,16 @@ def _fails(previous: str, chunks: list[Chunk], chunk: Chunk) -> bool:
 def describe(outcome: Outcome, expected: str) -> str:
     name = expected_error(expected)
     if name is not None:
-        return f"expected error {name}, got stdout {outcome.stdout!r} error {outcome.error or 'none'!r}"
+        return (
+            f"expected error {name}, got stdout {outcome.stdout!r} "
+            f"error {outcome.error or 'none'!r}"
+        )
     return f"{first_difference(outcome.stdout, expected)} (error {outcome.error or 'none'!r})"
 
 
-def _job(step: Step, files: dict[str, str], argv: list[str], shared: dict[str, str], name: str) -> dict[str, Any]:
+def _job(
+    step: Step, files: dict[str, str], argv: list[str], shared: dict[str, str], name: str
+) -> dict[str, Any]:
     all_files = {**files, **{f"{n}.py": shared[n] for n in step.setup}}
     return {"name": name, "files": all_files, "setup": list(step.setup), "argv": argv}
 
@@ -499,7 +655,11 @@ def run_cpython_for(step: Step, kind: str, brk: Break | None, shared: dict[str, 
 
 
 def module_order(course: Path | None, steps_dir: Path, problems: list[Problem]) -> list[str]:
-    present = sorted(p.name for p in steps_dir.iterdir() if p.is_dir() and p.name != SHARED) if steps_dir.is_dir() else []
+    present = (
+        sorted(p.name for p in steps_dir.iterdir() if p.is_dir() and p.name != SHARED)
+        if steps_dir.is_dir()
+        else []
+    )
     if course is None:
         return present
     try:
@@ -530,9 +690,13 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Check the Rein build steps under steps/.")
     parser.add_argument("--steps", type=Path, default=DEFAULT_STEPS, help="steps directory")
     parser.add_argument("--course", default=str(DEFAULT_COURSE), help="course.json path, or 'none'")
-    parser.add_argument("--pyodide", action="store_true", help="also run the browser steps in Pyodide")
+    parser.add_argument(
+        "--pyodide", action="store_true", help="also run the browser steps in Pyodide"
+    )
     args = parser.parse_args(argv)
-    if not args.steps.is_dir() or not any(p.is_dir() and p.name != SHARED for p in args.steps.iterdir()):
+    if not args.steps.is_dir() or not any(
+        p.is_dir() and p.name != SHARED for p in args.steps.iterdir()
+    ):
         print("check_steps: 0 steps (no steps/ folder yet)")
         return 0
     course = None if args.course == "none" else Path(args.course)
