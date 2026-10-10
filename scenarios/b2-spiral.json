@@ -181,11 +181,9 @@
   "b2-new"
  ],
  "golden_seeds": [
+  0,
   1,
-  2,
-  3,
-  4,
-  5
+  2
  ],
  "seed_base": 20261010,
  "incident": {

@@ -324,3 +324,16 @@ basis for Phase 1, and answered SPEC §14:
   family (clients retrying in lockstep). C6's incident is designed with its
   outage lab in Phase 3; the tape stays as the parity tape for outages,
   retries, jitter and the breaker.
+
+### D-042 · Golden files and golden seeds · *decided*
+- Golden events are committed in full (they are read and diffed in review);
+  the wire output is committed as a SHA-256 digest (ENGINE A3.23). Measured:
+  the b2-old spiral's wire output is 712 KB for one seed, its events 103 KB.
+- Every seed tape uses `golden_seeds: [0, 1, 2]`: seeds 0 and 1 cover every
+  branch option of b2 and s0 (the coverage search, A3.22), seed 1 is each
+  incident's seed, and one more seed guards against a lucky pair. Three seeds
+  × two boards × six tapes = 36 golden runs.
+- Parity evidence at this point: with A3 implemented independently in both
+  runtimes, events and wire output were identical on all six tapes × 5 seeds
+  × both boards (the Rein builder's run of `check_scenarios`, confirmed by the
+  director after the JS `--choices` flag lands).

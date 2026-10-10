@@ -493,7 +493,7 @@ eventually notices; lessons say so).
      empty `old_text` is "not found". `edit_file` on a missing file gives
      `read_file`'s error. `list_files` lists every workspace key (links
      included), sorted, joined by `"\n"`, no trailing newline. `write_file` to
-     the root (`""` or `.`) writes nothing: `ok` false, `Is a directory: <path>`.
+     the root (`""`, `.` or `/`) writes nothing: `ok` false, `Is a directory: <path>`.
   5. *Checks:* a check on a missing file fails (`contains` and `not_contains`
      alike); deleting the file never passes a check.
   6. *Paths:* normalized lexically. A path starting with `/` is absolute: it is
@@ -508,7 +508,9 @@ eventually notices; lessons say so).
      `too many levels of links: <path>`. Egress: `host` is the text after the
      first `://` up to the first `/`, `?` or `#`; drop everything through the
      last `@`; drop a trailing `:<digits>`; lowercase (no `://` gives `""`).
-     Reason `host not in egress: <host>`. An allowed call has reason `""`. The
+     Reason `host not in egress: <host>`. An allowed call has reason `""`.
+     The board loader rejects an `egress` entry that is not lowercase, so hosts
+     compare as plain strings. The
      check applies only to custom tools with `"effect": "network"` and a string
      `url`. The `sandbox` event is emitted for every tool call that reaches the
      sandbox check when the module is plugged (a call denied by permissions
@@ -523,8 +525,9 @@ eventually notices; lessons say so).
       `fullmatch`). A non-string input value is matched against its `pyjson`
       form; an absent field never matches (rules and `deny_if` alike).
   11. *Custom tool results:* the first `results` entry whose every `match`
-      field equals the input field by `pyjson` wins; `ok` defaults to true.
-      No match and no `default`: output `""`, `ok` false.
+      field equals the input field by `pyjson` wins; its `ok` defaults to true.
+      No match: the `default` entry, whose `ok` defaults to **false**; no match
+      and no `default`: output `""`, `ok` false.
   12. *Tape defaults:* `human` absent means `{"default": "deny"}`; `seed_base`
       0; `faults` `[]`; `outage` none; `interrupt` null; `rules` `[]`.
   13. *Tape validity (the loader rejects the tape):* a non-integer number, a
@@ -552,7 +555,8 @@ eventually notices; lessons say so).
       error) take one path: before outage and fault checks, emit
       `model_call(attempt=1)`, `t += 300`, emit `model_error`, end `"error"`.
       They never touch `consecutive_failures` or the breaker, are never retried
-      and write no wire payload.
+      and write no wire payload. When both apply, the overflow comes first (the
+      context check runs before the call).
   17. *Interrupt with resume:* the pending calls never run; the turn ends with
       `trace_write` (every turn emits one, D-033), then the loop goes to the
       next turn's guards.
@@ -574,7 +578,15 @@ eventually notices; lessons say so).
   22. *Golden coverage:* a tape's `golden_seeds` must, across its boards, take
       every option of every `branch` step that the run reaches at least once;
       `check_scenarios` reports an option no golden seed takes (Rein records the
-      choices; they are not events).
+      choices; they are not events). Both CLIs print them with `--choices`: one
+      canonical line `["<location>",<option>]` per choice, in the order taken
+      (`<location>` is the JSON pointer of the branch step in the tape's
+      `script`; repeated copies share it). Parity covers this output too.
+  23. *Golden files:* events in full
+      (`scenarios/golden/<tape>.<board>.<seed>.jsonl`), the wire as the SHA-256
+      of its JSONL output (`….wire.sha256`, one hex line): wire files for long
+      runs are megabytes, parity already compares the two runtimes' wire output
+      byte for byte on every check, and `check_wire.py` validates it live.
 - **A4 (2026-10-10): the incident block** (replaces the sketch in §5 and
   AUTHORING §9). An incident tape's `incident` is
   `{"family", "wire", "board", "seed", "first_bad_seq", "accept_seqs", "why", "hint", "notes", "fixes", "correct_fix", "par_s"}`:
