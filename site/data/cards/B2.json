@@ -1,0 +1,85 @@
+[
+ {
+  "back": "One call to the model, plus the tool results that follow it.",
+  "front": "What is a turn in the agent loop?",
+  "id": "B2-k1",
+  "objective": "B2.o1",
+  "type": "term"
+ },
+ {
+  "back": "A cap on the number of model calls in one run. The loop stops when the cap is reached.",
+  "front": "What is a turn limit?",
+  "id": "B2-k2",
+  "objective": "B2.o3",
+  "type": "term"
+ },
+ {
+  "back": "A cap on the total tokens a run may use, input and output together. The loop checks it before each call.",
+  "front": "What is a token budget?",
+  "id": "B2-k3",
+  "objective": "B2.o3",
+  "type": "term"
+ },
+ {
+  "back": "The model's own statement that it finished, carried by end_turn. The loop checks it. It is not proof.",
+  "front": "What is a done claim?",
+  "id": "B2-k4",
+  "objective": "B2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Loop & state. Every run needs more than one exit.",
+  "front": "Which wire asks: what happens next, what do we carry, and when do we stop?",
+  "id": "B2-k5",
+  "objective": "B2.o5",
+  "type": "wire-question",
+  "wire": "loop"
+ },
+ {
+  "back": "Verification & evals. A done claim stays a claim until a check confirms it.",
+  "front": "Which wire checks the model's done claim before the loop accepts it?",
+  "id": "B2-k6",
+  "objective": "B2.o5",
+  "type": "which-wire",
+  "wire": "verify"
+ },
+ {
+  "back": "The two results for one reply sit in two user messages. Send all of them together, in one user message, each with its tool_use_id.",
+  "bug_path": "messages[2]",
+  "front": "Spot the bug in this history.",
+  "id": "B2-k7",
+  "json": "{\"messages\": [\n  {\"role\": \"assistant\", \"content\": [\n    {\"type\": \"tool_use\", \"id\": \"t1\", \"name\": \"read_file\", \"input\": {\"path\": \"calc.py\"}},\n    {\"type\": \"tool_use\", \"id\": \"t2\", \"name\": \"run_command\", \"input\": {\"cmd\": \"pytest -q\"}}]},\n  {\"role\": \"user\", \"content\": [\n    {\"type\": \"tool_result\", \"tool_use_id\": \"t1\", \"content\": \"def add(a, b): ...\"}]},\n  {\"role\": \"user\", \"content\": [\n    {\"type\": \"tool_result\", \"tool_use_id\": \"t2\", \"content\": \"2 passed\"}]}\n]}\n",
+  "objective": "B2.o1",
+  "type": "spot-bug-json"
+ },
+ {
+  "back": "The order is the loop: call, read, run, append, repeat.",
+  "front": "Put one turn of the loop in order.",
+  "id": "B2-k8",
+  "items": [
+   "Call the model with the full history.",
+   "Read the stop_reason.",
+   "Run each tool the model asked for.",
+   "Append all results in one user message.",
+   "Call the model again."
+  ],
+  "objective": "B2.o1",
+  "type": "order-turn"
+ },
+ {
+  "back": "The almost done spiral. The model keeps saying it is almost done and keeps flipping the same line. The loop has no exit but the model's own claim.",
+  "family": "almost-done-spiral",
+  "front": "Name the failure family for this trace.",
+  "id": "B2-k9",
+  "objective": "B2.o4",
+  "trace": [
+   "Edit calc.py: + 1 becomes - 1. Say: Almost done: one more fix.",
+   "Run the tests: 1 failed, 1 passed: test_total expected 6.",
+   "Edit calc.py: - 1 becomes + 1. Say: One last change should do it.",
+   "Run the tests: 1 failed, 1 passed: test_total expected 6.",
+   "Edit calc.py: + 1 becomes - 1. Say: Almost done. Re-running the tests.",
+   "Run the tests: 1 failed, 1 passed: test_total expected 6."
+  ],
+  "type": "name-family"
+ }
+]

@@ -126,6 +126,22 @@ DESIGN_REGIONS: tuple[str, ...] = (
     "facts",
 )
 PAGES: dict[str, tuple[str, ...]] = {"index.html": INDEX_REGIONS, "design.html": DESIGN_REGIONS}
+MODULE_REGIONS: tuple[str, ...] = ("module-meta", "course-map")
+BEAT_LABEL: dict[str, str] = {
+    "break": "Break",
+    "see": "See",
+    "fix": "Fix",
+    "prove": "Prove",
+    "keep": "Keep",
+    "lab": "Lab",
+    "check": "Check",
+    "do": "Do",
+}
+
+
+def regions_for(page: str) -> tuple[str, ...]:
+    """The generated regions of a page: those of index and design, or the two of a module page."""
+    return PAGES.get(page, MODULE_REGIONS)
 
 
 class GenError(Exception):
@@ -290,7 +306,7 @@ def caption_lines(d: Data) -> list[str]:
     return [
         '<p class="clock-caption">Your board is empty. Each module you finish plugs a tag '
         "onto its wire.</p>",
-        '<p class="clock-note">C9 and the like are modules. The course map lists them all.</p>',
+        '<p class="clock-note">Codes like C9 name modules. The course map lists them all.</p>',
     ]
 
 
@@ -335,7 +351,8 @@ def module_label(d: Data, mod: Json) -> str:
     return f"{mod['id']} · {mod['title']}"
 
 
-def course_map_lines(d: Data) -> list[str]:
+def course_map_lines(d: Data, prefix: str = "modules/", current: str | None = None) -> list[str]:
+    """The course map. prefix: the path from the page to the module folder ("" on module pages)."""
     path_pos = {mid: i for i, mid in enumerate(d.course["path"])}
     fams = families_by_id(d)
     lines: list[str] = []
@@ -376,8 +393,10 @@ def course_map_lines(d: Data) -> list[str]:
                 '<circle cx="12" cy="12" r="9"/></svg></span>'
             )
             if built:
+                current_attr = ' aria-current="page"' if mod["slug"] == current else ""
                 body = (
-                    f'{mark}<a class="module-label" href="modules/{mod["slug"]}.html">{label}</a>'
+                    f'{mark}<a class="module-label" href="{prefix}{mod["slug"]}.html"'
+                    f"{current_attr}>{label}</a>"
                 )
             else:
                 body = (
@@ -387,6 +406,86 @@ def course_map_lines(d: Data) -> list[str]:
         lines.append("  </ol>")
         lines.append("</section>")
     return lines
+
+
+def module_by_slug(d: Data, slug: str) -> Json:
+    for mod in d.course["modules"]:
+        if mod["slug"] == slug:
+            found: Json = mod
+            return found
+    raise GenError(f"module page {slug}.html has no module in course.json")
+
+
+def module_pages(root: Path) -> list[str]:
+    """The slugs of the module pages that exist (site/modules/*.html)."""
+    folder = root / "site" / "modules"
+    if not folder.is_dir():
+        return []
+    return sorted(path.stem for path in folder.glob("*.html"))
+
+
+def module_meta_lines(d: Data, mod: Json) -> list[str]:
+    """A module page's header: wire chips, minutes, objectives, progress, prereqs, beat strip."""
+    base = "../"
+    mods = modules_by_id(d)
+    wires = {w["id"]: w for w in d.course["wires"]}
+    first = mod["wires"][0] if mod["wires"] else None
+    glyph = wires[first]["glyph"] if first else ""
+    total = len(mod["objectives"])
+    lines = [
+        f'<div class="module-meta" data-module-id="{mod["id"]}" data-glyph="{glyph}">',
+        '  <ul class="wire-chips">',
+    ]
+    for wid in mod["wires"]:
+        wire = wires[wid]
+        lines.append(
+            f'    <li class="w-{wid}"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" '
+            f'focusable="false"><use href="{base}assets/core/glyphs.svg#g-{wire["glyph"]}"/></svg>'
+            f"<span>{esc(wire['name'])}</span></li>"
+        )
+    lines += [
+        "  </ul>",
+        f'  <p class="module-minutes">{mod["minutes"]} minutes</p>',
+        '  <p class="meta-label">By the end you can</p>',
+        f'  <ol class="objectives" data-objective-list data-objectives-total="{total}">',
+    ]
+    for obj in mod["objectives"]:
+        lines.append(f'    <li data-objective="{obj["id"]}">{esc(obj["text"])}</li>')
+    lines += [
+        "  </ol>",
+        f'  <p class="progress-line" data-progress><span data-progress-text>0 of {total} '
+        "objectives shown</span></p>",
+    ]
+    if mod["prereqs"]:
+        parts = []
+        for pid in mod["prereqs"]:
+            pre = mods[pid]
+            label = esc(module_label(d, pre))
+            if pre["slug"] in d.built:
+                parts.append(f'<a href="{pre["slug"]}.html">{label}</a>')
+            else:
+                parts.append(f'<span>{label} <span class="soon">soon</span></span>')
+        lines.append(f'  <p class="prereqs">Before this: {", ".join(parts)}</p>')
+    beats = d.course["kinds"][mod["kind"]]["beats"]
+    lines += [
+        '  <nav class="beat-strip" aria-label="Beats in this module" data-beat-strip>',
+        "    <ol>",
+    ]
+    for number, beat in enumerate(beats, start=1):
+        lines.append(
+            f'      <li><a href="#{beat}" data-beat-link="{beat}">'
+            f"{number} {BEAT_LABEL[beat]}</a></li>"
+        )
+    lines += ["    </ol>", "  </nav>", "</div>"]
+    return lines
+
+
+def render_module(d: Data, slug: str) -> dict[str, list[str]]:
+    mod = module_by_slug(d, slug)
+    return {
+        "module-meta": module_meta_lines(d, mod),
+        "course-map": course_map_lines(d, prefix="", current=slug),
+    }
 
 
 def facts_line(d: Data) -> str:
@@ -536,10 +635,10 @@ def render_design(d: Data) -> dict[str, list[str]]:
 
 
 def splice(text: str, page: str, region: str, lines: list[str]) -> str:
+    """Replaces the body of one region. The author's closing marker is kept as written."""
     name = re.escape(region)
     pattern = re.compile(
-        rf"(?P<head>^[ \t]*<!-- gen:{name} -->)\n.*?\n(?P<tail>[ \t]*<!-- /gen:{name} -->)",
-        re.S | re.M,
+        rf"<!-- gen:{name} -->(?P<body>.*?)(?P<close><!-- /gen(?::{name})? -->)", re.S
     )
     matches = list(pattern.finditer(text))
     if len(matches) != 1:
@@ -547,16 +646,17 @@ def splice(text: str, page: str, region: str, lines: list[str]) -> str:
             f"{page}: region {region!r} has {len(matches)} marker pairs (need exactly 1)"
         )
     match = matches[0]
-    lead = re.match(r"[ \t]*", match.group("head"))
+    line_start = text.rfind("\n", 0, match.start()) + 1
+    lead = re.match(r"[ \t]*", text[line_start : match.start()])
     indent = lead.group(0) if lead else ""
     body = "\n".join(indent + line if line else "" for line in lines)
     return (
         text[: match.start()]
-        + match.group("head")
-        + "\n"
+        + f"<!-- gen:{region} -->\n"
         + body
         + "\n"
-        + match.group("tail")
+        + indent
+        + match.group("close")
         + text[match.end() :]
     )
 
@@ -567,11 +667,12 @@ def page_text(root: Path, page: str, regions: dict[str, list[str]]) -> tuple[str
         raise GenError(f"missing page {path}")
     text = path.read_text(encoding="utf-8")
     markers = set(re.findall(r"<!-- gen:([a-z-]+) -->", text))
-    unknown = markers - set(PAGES[page])
+    expected = regions_for(page)
+    unknown = markers - set(expected)
     if unknown:
         raise GenError(f"{page}: unknown generated region(s) {sorted(unknown)}")
     new = text
-    for region in PAGES[page]:
+    for region in expected:
         new = splice(new, page, region, regions[region])
     return text, new
 
@@ -593,6 +694,10 @@ def main(argv: list[str] | None = None) -> int:
         results: list[tuple[str, str, str]] = []
         for page in PAGES:
             old, new = page_text(root, page, rendered[page])
+            results.append((page, old, new))
+        for slug in module_pages(root):
+            page = f"modules/{slug}.html"
+            old, new = page_text(root, page, render_module(data, slug))
             results.append((page, old, new))
     except GenError as err:
         print(f"gen_pages: {err}", file=sys.stderr)

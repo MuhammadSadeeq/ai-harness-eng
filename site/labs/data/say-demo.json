@@ -1,9 +1,7 @@
 [
  {
-  "id": "B2-s1",
-  "objectives": [
-   "B2.o3"
-  ],
+  "id": "lab-s1",
+  "objectives": [],
   "prompt": "Name the ways an agent loop can stop, and say why one exit is not enough.",
   "model_answer": "An agent loop has more than one exit. The model can end a turn with end_turn, but that is a done claim, not proof that the task is done, so the harness must check the work before it accepts the claim. The other exits belong to the harness: a turn limit, a token budget, and a loop check that ends the run when the last few tool calls repeat. I add them because one exit is not enough. A model that circles has no reason to stop, and its only exit is a claim it never makes. A turn limit does not depend on what the model believes, so it still stops the run. Each guard runs before a turn, so the run ends in a known state.",
   "rubric": [
@@ -14,10 +12,8 @@
   ]
  },
  {
-  "id": "S0-s1",
-  "objectives": [
-   "S0.o2"
-  ],
+  "id": "lab-s2",
+  "objectives": [],
   "prompt": "Why can a run say done when the work is not finished? What would you check before you believe it?",
   "model_answer": "Done is the model's claim about its own work. It is not a fact the harness has checked. A run can say done while the tests still fail, because nothing forced the model to run them. That is a false done. The harness has to test the claim against the workspace, not against the model's word. Before I accept done, I run the checks: the tests, and any rule the task names. If they fail, the run goes back with the failure in front of the model, and it must fix the work before it can say done again. The check does not make the model smarter. It makes a wrong claim cost something.",
   "rubric": [

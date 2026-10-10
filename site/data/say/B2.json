@@ -1,0 +1,32 @@
+[
+ {
+  "id": "B2-s1",
+  "model_answer": "The loop keeps the whole history in one list, starting with the task. Each turn I call the model with that full history. I read the stop_reason. If it is tool_use, I run only the tools the model asked for, after a permission check, and I match each result to its tool_use_id. Then I append all of the results in one user message, so the next call sees everything. If the reply is end_turn, I treat it as a done claim and check the work before I return. If it is max_tokens, I do not run the half-written call. Every turn also counts against a turn limit and a token budget, so the loop has more than one way out.",
+  "objectives": [
+   "B2.o1",
+   "B2.o2"
+  ],
+  "prompt": "Walk me through one iteration of an agent loop.",
+  "rubric": [
+   "Calls the model with the full history on every turn",
+   "Runs only the tools the model requested, after a permission check",
+   "Returns all tool results in one user message, matched by tool_use_id",
+   "Names at least two exits besides a plain end_turn"
+  ]
+ },
+ {
+  "id": "B2-s2",
+  "model_answer": "First I check whether the loop has a turn limit and a token budget. If it has neither, that is the first change. Then I read the replay and look for the first event where the run went wrong. It is usually an earlier ordinary mistake that the harness let through, not the last thing the run did. Next I look at the done claims. If the model keeps saying it is almost done, the loop is trusting its own words. I add a turn limit and a token budget, then run the same seeds on both boards and compare the pass rate and the worst case. I also add a check outside the model, such as the test run, so a done claim has to pass it before the loop accepts it.",
+  "objectives": [
+   "B2.o3",
+   "B2.o4"
+  ],
+  "prompt": "A run never stops. How do you debug it, and what do you change?",
+  "rubric": [
+   "Finds the first bad event in the history, not the last one",
+   "Treats end_turn as a claim and checks it outside the model",
+   "Adds a turn limit and a token budget, and tests them on the same seeds",
+   "Says what the change should show, and how it will be measured"
+  ]
+ }
+]

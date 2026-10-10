@@ -53,7 +53,7 @@ SKIP_TAGS = frozenset({"pre", "code", "script", "style", "svg"})
 GENERATED_REGIONS = frozenset({"module-meta", "course-map"})
 GEN_TAGS = frozenset({
     "nav", "ol", "ul", "li", "a", "span", "p", "div", "svg", "use", "path", "circle",
-    "line", "rect", "g", "title", "strong", "em",
+    "line", "rect", "g", "title", "strong", "em", "section", "h3",
 })
 HEADINGS = frozenset({"h1", "h2", "h3", "h4", "h5", "h6"})
 VOID_TAGS = frozenset({

@@ -1,0 +1,7 @@
+{
+ "replies": [
+  {"say": "I will read the code first.", "tools": [["read_file", {"path": "demo/calc.py"}]]},
+  {"say": "Now the test.", "tools": [["read_file", {"path": "demo/test_calc.py"}]]},
+  {"say": "Found it: add() returns a - b, but the test expects a + b. I can only read, so I cannot fix it yet."}
+ ]
+}

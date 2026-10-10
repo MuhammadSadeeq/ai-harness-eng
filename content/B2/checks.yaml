@@ -1,0 +1,43 @@
+- id: B2-p1
+  objective: B2.o3
+  mode: predict
+  question: "This run has edited and tested four times. What happens next?"
+  options:
+    - text: "The tests pass, the model says it is done, and the run ends."
+      why: "Tempting. The model's words sound final. In this run the tests still fail, and the loop does not check the claim."
+    - text: "The loop reaches its turn limit and stops."
+      why: "Tempting. A turn limit is the usual second exit. The old board has none, so nothing counts the turns."
+    - text: "It keeps editing and testing until a person stops it."
+      why: "Right. The loop has one exit, the model's done claim. The model keeps saying it is almost done, so the loop never takes that exit."
+  answer: 2
+  outcome: "It kept going. A person stopped the run many turns after it went wrong."
+
+- id: B2-c1
+  objective: B2.o2
+  mode: check
+  question: "A reply comes back with stop_reason max_tokens, halfway through a tool call. What should the loop do?"
+  options:
+    - text: "Run the half of the tool call it has, because most of it is there."
+      why: "Tempting. A half-written tool call has no complete input, so running it can do the wrong thing."
+    - text: "Ask for the rest, or retry in smaller steps. Never run the half-written call."
+      why: "Right. The reply was cut off, so the loop has to handle that on purpose."
+    - text: "Return the partial text as the final answer."
+      why: "Tempting. The task is not done, and the partial text can hide a broken call."
+    - text: "Treat it as end_turn and check the work."
+      why: "Wrong. end_turn means the model finished. max_tokens means the reply was cut off."
+  answer: 1
+
+- id: B2-c2
+  objective: B2.o5
+  mode: check
+  question: "A turn limit stops the loop after a set number of turns. Which wire does it belong to?"
+  options:
+    - text: "Observability"
+      why: "Tempting. The turn count can be logged, but a log does not stop the loop."
+    - text: "Context & memory"
+      why: "Tempting. The turns add to the history, but the limit decides when to stop, not what is on the desk."
+    - text: "Loop & state"
+      why: "Right. The turn limit is one of the loop's exits, so it belongs to Loop & state."
+    - text: "Tools"
+      why: "Tempting. The limit counts model calls, not tool calls."
+  answer: 2

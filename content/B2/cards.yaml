@@ -1,0 +1,80 @@
+- id: B2-k1
+  type: term
+  objective: B2.o1
+  front: "What is a turn in the agent loop?"
+  back: "One call to the model, plus the tool results that follow it."
+
+- id: B2-k2
+  type: term
+  objective: B2.o3
+  front: "What is a turn limit?"
+  back: "A cap on the number of model calls in one run. The loop stops when the cap is reached."
+
+- id: B2-k3
+  type: term
+  objective: B2.o3
+  front: "What is a token budget?"
+  back: "A cap on the total tokens a run may use, input and output together. The loop checks it before each call."
+
+- id: B2-k4
+  type: term
+  objective: B2.o2
+  front: "What is a done claim?"
+  back: "The model's own statement that it finished, carried by end_turn. The loop checks it. It is not proof."
+
+- id: B2-k5
+  type: wire-question
+  objective: B2.o5
+  wire: loop
+  front: "Which wire asks: what happens next, what do we carry, and when do we stop?"
+  back: "Loop & state. Every run needs more than one exit."
+
+- id: B2-k6
+  type: which-wire
+  objective: B2.o5
+  wire: verify
+  front: "Which wire checks the model's done claim before the loop accepts it?"
+  back: "Verification & evals. A done claim stays a claim until a check confirms it."
+
+- id: B2-k7
+  type: spot-bug-json
+  objective: B2.o1
+  json: |
+    {"messages": [
+      {"role": "assistant", "content": [
+        {"type": "tool_use", "id": "t1", "name": "read_file", "input": {"path": "calc.py"}},
+        {"type": "tool_use", "id": "t2", "name": "run_command", "input": {"cmd": "pytest -q"}}]},
+      {"role": "user", "content": [
+        {"type": "tool_result", "tool_use_id": "t1", "content": "def add(a, b): ..."}]},
+      {"role": "user", "content": [
+        {"type": "tool_result", "tool_use_id": "t2", "content": "2 passed"}]}
+    ]}
+  bug_path: "messages[2]"
+  front: "Spot the bug in this history."
+  back: "The two results for one reply sit in two user messages. Send all of them together, in one user message, each with its tool_use_id."
+
+- id: B2-k8
+  type: order-turn
+  objective: B2.o1
+  front: "Put one turn of the loop in order."
+  items:
+    - "Call the model with the full history."
+    - "Read the stop_reason."
+    - "Run each tool the model asked for."
+    - "Append all results in one user message."
+    - "Call the model again."
+  back: "The order is the loop: call, read, run, append, repeat."
+
+- id: B2-k9
+  type: name-family
+  objective: B2.o4
+  family: almost-done-spiral
+  front: "Name the failure family for this trace."
+  trace:
+    - "Edit calc.py: + 1 becomes - 1. Say: Almost done: one more fix."
+    - "Run the tests: 1 failed, 1 passed: test_total expected 6."
+    - "Edit calc.py: - 1 becomes + 1. Say: One last change should do it."
+    - "Run the tests: 1 failed, 1 passed: test_total expected 6."
+    - "Edit calc.py: + 1 becomes - 1. Say: Almost done. Re-running the tests."
+    - "Run the tests: 1 failed, 1 passed: test_total expected 6."
+  back: "The almost done spiral. The model keeps saying it is almost done and keeps flipping the same line. The loop has no exit but the model's own claim."

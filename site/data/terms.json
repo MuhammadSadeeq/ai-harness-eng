@@ -1,1 +1,85 @@
-{}
+{
+ "agent-loop": {
+  "aliases": [
+   "agent loop",
+   "agent loops"
+  ],
+  "definition": "The code that calls the model, runs the tools the model asks for, adds the results to the history, and calls the model again. It stops when one of its exits is taken.",
+  "id": "agent-loop",
+  "module": "B2",
+  "strict": true,
+  "term": "agent loop",
+  "wire": "loop"
+ },
+ "done-claim": {
+  "aliases": [
+   "done claim",
+   "done claims"
+  ],
+  "definition": "The model's own statement that it has finished, carried by end_turn. The loop treats it as a claim to check. It is not proof that the task is done.",
+  "id": "done-claim",
+  "module": "B2",
+  "strict": true,
+  "term": "done claim",
+  "wire": "loop"
+ },
+ "exit": {
+  "aliases": [
+   "exit",
+   "exits"
+  ],
+  "definition": "A reason the loop stops. A loop with one exit stops only when that one exit is taken.",
+  "id": "exit",
+  "module": "B2",
+  "strict": false,
+  "term": "exit",
+  "wire": "loop"
+ },
+ "react": {
+  "aliases": [
+   "ReAct"
+  ],
+  "definition": "The name of a research paper: ReAct: Synergizing Reasoning and Acting in Language Models.",
+  "id": "react",
+  "module": "B2",
+  "strict": true,
+  "term": "ReAct",
+  "wire": "loop"
+ },
+ "token-budget": {
+  "aliases": [
+   "token budget",
+   "token budgets"
+  ],
+  "definition": "A cap on the total tokens a run may use, input and output together. The loop checks it before each call and stops when the total has reached the cap.",
+  "id": "token-budget",
+  "module": "B2",
+  "strict": true,
+  "term": "token budget",
+  "wire": "loop"
+ },
+ "turn": {
+  "aliases": [
+   "turn",
+   "turns"
+  ],
+  "definition": "One call to the model and the tool results that follow it. A run is a series of turns.",
+  "id": "turn",
+  "module": "B2",
+  "strict": false,
+  "term": "turn",
+  "wire": "loop"
+ },
+ "turn-limit": {
+  "aliases": [
+   "turn limit",
+   "turn limits"
+  ],
+  "definition": "A cap on the number of model calls in one run. When the count reaches it, the loop stops.",
+  "id": "turn-limit",
+  "module": "B2",
+  "strict": true,
+  "term": "turn limit",
+  "wire": "loop"
+ }
+}

@@ -28,7 +28,7 @@ export function stepIndex(index, delta, count) {
 /** Throws with the first problem in a prompt (AUTHORING §10, SPEC Appendix C: 4 to 6 rubric points). */
 export function checkSay(item) {
   if (typeof item?.id !== "string") throw new Error("hx-say: a prompt has no id");
-  if (!Array.isArray(item.objectives) || item.objectives.length === 0) throw new Error(`hx-say: ${item.id} needs objectives`);
+  if (!Array.isArray(item.objectives)) throw new Error(`hx-say: ${item.id} needs an objectives list`);
   if (typeof item.prompt !== "string" || typeof item.model_answer !== "string") throw new Error(`hx-say: ${item.id} needs a prompt and a model answer`);
   if (!Array.isArray(item.rubric) || item.rubric.length < RUBRIC_MIN || item.rubric.length > RUBRIC_MAX
     || item.rubric.some((line) => typeof line !== "string")) {
@@ -64,7 +64,7 @@ export class HxSay extends HxElement {
     for (const entry of this.store?.state?.evidence ?? []) {
       if (entry.kind === "say" && entry.detail) this.prior[entry.detail.item] = { ticked: entry.detail.ticked, total: entry.detail.total };
     }
-    this.state = { index: 0, phase: "ready", now: 0, elapsed: null, ticks: blank(prompts[0]), saved: {} };
+    this.state = { index: 0, phase: "ready", now: 0, elapsed: null, ticks: blank(prompts[0]), saved: {}, cleared: {} };
   }
 
   // phases: ready -> timing -> timed (stopped or skipped) -> revealed -> saved
@@ -74,7 +74,10 @@ export class HxSay extends HxElement {
 
   toggleTimer() {
     if (this.state.phase === "timing") this.stopTimer();
-    else if (this.state.phase === "ready") this.startTimer();
+    else if (this.state.phase === "saved") {
+      this.tryAgain();
+      this.startTimer();
+    } else if (this.state.phase === "ready") this.startTimer();
   }
 
   startTimer() {
@@ -116,11 +119,10 @@ export class HxSay extends HxElement {
     const ticked = this.state.ticks.filter(Boolean).length;
     const total = item.rubric.length;
     const detail = { item: item.id, ticked, total, seconds: this.state.elapsed };
-    this.dispatchEvent(new CustomEvent("hx-evidence", {
-      bubbles: true,
-      detail: { module: document.documentElement.dataset.module ?? null, objectives: item.objectives, kind: "say", detail },
-    }));
-    this.setState({ phase: "saved", saved: { ...this.state.saved, [item.id]: { ticked, total } } });
+    this.evidence("say", detail, item.objectives);
+    const cleared = { ...this.state.cleared };
+    delete cleared[item.id];
+    this.setState({ phase: "saved", saved: { ...this.state.saved, [item.id]: { ticked, total } }, cleared });
   }
 
   // Moves to another prompt; the timer and the self-grade of the prompt left behind are not kept.
@@ -131,7 +133,20 @@ export class HxSay extends HxElement {
   }
 
   lastResult(item) {
+    if (this.state.cleared[item.id]) return null;
     return this.state.saved[item.id] ?? this.prior[item.id] ?? null;
+  }
+
+  // "Try again" after a save: a fresh attempt, with the timer, the ticks and the result line reset.
+  tryAgain() {
+    if (this.state.phase !== "saved") return;
+    const item = this.current();
+    const saved = { ...this.state.saved };
+    delete saved[item.id];
+    this.setState({
+      phase: "ready", now: 0, elapsed: null, ticks: blank(item), saved,
+      cleared: { ...this.state.cleared, [item.id]: true },
+    });
   }
 
   render() {
@@ -151,7 +166,7 @@ export class HxSay extends HxElement {
     dom.dot.hidden = phase !== "timing" || this.reducedMotion;
     dom.timerKey.textContent = phase === "timing" ? "Stop" : "Start";
     dom.timerKey.className = phase === "timing" ? "key" : "key key-primary";
-    dom.timerKey.setAttribute("aria-disabled", String(phase !== "ready" && phase !== "timing"));
+    dom.timerKey.setAttribute("aria-disabled", String(phase === "timed" || phase === "revealed"));
     dom.skip.hidden = phase !== "ready";
     dom.after.hidden = phase !== "timed";
     if (dom.sig !== s.index) this.buildReveal(item);
@@ -161,6 +176,7 @@ export class HxSay extends HxElement {
       box.disabled = phase === "saved";
     });
     dom.save.setAttribute("aria-disabled", String(phase === "saved"));
+    dom.again.hidden = phase !== "saved";
     const last = this.lastResult(item);
     const saved = phase === "saved";
     const line = saved ? resultLine(s.ticks.filter(Boolean).length, item.rubric.length)
@@ -208,11 +224,13 @@ export class HxSay extends HxElement {
     dom.rubric = el("ul", { class: "choices" });
     dom.save = el("button", { class: "key key-primary", type: "button", "data-key": "save", text: "Save my self-grade" });
     dom.save.addEventListener("click", () => this.onSave());
+    dom.again = el("button", { class: "key", type: "button", "data-key": "again", text: "Try again" });
+    dom.again.addEventListener("click", () => this.tryAgain());
     dom.revealPanel = el("div", { class: "say-reveal", hidden: "" },
       el("p", { class: "say-label", text: "Model answer" }),
       dom.model,
       el("fieldset", { class: "say-set" }, el("legend", { text: "What did your answer include?" }), dom.rubric),
-      el("div", { class: "say-actions" }, dom.save));
+      el("div", { class: "say-actions" }, dom.save, dom.again));
     dom.result = el("p", { class: "say-result", hidden: "" });
     this.ui.append(el("section", { class: "say" },
       el("div", { class: "say-head" }, dom.count, el("div", { class: "say-nav" }, dom.prev, dom.next)),
@@ -268,11 +286,9 @@ export class HxSay extends HxElement {
     const { detail } = heard ?? {};
     if (!detail || detail.item !== item.id || detail.ticked !== 2 || detail.total !== item.rubric.length) return false;
     if (JSON.stringify(heard.objectives) !== JSON.stringify(item.objectives)) return false;
-    // Restore: no result line is left behind; the next visit reads the store as usual.
-    const saved = { ...this.state.saved };
-    delete saved[item.id];
-    this.setState({ phase: "ready", now: 0, elapsed: null, ticks: blank(item), saved });
-    return this.state.phase === "ready" && this.state.saved[item.id] === undefined;
+    // Restore through the learner's own Try again: no result line is left behind.
+    this.dom.again.click();
+    return this.state.phase === "ready" && this.dom.result.hidden && this.state.saved[item.id] === undefined;
   }
 
   disconnectedCallback() {

@@ -215,6 +215,7 @@ export class HxClock extends HxElement {
       this.#lightAdded(svg, faceSpokes, isNew);
       figure.append(svg);
       if (codes.length) figure.append(el("p", "clock-key", codes.map((c) => `${c.code} ${c.name}`).join(" · ")));
+      figure.append(el("p", "clock-tip", "Tap a spoke, or use the arrow keys."));
       if (this.state.card && k === 0) figure.append(this.#card(doc, faceSpokes));
       svgs.push(svg);
       faces.append(figure);
@@ -222,7 +223,7 @@ export class HxClock extends HxElement {
     root.append(faces);
 
     root.append(el("p", "clock-caption", this.caption(doc)));
-    if (this.mode === "learner") root.append(el("p", "clock-note", "C9 and the like are modules. The course map lists them all."));
+    if (this.mode === "learner") root.append(el("p", "clock-note", "Codes like C9 name modules. The course map lists them all."));
     if (this.mode === "compare") root.append(this.#changes());
     if (this.mode === "turn") root.append(this.#turnControls(turnEv));
     if (this.mode === "compare") root.append(this.#plugControls());

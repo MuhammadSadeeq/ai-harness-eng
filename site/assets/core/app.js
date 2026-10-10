@@ -10,6 +10,7 @@ import { mountFooter } from "./shell/footer.js";
 import { renderHome } from "./shell/home.js";
 import { mountTerms } from "./shell/terms.js";
 import { mountFacts } from "./shell/facts.js";
+import { mountModule } from "./shell/module.js";
 import { loadComponents } from "./shell/loader.js";
 import { mountEvidence } from "./shell/evidence.js";
 import { setContext } from "./context.js";
@@ -25,7 +26,16 @@ mountSettings(store);
 mountChrome(store);
 mountFooter(store, announce);
 if (document.querySelector("[data-continue-link]")) renderHome(store);
-mountFacts();
+mountModule(store);
+// Facts without a build-time date (module pages) read the registry; a page that carries its dates (the design page) does not.
+if (document.querySelector("[data-fact]:not([data-verified])")) {
+  fetch(new URL("../../data/facts.json", import.meta.url))
+    .then((response) => (response.ok ? response.json() : null))
+    .then((facts) => mountFacts(facts))
+    .catch(() => mountFacts(null));
+} else {
+  mountFacts(null);
+}
 if (document.querySelector("[data-term]")) {
   fetch(new URL("../../data/terms.json", import.meta.url))
     .then((response) => (response.ok ? response.json() : []))

@@ -1,0 +1,58 @@
+- id: agent-loop
+  term: agent loop
+  aliases: [agent loop, agent loops]
+  strict: true
+  wire: loop
+  definition: >-
+    The code that calls the model, runs the tools the model asks for, adds the results to the
+    history, and calls the model again. It stops when one of its exits is taken.
+
+- id: turn
+  term: turn
+  aliases: [turn, turns]
+  strict: false
+  wire: loop
+  definition: >-
+    One call to the model and the tool results that follow it. A run is a series of turns.
+
+- id: react
+  term: ReAct
+  aliases: [ReAct]
+  strict: true
+  wire: loop
+  definition: >-
+    The name of a research paper: ReAct: Synergizing Reasoning and Acting in Language Models.
+
+- id: turn-limit
+  term: turn limit
+  aliases: [turn limit, turn limits]
+  strict: true
+  wire: loop
+  definition: >-
+    A cap on the number of model calls in one run. When the count reaches it, the loop stops.
+
+- id: exit
+  term: exit
+  aliases: [exit, exits]
+  strict: false
+  wire: loop
+  definition: >-
+    A reason the loop stops. A loop with one exit stops only when that one exit is taken.
+
+- id: token-budget
+  term: token budget
+  aliases: [token budget, token budgets]
+  strict: true
+  wire: loop
+  definition: >-
+    A cap on the total tokens a run may use, input and output together. The loop checks it
+    before each call and stops when the total has reached the cap.
+
+- id: done-claim
+  term: done claim
+  aliases: [done claim, done claims]
+  strict: true
+  wire: loop
+  definition: >-
+    The model's own statement that it has finished, carried by end_turn. The loop treats it as a
+    claim to check. It is not proof that the task is done.

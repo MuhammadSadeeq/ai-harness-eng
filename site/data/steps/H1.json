@@ -1,0 +1,149 @@
+{
+ "breaks": [
+  {
+   "change": {
+    "script": {
+     "json": {
+      "replies": [
+       {}
+      ]
+     },
+     "path": "scenarios/01_hello.json"
+    }
+   },
+   "expected": "you      Say hello\nmodel    \n         stop_reason=end_turn tokens_in=10 tokens_out=0\n",
+   "explain": "In the script, change the reply to {}, with no \"say\", and run again. The model line is empty, and nothing crashes. A harness must survive empty replies.",
+   "id": "empty-reply",
+   "run": {
+    "argv": [
+     "Say hello",
+     "--fake",
+     "scenarios/01_hello.json"
+    ],
+    "files": {
+     "rein.py": "\"\"\"Rein: a small coding-agent harness, built one step at a time.\n\nEach section below is one system of the harness. Read it from top to bottom.\n\"\"\"\nimport argparse\nimport json\nimport os\nfrom dataclasses import dataclass, field\n\n\ndef show(tag, text):\n    \"\"\"Print one line of the live transcript: line breaks become spaces, and it is cut to fit.\"\"\"\n    print(f\"{tag:<8} {' '.join(str(text).splitlines())}\"[:100])\n\n\n# ============ MODEL: one interface, two models ============\n\n@dataclass\nclass ToolCall:\n    id: str      # every request gets an id, so its result can be matched to it\n    name: str    # which tool the model wants\n    input: dict  # the arguments the model chose\n\n\n@dataclass\nclass Reply:\n    text: str          # what the model wrote\n    tool_calls: list   # the tools it asked for (maybe none)\n    stop_reason: str   # why it stopped: \"end_turn\", \"tool_use\", \"max_tokens\", ...\n    content: list      # the raw blocks, saved into the history exactly as they came\n    usage: dict = field(default_factory=dict)  # input and output token counts\n\n\nclass FakeModel:\n    \"\"\"Replays a script of replies, so every run is free, offline, and repeatable.\"\"\"\n\n    def __init__(self, replies):\n        self.replies = list(replies)\n        self.calls = 0\n\n    def call(self, system, messages, tools):\n        step = self.replies.pop(0) if self.replies else {\"say\": \"(the script has run out)\"}\n        content, tool_calls = [], []\n        if step.get(\"say\"):\n            content.append({\"type\": \"text\", \"text\": step[\"say\"]})\n        for name, args in step.get(\"tools\", []):\n            self.calls += 1\n            call = ToolCall(f\"call_{self.calls}\", name, args)\n            tool_calls.append(call)\n            content.append({\"type\": \"tool_use\", \"id\": call.id, \"name\": name, \"input\": args})\n        stop = step.get(\"stop\") or (\"tool_use\" if tool_calls else \"end_turn\")\n        usage = {\"input_tokens\": len(json.dumps(messages)) // 4,\n                 \"output_tokens\": len(json.dumps(content)) // 4}\n        return Reply(step.get(\"say\", \"\"), tool_calls, stop, content, usage)\n\n\nclass ClaudeModel:\n    \"\"\"The real model, behind exactly the same interface.\"\"\"\n\n    def __init__(self, model=None):\n        import anthropic\n        self.client = anthropic.Anthropic()  # reads your ANTHROPIC_API_KEY\n        self.model = model or os.environ.get(\"REIN_MODEL\", \"claude-sonnet-5-5\")  # facts: models.ids-current\n\n    def call(self, system, messages, tools):\n        extra = {\"tools\": tools} if tools else {}\n        r = self.client.messages.create(model=self.model, max_tokens=4096,\n                                        system=system, messages=messages, **extra)\n        content = [block.model_dump(exclude_none=True) for block in r.content]\n        return Reply(\n            text=\"\".join(b[\"text\"] for b in content if b[\"type\"] == \"text\"),\n            tool_calls=[ToolCall(b[\"id\"], b[\"name\"], b[\"input\"])\n                        for b in content if b[\"type\"] == \"tool_use\"],\n            stop_reason=r.stop_reason,\n            content=content,\n            usage={\"input_tokens\": r.usage.input_tokens,\n                   \"output_tokens\": r.usage.output_tokens},\n        )\n\n\n# ============ COMMAND LINE ============\n\ndef main():\n    p = argparse.ArgumentParser(description=\"Rein: a small coding-agent harness\")\n    p.add_argument(\"task\", help=\"what you want done, in plain words\")\n    p.add_argument(\"--fake\", metavar=\"SCENARIO\", help=\"use a scripted model from this JSON file\")\n    args = p.parse_args()\n\n    if args.fake:\n        with open(args.fake) as f:\n            scenario = json.load(f)\n        model = FakeModel(scenario[\"replies\"])\n    else:\n        model = ClaudeModel()\n\n    messages = [{\"role\": \"user\", \"content\": args.task}]\n    reply = model.call(\"You are a helpful assistant.\", messages, [])\n    show(\"you\", args.task)\n    show(\"model\", reply.text)\n    show(\"\", f\"stop_reason={reply.stop_reason} tokens_in={reply.usage['input_tokens']} \"\n             f\"tokens_out={reply.usage['output_tokens']}\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+     "scenarios/01_hello.json": "{\n \"replies\": [\n  {}\n ]\n}\n"
+    }
+   },
+   "title": "An empty reply"
+  },
+  {
+   "change": {
+    "argv": [
+     "Say hello",
+     "--fake",
+     "scenarios/missing.json"
+    ]
+   },
+   "expected": "error: FileNotFoundError\n",
+   "explain": "Point --fake at a file that does not exist. Python stops with a traceback. That is fine for a typo in your own command. A harness only has to be gentle with the model's mistakes, and step 2 starts on that.",
+   "id": "missing-file",
+   "run": {
+    "argv": [
+     "Say hello",
+     "--fake",
+     "scenarios/missing.json"
+    ],
+    "files": {
+     "rein.py": "\"\"\"Rein: a small coding-agent harness, built one step at a time.\n\nEach section below is one system of the harness. Read it from top to bottom.\n\"\"\"\nimport argparse\nimport json\nimport os\nfrom dataclasses import dataclass, field\n\n\ndef show(tag, text):\n    \"\"\"Print one line of the live transcript: line breaks become spaces, and it is cut to fit.\"\"\"\n    print(f\"{tag:<8} {' '.join(str(text).splitlines())}\"[:100])\n\n\n# ============ MODEL: one interface, two models ============\n\n@dataclass\nclass ToolCall:\n    id: str      # every request gets an id, so its result can be matched to it\n    name: str    # which tool the model wants\n    input: dict  # the arguments the model chose\n\n\n@dataclass\nclass Reply:\n    text: str          # what the model wrote\n    tool_calls: list   # the tools it asked for (maybe none)\n    stop_reason: str   # why it stopped: \"end_turn\", \"tool_use\", \"max_tokens\", ...\n    content: list      # the raw blocks, saved into the history exactly as they came\n    usage: dict = field(default_factory=dict)  # input and output token counts\n\n\nclass FakeModel:\n    \"\"\"Replays a script of replies, so every run is free, offline, and repeatable.\"\"\"\n\n    def __init__(self, replies):\n        self.replies = list(replies)\n        self.calls = 0\n\n    def call(self, system, messages, tools):\n        step = self.replies.pop(0) if self.replies else {\"say\": \"(the script has run out)\"}\n        content, tool_calls = [], []\n        if step.get(\"say\"):\n            content.append({\"type\": \"text\", \"text\": step[\"say\"]})\n        for name, args in step.get(\"tools\", []):\n            self.calls += 1\n            call = ToolCall(f\"call_{self.calls}\", name, args)\n            tool_calls.append(call)\n            content.append({\"type\": \"tool_use\", \"id\": call.id, \"name\": name, \"input\": args})\n        stop = step.get(\"stop\") or (\"tool_use\" if tool_calls else \"end_turn\")\n        usage = {\"input_tokens\": len(json.dumps(messages)) // 4,\n                 \"output_tokens\": len(json.dumps(content)) // 4}\n        return Reply(step.get(\"say\", \"\"), tool_calls, stop, content, usage)\n\n\nclass ClaudeModel:\n    \"\"\"The real model, behind exactly the same interface.\"\"\"\n\n    def __init__(self, model=None):\n        import anthropic\n        self.client = anthropic.Anthropic()  # reads your ANTHROPIC_API_KEY\n        self.model = model or os.environ.get(\"REIN_MODEL\", \"claude-sonnet-5-5\")  # facts: models.ids-current\n\n    def call(self, system, messages, tools):\n        extra = {\"tools\": tools} if tools else {}\n        r = self.client.messages.create(model=self.model, max_tokens=4096,\n                                        system=system, messages=messages, **extra)\n        content = [block.model_dump(exclude_none=True) for block in r.content]\n        return Reply(\n            text=\"\".join(b[\"text\"] for b in content if b[\"type\"] == \"text\"),\n            tool_calls=[ToolCall(b[\"id\"], b[\"name\"], b[\"input\"])\n                        for b in content if b[\"type\"] == \"tool_use\"],\n            stop_reason=r.stop_reason,\n            content=content,\n            usage={\"input_tokens\": r.usage.input_tokens,\n                   \"output_tokens\": r.usage.output_tokens},\n        )\n\n\n# ============ COMMAND LINE ============\n\ndef main():\n    p = argparse.ArgumentParser(description=\"Rein: a small coding-agent harness\")\n    p.add_argument(\"task\", help=\"what you want done, in plain words\")\n    p.add_argument(\"--fake\", metavar=\"SCENARIO\", help=\"use a scripted model from this JSON file\")\n    args = p.parse_args()\n\n    if args.fake:\n        with open(args.fake) as f:\n            scenario = json.load(f)\n        model = FakeModel(scenario[\"replies\"])\n    else:\n        model = ClaudeModel()\n\n    messages = [{\"role\": \"user\", \"content\": args.task}]\n    reply = model.call(\"You are a helpful assistant.\", messages, [])\n    show(\"you\", args.task)\n    show(\"model\", reply.text)\n    show(\"\", f\"stop_reason={reply.stop_reason} tokens_in={reply.usage['input_tokens']} \"\n             f\"tokens_out={reply.usage['output_tokens']}\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+     "scenarios/01_hello.json": "{\n \"replies\": [\n  {\"say\": \"Hello! I am a scripted stand-in for Claude. I say what my script says.\"}\n ]\n}\n"
+    }
+   },
+   "title": "A missing file"
+  }
+ ],
+ "checkpoint": {
+  "argv": [
+   "Say hello",
+   "--fake",
+   "scenarios/01_hello.json"
+  ],
+  "command": "python rein.py \"Say hello\" --fake scenarios/01_hello.json",
+  "expected": "you      Say hello\nmodel    Hello! I am a scripted stand-in for Claude. I say what my script says.\n         stop_reason=end_turn tokens_in=10 tokens_out=25\n",
+  "explain": "Rein sent your message to the scripted model, which returned its one reply. stop_reason=end_turn means the model finished on its own, without asking for any tools. tokens_in=10 is the estimated size of what Rein sent, and tokens_out=25 the size of what came back.",
+  "run": {
+   "argv": [
+    "Say hello",
+    "--fake",
+    "scenarios/01_hello.json"
+   ],
+   "files": {
+    "rein.py": "\"\"\"Rein: a small coding-agent harness, built one step at a time.\n\nEach section below is one system of the harness. Read it from top to bottom.\n\"\"\"\nimport argparse\nimport json\nimport os\nfrom dataclasses import dataclass, field\n\n\ndef show(tag, text):\n    \"\"\"Print one line of the live transcript: line breaks become spaces, and it is cut to fit.\"\"\"\n    print(f\"{tag:<8} {' '.join(str(text).splitlines())}\"[:100])\n\n\n# ============ MODEL: one interface, two models ============\n\n@dataclass\nclass ToolCall:\n    id: str      # every request gets an id, so its result can be matched to it\n    name: str    # which tool the model wants\n    input: dict  # the arguments the model chose\n\n\n@dataclass\nclass Reply:\n    text: str          # what the model wrote\n    tool_calls: list   # the tools it asked for (maybe none)\n    stop_reason: str   # why it stopped: \"end_turn\", \"tool_use\", \"max_tokens\", ...\n    content: list      # the raw blocks, saved into the history exactly as they came\n    usage: dict = field(default_factory=dict)  # input and output token counts\n\n\nclass FakeModel:\n    \"\"\"Replays a script of replies, so every run is free, offline, and repeatable.\"\"\"\n\n    def __init__(self, replies):\n        self.replies = list(replies)\n        self.calls = 0\n\n    def call(self, system, messages, tools):\n        step = self.replies.pop(0) if self.replies else {\"say\": \"(the script has run out)\"}\n        content, tool_calls = [], []\n        if step.get(\"say\"):\n            content.append({\"type\": \"text\", \"text\": step[\"say\"]})\n        for name, args in step.get(\"tools\", []):\n            self.calls += 1\n            call = ToolCall(f\"call_{self.calls}\", name, args)\n            tool_calls.append(call)\n            content.append({\"type\": \"tool_use\", \"id\": call.id, \"name\": name, \"input\": args})\n        stop = step.get(\"stop\") or (\"tool_use\" if tool_calls else \"end_turn\")\n        usage = {\"input_tokens\": len(json.dumps(messages)) // 4,\n                 \"output_tokens\": len(json.dumps(content)) // 4}\n        return Reply(step.get(\"say\", \"\"), tool_calls, stop, content, usage)\n\n\nclass ClaudeModel:\n    \"\"\"The real model, behind exactly the same interface.\"\"\"\n\n    def __init__(self, model=None):\n        import anthropic\n        self.client = anthropic.Anthropic()  # reads your ANTHROPIC_API_KEY\n        self.model = model or os.environ.get(\"REIN_MODEL\", \"claude-sonnet-5-5\")  # facts: models.ids-current\n\n    def call(self, system, messages, tools):\n        extra = {\"tools\": tools} if tools else {}\n        r = self.client.messages.create(model=self.model, max_tokens=4096,\n                                        system=system, messages=messages, **extra)\n        content = [block.model_dump(exclude_none=True) for block in r.content]\n        return Reply(\n            text=\"\".join(b[\"text\"] for b in content if b[\"type\"] == \"text\"),\n            tool_calls=[ToolCall(b[\"id\"], b[\"name\"], b[\"input\"])\n                        for b in content if b[\"type\"] == \"tool_use\"],\n            stop_reason=r.stop_reason,\n            content=content,\n            usage={\"input_tokens\": r.usage.input_tokens,\n                   \"output_tokens\": r.usage.output_tokens},\n        )\n\n\n# ============ COMMAND LINE ============\n\ndef main():\n    p = argparse.ArgumentParser(description=\"Rein: a small coding-agent harness\")\n    p.add_argument(\"task\", help=\"what you want done, in plain words\")\n    p.add_argument(\"--fake\", metavar=\"SCENARIO\", help=\"use a scripted model from this JSON file\")\n    args = p.parse_args()\n\n    if args.fake:\n        with open(args.fake) as f:\n            scenario = json.load(f)\n        model = FakeModel(scenario[\"replies\"])\n    else:\n        model = ClaudeModel()\n\n    messages = [{\"role\": \"user\", \"content\": args.task}]\n    reply = model.call(\"You are a helpful assistant.\", messages, [])\n    show(\"you\", args.task)\n    show(\"model\", reply.text)\n    show(\"\", f\"stop_reason={reply.stop_reason} tokens_in={reply.usage['input_tokens']} \"\n             f\"tokens_out={reply.usage['output_tokens']}\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "scenarios/01_hello.json": "{\n \"replies\": [\n  {\"say\": \"Hello! I am a scripted stand-in for Claude. I say what my script says.\"}\n ]\n}\n"
+   }
+  },
+  "setup": []
+ },
+ "chunks": [
+  {
+   "explain": "Create a new file called rein.py in your build folder, and put this in it. show() prints one line of Rein's live transcript: a short tag on the left, like turn 1, then the text. Line breaks become spaces, and anything past 100 characters is cut, so the screen stays readable. The model always gets the full text. Only your view is shortened.",
+   "hunks": [
+    {
+     "diff": "+\"\"\"Rein: a small coding-agent harness, built one step at a time.\n+\n+Each section below is one system of the harness. Read it from top to bottom.\n+\"\"\"\n+import argparse\n+import json\n+import os\n+from dataclasses import dataclass, field\n+\n+\n+def show(tag, text):\n+    \"\"\"Print one line of the live transcript: line breaks become spaces, and it is cut to fit.\"\"\"\n+    print(f\"{tag:<8} {' '.join(str(text).splitlines())}\"[:100])\n",
+     "where": "new code"
+    }
+   ],
+   "id": "1a",
+   "title": "Start the file"
+  },
+  {
+   "explain": "Every model, fake or real, will answer in the same shape. ToolCall is one request to use a tool. Reply is one whole answer. A dataclass is a class that only holds named values; Python writes the boring parts for you. Two fields matter a lot later. stop_reason says why the model stopped: it finished, it wants tools, or it ran out of room. content keeps the reply exactly as it came.",
+   "hunks": [
+    {
+     "diff": "     \"\"\"Print one line of the live transcript: line breaks become spaces, and it is cut to fit.\"\"\"\n     print(f\"{tag:<8} {' '.join(str(text).splitlines())}\"[:100])\n+\n+\n+# ============ MODEL: one interface, two models ============\n+\n+@dataclass\n+class ToolCall:\n+    id: str      # every request gets an id, so its result can be matched to it\n+    name: str    # which tool the model wants\n+    input: dict  # the arguments the model chose\n+\n+\n+@dataclass\n+class Reply:\n+    text: str          # what the model wrote\n+    tool_calls: list   # the tools it asked for (maybe none)\n+    stop_reason: str   # why it stopped: \"end_turn\", \"tool_use\", \"max_tokens\", ...\n+    content: list      # the raw blocks, saved into the history exactly as they came\n+    usage: dict = field(default_factory=dict)  # input and output token counts\n",
+     "where": "new code"
+    }
+   ],
+   "id": "1b",
+   "title": "One shape for every reply"
+  },
+  {
+   "explain": "The FakeModel gets a list of replies. Each call takes the next one and turns it into exactly the blocks Claude would send: a text block for what it says, and a tool_use block for each tool it asks for. It also estimates token counts, so later steps can keep a budget.",
+   "hunks": [
+    {
+     "diff": "     content: list      # the raw blocks, saved into the history exactly as they came\n     usage: dict = field(default_factory=dict)  # input and output token counts\n+\n+\n+class FakeModel:\n+    \"\"\"Replays a script of replies, so every run is free, offline, and repeatable.\"\"\"\n+\n+    def __init__(self, replies):\n+        self.replies = list(replies)\n+        self.calls = 0\n+\n+    def call(self, system, messages, tools):\n+        step = self.replies.pop(0) if self.replies else {\"say\": \"(the script has run out)\"}\n+        content, tool_calls = [], []\n+        if step.get(\"say\"):\n+            content.append({\"type\": \"text\", \"text\": step[\"say\"]})\n+        for name, args in step.get(\"tools\", []):\n+            self.calls += 1\n+            call = ToolCall(f\"call_{self.calls}\", name, args)\n+            tool_calls.append(call)\n+            content.append({\"type\": \"tool_use\", \"id\": call.id, \"name\": name, \"input\": args})\n+        stop = step.get(\"stop\") or (\"tool_use\" if tool_calls else \"end_turn\")\n+        usage = {\"input_tokens\": len(json.dumps(messages)) // 4,\n+                 \"output_tokens\": len(json.dumps(content)) // 4}\n+        return Reply(step.get(\"say\", \"\"), tool_calls, stop, content, usage)\n",
+     "where": "new code"
+    }
+   ],
+   "id": "1c",
+   "title": "A scripted model"
+  },
+  {
+   "explain": "ClaudeModel has exactly the same call() method, with the same inputs and the same kind of result. That is the whole point of an interface: the rest of Rein never knows, or cares, which model it is talking to. anthropic is imported inside __init__, so scripted runs work even without the package or a key. To try a different model, set the REIN_MODEL environment variable.",
+   "hunks": [
+    {
+     "diff": "                  \"output_tokens\": len(json.dumps(content)) // 4}\n         return Reply(step.get(\"say\", \"\"), tool_calls, stop, content, usage)\n+\n+\n+class ClaudeModel:\n+    \"\"\"The real model, behind exactly the same interface.\"\"\"\n+\n+    def __init__(self, model=None):\n+        import anthropic\n+        self.client = anthropic.Anthropic()  # reads your ANTHROPIC_API_KEY\n+        self.model = model or os.environ.get(\"REIN_MODEL\", \"claude-sonnet-5-5\")  # facts: models.ids-current\n+\n+    def call(self, system, messages, tools):\n+        extra = {\"tools\": tools} if tools else {}\n+        r = self.client.messages.create(model=self.model, max_tokens=4096,\n+                                        system=system, messages=messages, **extra)\n+        content = [block.model_dump(exclude_none=True) for block in r.content]\n+        return Reply(\n+            text=\"\".join(b[\"text\"] for b in content if b[\"type\"] == \"text\"),\n+            tool_calls=[ToolCall(b[\"id\"], b[\"name\"], b[\"input\"])\n+                        for b in content if b[\"type\"] == \"tool_use\"],\n+            stop_reason=r.stop_reason,\n+            content=content,\n+            usage={\"input_tokens\": r.usage.input_tokens,\n+                   \"output_tokens\": r.usage.output_tokens},\n+        )\n",
+     "where": "new code"
+    }
+   ],
+   "id": "1d",
+   "title": "The real model"
+  },
+  {
+   "explain": "main() reads your task, picks a model (the scripted one if you pass --fake), sends one message, and prints the reply.",
+   "hunks": [
+    {
+     "diff": "                    \"output_tokens\": r.usage.output_tokens},\n         )\n+\n+\n+# ============ COMMAND LINE ============\n+\n+def main():\n+    p = argparse.ArgumentParser(description=\"Rein: a small coding-agent harness\")\n+    p.add_argument(\"task\", help=\"what you want done, in plain words\")\n+    p.add_argument(\"--fake\", metavar=\"SCENARIO\", help=\"use a scripted model from this JSON file\")\n+    args = p.parse_args()\n+\n+    if args.fake:\n+        with open(args.fake) as f:\n+            scenario = json.load(f)\n+        model = FakeModel(scenario[\"replies\"])\n+    else:\n+        model = ClaudeModel()\n+\n+    messages = [{\"role\": \"user\", \"content\": args.task}]\n+    reply = model.call(\"You are a helpful assistant.\", messages, [])\n+    show(\"you\", args.task)\n+    show(\"model\", reply.text)\n+    show(\"\", f\"stop_reason={reply.stop_reason} tokens_in={reply.usage['input_tokens']} \"\n+             f\"tokens_out={reply.usage['output_tokens']}\")\n+\n+\n+if __name__ == \"__main__\":\n+    main()\n",
+     "where": "new code"
+    }
+   ],
+   "id": "1e",
+   "title": "The command line"
+  }
+ ],
+ "goal": "Send one message to a model and print its reply, with a scripted model and a real one behind the same interface.",
+ "id": "H1",
+ "lines_after": 105,
+ "module": "H1",
+ "number": 1,
+ "rein": "\"\"\"Rein: a small coding-agent harness, built one step at a time.\n\nEach section below is one system of the harness. Read it from top to bottom.\n\"\"\"\nimport argparse\nimport json\nimport os\nfrom dataclasses import dataclass, field\n\n\ndef show(tag, text):\n    \"\"\"Print one line of the live transcript: line breaks become spaces, and it is cut to fit.\"\"\"\n    print(f\"{tag:<8} {' '.join(str(text).splitlines())}\"[:100])\n\n\n# ============ MODEL: one interface, two models ============\n\n@dataclass\nclass ToolCall:\n    id: str      # every request gets an id, so its result can be matched to it\n    name: str    # which tool the model wants\n    input: dict  # the arguments the model chose\n\n\n@dataclass\nclass Reply:\n    text: str          # what the model wrote\n    tool_calls: list   # the tools it asked for (maybe none)\n    stop_reason: str   # why it stopped: \"end_turn\", \"tool_use\", \"max_tokens\", ...\n    content: list      # the raw blocks, saved into the history exactly as they came\n    usage: dict = field(default_factory=dict)  # input and output token counts\n\n\nclass FakeModel:\n    \"\"\"Replays a script of replies, so every run is free, offline, and repeatable.\"\"\"\n\n    def __init__(self, replies):\n        self.replies = list(replies)\n        self.calls = 0\n\n    def call(self, system, messages, tools):\n        step = self.replies.pop(0) if self.replies else {\"say\": \"(the script has run out)\"}\n        content, tool_calls = [], []\n        if step.get(\"say\"):\n            content.append({\"type\": \"text\", \"text\": step[\"say\"]})\n        for name, args in step.get(\"tools\", []):\n            self.calls += 1\n            call = ToolCall(f\"call_{self.calls}\", name, args)\n            tool_calls.append(call)\n            content.append({\"type\": \"tool_use\", \"id\": call.id, \"name\": name, \"input\": args})\n        stop = step.get(\"stop\") or (\"tool_use\" if tool_calls else \"end_turn\")\n        usage = {\"input_tokens\": len(json.dumps(messages)) // 4,\n                 \"output_tokens\": len(json.dumps(content)) // 4}\n        return Reply(step.get(\"say\", \"\"), tool_calls, stop, content, usage)\n\n\nclass ClaudeModel:\n    \"\"\"The real model, behind exactly the same interface.\"\"\"\n\n    def __init__(self, model=None):\n        import anthropic\n        self.client = anthropic.Anthropic()  # reads your ANTHROPIC_API_KEY\n        self.model = model or os.environ.get(\"REIN_MODEL\", \"claude-sonnet-5-5\")  # facts: models.ids-current\n\n    def call(self, system, messages, tools):\n        extra = {\"tools\": tools} if tools else {}\n        r = self.client.messages.create(model=self.model, max_tokens=4096,\n                                        system=system, messages=messages, **extra)\n        content = [block.model_dump(exclude_none=True) for block in r.content]\n        return Reply(\n            text=\"\".join(b[\"text\"] for b in content if b[\"type\"] == \"text\"),\n            tool_calls=[ToolCall(b[\"id\"], b[\"name\"], b[\"input\"])\n                        for b in content if b[\"type\"] == \"tool_use\"],\n            stop_reason=r.stop_reason,\n            content=content,\n            usage={\"input_tokens\": r.usage.input_tokens,\n                   \"output_tokens\": r.usage.output_tokens},\n        )\n\n\n# ============ COMMAND LINE ============\n\ndef main():\n    p = argparse.ArgumentParser(description=\"Rein: a small coding-agent harness\")\n    p.add_argument(\"task\", help=\"what you want done, in plain words\")\n    p.add_argument(\"--fake\", metavar=\"SCENARIO\", help=\"use a scripted model from this JSON file\")\n    args = p.parse_args()\n\n    if args.fake:\n        with open(args.fake) as f:\n            scenario = json.load(f)\n        model = FakeModel(scenario[\"replies\"])\n    else:\n        model = ClaudeModel()\n\n    messages = [{\"role\": \"user\", \"content\": args.task}]\n    reply = model.call(\"You are a helpful assistant.\", messages, [])\n    show(\"you\", args.task)\n    show(\"model\", reply.text)\n    show(\"\", f\"stop_reason={reply.stop_reason} tokens_in={reply.usage['input_tokens']} \"\n             f\"tokens_out={reply.usage['output_tokens']}\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+ "requires_python": "3.11",
+ "runs_in_browser": true,
+ "scenarios": {
+  "scenarios/01_hello.json": "{\n \"replies\": [\n  {\"say\": \"Hello! I am a scripted stand-in for Claude. I say what my script says.\"}\n ]\n}\n"
+ },
+ "shared": {},
+ "size": "rein.py starts at 105 lines",
+ "theory": "Chapter 3: the model has no memory",
+ "title": "Talk to a model"
+}

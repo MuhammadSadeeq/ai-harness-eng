@@ -2,6 +2,8 @@
 // `hx-evidence` CustomEvent, {module, objectives, kind, detail}. The shell adds a timestamp, appends the entry
 // to the store's evidence list, and to the predictions list when the kind is "prediction". Each list keeps only
 // its newest CAP entries, so a long course cannot grow the stored document without limit.
+import { noteEvidence } from "./progress.js";
+
 export const CAP = 2000;
 export const EVIDENCE_EVENT = "hx-evidence";
 
@@ -18,6 +20,7 @@ export function recordEvidence(store, detail, now = new Date()) {
     store.update((doc) => {
       doc.evidence = appendCapped(doc.evidence ?? [], entry);
       if (detail.kind === "prediction") doc.predictions = appendCapped(doc.predictions ?? [], entry);
+      noteEvidence(doc, entry);
       return doc;
     });
     return true;

@@ -34,7 +34,7 @@ def copy_root(tmp_path: Path) -> Path:
 
 
 def region(text: str, name: str) -> str:
-    match = re.search(rf"<!-- gen:{name} -->(.*?)<!-- /gen:{name} -->", text, re.S)
+    match = re.search(rf"<!-- gen:{name} -->(.*?)<!-- /gen(?::{name})? -->", text, re.S)
     assert match, f"no region {name}"
     return match.group(1)
 
@@ -87,7 +87,7 @@ def test_a_built_module_becomes_a_link(tmp_path: Path) -> None:
     root = copy_root(tmp_path)
     (root / "site/modules").mkdir(parents=True)
     (root / "site/modules/same-model-different-harness.html").write_text(
-        "<!doctype html>", encoding="utf-8"
+        MODULE_PAGE, encoding="utf-8"
     )
     assert main(["--root", str(root)]) == 0
     text = (root / "site/index.html").read_text(encoding="utf-8")
@@ -158,3 +158,76 @@ def test_the_footer_date_is_the_oldest_verified_fact() -> None:
     for page in ("index.html", "design.html"):
         text = (REPO / "site" / page).read_text(encoding="utf-8")
         assert f'data-facts-oldest-iso="{oldest}"' in text
+
+
+MODULE_PAGE = (
+    '<!doctype html>\n<html lang="en" data-module="B2">\n<body>\n<main id="main" class="module">\n'
+    '  <header class="module-head">\n    <!-- gen:module-meta --><!-- /gen -->\n  </header>\n'
+    '  <aside class="rail">\n    <!-- gen:course-map -->\n    <!-- /gen -->\n  </aside>\n'
+    "</main>\n</body>\n</html>\n"
+)
+
+
+def _module_root(tmp_path: Path, text: str = MODULE_PAGE, slug: str = "the-agent-loop") -> Path:
+    root = copy_root(tmp_path)
+    (root / "site" / "modules").mkdir(parents=True)
+    (root / "site" / "modules" / f"{slug}.html").write_text(text, encoding="utf-8")
+    return root
+
+
+def test_a_module_page_gets_its_header_objectives_and_beat_strip(tmp_path: Path) -> None:
+    root = _module_root(tmp_path)
+    assert main(["--root", str(root)]) == 0
+    text = (root / "site" / "modules" / "the-agent-loop.html").read_text(encoding="utf-8")
+    course = json.loads((REPO / "site/data/course.json").read_text(encoding="utf-8"))
+    b2 = next(m for m in course["modules"] if m["id"] == "B2")
+    header = region(text, "module-meta")
+    assert f'data-objectives-total="{len(b2["objectives"])}"' in header
+    assert f"0 of {len(b2['objectives'])} objectives shown" in header
+    for objective in b2["objectives"]:
+        assert f'data-objective="{objective["id"]}"' in header
+    for beat in course["kinds"]["core"]["beats"]:
+        assert f'href="#{beat}"' in header
+    assert main(["--check", "--root", str(root)]) == 0
+
+
+def test_an_unbuilt_prerequisite_is_text_with_soon_and_a_built_one_is_a_link(
+    tmp_path: Path,
+) -> None:
+    root = _module_root(tmp_path)
+    assert main(["--root", str(root)]) == 0
+    text = (root / "site" / "modules" / "the-agent-loop.html").read_text(encoding="utf-8")
+    assert 'class="soon"' in region(text, "module-meta")
+    assert 'href="tools-give-the-model-hands.html"' not in region(text, "module-meta")
+    (root / "site" / "modules" / "tools-give-the-model-hands.html").write_text(
+        MODULE_PAGE, encoding="utf-8"
+    )
+    assert main(["--root", str(root)]) == 0
+    text = (root / "site" / "modules" / "the-agent-loop.html").read_text(encoding="utf-8")
+    assert 'href="tools-give-the-model-hands.html"' in region(text, "module-meta")
+
+
+def test_the_module_course_map_links_locally_and_marks_the_current_module(tmp_path: Path) -> None:
+    root = _module_root(tmp_path)
+    assert main(["--root", str(root)]) == 0
+    text = (root / "site" / "modules" / "the-agent-loop.html").read_text(encoding="utf-8")
+    course_map = region(text, "course-map")
+    assert 'href="the-agent-loop.html" aria-current="page"' in course_map
+    assert 'href="modules/' not in course_map
+
+
+def test_a_module_page_without_its_regions_is_an_error(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    text = MODULE_PAGE.replace("<!-- gen:course-map -->\n    <!-- /gen -->\n", "")
+    root = _module_root(tmp_path, text=text)
+    assert main(["--root", str(root)]) == 2
+    assert "course-map" in capsys.readouterr().err
+
+
+def test_a_module_page_for_no_course_module_is_an_error(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = _module_root(tmp_path, slug="no-such-module")
+    assert main(["--root", str(root)]) == 2
+    assert "no-such-module" in capsys.readouterr().err

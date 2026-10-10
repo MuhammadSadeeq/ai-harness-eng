@@ -1,0 +1,97 @@
+id: B2-loop
+module: B2
+title: Write the agent loop
+objectives: [B2.o1, B2.o2]
+minutes: 20
+hints:
+  - "Start with the stop_reason. end_turn ends the loop with done. tool_use keeps it going. Every other value ends it."
+  - "Before each model call, check the turn limit and then the token budget. After a tool_use reply, make one result for each tool_use block and send them all in one user message. An unknown tool name gives a result with is_error set to true, not an exception."
+  - "Nearly the code: while True: if calls >= max_turns, return max_turns. If used >= max_tokens, return budget. Call the model, add its input and output tokens to used, append its content as the assistant message. If stop_reason is end_turn, return done. If it is not tool_use, return it. Otherwise build the results and append them as one user message."
+from_memory: true
+wrong_solutions:
+  - name: results-in-separate-messages
+    code: |
+      def run_loop(model, tools, task, max_turns, max_tokens):
+          messages = [{"role": "user", "content": task}]
+          calls = 0
+          used = 0
+          while calls < max_turns and used < max_tokens:
+              reply = model(messages)
+              calls += 1
+              used += reply["usage"]["input_tokens"] + reply["usage"]["output_tokens"]
+              messages.append({"role": "assistant", "content": reply["content"]})
+              if reply["stop_reason"] == "end_turn":
+                  return "done"
+              if reply["stop_reason"] != "tool_use":
+                  return reply["stop_reason"]
+              for block in reply["content"]:
+                  if block["type"] == "tool_use":
+                      result = {"type": "tool_result", "tool_use_id": block["id"],
+                                "content": tools[block["name"]](block["input"])}
+                      messages.append({"role": "user", "content": [result]})
+          return "max_turns" if calls >= max_turns else "budget"
+  - name: no-turn-limit
+    code: |
+      def run_loop(model, tools, task, max_turns, max_tokens):
+          messages = [{"role": "user", "content": task}]
+          used = 0
+          while True:
+              if used >= max_tokens:
+                  return "budget"
+              reply = model(messages)
+              used += reply["usage"]["input_tokens"] + reply["usage"]["output_tokens"]
+              messages.append({"role": "assistant", "content": reply["content"]})
+              if reply["stop_reason"] == "end_turn":
+                  return "done"
+              if reply["stop_reason"] != "tool_use":
+                  return reply["stop_reason"]
+              results = [{"type": "tool_result", "tool_use_id": b["id"],
+                          "content": tools[b["name"]](b["input"])}
+                         for b in reply["content"] if b["type"] == "tool_use"]
+              messages.append({"role": "user", "content": results})
+  - name: unknown-tool-raises
+    code: |
+      def run_loop(model, tools, task, max_turns, max_tokens):
+          messages = [{"role": "user", "content": task}]
+          calls = 0
+          used = 0
+          while True:
+              if calls >= max_turns:
+                  return "max_turns"
+              if used >= max_tokens:
+                  return "budget"
+              reply = model(messages)
+              calls += 1
+              used += reply["usage"]["input_tokens"] + reply["usage"]["output_tokens"]
+              messages.append({"role": "assistant", "content": reply["content"]})
+              if reply["stop_reason"] == "end_turn":
+                  return "done"
+              if reply["stop_reason"] != "tool_use":
+                  return reply["stop_reason"]
+              results = [{"type": "tool_result", "tool_use_id": b["id"],
+                          "content": tools[b["name"]](b["input"])}
+                         for b in reply["content"] if b["type"] == "tool_use"]
+              messages.append({"role": "user", "content": results})
+  - name: budget-counts-output-only
+    code: |
+      def run_loop(model, tools, task, max_turns, max_tokens):
+          messages = [{"role": "user", "content": task}]
+          calls = 0
+          used = 0
+          while True:
+              if calls >= max_turns:
+                  return "max_turns"
+              if used >= max_tokens:
+                  return "budget"
+              reply = model(messages)
+              calls += 1
+              used += reply["usage"]["output_tokens"]
+              messages.append({"role": "assistant", "content": reply["content"]})
+              if reply["stop_reason"] == "end_turn":
+                  return "done"
+              if reply["stop_reason"] != "tool_use":
+                  return reply["stop_reason"]
+              results = [{"type": "tool_result", "tool_use_id": b["id"],
+                          "content": tools[b["name"]](b["input"])}
+                         for b in reply["content"] if b["type"] == "tool_use"]
+              messages.append({"role": "user", "content": results})

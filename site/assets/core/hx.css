@@ -405,3 +405,48 @@ hx-clock { display: block; }
 .map-modules a.module-label { color: var(--hx-ink); text-decoration: underline; text-underline-offset: 3px; }
 .soon { flex: none; padding: 0 var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-chip); font: 600 var(--fs-small)/1.6 var(--font-sans); color: var(--hx-ink-2); white-space: nowrap; }
 .footer a { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* Module pages (BP-2.1, DESIGN §6.3): the header, the beat strip, the reading column, margin notes, the law and asides */
+.module-meta { display: grid; gap: var(--sp-3); margin-top: var(--sp-4); max-width: var(--measure); }
+.wire-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; }
+.wire-chips li { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 32px; padding: 2px var(--sp-3); border: 1px solid var(--w, var(--hx-rule-strong)); border-radius: var(--r-chip); font: 600 var(--fs-small)/1.2 var(--font-sans); }
+.wire-chips .glyph { width: 18px; height: 18px; color: var(--w); }
+.module-minutes { margin: 0; font: 400 var(--fs-small) var(--font-sans); color: var(--hx-ink-2); }
+.meta-label { margin: 0; font: 600 var(--fs-small)/1.3 var(--font-sans); letter-spacing: .04em; text-transform: uppercase; color: var(--hx-ink-2); }
+.objectives { margin: 0; padding-left: var(--sp-5); font: 400 var(--fs-ui)/1.5 var(--font-sans); }
+.objectives li { margin: 0 0 var(--sp-1); }
+.progress-line { display: flex; align-items: center; gap: var(--sp-2); margin: 0; font: 600 var(--fs-small) var(--font-sans); color: var(--hx-ink-2); }
+.progress-line .path-mark { width: 20px; height: 20px; }
+.prereqs { margin: 0; font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); }
+.prereqs a { color: var(--hx-ink); text-decoration: underline; text-underline-offset: 3px; }
+.beat-strip { position: relative; margin-top: var(--sp-2); }
+.beat-strip ol { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin: 0; padding: 0; list-style: none; }
+.beat-strip a { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 44px; padding: 0 var(--sp-3); border-radius: var(--r-btn); color: var(--hx-ink); text-decoration: none; font: 600 var(--fs-ui) var(--font-sans); }
+.beat-strip a[aria-current="true"] { box-shadow: inset 0 -3px 0 var(--hx-ink); }
+.now-mark { font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); text-transform: uppercase; letter-spacing: .04em; }
+@media (min-width: 700px) {
+  .beat-strip { position: sticky; top: var(--hx-top-h); z-index: 6; padding: var(--sp-1) 0; background: var(--hx-paper); }
+}
+section.beat > :not(aside.note):not(.step-out) { max-width: var(--measure); }
+.js aside.note { display: none; }
+details.note-inline { margin: var(--sp-3) 0; max-width: var(--measure); padding: var(--sp-2) var(--sp-3); border-left: 2px solid var(--hx-rule-strong); font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); }
+details.note-inline summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font: 600 var(--fs-small) var(--font-sans); color: var(--hx-ink); }
+details.note-inline > div { padding-bottom: var(--sp-2); }
+@media (min-width: 1100px) {
+  details.note-inline { display: none; }
+  section.beat { max-width: calc(var(--measure) + 300px); }
+  .js aside.note { display: block; float: right; clear: right; width: 240px; margin: 0 0 var(--sp-3) var(--sp-5); font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); }
+  .js aside.note::before { content: "Note"; display: block; font: 600 var(--fs-small) var(--font-sans); color: var(--hx-ink); }
+}
+.step-out { margin-inline: 0; }
+@media (min-width: 1100px) {
+  section.beat > figure.step-out { width: min(60rem, calc(100vw - 2 * var(--hx-gutter))); max-width: none; position: relative; left: 50%; transform: translateX(-50%); }
+}
+p.law { margin: var(--sp-5) 0; font: 400 clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem)/1.3 var(--font-serif); color: var(--hx-ink); }
+.law-glyph { width: 30px; height: 30px; display: inline-block; vertical-align: -7px; margin-right: var(--sp-2); color: var(--hx-ink); }
+.law-glyph use { color: var(--hx-ink); }
+aside.portfolio { margin: var(--sp-5) 0; padding: var(--sp-4) var(--sp-5); border: 1px solid var(--plate-edge); border-radius: var(--r-plate); background: var(--hx-panel); }
+aside.portfolio h3 { margin: 0 0 var(--sp-2); font: 600 var(--fs-ui)/1.3 var(--font-sans); }
+aside.portfolio ul { margin: 0; padding-left: var(--sp-5); font: 400 var(--fs-ui)/1.5 var(--font-sans); }
+aside.realterm { margin: var(--sp-4) 0; padding-left: var(--sp-3); border-left: 2px solid var(--hx-rule-strong); font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); max-width: var(--measure); }
+a.fact-chip { min-height: 44px; text-decoration: none; color: var(--hx-ink); }

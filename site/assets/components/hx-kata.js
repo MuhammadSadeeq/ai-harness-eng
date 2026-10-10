@@ -2,28 +2,26 @@
 //   <hx-kata kata="lab-turn-limit" mode="practice">…no-JS fallback…</hx-kata>
 // mode="memory" needs a kata with from_memory: true, and has no hints. Python (about 13 MB, the first time
 // only) starts when the kata comes near the viewport or its editor gets focus. One Python per page
-// (lib/py-host.js): a load that fails or takes longer than 45 s shows the failure and keeps the code; a run
+// (lib/py-host.js): a load that fails shows the failure and keeps the code, and a slow load says so with Try again; a run
 // that takes more than 10 s is stopped. Evidence: "kata" on every run (COMPONENTS §5). Drafts live under
 // drafts[<kata id>] (drafts[<kata id>:memory] in memory mode, with the elapsed time), and are flushed at once
 // on pagehide, when the page becomes hidden, and when the editor loses focus.
 import { HxElement } from "./lib/hx-element.js";
 import { mountEditor } from "./lib/editor.js";
-import { createPythonHost } from "./lib/py-host.js";
+import { sharedPython } from "./lib/py-host.js";
 import { getKata, getCourse } from "./lib/data.js";
 
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
-const WORKER_URL = new URL("./lib/py-worker.js", import.meta.url).href;
-const PYODIDE_BASE = new URL("../../vendor/pyodide/", import.meta.url).href;
-const HXTEST_URL = new URL("../py/hxtest.py", import.meta.url).href;
-const SW_URL = new URL("../../sw.js", import.meta.url).href;
 const DRAFT_DELAY_MS = 500;
 const SAFE_ID = /^[a-z0-9][a-z0-9-]*$/;
 const HINT_COUNT = 3;
 
 const TIMEOUT_MESSAGE = "Your code ran for more than 10 seconds and was stopped. Is there a loop without an exit?";
 const LOADING_COPY = "Loading Python (about 13 MB, the first time only)…";
-const FAILED_COPY = "Python could not load in this browser. Your code is still here, but the tests cannot run.";
+const SLOW_COPY = "Still loading Python. A slow connection can take a minute or two.";
+const FAILED_COPY = "Python could not load. Check your connection and try again.";
+const RETRY_COPY = "Try again";
 const RUNNING_COPY = "Running…";
 const TIMER_IDLE_COPY = "The timer starts when you type.";
 const UNSAVED_COPY = "Your code is not saved in this browser. Copy it before you leave.";
@@ -31,16 +29,7 @@ const SOLUTION_NOTE = "Compare it with yours; the tests are the judge, not the t
 const MEMORY_BLANK = "# Write it from memory.\n";
 const WORDS = { passed: "pass", failed: "fail", error: "error" };
 
-const python = createPythonHost({
-  createWorker: () => {
-    if (!python.registered) {
-      python.registered = true;
-      navigator.serviceWorker?.register(SW_URL, { scope: "/" })?.catch(() => {});
-    }
-    return new Worker(WORKER_URL, { type: "module" });
-  },
-  initMessage: { type: "init", base: PYODIDE_BASE, hxtest: HXTEST_URL },
-});
+const python = sharedPython();
 
 const el = (tag, attrs = {}, ...children) => {
   const node = document.createElement(tag);
@@ -295,7 +284,9 @@ export class HxKata extends HxElement {
     dom.loading = el("div", { class: "kata-loading" });
     dom.loadingText = el("p", { class: "kata-loading-line" });
     dom.progress = el("progress", { class: "kata-progress", "aria-hidden": "true" });
-    dom.loading.append(dom.loadingText, dom.progress);
+    dom.retry = el("button", { class: "key", type: "button", "data-key": "retry", text: RETRY_COPY });
+    dom.retry.addEventListener("click", () => python.restart());
+    dom.loading.append(dom.loadingText, dom.progress, dom.retry);
     dom.label = el("p", { class: "kata-label", id: `${uid}-label`, text: "Your code" });
     dom.textarea = el("textarea", {
       class: "kata-code", id: `${uid}-code`, rows: "12", spellcheck: "false", autocapitalize: "off",
@@ -403,8 +394,11 @@ export class HxKata extends HxElement {
     const memory = this.mode === "memory";
     const py = python.state;
     dom.loading.hidden = py === "ready";
-    dom.loadingText.textContent = py === "failed" ? FAILED_COPY : LOADING_COPY;
-    dom.progress.hidden = py === "failed";
+    const failed = py === "failed";
+    const slow = !failed && python.slow;
+    dom.loadingText.textContent = failed ? FAILED_COPY : slow ? SLOW_COPY : LOADING_COPY;
+    dom.progress.hidden = failed;
+    dom.retry.hidden = !(failed || slow);
     dom.run.disabled = py !== "ready";
     dom.run.setAttribute("aria-disabled", String(s.running));
     dom.status.textContent = s.running ? RUNNING_COPY : "";

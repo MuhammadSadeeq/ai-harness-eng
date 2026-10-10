@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Module page specimen · HARNESSED</title>
+<meta name="description" content="A specimen of the module page: every pattern in one place, with placeholder prose.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+</head>
+<body data-page="specimen">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar" data-topbar>
+  <a class="wordmark" href="../index.html" aria-label="HARNESSED, course home">
+    <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>
+    <span>HARNESSED</span>
+  </a>
+  <nav class="top-nav" aria-label="Pages">
+    <ol>
+      <li><a href="../index.html" aria-current="page">Course</a></li>
+    </ol>
+  </nav>
+  <a class="board-btn" href="../index.html#board" aria-label="Harness Board, cards due">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12V6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span><span class="board-word">Board · </span><span data-due-text>0 cards due</span></span>
+  </a>
+  <div class="settings">
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="menu-btn" type="button" data-menu-btn aria-haspopup="dialog" aria-expanded="false" aria-controls="menu-sheet" hidden>Menu</button>
+</header>
+<dialog class="menu-sheet" id="menu-sheet" data-menu-sheet aria-labelledby="menu-title">
+  <h2 class="menu-title" id="menu-title">Menu</h2>
+  <nav aria-label="Pages in the menu">
+    <ol class="menu-pages">
+      <li><a href="../index.html" aria-current="page">Course</a></li>
+    </ol>
+  </nav>
+  <div class="menu-settings">
+    <p class="menu-label">Theme</p>
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="key menu-close" type="button" data-close>Close menu</button>
+</dialog>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Specimen · not a lesson</p>
+    <h1>A module page, in its parts</h1>
+    <p class="lede">Each part of a module page, shown on one page. The prose is placeholder text about the page itself.</p>
+    <div class="module-meta" data-glyph="layers">
+      <ul class="wire-chips">
+        <li class="w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="../assets/core/glyphs.svg#g-layers"/></svg><span>Control plane</span></li>
+        <li class="w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="../assets/core/glyphs.svg#g-cycle"/></svg><span>Loop &amp; state</span></li>
+      </ul>
+      <p class="module-minutes">25 minutes</p>
+      <p class="meta-label">By the end you can</p>
+      <ol class="objectives">
+        <li>Say what each part of a module page is for.</li>
+        <li>Find the beat you are in, and go back to any beat.</li>
+        <li>Tell a margin note from the prose it belongs to.</li>
+      </ol>
+      <p class="progress-line"><span>0 of 3 objectives shown</span></p>
+      <p class="prereqs">Before this: <span>a placeholder module <span class="soon">soon</span></span></p>
+      <nav class="beat-strip" aria-label="Beats in this module" data-beat-strip>
+        <ol>
+          <li><a href="#break" data-beat-link="break">1 Break</a></li>
+          <li><a href="#see" data-beat-link="see">2 See</a></li>
+          <li><a href="#fix" data-beat-link="fix">3 Fix</a></li>
+          <li><a href="#prove" data-beat-link="prove">4 Prove</a></li>
+          <li><a href="#keep" data-beat-link="keep">5 Keep</a></li>
+        </ol>
+      </nav>
+    </div>
+  </header>
+
+  <section class="beat" data-beat="break" id="break">
+    <h2>Break</h2>
+    <p>A cold open on a real failure, in plain words. This paragraph is placeholder prose: the reading column is about sixty-four characters wide, so the lines stay easy to follow.</p>
+    <figure class="plate instrument step-out">
+      <hx-replay tape="b2-spiral" board="b2-new" seed="1" detail="story">
+        <figure class="plate">
+          <figcaption class="caption">A figure from the registry steps out to the full width on desktop, with its plate label and its caption.</figcaption>
+        </figure>
+        <p class="hx-static-summary">A figure's fallback: a sentence about what the figure shows.</p>
+      </hx-replay>
+    </figure>
+  </section>
+
+  <section class="beat" data-beat="see" id="see">
+    <h2>See</h2>
+    <p>The mechanism, made visible. The first use of a term defines it: <dfn data-term="placeholder-term">placeholder term</dfn> names the thing this paragraph is about.</p>
+    <aside class="note"><p>A margin note: a term, a fact or a "why this number" note. On a wide screen it sits in the right margin, aligned to its paragraph.</p></aside>
+    <p>Later uses are tagged, so a reader can open the definition from anywhere. Here the same term appears again: <span class="term" data-term="placeholder-term">placeholder term</span>. A claim from the registry carries its chip: <span class="fact" data-fact="api.effort-five-levels">The effort page says Claude Fable 5.1 supports all five effort levels.</span></p>
+    <aside class="note"><p>A second note, about the fact chip: it names when the claim was checked and links to where it came from.</p></aside>
+    <aside class="realterm"><p>The real word for the metaphor: placeholder, used here only to show the quiet side note.</p></aside>
+  </section>
+
+  <section class="beat" data-beat="fix" id="fix">
+    <h2>Fix</h2>
+    <p>A lab or an exercise follows the explanation. This section is placeholder prose about where a learner changes the thing they just learned about.</p>
+  </section>
+
+  <section class="beat" data-beat="prove" id="prove">
+    <h2>Prove</h2>
+    <p>The result, with numbers, and one sentence on how much of it could be luck. This section is placeholder prose.</p>
+  </section>
+
+  <section class="beat" data-beat="keep" id="keep">
+    <h2>Keep</h2>
+    <p class="law">A placeholder law, set large in the serif, with the wire glyph before it.</p>
+    <aside class="portfolio">
+      <h3>What to show from this module</h3>
+      <ul>
+        <li>A placeholder item: one thing the learner can point to.</li>
+        <li>A second placeholder item, one line each.</li>
+      </ul>
+    </aside>
+  </section>
+</main>
+<footer class="footer">
+  <div class="footer-grid">
+    <p class="live-status" data-store-status></p>
+    <div class="footer-actions">
+      <button class="btn" type="button" data-export>Export progress</button>
+      <label class="btn">Import progress<input class="sr-only" type="file" accept="application/json,.json" data-import></label>
+      <button class="btn btn-quiet" type="button" data-reset>Reset progress (keeps settings)</button>
+    </div>
+    <p><a href="../design.html">Design system</a></p>
+    <p>Fonts: Newsreader (SIL OFL 1.1). Harnessed Sans and Harnessed Mono (SIL OFL 1.1; renamed IBM Plex subsets). Licences in <a href="../assets/fonts/LICENSE-OFL.txt">LICENSE-OFL.txt</a> and <a href="../assets/fonts/LICENSE-newsreader.txt">LICENSE-newsreader.txt</a>.</p>
+    <p data-facts-line>Facts verified as of 10 Oct 2026.</p>
+  </div>
+</footer>
+</body>
+</html>

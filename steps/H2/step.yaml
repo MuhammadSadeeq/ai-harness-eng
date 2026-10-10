@@ -1,0 +1,199 @@
+module: H2
+number: 2
+title: "One tool and the loop"
+goal: "Give the model one tool, and a loop that keeps calling the model until it stops asking for tools."
+requires_python: "3.11"  # the book says 3.10; the build needs 3.11 or newer
+theory: "Chapter 5: tools and chapter 6: the agent loop"
+lines_after: 172
+size: "rein.py grows to 172 lines"
+chunks:
+  - id: "2a"
+    title: "A tool is two things"
+    explain: "The model reads TOOL_SPECS: a name, a description, and the inputs. The harness runs FUNCTIONS: plain Python. The model never runs anything itself; it only asks. The new one_line() helper, which goes right under show(), squeezes a tool's result onto one line for the transcript."
+    hunks:
+      - where: "new code"
+        diff: |2
+               """Print one line of the live transcript: line breaks become spaces, and it is cut to fit."""
+               print(f"{tag:<8} {' '.join(str(text).splitlines())}"[:100])
+          +
+          +
+          +def one_line(text):
+          +    """Join the lines of a tool result with ' | ' for the transcript. The model still gets all of it."""
+          +    return " | ".join(line.strip() for line in str(text).splitlines() if line.strip())
+           
+           
+      - where: "new code"
+        diff: |2
+           
+           
+          +# ============ TOOLS: the model's hands ============
+          +
+          +def read_file(path):
+          +    with open(path) as f:
+          +        return f.read()
+          +
+          +
+          +FUNCTIONS = {"read_file": read_file}  # tool name -> the Python function that runs it
+          +
+          +TOOL_SPECS = [{                        # what the model reads about each tool
+          +    "name": "read_file",
+          +    "description": "Read a text file and return what is in it.",
+          +    "input_schema": {"type": "object",
+          +                     "properties": {"path": {"type": "string", "description": "the file's path"}},
+          +                     "required": ["path"]},
+          +}]
+          +
+          +
+           # ============ COMMAND LINE ============
+           
+  - id: "2b"
+    title: "The loop"
+    explain: |2-
+      This is the agent loop from chapter 6. Read it slowly; everything else in this build hangs off it. - messages is the whole conversation so far.
+      - Each turn, Rein calls the model and saves the reply into messages, exactly as it came.
+      - If the reply has no tool calls, the model is done. finish() prints how the run ended, and the loop stops.
+      - Otherwise Rein runs each tool and builds a tool_result for each one. All the results go back as one message, and the loop repeats.
+      - The for loop can only run max_turns times. That limit is the one way to stop that does not depend on the model behaving. Why a class? Later steps give the loop more to carry: tools, a permission gate, a trace, limits. With a class, each step adds a line or a method instead of rewriting the loop. And every way a run can end goes through finish(), so later steps can record endings in one place.
+    hunks:
+      - where: "new code"
+        diff: |2
+           
+           
+          +# ============ THE LOOP ============
+          +
+          +SYSTEM_PROMPT = "You are Rein, a careful coding agent. Look at the files before you answer."
+          +
+          +
+          +@dataclass
+          +class Config:
+          +    max_turns: int = 10  # hard stop: the most model calls one run may use
+          +
+          +
+          +class Agent:
+          +    def __init__(self, model, cfg):
+          +        self.model, self.cfg = model, cfg
+          +
+          +    def say(self, tag, text):
+          +        show(tag, text)
+          +
+          +    def finish(self, status, note, answer=""):
+          +        """Every way a run can end goes through here, so none of them gets forgotten."""
+          +        self.say(status, note)
+          +        return answer
+          +
+          +    def run(self, task):
+          +        messages = [{"role": "user", "content": task}]
+          +        self.say("task", task)
+          +        for turn in range(1, self.cfg.max_turns + 1):
+          +            reply = self.model.call(SYSTEM_PROMPT, messages, TOOL_SPECS)
+          +            messages.append({"role": "assistant", "content": reply.content})
+          +            self.say(f"turn {turn}", f"model: {reply.text}" if reply.text else "model asks for tools")
+          +            if not reply.tool_calls:
+          +                return self.finish("done", f"after {turn} model calls", reply.text)
+          +            results = []
+          +            for call in reply.tool_calls:
+          +                self.say("", f"tool   {call.name} {json.dumps(call.input)}")
+          +                output, is_error = self.run_tool(call)
+          +                self.say("", ("error  " if is_error else "result ") + one_line(output))
+          +                results.append({"type": "tool_result", "tool_use_id": call.id,
+          +                                "content": output, "is_error": is_error})
+          +            messages.append({"role": "user", "content": results})
+          +        return self.finish("stopped", f"turn limit reached ({self.cfg.max_turns} model calls)")
+          +
+          +    def run_tool(self, call):
+          +        """Run one tool call. Any error becomes a message for the model, never a crash."""
+          +        try:
+          +            return FUNCTIONS[call.name](**call.input), False
+          +        except Exception as e:
+          +            return f"{type(e).__name__}: {e}", True
+          +
+          +
+           # ============ COMMAND LINE ============
+           
+  - id: "2c"
+    title: "Use the loop"
+    explain: "main() now hands the task to the agent instead of making a single call. The red lines go."
+    hunks:
+      - where: "in main()"
+        diff: |2
+                   model = ClaudeModel()
+           
+          -    messages = [{"role": "user", "content": args.task}]
+          -    reply = model.call("You are a helpful assistant.", messages, [])
+          -    show("you", args.task)
+          -    show("model", reply.text)
+          -    show("", f"stop_reason={reply.stop_reason} tokens_in={reply.usage['input_tokens']} "
+          -             f"tokens_out={reply.usage['output_tokens']}")
+          +    Agent(model, Config()).run(args.task)
+           
+           
+checkpoint:
+  setup: ["reset_demo"]
+  argv: ["Find the bug in demo/calc.py", "--fake", "scenarios/02_read.json"]
+  expected: |2
+    task     Find the bug in demo/calc.py
+    turn 1   model: I will read the code first.
+             tool   read_file {"path": "demo/calc.py"}
+             result def add(a, b): | return a - b
+    turn 2   model: Now the test.
+             tool   read_file {"path": "demo/test_calc.py"}
+             result from calc import add | def test_add(): | result = add(2, 3) | assert result == 5, f"
+    turn 3   model: Found it: add() returns a - b, but the test expects a + b. I can only read, so I can
+    done     after 3 model calls
+  explain: "Three model calls. In turn 1, the model asked for demo/calc.py. Rein read it, and the result went back into messages. In turn 2 it asked for the test. In turn 3 it answered without asking for tools, so the loop ended. Notice who did what: the model only asked, and the harness did every read. Notice also that the paths start with demo/. This read_file reads from wherever you run Rein, so it could read any file on your computer. Step 3 fixes that."
+breaks:
+  - id: "small-limit"
+    title: "A smaller turn limit"
+    explain: "Set max_turns to 2 in Config and run again. The last line becomes stopped  turn limit reached (2 model calls). The run ended on the harness's terms."
+    change:
+      patch:
+        diff: |2
+           @dataclass
+           class Config:
+          -    max_turns: int = 10  # hard stop: the most model calls one run may use
+          +    max_turns: int = 2  # hard stop: the most model calls one run may use
+           
+           
+    expected: |2
+      task     Find the bug in demo/calc.py
+      turn 1   model: I will read the code first.
+               tool   read_file {"path": "demo/calc.py"}
+               result def add(a, b): | return a - b
+      turn 2   model: Now the test.
+               tool   read_file {"path": "demo/test_calc.py"}
+               result from calc import add | def test_add(): | result = add(2, 3) | assert result == 5, f"
+      stopped  turn limit reached (2 model calls)
+  - id: "missing-path"
+    title: "A missing path"
+    explain: "Change the first path in the script to demo/nope.py. The result line says FileNotFoundError, as an error the model can read, not a crash. Would a model know what to do next from that message? Step 3 writes better ones."
+    change:
+      script:
+        path: "scenarios/02_read.json"
+        json: {"replies": [{"say": "I will read the code first.", "tools": [["read_file", {"path": "demo/nope.py"}]]}, {"say": "Now the test.", "tools": [["read_file", {"path": "demo/test_calc.py"}]]}, {"say": "Found it: add() returns a - b, but the test expects a + b. I can only read, so I cannot fix it yet."}]}
+    expected: |2
+      task     Find the bug in demo/calc.py
+      turn 1   model: I will read the code first.
+               tool   read_file {"path": "demo/nope.py"}
+               error  FileNotFoundError: [Errno 2] No such file or directory: 'demo/nope.py'
+      turn 2   model: Now the test.
+               tool   read_file {"path": "demo/test_calc.py"}
+               result from calc import add | def test_add(): | result = add(2, 3) | assert result == 5, f"
+      turn 3   model: Found it: add() returns a - b, but the test expects a + b. I can only read, so I can
+      done     after 3 model calls
+  - id: "unknown-tool"
+    title: "A tool that does not exist"
+    explain: "Change read_file in the first reply to delete_file. The error is KeyError: 'delete_file', which tells a model nothing useful. Step 3 fixes this too."
+    change:
+      script:
+        path: "scenarios/02_read.json"
+        json: {"replies": [{"say": "I will read the code first.", "tools": [["delete_file", {"path": "demo/calc.py"}]]}, {"say": "Now the test.", "tools": [["read_file", {"path": "demo/test_calc.py"}]]}, {"say": "Found it: add() returns a - b, but the test expects a + b. I can only read, so I cannot fix it yet."}]}
+    expected: |2
+      task     Find the bug in demo/calc.py
+      turn 1   model: I will read the code first.
+               tool   delete_file {"path": "demo/calc.py"}
+               error  KeyError: 'delete_file'
+      turn 2   model: Now the test.
+               tool   read_file {"path": "demo/test_calc.py"}
+               result from calc import add | def test_add(): | result = add(2, 3) | assert result == 5, f"
+      turn 3   model: Found it: add() returns a - b, but the test expects a + b. I can only read, so I can
+      done     after 3 model calls
