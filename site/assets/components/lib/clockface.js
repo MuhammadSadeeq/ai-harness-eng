@@ -295,17 +295,19 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
       if (anchor === "start") x = Math.min(lx, W - 6 - widest);
       if (anchor === "end") x = Math.max(lx, 6 + widest);
       if (anchor === "middle") x = Math.min(W - 6 - half, Math.max(6 + half, lx));
-      const name = svgEl("text", { class: "label-name", x, y: ly + dy, "text-anchor": anchor, "font-size": 15 });
+      // A label above the face grows upward, so its last line stays clear of the rim (it used to run across the rim).
+      const top = co > 0.5 ? ly + dy - SUB_LINE * subLines.length : ly + dy;
+      const name = svgEl("text", { class: "label-name", x, y: top, "text-anchor": anchor, "font-size": 15 });
       name.textContent = wire.short;
       group.append(name);
       subLines.forEach((line, i) => {
-        const sub = svgEl("text", { class: "label-sub", x, y: ly + dy + SUB_LINE * (i + 1), "text-anchor": anchor, "font-size": 14 });
+        const sub = svgEl("text", { class: "label-sub", x, y: top + SUB_LINE * (i + 1), "text-anchor": anchor, "font-size": 14 });
         sub.textContent = line;
         group.append(sub);
       });
       if (spoke.badge) {
         const bw = Math.round(spoke.badge.length * CHAR_SANS + 16);
-        const by = ly + dy + SUB_LINE * (subLines.length + 1) + 4;
+        const by = co > 0.5 ? top - 28 : top + SUB_LINE * (subLines.length + 1) + 4;
         const bx = anchor === "end" ? x - bw : anchor === "middle" ? x - bw / 2 : x;
         const badgeText = svgEl("text", { class: "badge-text", x: bx + bw / 2, y: by + 16, "text-anchor": "middle", "font-size": 14 });
         badgeText.textContent = spoke.badge;
