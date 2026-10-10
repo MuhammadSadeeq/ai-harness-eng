@@ -1,7 +1,8 @@
 // Data access for components (docs/COMPONENTS.md §3). Each URL is fetched once per page. Tapes and boards
-// go through the simulator's strict parser (integers only, ASCII, key order kept); facts may hold
-// decimals (prices), so they use JSON.parse.
-import { parseStrictJson } from "../../sim/index.js";
+// go through the simulator's strict parser (integers only, ASCII, key order kept), imported only when a
+// tape or board is asked for, so pages without a run (a kata, cards) don't load the simulator. Facts may
+// hold decimals (prices), so they use JSON.parse.
+const strict = () => import("../../sim/index.js").then((sim) => sim.parseStrictJson);
 
 const DATA = new URL("../../../data/", import.meta.url);
 const cache = new Map();
@@ -17,15 +18,17 @@ function fetchText(rel) {
   return cache.get(url);
 }
 
-const SAFE_ID = /^[a-z0-9][a-z0-9-]*$/;
+const SAFE_ID = /^[A-Za-z0-9][A-Za-z0-9-]*$/; // ids name files: letters, digits, dashes (kata ids such as B2-loop)
 
 function checkId(kind, id) {
   if (typeof id !== "string" || !SAFE_ID.test(id)) throw new Error(`bad ${kind} id: ${String(id)}`);
   return id;
 }
 
-export const getTape = async (id) => parseStrictJson(await fetchText(`scenarios/${checkId("tape", id)}.json`));
-export const getBoard = async (id) => parseStrictJson(await fetchText(`scenarios/boards/${checkId("board", id)}.json`));
+export const getTape = async (id) => (await strict())(await fetchText(`scenarios/${checkId("tape", id)}.json`));
+export const getBoard = async (id) => (await strict())(await fetchText(`scenarios/boards/${checkId("board", id)}.json`));
+/** A compiled kata (site/data/katas/<id>.json, from katas/<id>/ by tools/gen_data.py). */
+export const getKata = async (id) => JSON.parse(await fetchText(`katas/${checkId("kata", id)}.json`));
 export const getFacts = async () => JSON.parse(await fetchText("facts.json"));
 export const getCourse = async () => JSON.parse(await fetchText("course.json"));
 export const getTerms = async () => JSON.parse(await fetchText("terms.json"));
