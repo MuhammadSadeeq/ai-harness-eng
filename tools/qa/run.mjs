@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // HARNESSED browser QA (BP-0.5A section 7). Serves site/ on 127.0.0.1, then per page:
 //   width x theme: console errors, page errors, failed requests, HTTP >= 400, horizontal
-//   scroll, (375 px) text under 14 px, hx-* self-tests, full-page screenshot;
+//   scroll, design tokens and fonts loaded, (1280) same-origin links resolve, text under 14 px (SVG text
+//   at its rendered size), hx-* self-tests, full-page screenshot;
 //   375 and 1280, every theme: axe (serious/critical fail, moderate warn);
 //   1280 light: page weight, CVD screenshots;
 //   reduced motion: no running animation longer than 150 ms.
@@ -152,7 +153,13 @@ const SMALL_TEXT_JS = () => {
     const rect = el.getBoundingClientRect();
     const cs = getComputedStyle(el);
     if (rect.width === 0 || rect.height === 0 || cs.visibility === "hidden" || cs.display === "none") continue;
-    const px = parseFloat(cs.fontSize);
+    // SVG text renders at its font size times the figure's scale (a 600-unit
+    // viewBox drawn 300 px wide halves it), so measure what the reader sees.
+    let px = parseFloat(cs.fontSize);
+    if (el instanceof SVGGraphicsElement && el.getScreenCTM()) {
+      const m = el.getScreenCTM();
+      px = Math.round(px * Math.hypot(m.a, m.b) * 10) / 10;
+    }
     if (px < 14) out.push(`${selectorOf(el)} ${px}px`);
   }
   return out;
@@ -176,6 +183,14 @@ async function checkPageLoad(page, url, width, screenshotPath) {
   try {
     await page.goto(url, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
+    // The token sheet and the fonts must actually load (a page once passed QA
+    // with tokens.css unlinked and every colour and font token undefined).
+    const sheet = await page.evaluate(() => ({
+      paper: getComputedStyle(document.documentElement).getPropertyValue("--hx-paper").trim(),
+      failedFonts: [...document.fonts].filter((f) => f.status === "error").map((f) => f.family),
+    }));
+    if (!sheet.paper) failures.push("design tokens missing: --hx-paper is undefined (is tokens.css linked?)");
+    for (const family of sheet.failedFonts) failures.push(`font failed to load: ${family}`);
     const dims = await page.evaluate(() => ({
       scrollWidth: document.documentElement.scrollWidth,
       innerWidth: window.innerWidth,
@@ -183,9 +198,19 @@ async function checkPageLoad(page, url, width, screenshotPath) {
     if (dims.scrollWidth > dims.innerWidth) {
       failures.push(`horizontal scroll: scrollWidth ${dims.scrollWidth} > innerWidth ${dims.innerWidth}`);
     }
-    if (width === 375) {
-      const small = await page.evaluate(SMALL_TEXT_JS);
-      for (const item of small) failures.push(`text under ${MIN_FONT_PX}px at 375: ${item}`);
+    // DESIGN §9: nothing under 14 px at any width.
+    const small = await page.evaluate(SMALL_TEXT_JS);
+    for (const item of small) failures.push(`text under ${MIN_FONT_PX}px at ${width}: ${item}`);
+    if (width === 1280) {
+      // Every same-origin link must resolve: pages that do not exist yet are not links.
+      const hrefs = await page.evaluate(() => [...new Set([...document.querySelectorAll("a[href]")]
+        .map((a) => new URL(a.getAttribute("href"), location.href))
+        .filter((u) => u.origin === location.origin)
+        .map((u) => u.origin + u.pathname))]);
+      for (const href of hrefs) {
+        const response = await page.request.get(href);
+        if (response.status() >= 400) failures.push(`broken link: ${href.replace(/^https?:\/\/[^/]+/, "")} (HTTP ${response.status()})`);
+      }
     }
     const tests = await runHooks(page);
     for (const item of tests.failures) failures.push(item);

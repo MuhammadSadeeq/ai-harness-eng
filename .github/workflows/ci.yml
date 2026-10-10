@@ -23,6 +23,9 @@ jobs:
           python-version: "3.13"
           cache: pip
           cache-dependency-path: requirements-dev.txt
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
       - name: Install tools
         run: pip install -r requirements-dev.txt
       - name: Lint and types
@@ -36,6 +39,8 @@ jobs:
           python tools/render_curriculum.py --check
           python tools/check_content.py
           python tools/gen_data.py --check
+      - name: JS unit tests (simulator, shell, store)
+        run: node --test "site/assets/**/test/*.test.mjs"
       - name: Content checkers
         run: |
           python tools/check_facts.py

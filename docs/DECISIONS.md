@@ -290,3 +290,24 @@ basis for Phase 1, and answered SPEC §14:
 - A safety stop at turn 60 ends runaway runs as an operator interrupt.
 - D-033 as implemented: control, context, loop, errors and observe emit every
   turn; tools and permissions on tool turns; verify on done claims.
+
+### D-040 · Engine rulings from two independent runtimes (ENGINE A3) · *decided*
+- The JS simulator and Rein were built from ENGINE.md by different builders
+  that did not read each other's code. On the 6 dev tapes × 8 seeds they
+  already agreed byte for byte on b2, c2 and s0 (events and wire); they split
+  on c5 (trace_write after a resumed interrupt), c9 (rule names and the
+  default reason) and c6 (an empty `--wire` printed a newline). Each builder
+  also listed its own readings of unclear text; 21 rulings settle every
+  reading where they differed or the text was silent (ENGINE A3).
+- Choices and why: the safer reading where a lesson depends on it (a check on
+  a deleted file fails; a link escape names both paths; egress hosts are
+  lowercased so `EVIL.com` is not a bypass); the reading that keeps D-033
+  (every turn writes the trace); a learner-readable string where one is shown
+  (`no rule matched (mode ask)`, `rules[2]`); and tape validation for
+  degenerate replies instead of runtime rules for them.
+- Golden seeds must cover every branch option (A3.22): the b2 seeds 1–5 all
+  took the 40% spiral branch, so the goldens never showed the success path.
+- `node --test` takes a glob on Node 22 (`"site/assets/**/test/*.test.mjs"`);
+  a directory argument fails, so CI and blueprints use the glob.
+- JSON module imports (`import … with { type: "json" }`) are accepted for
+  `tooldefs.json`: Baseline in all engines since 2025.

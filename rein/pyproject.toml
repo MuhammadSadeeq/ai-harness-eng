@@ -12,7 +12,7 @@ dependencies = []
 where = ["src"]
 
 [tool.setuptools.package-data]
-rein = ["py.typed"]
+rein = ["py.typed", "tooldefs.json"]
 
 [tool.ruff]
 line-length = 100

@@ -475,3 +475,97 @@ eventually notices; lessons say so).
   `deny_if` is non-empty), else `default`. The `permission` event's `human` is
   `"approve"` or `"deny"`, and `final` is `"allow"` for approve, `"deny"` for
   deny. No draw happens before fatigue sets in.
+- **A3 (2026-10-10): rulings from building both runtimes.** Building the JS
+  simulator and Rein independently surfaced these gaps; each ruling below is
+  binding for both, and the golden traces are regenerated after it.
+  1. *Tool definitions:* the built-ins named in `tools`, in `tooldefs.json`
+     order (not tape order), then `custom_tools` in tape order.
+  2. *Unknown tool* (not listed, not custom): `ok` false, output
+     `Unknown tool: <name>`, latency 100 ms. A custom tool's `latency_ms`
+     defaults to 100.
+  3. *`run_command`:* split `cmd` on whitespace into words. `["pytest"]` or
+     `["pytest", "-q"]` runs the checks; first word `ls` lists files (arguments
+     ignored); `cat` with exactly one argument reads that path, otherwise output
+     `usage: cat <path>` with `ok` false; anything else
+     `command not found: <first word>` (empty `cmd`: `command not found: `).
+  4. *Inputs:* a missing or non-string `path`, `cmd`, `content`, `old_text` or
+     `new_text` reads as `""`. Messages echo the path as the model wrote it. An
+     empty `old_text` is "not found". `edit_file` on a missing file gives
+     `read_file`'s error. `list_files` lists every workspace key (links
+     included), sorted, joined by `"\n"`, no trailing newline.
+  5. *Checks:* a check on a missing file fails (`contains` and `not_contains`
+     alike); deleting the file never passes a check.
+  6. *Paths:* normalized lexically. A path starting with `/` is absolute: it is
+     never inside the workspace and is looked up in `outside` by its normalized
+     form (tapes may plant `/etc/passwd`). A relative path whose normal form
+     starts with `../` is looked up in `outside` the same way.
+  7. *Links:* a link's target is relative to the link's own directory and is
+     followed by reads and writes, with or without the sandbox. More than 8
+     hops gives `ok` false, output `Too many levels of links: <path>`.
+  8. *Sandbox reasons:* `path outside the workspace: <path>` with the path as
+     written, or `<path> -> <resolved>` when a link was followed, or
+     `too many levels of links: <path>`. Egress: `host` is the text after the
+     first `://` up to the first `/`, `?` or `#`; drop everything through the
+     last `@`; drop a trailing `:<digits>`; lowercase (no `://` gives `""`).
+     Reason `host not in egress: <host>`. An allowed call has reason `""`. The
+     check applies only to custom tools with `"effect": "network"` and a string
+     `url`. The `sandbox` event is emitted for every tool call when the module
+     is plugged; a blocked call emits no `tool_call`.
+  9. *Permissions:* a matched rule is named `rules[<i>]`, its 0-based index in
+     the board's `rules` list as written. Every rule must have a non-empty
+     `reason` (the schema requires it). No match: rule `default`, reason
+     `no rule matched (mode <mode>)`. A denied call's result is
+     `Denied: <reason>` (also when a human denies an `ask`).
+  10. *Globs:* `**` and `?` match any character (newlines and `/` included),
+      `*` any character except `/`; the whole string must match (Python
+      `fullmatch`). A non-string input value is matched against its `pyjson`
+      form; an absent field never matches (rules and `deny_if` alike).
+  11. *Custom tool results:* the first `results` entry whose every `match`
+      field equals the input field by `pyjson` wins; `ok` defaults to true.
+      No match and no `default`: output `""`, `ok` false.
+  12. *Tape defaults:* `human` absent means `{"default": "deny"}`; `seed_base`
+      0; `faults` `[]`; `outage` none; `interrupt` null; `rules` `[]`.
+  13. *Tape validity (the loader rejects the tape):* a non-integer number, a
+      non-ASCII string, an object key that is a canonical integer (`"0"`,
+      `"12"`: JS reorders such keys), a reply step with `stop: "tool_use"` and
+      no tools, or with tools and any other `stop`. A call that expands
+      100000 steps without a reply raises a script error (a tape bug, not a run
+      outcome; no event).
+  14. *Script:* reply steps take an optional `latency_ms` (§4). Error steps
+      default `error_ms` 300 and `retry_after_ms` 0; a scripted
+      `invalid_request` has message `Invalid request`. Outage and fault failures
+      take `error_ms` 300; an outage carries its `retry_after_ms`, a fault 0.
+      Faults are drawn in order and stop at the first failure. The outage
+      window is `[from_ms, to_ms)`. A text block exists only when `say` is
+      present. `assistant(blocks)` is `{"role": "assistant", "content": blocks}`.
+  15. *Conditions:* `turn_gte:<n>` compares the current (1-based) turn;
+      `last_denied` reads the last permission's `final`; `last_truncated` reads
+      the last `tool_call` of the run; `verify_feedback` is true when the last
+      user message is the gate's feedback.
+  16. *Permanent request errors* (A1 overflow and the §7.6 missing-result
+      error) take one path: before outage and fault checks, emit
+      `model_call(attempt=1)`, `t += 300`, emit `model_error`, end `"error"`.
+      They never touch `consecutive_failures` or the breaker, are never retried
+      and write no wire payload.
+  17. *Interrupt with resume:* the pending calls never run; the turn ends with
+      `trace_write` (every turn emits one, D-033), then the loop goes to the
+      next turn's guards.
+  18. *Output cap:* cut only when `tokens(output) > max_tokens` **and**
+      `len(output) > 4 * max_tokens`; `n = len(output) - 4 * max_tokens`.
+      Otherwise the output is unchanged and `truncated` is false. Error outputs
+      are capped too; denials and sandbox blocks are not tool outputs.
+  19. *Pricing:* fact keys `input_usd_per_mtok` and `output_usd_per_mtok`;
+      milli-units are `floor(p * 1000 + 0.5)`. Both CLIs default `--facts` to
+      `site/data/facts.json` (relative to the working directory), the file
+      `tools/gen_data.py` generates from `facts/`.
+  20. *Redaction* applies to every string inside an event's own fields
+      (recursively; keys excluded; never the envelope `v`, `run`, `seq`, `t`,
+      `turn`, `agent`, `kind`, `wire`), counting occurrences. Wire payloads are
+      never redacted: they show what the model was sent.
+  21. *Output files:* every line ends with `"\n"`; a run with no lines (for
+      example `--wire` when no call got a reply) prints zero bytes. The run id
+      uses `tape.id` and `board.id`, not file names.
+  22. *Golden coverage:* a tape's `golden_seeds` must, across its boards, take
+      every option of every `branch` step that the run reaches at least once;
+      `check_scenarios` reports an option no golden seed takes (Rein records the
+      choices; they are not events).
