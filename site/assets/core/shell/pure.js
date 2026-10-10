@@ -82,7 +82,15 @@ export function splitLoads(items, viewportHeight, eagerVh = 1.5) {
   return { eager, lazy };
 }
 
-/** The module record's terms for popovers; empty (not an error) when the course has none for that id. */
+/**
+ * The entry for a term id, or null. terms.json (tools/gen_data.py) is an object keyed by id; a list of entries
+ * with an `id` is accepted too. A missing id is plain text on the page, not an error.
+ */
 export function termEntry(terms, id) {
-  return (Array.isArray(terms) ? terms : []).find((t) => t && t.id === id) ?? null;
+  if (Array.isArray(terms)) return terms.find((t) => t && t.id === id) ?? null;
+  if (terms && typeof terms === "object" && Object.hasOwn(terms, id)) {
+    const entry = terms[id];
+    return entry && typeof entry === "object" ? entry : null;
+  }
+  return null;
 }

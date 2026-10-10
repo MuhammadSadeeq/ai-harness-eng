@@ -25,10 +25,19 @@ export function mountFacts(facts = null, doc = document) {
 function chip(doc, label, source) {
   const node = doc.createElement(source ? "a" : "span");
   node.className = "fact-chip";
-  if (source) {
-    node.setAttribute("href", source);
-    node.setAttribute("rel", "noopener");
-  }
   node.textContent = label;
+  if (source) {
+    // the source opens beside the lesson, so the learner keeps their place
+    node.setAttribute("href", source);
+    node.setAttribute("target", "_blank");
+    node.setAttribute("rel", "noopener noreferrer");
+    let host = "";
+    try { host = new URL(source).host; } catch { host = ""; }
+    if (host) node.setAttribute("title", `Source: ${host}`);
+    const hint = doc.createElement("span");
+    hint.className = "sr-only";
+    hint.textContent = host ? ` (source: ${host}, opens in a new tab)` : " (source, opens in a new tab)";
+    node.append(hint);
+  }
   return node;
 }

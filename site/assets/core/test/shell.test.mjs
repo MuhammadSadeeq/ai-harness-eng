@@ -111,3 +111,11 @@ test("termEntry: graceful when the terms list is empty or missing", () => {
   assert.equal(termEntry(undefined, "stop-reason"), null);
   assert.equal(termEntry([{ id: "stop-reason", definition: "x" }], "stop-reason").definition, "x");
 });
+
+test("termEntry: reads terms.json as gen_data writes it, an object keyed by id", () => {
+  const terms = { "agent-loop": { id: "agent-loop", term: "agent loop", definition: "The code that calls the model again." } };
+  assert.equal(termEntry(terms, "agent-loop").term, "agent loop");
+  assert.equal(termEntry(terms, "missing"), null);
+  assert.equal(termEntry(terms, "toString"), null);
+  assert.equal(termEntry(null, "agent-loop"), null);
+});
