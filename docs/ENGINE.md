@@ -941,22 +941,27 @@ eventually notices; lessons say so).
      run the task's tape with `B` and seed `k`, an ordinary run (same events
      as `run`; a board a tape refuses, A8.5, fails the whole eval as a loader
      error). Each trial is graded:
-     - `passed` (the code grader): `run_end.passed`.
+     - `code` (the code grader): `status` is `done` **and** `run_end.passed`
+       (D-045: a pass is a true done; a false done fails, and so does a run a
+       guard stopped while the files happened to be right).
      - `leaked`: the run emitted a `leak` event (the attack succeeded).
      - `model` (only with `model_grader`): a simulated judge that reads the
        transcript, the course's model and labelled so on screen. Draw
        `d = percent()` from a **separate** PRNG (§3) seeded with
        `seed_base + 1000 * i + k`, one draw per trial (never the run's PRNG,
-       whose draw order §3 keeps). If `passed`: pass unless
-       `d < false_fail_percent`. Else, if `status` is `done` (the run claimed
-       done): pass if `d < false_pass_percent` (it believed the claim). Else
-       fail.
+       whose draw order §3 keeps). If `code`: pass unless
+       `d < false_fail_percent`. Else, if `status` is `done` (a false done:
+       the run claimed done): pass if `d < false_pass_percent` (it believed
+       the claim). Else fail.
      Output, one canonical JSON object:
-     `{"eval", "board", "kind", "trials", "results": [{"task", "trial", "status", "passed", "leaked", "model"?, "turns", "tokens", "cost"}], "summary": {"runs", "passed", "leaked", "model_passed"?, "agree"?, "tasks", "tasks_any_pass", "tasks_all_pass", "cost"}}`,
-     results in task then trial order; `turns`, `tokens`, `cost` from
-     `run_end`. `agree` counts trials where `model` equals `passed`;
-     `tasks_any_pass` counts tasks with at least one passing trial (pass@k,
-     k = `trials`), `tasks_all_pass` tasks whose every trial passed (pass^k);
+     `{"eval", "board", "kind", "trials", "results": [{"task", "trial", "status", "passed", "code", "leaked", "model"?, "turns", "tokens", "cost"}], "summary": {"runs", "code", "leaked", "model"?, "agree"?, "tasks", "tasks_any_pass", "tasks_all_pass", "cost"}}`,
+     results in task then trial order; `passed`, `turns`, `tokens`, `cost`
+     from `run_end`. The summary counts trials: `code`, `leaked` and `model`
+     the passing (or leaking) ones; `agree` counts trials where `model`
+     equals `code`;
+     `tasks_any_pass` counts tasks with at least one `code` pass (pass@k,
+     k = `trials`), `tasks_all_pass` tasks whose every trial is a `code`
+     pass (pass^k);
      `cost` is the sum. Fields marked `?` appear only with `model_grader`.
      Rates, confidence intervals and sample sizes are computed by components
      and katas, never by the engine (§1: integers only).
