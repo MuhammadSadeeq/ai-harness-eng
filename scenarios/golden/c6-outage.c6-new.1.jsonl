@@ -1,0 +1,39 @@
+{"agent":"main","board":"c6-new","kind":"run_start","model_id":"claude-sonnet-5-5","run":"c6-outage:c6-new:1","seed":1,"seq":0,"t":0,"task":"Summarize the open issues in issues.md into summary.md","turn":0,"v":1,"wire":"loop"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"c6-outage:c6-new:1","seq":1,"t":0,"tokens":263,"turn":1,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":3,"run":"c6-outage:c6-new:1","seq":2,"t":0,"tokens":263,"turn":1,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"c6-outage:c6-new:1","seq":3,"t":0,"tokens_in":263,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempt":1,"kind":"model_error","message":"Overloaded","retry_after_ms":0,"run":"c6-outage:c6-new:1","seq":4,"t":300,"turn":1,"type":"overloaded","v":1,"wire":"errors"}
+{"agent":"main","attempt":1,"kind":"retry_wait","run":"c6-outage:c6-new:1","seq":5,"t":300,"turn":1,"v":1,"wait_ms":496,"wire":"errors"}
+{"agent":"main","attempt":2,"kind":"model_call","run":"c6-outage:c6-new:1","seq":6,"t":796,"tokens_in":263,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempt":2,"kind":"model_error","message":"Overloaded","retry_after_ms":0,"run":"c6-outage:c6-new:1","seq":7,"t":1096,"turn":1,"type":"overloaded","v":1,"wire":"errors"}
+{"agent":"main","attempt":2,"kind":"retry_wait","run":"c6-outage:c6-new:1","seq":8,"t":1096,"turn":1,"v":1,"wait_ms":1962,"wire":"errors"}
+{"agent":"main","attempt":3,"kind":"model_call","run":"c6-outage:c6-new:1","seq":9,"t":3058,"tokens_in":263,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempt":3,"kind":"model_error","message":"Overloaded","retry_after_ms":0,"run":"c6-outage:c6-new:1","seq":10,"t":3358,"turn":1,"type":"overloaded","v":1,"wire":"errors"}
+{"agent":"main","attempt":3,"kind":"retry_wait","run":"c6-outage:c6-new:1","seq":11,"t":3358,"turn":1,"v":1,"wait_ms":1587,"wire":"errors"}
+{"agent":"main","attempt":4,"kind":"model_call","run":"c6-outage:c6-new:1","seq":12,"t":4945,"tokens_in":263,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempt":4,"kind":"model_error","message":"Overloaded","retry_after_ms":0,"run":"c6-outage:c6-new:1","seq":13,"t":5245,"turn":1,"type":"overloaded","v":1,"wire":"errors"}
+{"agent":"main","attempt":4,"kind":"retry_wait","run":"c6-outage:c6-new:1","seq":14,"t":5245,"turn":1,"v":1,"wait_ms":7190,"wire":"errors"}
+{"agent":"main","attempt":5,"kind":"model_call","run":"c6-outage:c6-new:1","seq":15,"t":12435,"tokens_in":263,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempt":5,"kind":"model_error","message":"Overloaded","retry_after_ms":0,"run":"c6-outage:c6-new:1","seq":16,"t":12735,"turn":1,"type":"overloaded","v":1,"wire":"errors"}
+{"agent":"main","attempt":5,"kind":"retry_wait","run":"c6-outage:c6-new:1","seq":17,"t":12735,"turn":1,"v":1,"wait_ms":7575,"wire":"errors"}
+{"agent":"main","attempt":6,"kind":"model_call","run":"c6-outage:c6-new:1","seq":18,"t":20310,"tokens_in":263,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempts":6,"breaker":"closed","kind":"recovery_check","run":"c6-outage:c6-new:1","seq":19,"t":20310,"turn":1,"v":1,"wire":"errors"}
+{"agent":"main","cost":876000,"kind":"model_reply","run":"c6-outage:c6-new:1","seq":20,"stop_reason":"tool_use","t":21610,"text":"Reading issues.md.","tool_uses":[{"id":"toolu_1_1","input":{"path":"issues.md"},"name":"read_file"}],"turn":1,"usage":{"input_tokens":263,"output_tokens":35},"v":1,"wire":"loop"}
+{"agent":"main","decision":"allow","final":"allow","human":null,"kind":"permission","reason":"no permission policy","rule":"none","run":"c6-outage:c6-new:1","seq":21,"t":21610,"tool":"read_file","tool_use_id":"toolu_1_1","turn":1,"v":1,"wire":"permissions"}
+{"agent":"main","input":{"path":"issues.md"},"kind":"tool_call","ok":true,"output":"- login fails on Safari\n- export drops the last row\n- docs link is broken\n","output_tokens":19,"run":"c6-outage:c6-new:1","seq":22,"t":21710,"tool":"read_file","tool_use_id":"toolu_1_1","truncated":false,"turn":1,"v":1,"wire":"tools"}
+{"agent":"main","events":23,"kind":"trace_write","redacted":0,"run":"c6-outage:c6-new:1","seq":23,"t":21710,"turn":1,"v":1,"wire":"observe"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"c6-outage:c6-new:1","seq":24,"t":21710,"tokens":356,"turn":2,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":4,"run":"c6-outage:c6-new:1","seq":25,"t":21710,"tokens":356,"turn":2,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"c6-outage:c6-new:1","seq":26,"t":21710,"tokens_in":356,"turn":2,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"closed","kind":"recovery_check","run":"c6-outage:c6-new:1","seq":27,"t":21710,"turn":2,"v":1,"wire":"errors"}
+{"agent":"main","cost":2158000,"kind":"model_reply","run":"c6-outage:c6-new:1","seq":28,"stop_reason":"tool_use","t":23450,"text":"Writing the summary.","tool_uses":[{"id":"toolu_2_1","input":{"content":"3 open issues: login on Safari, export last row, broken docs link\n","path":"summary.md"},"name":"write_file"}],"turn":2,"usage":{"input_tokens":356,"output_tokens":57},"v":1,"wire":"loop"}
+{"agent":"main","decision":"allow","final":"allow","human":null,"kind":"permission","reason":"no permission policy","rule":"none","run":"c6-outage:c6-new:1","seq":29,"t":23450,"tool":"write_file","tool_use_id":"toolu_2_1","turn":2,"v":1,"wire":"permissions"}
+{"agent":"main","input":{"content":"3 open issues: login on Safari, export last row, broken docs link\n","path":"summary.md"},"kind":"tool_call","ok":true,"output":"Wrote summary.md (66 chars)","output_tokens":7,"run":"c6-outage:c6-new:1","seq":30,"t":23550,"tool":"write_file","tool_use_id":"toolu_2_1","truncated":false,"turn":2,"v":1,"wire":"tools"}
+{"agent":"main","events":7,"kind":"trace_write","redacted":0,"run":"c6-outage:c6-new:1","seq":31,"t":23550,"turn":2,"v":1,"wire":"observe"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"c6-outage:c6-new:1","seq":32,"t":23550,"tokens":458,"turn":3,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":5,"run":"c6-outage:c6-new:1","seq":33,"t":23550,"tokens":458,"turn":3,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"c6-outage:c6-new:1","seq":34,"t":23550,"tokens_in":458,"turn":3,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"closed","kind":"recovery_check","run":"c6-outage:c6-new:1","seq":35,"t":23550,"turn":3,"v":1,"wire":"errors"}
+{"agent":"main","cost":3204000,"kind":"model_reply","run":"c6-outage:c6-new:1","seq":36,"stop_reason":"end_turn","t":24410,"text":"Summary written. Done.","tool_uses":[],"turn":3,"usage":{"input_tokens":458,"output_tokens":13},"v":1,"wire":"loop"}
+{"agent":"main","events":5,"kind":"trace_write","redacted":0,"run":"c6-outage:c6-new:1","seq":37,"t":24410,"turn":3,"v":1,"wire":"observe"}
+{"agent":"main","cost":3204000,"kind":"run_end","passed":true,"run":"c6-outage:c6-new:1","seq":38,"status":"done","t":24410,"tokens":{"input":1077,"output":105},"turn":3,"turns":3,"v":1,"wire":"loop"}

@@ -13,13 +13,13 @@ const DEFAULT_FACTS = "site/data/facts.json";
 function usage(msg) {
   if (msg) process.stderr.write(`sim: ${msg}\n`);
   process.stderr.write(
-    "usage: node tools/sim_cli.mjs run --tape T --board B --seed N [--wire] [--facts site/data/facts.json]\n",
+    "usage: node tools/sim_cli.mjs run --tape T --board B --seed N [--wire | --choices] [--facts site/data/facts.json]\n",
   );
   process.exit(2);
 }
 
 function parseArgs(argv) {
-  const opts = { wire: false, facts: DEFAULT_FACTS };
+  const opts = { wire: false, choices: false, facts: DEFAULT_FACTS };
   const [cmd, ...rest] = argv;
   if (cmd !== "run") usage(cmd ? `unknown command "${cmd}"` : "missing command");
   for (let i = 0; i < rest.length; i += 1) {
@@ -30,12 +30,14 @@ function parseArgs(argv) {
       return rest[i];
     };
     if (a === "--wire") opts.wire = true;
+    else if (a === "--choices") opts.choices = true;
     else if (a === "--tape") opts.tape = value();
     else if (a === "--board") opts.board = value();
     else if (a === "--seed") opts.seed = value();
     else if (a === "--facts") opts.facts = value();
     else usage(`unknown option "${a}"`);
   }
+  if (opts.wire && opts.choices) usage("--wire and --choices cannot be combined");
   if (!opts.tape) usage("--tape is required");
   if (!opts.board) usage("--board is required");
   if (opts.seed === undefined) usage("--seed is required");
@@ -64,8 +66,10 @@ try {
   const board = loadBoard(readJson(resolve(opts.board), "board"));
   // Facts hold USD prices (decimals are allowed there); tapes and boards are integers only.
   const facts = JSON.parse(readFileSync(resolve(opts.facts), "utf8"));
-  const { events, wire } = runTrial(tape, board, opts.seed, { facts });
-  const lines = (opts.wire ? wire : events).map((x) => traceLine(x));
+  const { events, wire, branches } = runTrial(tape, board, opts.seed, { facts });
+  // --choices prints the branch choices instead of events (A3.22); zero choices is zero bytes.
+  const payloads = opts.choices ? branches : opts.wire ? wire : events;
+  const lines = payloads.map((x) => traceLine(x));
   // Every line ends with a newline; zero lines is zero bytes (A3.21).
   process.stdout.write(lines.map((l) => l + "\n").join(""));
   process.exitCode = 0;

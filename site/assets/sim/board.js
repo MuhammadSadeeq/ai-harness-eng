@@ -61,6 +61,9 @@ function loadModule(name, p, where) {
       if (!Array.isArray(egress) || egress.some((h) => typeof h !== "string")) {
         fail(where, "egress must be a list of host names");
       }
+      egress.forEach((h, i) => {
+        if (h !== h.toLowerCase()) fail(where, `egress[${i}] "${h}" must be lowercase`);
+      });
       return { egress };
     }
     case "verify_gate":

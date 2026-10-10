@@ -20,17 +20,23 @@ BUILTIN_LATENCY_MS = {
     "list_files": 100,
     "run_command": 2000,
 }
+# A3.2: an unknown tool and a custom tool without latency_ms take 100 ms.
+UNKNOWN_TOOL_LATENCY_MS = 100
+CUSTOM_TOOL_DEFAULT_LATENCY_MS = 100
+# A3.14: the expansion limit of one model call (steps that produce no reply).
+MAX_SCRIPT_EXPANSIONS = 100_000
+# A3.19: the facts registry, relative to the working directory.
+DEFAULT_FACTS_PATH = "site/data/facts.json"
 ERROR_TYPES = ("overloaded", "rate_limit", "api_error", "timeout", "invalid_request")
 TRANSIENT = frozenset({"overloaded", "rate_limit", "api_error", "timeout"})
-INVALID_TOOL_RESULT_MESSAGE = (
-    "tool_use ids were found without tool_result blocks immediately after"
-)
+# Section 7.6: the message of the permanent missing-result error (A3.16).
+MISSING_RESULT_MESSAGE = "tool_use ids were found without tool_result blocks immediately after"
 ERROR_MESSAGES = {
     "overloaded": "Overloaded",
     "rate_limit": "Rate limited",
     "api_error": "Internal server error",
     "timeout": "Request timed out",
-    "invalid_request": INVALID_TOOL_RESULT_MESSAGE,
+    "invalid_request": "Invalid request",  # A3.14: a scripted or faulted invalid_request
 }
 STATUSES = (
     "done",

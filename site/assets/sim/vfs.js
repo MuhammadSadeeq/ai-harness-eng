@@ -80,7 +80,7 @@ export class Vfs {
   write(p, content) {
     const r = this.resolve(p);
     if (!r.ok) return "links";
-    if (r.path === ".") return "dir";
+    if (r.path === "." || r.path === "/") return "dir";
     this.files.set(r.path, content);
     return "ok";
   }

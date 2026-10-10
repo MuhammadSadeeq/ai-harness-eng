@@ -42,3 +42,24 @@ test("errors go to stderr with exit code 2", () => {
   assert.match(missing.stderr, /tape/);
   assert.equal(missing.stdout, "");
 });
+
+test("--choices prints the branch choices, one canonical line each (A3.22)", () => {
+  const r = sim(["run", "--tape", TAPE, "--board", NEW, "--seed", "1", "--choices"]);
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(r.stdout, '["/script/3",1]\n');
+  const sixty = sim(["run", "--tape", TAPE, "--board", NEW, "--seed", "20261012", "--choices"]);
+  assert.equal(sixty.stdout, '["/script/3",0]\n');
+});
+
+test("--choices with no choices prints zero bytes", () => {
+  const none = sim(["run", "--tape", fileURLToPath(new URL("scenarios/c6-outage.json", ROOT)), "--board", fileURLToPath(new URL("scenarios/boards/c6-new.json", ROOT)), "--seed", "1", "--choices"]);
+  assert.equal(none.status, 0, none.stderr);
+  assert.equal(none.stdout, "");
+});
+
+test("--choices cannot be combined with --wire: exit 2 with a message", () => {
+  const both = sim(["run", "--tape", TAPE, "--board", NEW, "--seed", "1", "--wire", "--choices"]);
+  assert.equal(both.status, 2);
+  assert.match(both.stderr, /--wire and --choices cannot be combined/);
+  assert.equal(both.stdout, "");
+});

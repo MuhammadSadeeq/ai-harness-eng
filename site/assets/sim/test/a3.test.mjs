@@ -497,3 +497,38 @@ test("A3.13 distinct paths are fine", () => {
   const t = tapeWith({ workspace: { a: "x", "b/a": "y" }, outside: { "../x": "x", "/x": "y" } });
   assert.equal(Object.keys(t.workspace).length, 2);
 });
+
+// A3.4 (director): writing to "/" is the root directory too.
+test("A3.4 write_file to \"/\" gives Is a directory: /, ok false, and writes nothing", () => {
+  const { tools, vfs } = env();
+  assert.deepEqual(tools.run(call("write_file", { path: "/", content: "x" })), { ok: false, output: "Is a directory: /" });
+  assert.equal(vfs.read("/"), null);
+  assert.equal(vfs.write("/", "x"), "dir");
+});
+
+// A3.11 (director): a custom default entry without ok is ok false; a result entry without ok is ok true.
+test("A3.11 a default entry without ok is ok false; a result entry without ok is ok true", () => {
+  const withDefault = env({ custom_tools: [{ name: "t", description: "d", input_schema: { type: "object" }, results: [], default: { output: "nothing" } }] });
+  assert.deepEqual(withDefault.tools.run(call("t", {})), { ok: false, output: "nothing" });
+  const withResult = env({ custom_tools: [{ name: "t", description: "d", input_schema: { type: "object" }, results: [{ match: {}, output: "yes" }] }] });
+  assert.deepEqual(withResult.tools.run(call("t", {})), { ok: true, output: "yes" });
+});
+
+// A3.8 (director): egress entries must be lowercase.
+test("A3.8 a board egress entry must be lowercase", () => {
+  assert.throws(() => loadBoard({ id: "b", modules: { sandbox: { egress: ["API.example.com"] } } }), /egress\[0\] "API.example.com" must be lowercase/);
+  assert.deepEqual(loadBoard({ id: "b", modules: { sandbox: { egress: ["api.example.com"] } } }).modules.sandbox.egress, ["api.example.com"]);
+});
+
+// A3.16 (director): when both apply, the overflow comes first (the context check runs before the call).
+test("A3.16 an overflow and a missing result: the overflow comes first", () => {
+  const base = { script: [{ say: "a", tools: [["read_file", { path: "a.txt" }]] }, DONE], interrupt: { turn: 1, resume: true } };
+  const probe = runWith({ ...base, window: 100000 });
+  const p2 = ofKind(probe.events, "context_check")[1].tokens;
+  const p1 = ofKind(probe.events, "context_check")[0].tokens;
+  assert.ok(p1 < p2, "the second prompt is bigger");
+  const r = runWith({ ...base, window: p2 - 1 });
+  const err = ofKind(r.events, "model_error")[0];
+  assert.equal(err.type, "invalid_request");
+  assert.match(err.message, /^prompt is too long: /);
+});

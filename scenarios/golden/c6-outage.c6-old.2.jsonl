@@ -1,0 +1,7 @@
+{"agent":"main","board":"c6-old","kind":"run_start","model_id":"claude-sonnet-5-5","run":"c6-outage:c6-old:2","seed":2,"seq":0,"t":0,"task":"Summarize the open issues in issues.md into summary.md","turn":0,"v":1,"wire":"loop"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"c6-outage:c6-old:2","seq":1,"t":0,"tokens":263,"turn":1,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":3,"run":"c6-outage:c6-old:2","seq":2,"t":0,"tokens":263,"turn":1,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"c6-outage:c6-old:2","seq":3,"t":0,"tokens_in":263,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempt":1,"kind":"model_error","message":"Overloaded","retry_after_ms":0,"run":"c6-outage:c6-old:2","seq":4,"t":300,"turn":1,"type":"overloaded","v":1,"wire":"errors"}
+{"agent":"main","events":5,"kind":"trace_write","redacted":0,"run":"c6-outage:c6-old:2","seq":5,"t":300,"turn":1,"v":1,"wire":"observe"}
+{"agent":"main","cost":0,"kind":"run_end","passed":false,"run":"c6-outage:c6-old:2","seq":6,"status":"error","t":300,"tokens":{"input":0,"output":0},"turn":1,"turns":1,"v":1,"wire":"loop"}
