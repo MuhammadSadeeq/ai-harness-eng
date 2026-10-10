@@ -23,6 +23,7 @@ const WIRE = {
   compaction: "context",
   cache: "context",
   input_check: "tools",
+  cost: "observe",
 };
 
 export class Trace {

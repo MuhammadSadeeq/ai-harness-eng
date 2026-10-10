@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "title": "Where the cost goes",
+  "task": "Look at the workspace and say what is there. Say what you see. more more more more more more more more more more more more more more more more more more more more more more more more",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "input_milli_per_mtok": 1000,
+    "output_milli_per_mtok": 2000,
+    "cache_write_milli_per_mtok": 1250,
+    "cache_read_milli_per_mtok": 100
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given. You are a coding agent. Use the tools you are given. You are a coding agent. Use the tools you are given. You are a coding agent. Use the tools you are given. You are a coding agent. Us",
+  "rules": [],
+  "workspace": {
+    "calc.py": "def add(a, b):\n    return a - b\n"
+  },
+  "outside": {},
+  "tools": [
+    "list_files"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "calc.py",
+      "contains": "a + b"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "seed_base": 20261010,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "id": "eng-cost",
+  "cache_rules": {
+    "min_tokens": 1,
+    "ttl_ms": 10000000
+  },
+  "script": [
+    {
+      "say": "Listing.",
+      "tools": [
+        [
+          "list_files",
+          {}
+        ]
+      ]
+    },
+    {
+      "say": "Listing again.",
+      "tools": [
+        [
+          "list_files",
+          {}
+        ]
+      ]
+    },
+    {
+      "say": "Done."
+    }
+  ],
+  "boards": [
+    "eng-cost-plain",
+    "eng-cost-cache"
+  ]
+}

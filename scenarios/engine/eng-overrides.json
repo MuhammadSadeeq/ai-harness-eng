@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "title": "A vague tool, and the description that makes it clear",
+  "task": "Make add() return the sum.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "input_milli_per_mtok": 1000,
+    "output_milli_per_mtok": 2000,
+    "cache_write_milli_per_mtok": 1250,
+    "cache_read_milli_per_mtok": 100
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given.",
+  "rules": [],
+  "workspace": {
+    "calc.py": "def add(a, b):\n    return a - b\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file",
+    "edit_file"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "calc.py",
+      "contains": "a + b"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "seed_base": 20261010,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "id": "eng-overrides",
+  "script": [
+    {
+      "when": [
+        {
+          "if": "sent_lacks:Use edit_file",
+          "then": [
+            {
+              "say": "I'll write the whole file.",
+              "tools": [
+                [
+                  "write_file",
+                  {
+                    "path": "calc.py",
+                    "content": "def add(a, b):\\n    return a\\n"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "I'll change the one line.",
+              "tools": [
+                [
+                  "edit_file",
+                  {
+                    "path": "calc.py",
+                    "old_text": "a - b",
+                    "new_text": "a + b"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "Done."
+    }
+  ],
+  "boards": [
+    "eng-overrides-old",
+    "eng-overrides-new"
+  ]
+}

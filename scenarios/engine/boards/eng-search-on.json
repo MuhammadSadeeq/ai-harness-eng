@@ -1,0 +1,11 @@
+{
+  "id": "eng-search-on",
+  "label": "Tools on demand",
+  "modules": {
+    "tool_search": {
+      "always": [
+        "read_file"
+      ]
+    }
+  }
+}

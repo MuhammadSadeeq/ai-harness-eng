@@ -191,6 +191,9 @@
             "max_feedback": {
               "type": "integer",
               "minimum": 0
+            },
+            "pristine_tests": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -306,6 +309,45 @@
           "required": [
             "level"
           ]
+        },
+        "tool_overrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+              },
+              "input_schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "tool_search": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "always": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "always"
+          ]
+        },
+        "cost_attribution": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
         }
       }
     }

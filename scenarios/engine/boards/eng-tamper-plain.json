@@ -1,0 +1,9 @@
+{
+  "id": "eng-tamper-plain",
+  "label": "The live markers",
+  "modules": {
+    "verify_gate": {
+      "max_feedback": 1
+    }
+  }
+}

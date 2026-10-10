@@ -59,6 +59,15 @@ export function decide(permissions, call) {
   return { decision: mode, rule: "default", reason: `no rule matched (mode ${mode})` };
 }
 
+// The decision for one call (ENGINE 7.5), with the rule and reason. Pass the LOADED permissions module,
+// loadBoard(board).modules.permissions, not the raw board JSON: loading supplies each rule's match default.
+// permissions undefined means no policy, and every call is allowed. The harness and hx-gatekeeper both
+// pass the same loaded module.
+export function decidePermission(call, permissions) {
+  if (!permissions) return { decision: "allow", rule: "none", reason: "no permission policy" };
+  return decide(permissions, call);
+}
+
 // The egress host of a url (A3.8): the text after the first "://" up to the first
 // "/", "?" or "#"; everything through the last "@" dropped; a trailing ":<digits>"
 // dropped; lowercased. A url with no "://" gives "".

@@ -24,6 +24,10 @@ from .spec import (
     MODEL_ERROR_MS,
     OUTPUT_CAP_MARKER,
     SAFETY_TURNS,
+    TOOL_SEARCH_DEF,
+    TOOL_SEARCH_LATENCY_MS,
+    TOOL_SEARCH_MAX,
+    TOOL_SEARCH_NAME,
     TRANSIENT,
 )
 from .tape import Tape
@@ -150,6 +154,28 @@ class Harness:
         table = tape.effort.get("thinking_tokens") if tape.effort is not None else None
         # A8.3: a level the table leaves out adds 0.
         self.thinking = int(table.get(self.level, 0)) if table is not None else 0
+        # A9: tool overrides, tools on demand, the test suite, and cost attribution.
+        defined = set(tape.tools) | {str(c["name"]) for c in tape.custom_tools}
+        self.overrides: dict[str, dict[str, Any]] = {
+            name: dict(value) for name, value in board.modules.get("tool_overrides", {}).items()
+        }
+        self.has_search = board.has("tool_search")
+        self.always: list[str] = (
+            [str(n) for n in board.param("tool_search", "always")] if self.has_search else []
+        )
+        for name in [*self.overrides, *self.always]:
+            if name not in defined:
+                raise BoardError(f"{name!r} is not a tool of this tape (A9.1)")
+        if self.has_search and TOOL_SEARCH_NAME in defined:  # A10.2
+            raise BoardError("the tape defines its own tool_search; the module's is the harness's")
+        self.loaded: set[str] = set()
+        self.tests = list(tape.tests)
+        self.pristine = (
+            bool(board.modules["verify_gate"].get("pristine_tests", False))
+            if board.has("verify_gate")
+            else False
+        )
+        self.has_cost = board.has("cost_attribution")
         self.compacted = False
 
     # ---- the run -------------------------------------------------------------------------
@@ -252,6 +278,8 @@ class Harness:
                 cost=self.cost,
             )
 
+            if self.has_cost:  # A9.4: after each model_reply
+                self._emit_cost(request, reply, uncached, read, write)
             calls = self._read_calls(reply)  # A5.5(b): an interrupt needs a call the harness read
             interrupt = self.tape.interrupt
             if interrupt is not None and int(interrupt["turn"]) == self.turn and calls:
@@ -269,9 +297,10 @@ class Harness:
                 reply.stop_reason == "tool_use" and self.first_block_only
             ):
                 if self.has_verify:
-                    passed = self.toolbox.checks_hold()
+                    passed = self._gate_holds()
                     output = self.tape.test_output["pass" if passed else "fail"]
-                    self._emit("verify", check="tests", passed=passed, output=output)
+                    label = "tests (pristine)" if self.pristine and self.tests else "tests"
+                    self._emit("verify", check=label, passed=passed, output=output)
                     if passed:
                         return "done"
                     if self.feedback_count < self.max_feedback:
@@ -449,10 +478,95 @@ class Harness:
 
     def _input_reason(self, call: ToolUse) -> str:
         """A7.1: the reason the call's input is invalid, or "" (an unknown tool is not checked)."""
-        for definition in self.toolbox.definitions():
+        if self.has_search and call.name == TOOL_SEARCH_NAME:
+            return check_input(call.input, TOOL_SEARCH_DEF["input_schema"])
+        for definition in self._effective_defs():
             if definition["name"] == call.name:
                 return check_input(call.input, definition["input_schema"])
         return ""
+
+    # ---- A9: tool overrides, tools on demand, the test suite, cost attribution ----------------
+
+    def _effective_defs(self) -> list[dict[str, Any]]:
+        """The tape's definitions with the overrides applied (A9.1), in A3.1 order."""
+        defs = self.toolbox.definitions()
+        for definition in defs:
+            override = self.overrides.get(str(definition["name"]), {})
+            if "description" in override:
+                definition["description"] = override["description"]
+            if "input_schema" in override:
+                definition["input_schema"] = copy.deepcopy(override["input_schema"])
+        return defs
+
+    def _tool_defs(self) -> list[dict[str, Any]]:
+        """What the request carries (A9.2): the always tools, the loaded tools in A3.1 order, then
+        tool_search. Without the module, every tool."""
+        defs = self._effective_defs()
+        if not self.has_search:
+            return defs
+        always = [d for d in defs if str(d["name"]) in self.always]  # A10.3: A3.1 order
+        loaded = [
+            d for d in defs if str(d["name"]) in self.loaded and str(d["name"]) not in self.always
+        ]
+        return [*always, *loaded, copy.deepcopy(TOOL_SEARCH_DEF)]
+
+    def _search(self, tool_input: dict[str, Any]) -> tuple[bool, str, int]:
+        """A9.2 and A10.4-5: the tools whose name and definition, as sent, hold every word of the
+        query, in A3.1 order. Unloaded matches load, at most five. A query with no words matches
+        nothing. When every match is already loaded (always tools count), nothing new loads."""
+        query = text_field(tool_input, "query")
+        words = query.lower().split()
+        matches: list[str] = []
+        if words:
+            for definition in self._effective_defs():
+                name = str(definition["name"])
+                haystack = (name + " " + str(definition["description"])).lower()
+                if all(word in haystack for word in words):
+                    matches.append(name)
+        if not matches:
+            return False, f"No tool matched: {query}", TOOL_SEARCH_LATENCY_MS
+        held = set(self.loaded) | set(self.always)
+        new = [name for name in matches if name not in held][:TOOL_SEARCH_MAX]
+        if not new:
+            return True, "Already loaded: " + ", ".join(matches), TOOL_SEARCH_LATENCY_MS
+        self.loaded.update(new)
+        return True, "Loaded: " + ", ".join(new), TOOL_SEARCH_LATENCY_MS
+
+    def _gate_holds(self) -> bool:
+        """The verify gate: the suite when the tape has one (A9.3), else the checks (A3.5)."""
+        if self.tests:
+            return self.toolbox.suite_holds(pristine=self.pristine)
+        return self.toolbox.checks_hold()
+
+    def _emit_cost(
+        self, request: dict[str, Any], reply: Reply, uncached: int, read: int, write: int
+    ) -> None:
+        """A9.4: this call's cost split, and the largest part by tokens (ties: the earliest)."""
+        input_cost = uncached * self.prices.input_milli
+        output_cost = reply.output_tokens * self.prices.output_milli
+        cache_cost = write * (self.prices.cache_write_milli or 0) + read * (
+            self.prices.cache_read_milli or 0
+        )
+        parts: list[tuple[str, int]] = [
+            ("system", tokens(request["system"])),
+            ("tools", tokens(request["tools"])),
+        ]
+        parts += [
+            (f"messages[{k}]", tokens(message)) for k, message in enumerate(request["messages"])
+        ]
+        top_part, top_tokens = parts[0]
+        for name, size in parts[1:]:
+            if size > top_tokens:
+                top_part, top_tokens = name, size
+        self._emit(
+            "cost",
+            call_cost=input_cost + output_cost + cache_cost,
+            input_cost=input_cost,
+            output_cost=output_cost,
+            cache_cost=cache_cost,
+            top_part=top_part,
+            top_tokens=top_tokens,
+        )
 
     def _layers(self) -> list[str]:
         layers = ["clock", "system"] if self.has_clock else ["system"]
@@ -472,7 +586,7 @@ class Harness:
     def _request(self) -> dict[str, Any]:
         return {
             "system": self._system(),
-            "tools": self.toolbox.definitions(),
+            "tools": self._tool_defs(),
             "messages": self._sent(),
         }
 
@@ -631,7 +745,10 @@ class Harness:
             )
             if reason:
                 return tool_result(call.id, "Invalid input: " + reason, True)
-        ok, output, latency = self.toolbox.run(call.name, call.input)
+        if self.has_search and call.name == TOOL_SEARCH_NAME:  # A9.2
+            ok, output, latency = self._search(call.input)
+        else:
+            ok, output, latency = self.toolbox.run(call.name, call.input)
         shown, truncated = self._cap(output)
         self.t += latency
         self._emit(

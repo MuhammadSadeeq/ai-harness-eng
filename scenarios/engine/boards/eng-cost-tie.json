@@ -1,0 +1,7 @@
+{
+  "id": "eng-cost-tie",
+  "label": "The tie",
+  "modules": {
+    "cost_attribution": {}
+  }
+}

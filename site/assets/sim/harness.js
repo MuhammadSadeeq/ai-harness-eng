@@ -5,8 +5,11 @@ import { tokens } from "./tokens.js";
 import { pyjson } from "./pyjson.js";
 import { ScriptedModel, ERROR_MESSAGE } from "./model.js";
 import { Vfs, isInside } from "./vfs.js";
-import { Tools, toolDefs, checksHold, catPath } from "./tools.js";
-import { decide, fieldMatch, egressHost } from "./policy.js";
+import {
+  Tools, toolDefs, applyOverrides, checksHold, testsHold, catPath, searchMatches, TOOL_SEARCH_DEF, TOOL_SEARCH_MAX,
+} from "./tools.js";
+import { decidePermission, fieldMatch, egressHost } from "./policy.js";
+import { createHuman } from "./human.js";
 import { Trace } from "./trace.js";
 import { wireRequest, wireResponse } from "./wire.js";
 import { resolvePricing } from "./pricing.js";
@@ -21,6 +24,7 @@ const INVALID_REQUEST_MS = 300;
 const INTERRUPTED_RESULT = "Interrupted by the user before this ran.";
 const SANDBOX_PATH_TOOLS = ["read_file", "write_file", "edit_file"];
 const TOOL_OK = { allowed: true, reason: "" };
+const TOOL_SEARCH_MS = 100;
 
 const textBlock = (text) => ({ type: "text", text });
 const user = (blocks) => ({ role: "user", content: blocks });
@@ -71,6 +75,13 @@ function hasConsecutiveUsers(msgs) {
   return false;
 }
 
+// A9.4: the largest part of a request by tokens, as [name, tokens]; ties go to the earliest part.
+function largestPart(system, tools, messages) {
+  const parts = [["system", tokens(system)], ["tools", tokens(tools)]];
+  messages.forEach((m, k) => parts.push([`messages[${k}]`, tokens(m)]));
+  return parts.reduce((best, p) => (p[1] > best[1] ? p : best));
+}
+
 // One trial. tape and board must already be validated (loadTape, loadBoard).
 export function runCore(tape, board, seed, facts) {
   if (!Number.isInteger(seed)) throw new TypeError(`seed must be an integer, got ${seed}`);
@@ -85,9 +96,22 @@ export function runCore(tape, board, seed, facts) {
   const prng = createPrng(seed);
   const vfs = new Vfs(tape.workspace, tape.outside);
   const tools = new Tools(tape, vfs);
-  const defs = toolDefs(tape);
+  // A9.1: every tool definition, with the board's overrides. A9.2: the tools the request sends this turn.
+  const allDefs = applyOverrides(toolDefs(tape), mods.tool_overrides);
+  const alwaysTools = new Set(mods.tool_search?.always ?? []);
+  const loadedTools = new Set();
+  const requestDefs = () => {
+    if (!mods.tool_search) return allDefs;
+    return [
+      ...allDefs.filter((d) => alwaysTools.has(d.name)),
+      ...allDefs.filter((d) => !alwaysTools.has(d.name) && loadedTools.has(d.name)),
+      TOOL_SEARCH_DEF,
+    ];
+  };
+  let curDefs = allDefs;
   const model = new ScriptedModel(tape, prng);
-  const human = tape.human;
+  // A2: the simulated human draws from this run's PRNG, so the draw order is the one the run has always had.
+  const simHuman = createHuman(tape.human, prng);
   const system = tape.system +
     (mods.rules_file && tape.rules.length > 0 ? "\n\nProject rules:\n- " + tape.rules.join("\n- ") : "");
   const layers = mods.system_clock ? ["clock", "system"] : ["system"];
@@ -101,7 +125,6 @@ export function runCore(tape, board, seed, facts) {
   let cost = 0;
   let consecutiveFailures = 0;
   let feedbackCount = 0;
-  let asks = 0;
   let lastPermission = null;
   let lastTruncated = false;
   let lastIsFeedback = false;
@@ -116,11 +139,11 @@ export function runCore(tape, board, seed, facts) {
   // A6.4 and A5.1: the system prompt with the clock on top, and the messages a request sends.
   const systemNow = () => (mods.system_clock ? `Current time: t=${st.t} ms\n\n` : "") + system;
   const sentFor = (msgs) => (mods.history?.resend === false ? [user([textBlock(tape.task)])] : msgs);
-  const requestFor = (msgs) => ({ system: systemNow(), tools: defs, messages: sentFor(msgs) });
+  const requestFor = (msgs) => ({ system: systemNow(), tools: curDefs, messages: sentFor(msgs) });
   // A6.5: the prefixes P(1..n) of a request: keys (canonical JSON) and token counts.
   const cachePrefixes = (curSystem, sentMsgs) => {
-    const parts = [{ tools: defs }, { system: curSystem, tools: defs }];
-    for (let j = 1; j <= sentMsgs.length; j += 1) parts.push({ system: curSystem, tools: defs, messages: sentMsgs.slice(0, j) });
+    const parts = [{ tools: curDefs }, { system: curSystem, tools: curDefs }];
+    for (let j = 1; j <= sentMsgs.length; j += 1) parts.push({ system: curSystem, tools: curDefs, messages: sentMsgs.slice(0, j) });
     return parts.map((obj) => ({ key: pyjson(obj), tokens: tokens(obj) }));
   };
   // A6.5: the one breakpoint, at the end of the request; in the wire payload only.
@@ -140,17 +163,6 @@ export function runCore(tape, board, seed, facts) {
     st.t += INVALID_REQUEST_MS;
     trace.emit("model_error", { type: "invalid_request", attempt: 1, retry_after_ms: 0, message });
     return "error";
-  };
-
-  // Simulated human (A2). Every ask counts. Fatigue draws only after `after` asks.
-  const answer = (call) => {
-    asks += 1;
-    if (human.fatigue && asks > human.fatigue.after) {
-      if (prng.percent() < human.fatigue.approve_percent) return "approve";
-    }
-    const pairs = Object.entries(human.deny_if);
-    if (pairs.length > 0 && pairs.every(([f, g]) => fieldMatch(call.input, f, g))) return "deny";
-    return human.default;
   };
 
   // A3.8: "too many levels of links: <path>"; "<path> -> <resolved>" when a link was
@@ -192,6 +204,22 @@ export function runCore(tape, board, seed, facts) {
     return { shown, truncated: true };
   };
 
+  // A9.2 and A10.5: a tool_search call loads the matching tools not yet sent (at most five), in A3.1 order.
+  // When nothing is left to load but some tool matches, the output says so (Already loaded, ok). A query
+  // with no words, or no match at all, is No tool matched, not ok. A non-string query reads as "".
+  const searchOut = (query) => {
+    const q = typeof query === "string" ? query : "";
+    const sentNow = (name) => alwaysTools.has(name) || loadedTools.has(name);
+    const hits = searchMatches(q, allDefs.filter((d) => !sentNow(d.name))).slice(0, TOOL_SEARCH_MAX);
+    if (hits.length > 0) {
+      for (const d of hits) loadedTools.add(d.name);
+      return { ok: true, output: `Loaded: ${hits.map((d) => d.name).join(", ")}` };
+    }
+    const sentHits = searchMatches(q, allDefs.filter((d) => sentNow(d.name)));
+    if (sentHits.length > 0) return { ok: true, output: `Already loaded: ${sentHits.map((d) => d.name).join(", ")}` };
+    return { ok: false, output: `No tool matched: ${q}` };
+  };
+
   // Backoff (7.3). Jitter draws only when retry is plugged with "full".
   const backoff = (attempt, retry, retryAfter) => backoffWait(attempt, retry, prng, retryAfter);
 
@@ -199,13 +227,11 @@ export function runCore(tape, board, seed, facts) {
   const runToolUses = (calls) => {
     const results = [];
     for (const call of calls) {
-      const pol = mods.permissions
-        ? decide(mods.permissions, call)
-        : { decision: "allow", rule: "none", reason: "no permission policy" };
+      const pol = decidePermission(call, mods.permissions);
       let humanAnswer = null;
       let final;
       if (pol.decision === "ask") {
-        humanAnswer = answer(call);
+        humanAnswer = simHuman.ask(call);
         final = humanAnswer === "approve" ? "allow" : "deny";
       } else {
         final = pol.decision;
@@ -233,7 +259,10 @@ export function runCore(tape, board, seed, facts) {
         }
       }
       if (mods.validate_inputs) {
-        const def = defs.find((d) => d.name === call.name);
+        // A9.2: the harness's own tool_search is checked against its own definition.
+        const def = call.name === "tool_search" && mods.tool_search
+          ? TOOL_SEARCH_DEF
+          : allDefs.find((d) => d.name === call.name);
         const reason = def ? checkInput(def.input_schema, call.input) : "";
         trace.emit("input_check", { tool: call.name, valid: reason === "", reason, tool_use_id: call.id });
         if (reason !== "") {
@@ -241,9 +270,10 @@ export function runCore(tape, board, seed, facts) {
           continue;
         }
       }
-      const out = tools.run(call);
+      const searching = mods.tool_search !== undefined && call.name === "tool_search";
+      const out = searching ? searchOut(call.input.query) : tools.run(call);
       const capped = cap(out.output);
-      st.t += tools.latency(call.name);
+      st.t += searching ? TOOL_SEARCH_MS : tools.latency(call.name);
       trace.emit("tool_call", {
         tool: call.name,
         input: call.input,
@@ -296,6 +326,8 @@ export function runCore(tape, board, seed, facts) {
         return "interrupted";
       }
       st.turn += 1;
+      // A9.2: the request's tools for this turn, from what the model has loaded so far.
+      curDefs = requestDefs();
 
       // compaction (A6.3): harness code, no model call. Once per turn, before the control wire.
       compactedThisTurn = false;
@@ -319,7 +351,7 @@ export function runCore(tape, board, seed, facts) {
       // A5.1: without resend the request carries only the task; the harness keeps the full history.
       const sent = sentFor(messages);
       const curSystem = systemNow();
-      const request = { system: curSystem, tools: defs, messages: sent };
+      const request = { system: curSystem, tools: curDefs, messages: sent };
       const promptTokens = tokens(request);
       trace.emit("prompt_built", { layers, tokens: promptTokens });
 
@@ -405,12 +437,14 @@ export function runCore(tape, board, seed, facts) {
       st.t += reply.latency_ms ?? (600 + 20 * outTokens);
       tokensIn += promptTokens;
       tokensOut += outTokens;
-      if (cacheAcc) {
-        cost += cacheAcc.uncached * price.input_milli + cacheAcc.write * price.cache_write_milli +
-          cacheAcc.read * price.cache_read_milli + outTokens * price.output_milli;
-      } else {
-        cost += promptTokens * price.input_milli + outTokens * price.output_milli;
-      }
+      // A9.4: this call's cost in parts (nano-units): input (uncached), output, and the cache read and write.
+      const inputCost = cacheAcc ? cacheAcc.uncached * price.input_milli : promptTokens * price.input_milli;
+      const outputCost = outTokens * price.output_milli;
+      const cacheCost = cacheAcc
+        ? cacheAcc.write * price.cache_write_milli + cacheAcc.read * price.cache_read_milli
+        : 0;
+      const callCost = inputCost + outputCost + cacheCost;
+      cost += callCost;
       const usage = cacheAcc
         ? {
           input_tokens: cacheAcc.uncached,
@@ -421,7 +455,10 @@ export function runCore(tape, board, seed, facts) {
         : { input_tokens: promptTokens, output_tokens: outTokens };
       // A7.3: the thinking tokens are reported when the tape has an effort block.
       const usageOut = tape.effort ? { ...usage, output_tokens_details: { thinking_tokens: thinking } } : usage;
-      const reqWire = wireRequest(tape.model_id, curSystem, defs, mods.cache ? withBreakpoint(sent) : sent, outputConfig);
+      const reqWire = wireRequest(tape.model_id, curSystem, curDefs, mods.cache ? withBreakpoint(sent) : sent, outputConfig);
+      // A9.4: the largest part of the request as it was sent, measured before the reply joins the history
+      // (with resend on, sent is the same array as messages).
+      const topPart = mods.cost_attribution ? largestPart(curSystem, curDefs, sent) : null;
       messages.push({ role: "assistant", content: reply.content });
       wire.push(reqWire);
       wire.push(wireResponse(tape.model_id, st.turn, reply.content, reply.stop_reason, usageOut));
@@ -432,6 +469,17 @@ export function runCore(tape, board, seed, facts) {
         usage: usageOut,
         cost,
       });
+
+      if (mods.cost_attribution) {
+        trace.emit("cost", {
+          call_cost: callCost,
+          input_cost: inputCost,
+          output_cost: outputCost,
+          cache_cost: cacheCost,
+          top_part: topPart[0],
+          top_tokens: topPart[1],
+        });
+      }
 
       const calls = mods.first_block_only ? firstBlockCalls(reply) : reply.tool_uses;
 
@@ -457,9 +505,13 @@ export function runCore(tape, board, seed, facts) {
       // end_turn, and tool_use with no call read (A5.3): the end_turn branch, verify gate included
       if (reply.stop_reason === "end_turn" || reply.stop_reason === "tool_use") {
         if (mods.verify_gate) {
-          const passed = checksHold(vfs, tape.checks);
+          // A9.3: with a tape suite the gate runs it; pristine_tests reads the markers from the original workspace.
+          const pristine = mods.verify_gate.pristine_tests === true && tape.tests !== null;
+          const passed = tape.tests
+            ? testsHold(pristine ? new Vfs(tape.workspace, tape.outside) : vfs, vfs, tape.tests)
+            : checksHold(vfs, tape.checks);
           trace.emit("verify", {
-            check: "tests",
+            check: pristine ? "tests (pristine)" : "tests",
             passed,
             output: passed ? tape.test_output.pass : tape.test_output.fail,
           });

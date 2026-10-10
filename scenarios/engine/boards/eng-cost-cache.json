@@ -1,0 +1,8 @@
+{
+  "id": "eng-cost-cache",
+  "label": "With the cache",
+  "modules": {
+    "cost_attribution": {},
+    "cache": {}
+  }
+}

@@ -231,6 +231,11 @@ def condition_holds(condition: str, ctx: CallContext) -> bool:
         text = condition.split(":", 1)[1]
         request = ctx.request if ctx.request is not None else {"messages": ctx.messages}
         return not any(text in value for value in _string_values(request))
+    if condition.startswith("tools_gte:"):  # A9.2: at least n tool definitions in the request
+        return len(_request_tools(ctx)) >= int(condition.split(":", 1)[1])
+    if condition.startswith("tool_loaded:"):  # A9.2: the named tool is among the request's tools
+        name = condition.split(":", 1)[1]
+        return any(tool.get("name") == name for tool in _request_tools(ctx))
     if condition.startswith("effort_gte:"):  # A7.3: the level in force, in EFFORT_LEVELS order
         wanted = condition.split(":", 1)[1]
         return EFFORT_LEVELS.index(ctx.level) >= EFFORT_LEVELS.index(wanted)
@@ -239,6 +244,14 @@ def condition_holds(condition: str, ctx: CallContext) -> bool:
         roles = [message.get("role") for message in sent]
         return any(a == "user" and b == "user" for a, b in zip(roles, roles[1:], strict=False))
     raise ScriptError(f"unknown condition {condition!r}")
+
+
+def _request_tools(ctx: CallContext) -> list[dict[str, Any]]:
+    """The tool definitions of the request about to be sent (A9.2)."""
+    if ctx.request is None:
+        return []
+    tools: list[dict[str, Any]] = ctx.request["tools"]
+    return tools
 
 
 def _string_values(value: Any) -> Iterator[str]:

@@ -50,6 +50,7 @@ class Tape:
     notes: list[dict[str, Any]] = field(default_factory=list)  # A6.2: the commitments a run builds
     cache_rules: dict[str, int] | None = None  # A6.5: min_tokens and ttl_ms of the model
     effort: dict[str, Any] | None = None  # A7.3: default and thinking_tokens, when given
+    tests: list[dict[str, Any]] = field(default_factory=list)  # A9.3: the test suite, when given
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -132,6 +133,7 @@ def _build(raw: dict[str, Any]) -> Tape:
         notes=_check_notes(raw.get("notes", [])),
         cache_rules=_check_cache_rules(raw.get("cache_rules")),
         effort=_check_effort(raw.get("effort")),
+        tests=_check_tests(raw.get("tests", [])),
         raw=raw,
     )
 
@@ -299,6 +301,10 @@ def _check_condition(condition: str, where: str) -> None:
         raise TapeError(f"{where}: context_gte needs a canonical integer, got {condition!r}")
     if condition.startswith("sent_lacks:") and argument == "":
         raise TapeError(f"{where}: sent_lacks needs text after the colon")
+    if condition.startswith("tools_gte:") and not CANONICAL_INDEX.fullmatch(argument):
+        raise TapeError(f"{where}: tools_gte needs a canonical integer, got {condition!r}")
+    if condition.startswith("tool_loaded:") and argument == "":
+        raise TapeError(f"{where}: tool_loaded needs a tool name")
     if condition.startswith("effort_gte:") and argument not in EFFORT_LEVELS:
         raise TapeError(f"{where}: effort_gte needs one of {', '.join(EFFORT_LEVELS)}")
 
@@ -359,3 +365,38 @@ def _check_effort(raw: Any) -> dict[str, Any] | None:
             if level in table
         }
     return effort
+
+
+def _check_tests(raw: Any) -> list[dict[str, Any]]:
+    """A9.3: the tests as files say them: a marker (active while its file holds the text)."""
+    if not isinstance(raw, list):
+        raise TapeError("tests must be a list")
+    seen: set[str] = set()
+    tests: list[dict[str, Any]] = []
+    for index, test in enumerate(raw):
+        where = f"tests[{index}]"
+        if not isinstance(test, dict) or set(test) != {"id", "marker", "check"}:
+            raise TapeError(f"{where} must have exactly id, marker and check")
+        test_id = _text(test["id"], f"{where}.id")
+        if test_id in seen:
+            raise TapeError(f"{where}: duplicate id {test_id!r}")
+        seen.add(test_id)
+        marker = test["marker"]
+        if not isinstance(marker, dict) or set(marker) != {"file", "contains"}:
+            raise TapeError(f"{where}.marker must have exactly file and contains")
+        _text(marker["file"], f"{where}.marker.file")
+        _text(marker["contains"], f"{where}.marker.contains")
+        check = test["check"]
+        if not isinstance(check, dict) or set(check) not in (
+            {"file", "contains"},
+            {"file", "not_contains"},
+        ):
+            raise TapeError(
+                f"{where}.check must have file and exactly one of contains, not_contains"
+            )
+        _text(check["file"], f"{where}.check.file")
+        for key in ("contains", "not_contains"):
+            if key in check:
+                _text(check[key], f"{where}.check.{key}")
+        tests.append(dict(test))
+    return tests

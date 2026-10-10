@@ -1,0 +1,10 @@
+{
+  "id": "eng-tamper-pristine",
+  "label": "The original markers",
+  "modules": {
+    "verify_gate": {
+      "max_feedback": 1,
+      "pristine_tests": true
+    }
+  }
+}

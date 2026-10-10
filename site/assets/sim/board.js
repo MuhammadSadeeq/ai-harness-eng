@@ -10,7 +10,9 @@ const MODULE_PARAMS = {
   breaker: ["threshold"],
   permissions: ["mode", "rules"],
   sandbox: ["egress"],
-  verify_gate: ["max_feedback"],
+  verify_gate: ["max_feedback", "pristine_tests"],
+  tool_overrides: [],
+  tool_search: ["always"],
   close_books: [],
   rules_file: [],
   redact: ["patterns"],
@@ -22,11 +24,13 @@ const MODULE_PARAMS = {
   validate_inputs: [],
   split_results: [],
   effort: ["level"],
+  cost_attribution: [],
 };
 const DECISIONS = ["allow", "ask", "deny"];
 
 function loadModule(name, p, where) {
   if (!isObj(p)) fail(where, "module parameters must be an object");
+  if (name === "tool_overrides") return loadToolOverrides(p, where);
   noExtraKeys(p, MODULE_PARAMS[name], where);
   switch (name) {
     case "turn_limit":
@@ -74,8 +78,13 @@ function loadModule(name, p, where) {
       });
       return { egress };
     }
-    case "verify_gate":
-      return { max_feedback: reqInt(p, "max_feedback", where) };
+    case "verify_gate": {
+      // A9.3: pristine_tests is optional, true or false (false when absent).
+      if (p.pristine_tests !== undefined && typeof p.pristine_tests !== "boolean") {
+        fail(where, "pristine_tests must be true or false");
+      }
+      return { max_feedback: reqInt(p, "max_feedback", where), pristine_tests: p.pristine_tests === true };
+    }
     case "close_books":
     case "rules_file":
       return {};
@@ -100,11 +109,21 @@ function loadModule(name, p, where) {
     case "cache":
     case "validate_inputs":
     case "split_results":
+    case "cost_attribution":
       return {};
     case "effort": {
       // A7.3: the board sets the level in force (the tape default is used when absent).
       if (!EFFORT_LEVELS.includes(p.level)) fail(where, `level must be one of: ${EFFORT_LEVELS.join(", ")}`);
       return { level: p.level };
+    }
+    case "tool_search": {
+      // A9.2: the always list names tools the request sends from the start; none when absent.
+      const always = p.always ?? [];
+      if (!Array.isArray(always) || always.some((n) => typeof n !== "string")) {
+        fail(where, "always must be a list of tool names");
+      }
+      if (new Set(always).size !== always.length) fail(where, "always must not repeat a tool");
+      return { always: [...always] };
     }
     case "redact": {
       const patterns = p.patterns ?? [];
@@ -132,4 +151,35 @@ export function loadBoard(raw) {
     modules[name] = loadModule(name, p, `${where} ${name}`);
   }
   return { id, label: raw.label ?? id, modules };
+}
+
+// A9.1: {"<tool name>": {"description"?, "input_schema"?}}. A null-prototype map, so any name is a key.
+function loadToolOverrides(p, where) {
+  const out = Object.create(null);
+  for (const [name, o] of Object.entries(p)) {
+    const w = `${where} ${name}`;
+    if (!isObj(o)) fail(w, "an override is an object with description and/or input_schema");
+    noExtraKeys(o, ["description", "input_schema"], w);
+    if ("description" in o && typeof o.description !== "string") fail(w, "description must be a string");
+    if ("input_schema" in o && !isObj(o.input_schema)) fail(w, "input_schema must be an object");
+    out[name] = { ...o };
+  }
+  return out;
+}
+
+// Checks a loaded board against the loaded tape it runs on (A9.1 and A9.2). A tool is a built-in the
+// tape lists or a custom tool the tape defines; the names the board gives must be such tools.
+export function checkBoardForTape(tape, board) {
+  const where = `board ${board.id}`;
+  const names = new Set([...tape.tools, ...tape.custom_tools.map((c) => c.name)]);
+  for (const name of Object.keys(board.modules.tool_overrides ?? {})) {
+    if (!names.has(name)) fail(where, `tool_overrides names unknown tool "${name}"`);
+  }
+  const search = board.modules.tool_search;
+  if (search) {
+    for (const name of search.always) {
+      if (!names.has(name)) fail(where, `tool_search always names unknown tool "${name}"`);
+    }
+    if (names.has("tool_search")) fail(where, 'tool_search is the harness\'s own tool name; the tape may not define it');
+  }
 }

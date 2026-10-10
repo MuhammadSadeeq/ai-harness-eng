@@ -112,7 +112,36 @@ def _check_rule(rule: Any) -> None:
 
 
 def _check_a6_a7(name: str, params: dict[str, Any]) -> None:
-    """A6 and A7 modules: the parameters the engine reads."""
+    """A6, A7 and A9 modules: the parameters the engine reads."""
+    if name == "tool_overrides":  # A9.1: per tool, a description and/or an input_schema
+        for tool, override in params.items():
+            if (
+                not isinstance(override, dict)
+                or not override
+                or set(override) - {"description", "input_schema"}
+            ):
+                raise BoardError(f"tool_overrides.{tool} takes description and/or input_schema")
+            if "description" in override and (
+                not isinstance(override["description"], str) or not override["description"]
+            ):
+                raise BoardError(f"tool_overrides.{tool}.description must be a non-empty string")
+            if "input_schema" in override and not isinstance(override["input_schema"], dict):
+                raise BoardError(f"tool_overrides.{tool}.input_schema must be an object")
+    if name == "tool_search":  # A9.2
+        always = params.get("always")
+        if not isinstance(always, list) or len(set(always)) != len(always):
+            raise BoardError("tool_search.always must be a list of distinct tool names")
+        for tool in always:
+            if not isinstance(tool, str) or not tool:
+                raise BoardError("tool_search.always must hold tool names")
+    if (
+        name == "verify_gate"
+        and "pristine_tests" in params
+        and not isinstance(params["pristine_tests"], bool)
+    ):
+        raise BoardError("verify_gate.pristine_tests must be true or false (A9.3)")
+    if name == "cost_attribution" and params:
+        raise BoardError("cost_attribution takes no parameters")
     if name == "compaction":
         percent = params.get("threshold_percent")
         if isinstance(percent, bool) or not isinstance(percent, int) or not 1 <= percent <= 100:

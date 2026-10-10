@@ -86,14 +86,28 @@ class Toolbox:
 
     def checks_hold(self) -> bool:
         """Every check holds. A check on a missing file fails, whichever kind it is (A3.5)."""
-        for check in self.tape.checks:
-            text = self.vfs.read(str(check["file"])).entry
-            if text is None:
-                return False
-            if "contains" in check:
-                if str(check["contains"]) not in text:
-                    return False
-            elif str(check["not_contains"]) in text:
+        return all(self._check_holds(check) for check in self.tape.checks)
+
+    def _check_holds(self, check: dict[str, Any]) -> bool:
+        text = self.vfs.read(str(check["file"])).entry
+        if text is None:
+            return False
+        if "contains" in check:
+            return str(check["contains"]) in text
+        return str(check["not_contains"]) not in text
+
+    def suite_holds(self, pristine: bool) -> bool:
+        """A9.3: every active test's check holds. A test is active while its marker's file holds the
+        marker text. With pristine, the markers are read from the tape's original workspace.
+        The checks always read the live files."""
+        original = Vfs(self.tape.workspace, {})
+        for test in self.tape.tests:
+            marker = test["marker"]
+            source = original if pristine else self.vfs
+            entry = source.read(str(marker["file"])).entry
+            if entry is None or str(marker["contains"]) not in entry:
+                continue
+            if not self._check_holds(test["check"]):
                 return False
         return True
 
@@ -140,7 +154,7 @@ class Toolbox:
             return False, "command not found: "
         first = words[0]
         if words in (["pytest"], ["pytest", "-q"]):
-            passed = self.checks_hold()
+            passed = self.suite_holds(pristine=False) if self.tape.tests else self.checks_hold()
             return passed, self.tape.test_output["pass" if passed else "fail"]
         if first == "ls":
             return True, "\n".join(self.vfs.workspace_paths())

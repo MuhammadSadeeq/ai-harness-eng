@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "title": "A tie for the largest part goes to the earliest",
+  "task": "List the files in this workspace, then open the notes in each folder and say what you see in every one of them, and keep the reply short for us all.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "input_milli_per_mtok": 1000,
+    "output_milli_per_mtok": 2000,
+    "cache_write_milli_per_mtok": 1250,
+    "cache_read_milli_per_mtok": 100
+  },
+  "window": 8000,
+  "system": "You are a coding agent.",
+  "rules": [],
+  "workspace": {
+    "calc.py": "def add(a, b):\n    return a - b\n"
+  },
+  "outside": {},
+  "tools": [
+    "list_files"
+  ],
+  "custom_tools": [],
+  "checks": [
+    {
+      "file": "calc.py",
+      "contains": "a - b"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "seed_base": 20261010,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "id": "eng-cost-tie",
+  "script": [
+    {
+      "say": "Listing.",
+      "tools": [
+        [
+          "list_files",
+          {}
+        ]
+      ]
+    },
+    {
+      "say": "Done."
+    }
+  ],
+  "boards": [
+    "eng-cost-tie"
+  ],
+  "cache_rules": {
+    "min_tokens": 1,
+    "ttl_ms": 10000000
+  }
+}

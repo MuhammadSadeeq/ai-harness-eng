@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from typing import Any
 
 ENGINE_VERSION = 1
 SAFETY_TURNS = 60  # section 7.1: the operator stop, for runaway runs
@@ -29,6 +30,21 @@ MAX_SCRIPT_EXPANSIONS = 100_000
 DEFAULT_FACTS_PATH = "site/data/facts.json"
 NOTE_KINDS = ("goal", "constraint", "decision", "progress", "file")  # A6.2
 EFFORT_LEVELS = ("low", "medium", "high", "xhigh", "max")  # A7.3, in order
+TOOL_SEARCH_NAME = "tool_search"  # A9.2
+TOOL_SEARCH_LATENCY_MS = 100
+TOOL_SEARCH_MAX = 5  # at most this many tools per search
+TOOL_SEARCH_DEF: dict[str, Any] = {
+    "name": "tool_search",
+    "description": "Find tools by keyword and load their definitions for the next request.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "query": {"type": "string", "description": "Words that describe the tool you need"}
+        },
+        "required": ["query"],
+        "additionalProperties": False,
+    },
+}
 DEFAULT_EFFORT = "high"  # A7.3: the level when neither the board nor the tape gives one
 ERROR_TYPES = ("overloaded", "rate_limit", "api_error", "timeout", "invalid_request")
 TRANSIENT = frozenset({"overloaded", "rate_limit", "api_error", "timeout"})
@@ -74,6 +90,9 @@ MODULES = (
     "validate_inputs",
     "split_results",
     "effort",
+    "tool_overrides",
+    "tool_search",
+    "cost_attribution",
 )
 # Section 9: the wire of every event kind.
 KIND_WIRE = {
@@ -97,6 +116,7 @@ KIND_WIRE = {
     "compaction": "context",
     "cache": "context",
     "input_check": "tools",
+    "cost": "observe",
 }
 ASCII_PATTERN = re.compile(r"[\x20-\x7e\n\t]*")
 CANONICAL_INDEX = re.compile(r"(0|[1-9][0-9]*)")

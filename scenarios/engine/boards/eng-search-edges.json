@@ -1,0 +1,11 @@
+{
+  "id": "eng-search-edges",
+  "label": "Edge queries",
+  "modules": {
+    "tool_search": {
+      "always": [
+        "read_file"
+      ]
+    }
+  }
+}

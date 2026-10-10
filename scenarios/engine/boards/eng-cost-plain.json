@@ -1,0 +1,7 @@
+{
+  "id": "eng-cost-plain",
+  "label": "No cache",
+  "modules": {
+    "cost_attribution": {}
+  }
+}

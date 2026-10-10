@@ -1000,7 +1000,10 @@
           "const": "verify"
         },
         "check": {
-          "const": "tests"
+          "enum": [
+            "tests",
+            "tests (pristine)"
+          ]
         },
         "passed": {
           "type": "boolean"

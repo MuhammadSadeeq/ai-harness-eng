@@ -39,13 +39,27 @@ export function countOccurrences(text, needle) {
   }
 }
 
-// Every check holds on the workspace (ground truth). A missing file fails both kinds (A3.5).
+// One check holds on the workspace. A missing file fails both kinds (A3.5).
+export function checkHolds(vfs, c) {
+  const text = vfs.read(c.file);
+  if (text === null) return false;
+  return "contains" in c ? text.includes(c.contains) : !text.includes(c.not_contains);
+}
+
+// Every check holds on the workspace (ground truth).
 export function checksHold(vfs, checks) {
-  return checks.every((c) => {
-    const text = vfs.read(c.file);
-    if (text === null) return false;
-    return "contains" in c ? text.includes(c.contains) : !text.includes(c.not_contains);
-  });
+  return checks.every((c) => checkHolds(vfs, c));
+}
+
+// A9.3: a test is active while its marker's file, read from markerVfs, contains the marker text.
+export function testActive(markerVfs, t) {
+  const text = markerVfs.read(t.marker.file);
+  return text !== null && text.includes(t.marker.contains);
+}
+
+// A9.3: the suite passes when every active test's check holds on vfs (the live files).
+export function testsHold(markerVfs, vfs, tests) {
+  return tests.every((t) => !testActive(markerVfs, t) || checkHolds(vfs, t.check));
 }
 
 // Tool definitions sent to the model: the built-ins the tape names, in tooldefs.json
@@ -60,6 +74,48 @@ export function toolDefs(tape) {
     input_schema: c.input_schema,
   }));
   return [...builtins, ...customs];
+}
+
+// A9.1: the definitions with each overridden description and/or input_schema; names never change.
+export function applyOverrides(defs, overrides) {
+  if (!overrides) return defs;
+  return defs.map((d) => {
+    if (!Object.prototype.hasOwnProperty.call(overrides, d.name)) return d;
+    const o = overrides[d.name];
+    return {
+      name: d.name,
+      description: o.description ?? d.description,
+      input_schema: o.input_schema ?? d.input_schema,
+    };
+  });
+}
+
+// A9.2: the harness's own tool, defined as ENGINE A9.2 gives it.
+export const TOOL_SEARCH_DEF = {
+  name: "tool_search",
+  description: "Find tools by keyword and load their definitions for the next request.",
+  input_schema: {
+    type: "object",
+    properties: {
+      query: { type: "string", description: "Words that describe the tool you need" },
+    },
+    required: ["query"],
+    additionalProperties: false,
+  },
+};
+
+export const TOOL_SEARCH_MAX = 5;
+
+// A9.2 and A10.5: the candidates whose lowercased name + " " + description contains every word of the
+// query (split on whitespace), in the order given. A query with no words matches nothing. The caller
+// caps what a search loads at TOOL_SEARCH_MAX.
+export function searchMatches(query, candidates) {
+  const words = query.toLowerCase().split(/\s+/).filter((w) => w !== "");
+  if (words.length === 0) return [];
+  return candidates.filter((d) => {
+    const text = `${d.name} ${d.description}`.toLowerCase();
+    return words.every((w) => text.includes(w));
+  });
 }
 
 export class Tools {
@@ -144,7 +200,11 @@ export class Tools {
     const first = w[0] ?? "";
     const joined = w.join(" ");
     if (joined === "pytest" || joined === "pytest -q") {
-      return checksHold(this.vfs, this.tape.checks)
+      // A9.3: with a tape suite, pytest runs the suite on the live files; otherwise the checks.
+      const passed = this.tape.tests
+        ? testsHold(this.vfs, this.vfs, this.tape.tests)
+        : checksHold(this.vfs, this.tape.checks);
+      return passed
         ? { ok: true, output: this.tape.test_output.pass }
         : { ok: false, output: this.tape.test_output.fail };
     }

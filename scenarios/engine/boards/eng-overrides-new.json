@@ -1,0 +1,11 @@
+{
+  "id": "eng-overrides-new",
+  "label": "The override describes the tool",
+  "modules": {
+    "tool_overrides": {
+      "write_file": {
+        "description": "Writes a whole file. Use edit_file to change code."
+      }
+    }
+  }
+}

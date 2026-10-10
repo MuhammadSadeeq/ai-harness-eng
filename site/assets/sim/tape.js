@@ -111,6 +111,9 @@ function checkCondition(cond, where) {
   if (typeof cond === "string" && /^sent_lacks:[\s\S]+$/.test(cond)) return;
   // A7.3: effort_gte:<level>, the level in force compared with a level name.
   if (typeof cond === "string" && /^effort_gte:(low|medium|high|xhigh|max)$/.test(cond)) return;
+  // A9.2: tools_gte:<n>, and tool_loaded:<name> where <name> is everything after the colon.
+  if (typeof cond === "string" && /^tools_gte:(0|[1-9][0-9]*)$/.test(cond)) return;
+  if (typeof cond === "string" && /^tool_loaded:\S+$/.test(cond)) return;
   fail(where, `unknown condition "${cond}"`);
 }
 
@@ -256,6 +259,32 @@ function loadCacheRules(raw, where) {
   };
 }
 
+// A9.3: the tape's test suite (null when absent): [{id, marker: {file, contains}, check: {file, contains | not_contains}}].
+function loadTests(raw, where) {
+  if (raw === undefined || raw === null) return null;
+  if (!Array.isArray(raw)) fail(where, "tests must be a list");
+  const ids = new Set();
+  return raw.map((t, i) => {
+    const w = `${where}.tests[${i}]`;
+    if (!isObj(t)) fail(w, "a test is an object");
+    noExtraKeys(t, ["id", "marker", "check"], w);
+    const id = reqStr(t, "id", w);
+    if (ids.has(id)) fail(w, `duplicate test id "${id}"`);
+    ids.add(id);
+    if (!isObj(t.marker)) fail(w, "marker must be an object");
+    noExtraKeys(t.marker, ["file", "contains"], `${w}.marker`);
+    reqStr(t.marker, "file", `${w}.marker`);
+    reqStr(t.marker, "contains", `${w}.marker`);
+    if (!isObj(t.check)) fail(w, "check must be an object");
+    noExtraKeys(t.check, ["file", "contains", "not_contains"], `${w}.check`);
+    reqStr(t.check, "file", `${w}.check`);
+    const kinds = ["contains", "not_contains"].filter((k) => k in t.check);
+    if (kinds.length !== 1) fail(w, 'check: give exactly one of "contains" or "not_contains"');
+    reqStr(t.check, kinds[0], `${w}.check`);
+    return { id, marker: { file: t.marker.file, contains: t.marker.contains }, check: { file: t.check.file, [kinds[0]]: t.check[kinds[0]] } };
+  });
+}
+
 export function loadTape(raw) {
   if (!isObj(raw)) fail("tape", "must be an object");
   checkPlain(raw, "tape");
@@ -299,6 +328,7 @@ export function loadTape(raw) {
   t.notes = loadNotes(raw.notes, where);
   t.cache_rules = loadCacheRules(raw.cache_rules, where);
   t.effort = loadEffort(raw.effort, where);
+  t.tests = loadTests(raw.tests, where);
   if (raw.interrupt === undefined || raw.interrupt === null) {
     t.interrupt = null;
   } else {

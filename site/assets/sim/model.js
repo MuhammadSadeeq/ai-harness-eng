@@ -45,6 +45,13 @@ function conditionHolds(cond, snap) {
     const text = cond.slice("sent_lacks:".length);
     return !stringsIn(snap.request).some((x) => x.includes(text));
   }
+  // A9.2: the request about to be sent has at least n tool definitions (tool_search's own counts).
+  if (cond.startsWith("tools_gte:")) return snap.request.tools.length >= Number(cond.slice("tools_gte:".length));
+  // A9.2: the named tool is among the request's tool definitions.
+  if (cond.startsWith("tool_loaded:")) {
+    const name = cond.slice("tool_loaded:".length);
+    return snap.request.tools.some((d) => d.name === name);
+  }
   return snap[cond] === true;
 }
 

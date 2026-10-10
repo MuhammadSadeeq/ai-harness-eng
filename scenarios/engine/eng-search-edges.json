@@ -1,0 +1,209 @@
+{
+  "schema": 1,
+  "title": "Empty, blank, mixed, and already-loaded queries",
+  "task": "Search for the tools you need, then finish.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "input_milli_per_mtok": 1000,
+    "output_milli_per_mtok": 2000,
+    "cache_write_milli_per_mtok": 1250,
+    "cache_read_milli_per_mtok": 100
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given.",
+  "rules": [],
+  "workspace": {
+    "calc.py": "def add(a, b):\n    return a - b\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file"
+  ],
+  "custom_tools": [
+    {
+      "name": "lint_file",
+      "description": "Lint a Python file for style problems.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "No style problems.",
+        "ok": true
+      }
+    },
+    {
+      "name": "format_file",
+      "description": "Format a Python file in place.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "Formatted.",
+        "ok": true
+      }
+    },
+    {
+      "name": "count_lines",
+      "description": "Count the lines in a file.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "latency_ms": 100,
+      "results": [],
+      "default": {
+        "output": "7 lines",
+        "ok": true
+      }
+    }
+  ],
+  "checks": [
+    {
+      "file": "calc.py",
+      "contains": "a - b"
+    }
+  ],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "seed_base": 20261010,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "id": "eng-search-edges",
+  "script": [
+    {
+      "say": "Searching with nothing in it.",
+      "tools": [
+        [
+          "tool_search",
+          {
+            "query": ""
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Searching for lint.",
+      "tools": [
+        [
+          "tool_search",
+          {
+            "query": "lint"
+          }
+        ]
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "tools_gte:3",
+          "then": [
+            {
+              "say": "Three definitions, tool_search counted.",
+              "tools": [
+                [
+                  "tool_search",
+                  {
+                    "query": "lint"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "Fewer than three definitions.",
+              "tools": [
+                [
+                  "tool_search",
+                  {
+                    "query": "lint"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "Searching for file.",
+      "tools": [
+        [
+          "tool_search",
+          {
+            "query": "file"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Searching for read.",
+      "tools": [
+        [
+          "tool_search",
+          {
+            "query": "read"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Searching with blank words.",
+      "tools": [
+        [
+          "tool_search",
+          {
+            "query": "   "
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Done."
+    }
+  ],
+  "boards": [
+    "eng-search-edges"
+  ]
+}

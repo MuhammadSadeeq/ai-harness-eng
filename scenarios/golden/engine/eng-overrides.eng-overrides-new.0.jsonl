@@ -1,0 +1,16 @@
+{"agent":"main","board":"eng-overrides-new","kind":"run_start","model_id":"claude-sonnet-5-5","run":"eng-overrides:eng-overrides-new:0","seed":0,"seq":0,"t":0,"task":"Make add() return the sum.","turn":0,"v":1,"wire":"loop"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"eng-overrides:eng-overrides-new:0","seq":1,"t":0,"tokens":373,"turn":1,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":4,"run":"eng-overrides:eng-overrides-new:0","seq":2,"t":0,"tokens":373,"turn":1,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"eng-overrides:eng-overrides-new:0","seq":3,"t":0,"tokens_in":373,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"eng-overrides:eng-overrides-new:0","seq":4,"t":0,"turn":1,"v":1,"wire":"errors"}
+{"agent":"main","cost":467000,"kind":"model_reply","run":"eng-overrides:eng-overrides-new:0","seq":5,"stop_reason":"tool_use","t":1540,"text":"I'll change the one line.","tool_uses":[{"id":"toolu_1_1","input":{"new_text":"a + b","old_text":"a - b","path":"calc.py"},"name":"edit_file"}],"turn":1,"usage":{"input_tokens":373,"output_tokens":47},"v":1,"wire":"loop"}
+{"agent":"main","decision":"allow","final":"allow","human":null,"kind":"permission","reason":"no permission policy","rule":"none","run":"eng-overrides:eng-overrides-new:0","seq":6,"t":1540,"tool":"edit_file","tool_use_id":"toolu_1_1","turn":1,"v":1,"wire":"permissions"}
+{"agent":"main","input":{"new_text":"a + b","old_text":"a - b","path":"calc.py"},"kind":"tool_call","ok":true,"output":"Edited calc.py (1 change)","output_tokens":6,"run":"eng-overrides:eng-overrides-new:0","seq":7,"t":1640,"tool":"edit_file","tool_use_id":"toolu_1_1","truncated":false,"turn":1,"v":1,"wire":"tools"}
+{"agent":"main","events":8,"kind":"trace_write","redacted":0,"run":"eng-overrides:eng-overrides-new:0","seq":8,"t":1640,"turn":1,"v":1,"wire":"observe"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"eng-overrides:eng-overrides-new:0","seq":9,"t":1640,"tokens":465,"turn":2,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":5,"run":"eng-overrides:eng-overrides-new:0","seq":10,"t":1640,"tokens":465,"turn":2,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"eng-overrides:eng-overrides-new:0","seq":11,"t":1640,"tokens_in":465,"turn":2,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"eng-overrides:eng-overrides-new:0","seq":12,"t":1640,"turn":2,"v":1,"wire":"errors"}
+{"agent":"main","cost":948000,"kind":"model_reply","run":"eng-overrides:eng-overrides-new:0","seq":13,"stop_reason":"end_turn","t":2400,"text":"Done.","tool_uses":[],"turn":2,"usage":{"input_tokens":465,"output_tokens":8},"v":1,"wire":"loop"}
+{"agent":"main","events":5,"kind":"trace_write","redacted":0,"run":"eng-overrides:eng-overrides-new:0","seq":14,"t":2400,"turn":2,"v":1,"wire":"observe"}
+{"agent":"main","cost":948000,"kind":"run_end","passed":true,"run":"eng-overrides:eng-overrides-new:0","seq":15,"status":"done","t":2400,"tokens":{"input":838,"output":55},"turn":2,"turns":2,"v":1,"wire":"loop"}
