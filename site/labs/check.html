@@ -33,13 +33,36 @@
       </ul>
     </hx-check>
     <hx-bench id="bench1" tape="b2-spiral" old="b2-old" new="b2-new" locked>
-      <p>On the same 20 seeds, the new board passes 13 runs and the old board 13. The worst case goes from 60 turns to 12, and from ≈ $0.3988 to ≈ $0.0264.</p>
+      <p>On the same 20 seeds, the new board passes 13 runs and the old board passes 13 runs. The worst case goes from 60 turns to 12 turns, and from ≈ $0.3988 to ≈ $0.0264.</p>
       <table>
         <caption>Results of the last run, with JavaScript off</caption>
         <thead><tr><th scope="col">Board</th><th scope="col">Pass rate</th><th scope="col">Worst case, turns</th><th scope="col">Worst case, cost</th></tr></thead>
         <tbody>
           <tr><th scope="row">Old board</th><td>13/20 pass</td><td>60 turns</td><td>≈ $0.3988</td></tr>
           <tr><th scope="row">New board</th><td>13/20 pass</td><td>12 turns</td><td>≈ $0.0264</td></tr>
+        </tbody>
+      </table>
+    </hx-bench>
+  </section>
+
+  <section class="row" aria-labelledby="false-h">
+    <h2 id="false-h">Predict the false done</h2>
+    <hx-check id="check3" src="data/checks-demo.json" item="s0-predict-false-done" for="bench3">
+      <p>Which board ends more runs with a false done?</p>
+      <ul>
+        <li>The old board. Its runs say done, nothing checks the claim, and the harness takes the word.</li>
+        <li>The new board. The verify gate adds more ways for a run to end wrong.</li>
+        <li>Neither. A false done needs a model that lies.</li>
+      </ul>
+    </hx-check>
+    <hx-bench id="bench3" tape="s0-false-done" old="s0-old" new="s0-new" locked>
+      <p>On the same 20 seeds, the new board passes 20 runs and the old board passes 13 runs. The worst case goes from 3 turns to 6 turns, and from ≈ $0.0039 to ≈ $0.0093.</p>
+      <table>
+        <caption>Results of the last run, with JavaScript off</caption>
+        <thead><tr><th scope="col">Board</th><th scope="col">Pass rate</th><th scope="col">Worst case, turns</th><th scope="col">Worst case, cost</th><th scope="col">Mean cost</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Old board</th><td>13/20 pass</td><td>3 turns</td><td>≈ $0.0039</td><td>≈ $0.0038</td></tr>
+          <tr><th scope="row">New board</th><td>20/20 pass</td><td>6 turns</td><td>≈ $0.0093</td><td>≈ $0.0058</td></tr>
         </tbody>
       </table>
     </hx-bench>

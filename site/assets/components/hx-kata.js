@@ -444,7 +444,7 @@ export class HxKata extends HxElement {
       dom.error.hidden = !r.error;
       dom.rows.replaceChildren(...r.rows.map((row) => el("li", { class: "kata-row", "data-outcome": row.outcome },
         el("span", { class: "kata-mark" }, glyph(row.outcome === "passed" ? "check" : "cross")),
-        el("span", { class: "kata-name", text: row.name }),
+        el("span", { class: "kata-name", text: row.name.replace(/_/g, "_\u200b") }),
         el("span", { class: "kata-word", text: row.word }))));
       dom.rows.hidden = r.rows.length === 0;
       dom.message.textContent = r.message ?? "";

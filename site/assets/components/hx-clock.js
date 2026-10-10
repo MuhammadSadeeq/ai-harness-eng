@@ -352,7 +352,7 @@ export class HxClock extends HxElement {
       section.append(el("p", "clock-changes-none", "The two boards are the same."));
       return section;
     }
-    const list = el("ol", "clock-changes-list");
+    const list = el("ul", "clock-changes-list");
     for (const row of rows) {
       const item = el("li", `w-${row.wire.id}`, changeText(row));
       if (this.state.plugged) item.classList.add("is-plugged");

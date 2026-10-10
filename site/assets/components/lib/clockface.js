@@ -151,13 +151,26 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
     if (spoke.empty || spoke.muted) node.setAttribute("stroke-dasharray", "3 3");
     group.append(node, glyphUse(wire.glyph, nx, ny, narrow ? 16 : 18));
 
-    let along = R * (narrow ? 0.36 : 0.55);
-    spoke.tags.slice(0, 2).forEach((tag) => {
-      const parts = { code: tag.code, lines: narrow ? [tag.code] : wrapLines(tag.text ?? tag.code, LABEL_CHARS, 2) };
-      const [tx, ty] = pos(wire.angle, along);
-      const height = tagBox(group, tx, ty, parts, group.querySelector(".tag-group") ? "tag-extra" : "tag-main", Boolean(tag.added), W);
-      along += height + 6;
-    });
+    if (narrow) {
+      // Narrow faces: the short codes, stacked outward from the hub (the legend carries the words).
+      let along = R * 0.36;
+      spoke.tags.slice(0, 2).forEach((tag) => {
+        const [tx, ty] = pos(wire.angle, along);
+        const height = tagBox(group, tx, ty, { code: tag.code, lines: [tag.code] }, group.querySelector(".tag-group") ? "tag-extra" : "tag-main", Boolean(tag.added), W);
+        along += height + 6;
+      });
+    } else if (spoke.tags.length > 0) {
+      // Wide faces: the first tag sits between the hub and the node, with its label when the label fits there,
+      // else its code. Every label is in the sub-line below the wire name, so no tag is lost.
+      const tag = spoke.tags[0];
+      const hubR = Math.max(7, R * 0.12);
+      const room = R - nodeR - hubR - 8;
+      const lines = wrapLines(tag.text ?? tag.code, LABEL_CHARS, 2);
+      const labelWidth = Math.max(...lines.map((l) => l.length)) * CHAR_TAG + 16;
+      const parts = { code: tag.code, lines: labelWidth <= room ? lines : [tag.code] };
+      const [tx, ty] = pos(wire.angle, hubR + 4 + room / 2);
+      tagBox(group, tx, ty, parts, "tag-main", Boolean(tag.added), W);
+    }
 
     if (!narrow) {
       const [lx, ly] = pos(wire.angle, rimR + 16);
