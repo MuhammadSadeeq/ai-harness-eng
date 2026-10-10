@@ -3,7 +3,7 @@ hx-kata { display: block; margin: var(--sp-5) 0; }
 hx-kata .hx-ui { display: block; }
 hx-kata [hidden] { display: none !important; }
 
-.kata { display: grid; gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--plate-edge); border-radius: var(--r-plate); background: var(--hx-panel); min-width: 0; }
+.kata { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); padding: var(--sp-4); border: 1px solid var(--plate-edge); border-radius: var(--r-plate); background: var(--hx-panel); min-width: 0; }
 @media (min-width: 700px) { .kata { padding: var(--sp-5); } }
 .kata-head { display: grid; gap: var(--sp-1); }
 .kata-title { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }

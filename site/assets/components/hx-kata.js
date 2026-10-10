@@ -316,14 +316,14 @@ export class HxKata extends HxElement {
     dom.count = el("p", { class: "kata-count" });
     dom.error = el("p", { class: "kata-error" });
     dom.rows = el("ul", { class: "kata-rows" });
-    dom.message = el("pre", { class: "kata-message" });
+    dom.message = el("pre", { class: "kata-message", tabindex: "0", role: "region", "aria-label": "Test message" });
     dom.passed = el("p", { class: "kata-passed" });
     dom.results = el("div", { class: "kata-results" }, dom.count, dom.error, dom.rows, dom.message, dom.passed);
     dom.hintList = el("ol", { class: "kata-hints", tabindex: "-1" });
     dom.hint = el("button", { class: "key", type: "button", "data-key": "hint" });
     dom.solutionButton = el("button", { class: "key", type: "button", "data-key": "solution", text: "Show the solution" });
     dom.solutionNote = el("p", { class: "kata-note", tabindex: "-1", text: SOLUTION_NOTE });
-    dom.solutionCode = el("pre", { class: "kata-code-view" }, el("code", { text: kata.solution }));
+    dom.solutionCode = el("pre", { class: "kata-code-view", tabindex: "0", role: "region", "aria-label": "Solution code" }, el("code", { text: kata.solution }));
     dom.solutionBlock = el("div", { class: "kata-solution" }, dom.solutionNote, dom.solutionCode);
 
     dom.run.addEventListener("click", () => this.run());

@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   moduleStatus, partMarks, continueTarget, shiftFor, dueCards, oldestFactDate,
-  formatDay, factChipLabel, filterRegistry, termEntry,
+  formatDay, factChipLabel, filterRegistry, termEntry, splitLoads,
 } from "../shell/pure.js";
 
 const course = JSON.parse(readFileSync(new URL("../../../data/course.json", import.meta.url), "utf8"));
@@ -93,6 +93,17 @@ test("filterRegistry keeps only registered tags present on the page, in page ord
     { tag: "hx-clock", url: "../components/hx-clock.js" },
   ]);
   assert.deepEqual(filterRegistry({}, ["hx-clock"]), [], "an empty registry loads nothing");
+});
+
+test("splitLoads: a tag loads at once when an element starts within 1.5 viewport heights, the rest wait", () => {
+  const items = [
+    { tag: "hx-clock", top: 120 }, { tag: "hx-replay", top: 1300 }, { tag: "hx-replay", top: 4000 },
+    { tag: "hx-wire", top: 2000 }, { tag: "hx-clock", top: 3000 },
+  ];
+  assert.deepEqual(splitLoads(items, 900), { eager: ["hx-clock", "hx-replay"], lazy: ["hx-wire"] });
+  assert.deepEqual(splitLoads([{ tag: "hx-kata", top: 1349 }], 900), { eager: ["hx-kata"], lazy: [] });
+  assert.deepEqual(splitLoads([{ tag: "hx-kata", top: 1350 }], 900), { eager: [], lazy: ["hx-kata"] });
+  assert.deepEqual(splitLoads([], 900), { eager: [], lazy: [] });
 });
 
 test("termEntry: graceful when the terms list is empty or missing", () => {

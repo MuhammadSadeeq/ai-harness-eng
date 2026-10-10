@@ -683,8 +683,9 @@ eventually notices; lessons say so).
      request the harness puts the time at the top of the system prompt,
      `system = "Current time: t=" + str(t) + " ms\n\n" + system` (`t` when the
      prompt is built; after the A5 and rules-file layers). `prompt_built.layers`
-     starts with `"clock"`. Every call's system prompt differs, so no cached
-     prefix survives past the tool definitions. On the board it maps to the
+     starts with `"clock"`. Every call's system prompt differs, so with one
+     breakpoint at the end no earlier request is ever a prefix again: every
+     call writes and none reads. On the board it maps to the
      context wire with the label `time at the top of the prompt`, drawn with
      the warning mark.
   5. *`cache: {}`*: the harness asks the API to cache the request, with one
@@ -733,6 +734,16 @@ eventually notices; lessons say so).
   6. *Order within a turn*, all modules plugged: guards, `turn += 1`,
      compaction, control wire (clock, rules layer, `prompt_built`), context
      check, the call with recovery, `cache`, `model_reply`, as in §7.1.
+  7. *Rulings (from building it):* compaction's `before` uses the A5 sent
+     messages, so with `history` resend false it never fires; the
+     summary's dropped notes are the known notes not kept; `compaction.keep`
+     is required (a list, possibly empty); `sent_lacks:` with empty text and a
+     `context_gte:` argument that is not a canonical integer are refused by the
+     loader; with one breakpoint at the end, `uncached` is 0 unless the prompt
+     is below `min_tokens` (then it is the whole prompt). A compaction changes
+     the history, so the next call finds no earlier request as its prefix and
+     writes the whole prompt again: compaction costs cache reads, which C3 and
+     C4 may show.
 - **A7 (2026-10-10): input checks, split results and effort** (wave 3.2: A5,
   A6, B1). Absent modules and fields change nothing.
   1. *`validate_inputs: {}`*: the harness checks each call's input against the

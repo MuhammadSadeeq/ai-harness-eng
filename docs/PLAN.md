@@ -26,8 +26,8 @@ off; AUTHORING.md is final.
 ## Phase 3: content waves (Parts S, A, B, C, D, E, F, G, I and the Toolbelt)
 | Wave | Modules | Labs to build first | Engine features first (ENGINE amendment) |
 |---|---|---|---|
-| 3.1 | S0, A1, A2, A3, A7, T1–T3 | `hx-sampler`, `hx-tokenizer`, `hx-forgetful`, `hx-dice`, `hx-placement` | harness-bug modules: history not resent (A3); scripted confident errors (A1, tape only) |
-| 3.2 | A4, A5, A6, B1, B3, B4, T4–T6 | `hx-workbench`, `hx-costcalc`, `hx-sort` | reply parser bug `first_block_only` (A4, H1); tool-input schema checks (A5); results split across messages (B1); model effort levels (A6) |
+| 3.1 | S0, A1, A2, A3, T1–T3 | `hx-sampler`, `hx-tokenizer`, `hx-forgetful`, `hx-placement` | harness-bug modules: history not resent (A3); scripted confident errors (A1, tape only) |
+| 3.2 | A4, A5, A6, A7, B1, B3, B4, T4–T6 | `hx-workbench`, `hx-costcalc`, `hx-sort`, `hx-dice` | reply parser bug `first_block_only` (A4, H1); tool-input schema checks (A5); results split across messages (B1); model effort levels (A6) |
 | 3.3 | C1, C2, C3, C4, C5, C6, T7 | `hx-stack`, `hx-desk`, `hx-cacheline`, `hx-outage` | compaction (C3); prompt-cache prefix and pricing (C4); many clients / shared outage (C6) |
 | 3.4 | C7, C8, C9, C10, C11, C12, T8 | `hx-scheduler`, `hx-gatekeeper`, `hx-bugcatch` | tool-quality knob (C7); tool-definition loading on demand (C8); cost attribution events (C12) |
 | 3.5 | D1, D2, D3, E1, E2, T9 | `hx-evalbench`, `hx-escape` | an eval set of tapes (D1–D3); conditions on tool output for injection (E1); tool provenance (E2) |
@@ -35,7 +35,10 @@ off; AUTHORING.md is final.
 | 3.7 | G1–G4, I1–I3, I6 | `hx-design` (Design Room) | none expected (G3 tours a real repository) |
 
 Each wave: builders write the modules (2–3 each), a fact-checker verifies every
-fact they request, the director reviews.
+fact they request, the director reviews. A7 moved from 3.1 to 3.2 because it
+requires A4 (prerequisite order). ENGINE amendments A6 (wave 3.3) and A7
+(wave 3.2) are specified ahead of their waves so both runtimes can build them
+early. (Amendment numbers are not module ids.)
 
 ## Phase 4: the build track
 Rein steps H3–H13 in the browser (`hx-step`, `check_steps`), the local `rein`

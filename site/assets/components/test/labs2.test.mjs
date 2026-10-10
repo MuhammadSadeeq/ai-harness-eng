@@ -8,7 +8,7 @@ globalThis.HTMLElement ??= class {};
 globalThis.customElements ??= { define() {}, get() {}, whenDefined: () => new Promise(() => {}) };
 const { scorePlacement } = await import("../hx-sort.js");
 const { ruleHolds, misuseOf, writeMisuse, resolvePointer } = await import("../hx-workbench.js");
-const { familiesOf, familyOf, familyLabel, tierFor, priceText, costs } = await import("../hx-costcalc.js");
+const { familiesOf, familyOf, familyLabel, tierFor, priceText, priceUsd, costs } = await import("../hx-costcalc.js");
 
 test("sort: an item is right when it is in its bucket; an unplaced item is wrong", () => {
   const items = [{ id: "a", bucket: "x" }, { id: "b", bucket: "y" }, { id: "c", bucket: "x" }];
@@ -95,8 +95,21 @@ test("costcalc: the tier follows the input tokens per call, at the threshold and
 
 test("costcalc: the price line names the tier's range and its prices, from the fact", () => {
   const haiku = familiesOf(facts).find((f) => f.family === "haiku-5-5");
-  assert.equal(priceText(haiku, haiku.tiers[0]), "Haiku 5.5, prompts up to 100,000 tokens: $0.1 in, $0.5 out per million tokens, $0.01 cache hit.");
-  assert.equal(priceText(haiku, haiku.tiers[1]), "Haiku 5.5, prompts over 100,000 tokens: $0.5 in, $2.5 out per million tokens, $0.05 cache hit.");
+  assert.equal(priceText(haiku, haiku.tiers[0]), "Haiku 5.5, prompts up to 100,000 tokens: $0.10 in, $0.50 out per million tokens, $0.01 cache hit.");
+  assert.equal(priceText(haiku, haiku.tiers[1]), "Haiku 5.5, prompts over 100,000 tokens: $0.50 in, $2.50 out per million tokens, $0.05 cache hit.");
+  const sonnet = familiesOf(facts).find((f) => f.family === "sonnet-5-5");
+  assert.equal(priceText(sonnet, sonnet.tiers[0]), "Sonnet 5.5: $2 in, $10 out per million tokens, $0.10 cache hit.");
+});
+
+test("costcalc: a price is whole dollars when whole, else two decimals", () => {
+  assert.equal(priceUsd(2), "$2");
+  assert.equal(priceUsd(10), "$10");
+  assert.equal(priceUsd(0.1), "$0.10");
+  assert.equal(priceUsd(0.5), "$0.50");
+  assert.equal(priceUsd(2.5), "$2.50");
+  assert.equal(priceUsd(0.05), "$0.05");
+  assert.equal(priceUsd(0.025), "$0.025", "never rounded to $0.03");
+  assert.equal(priceUsd(0.375), "$0.375");
 });
 
 test("costcalc: the sonnet case by hand, in nano-units (1 USD = 1e9)", () => {

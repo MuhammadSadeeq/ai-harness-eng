@@ -49,13 +49,23 @@ export function tierFor(family, input) {
   return input <= up.value.max_prompt_tokens ? up : over;
 }
 
+/**
+ * A price in USD per million tokens, never rounded: "$2" when whole, else at least two decimals and as many more as
+ * the number needs ("$0.10", "$2.50", "$0.025").
+ */
+export function priceUsd(n) {
+  if (Number.isInteger(n)) return `$${n}`;
+  const [whole, frac = ""] = String(n).split(".");
+  return `$${whole}.${frac.padEnd(2, "0")}`;
+}
+
 /** The price line for a tier: the family, the tier's range when it has one, and its prices. */
 export function priceText(family, tier) {
   const v = tier.value;
   let range = "";
   if (typeof v.max_prompt_tokens === "number") range = `, prompts up to ${formatInt(v.max_prompt_tokens)} tokens`;
   else if (typeof v.over_prompt_tokens === "number") range = `, prompts over ${formatInt(v.over_prompt_tokens)} tokens`;
-  return `${family.label}${range}: $${v.input_usd_per_mtok} in, $${v.output_usd_per_mtok} out per million tokens, $${v.cache_hit_usd_per_mtok} cache hit.`;
+  return `${family.label}${range}: ${priceUsd(v.input_usd_per_mtok)} in, ${priceUsd(v.output_usd_per_mtok)} out per million tokens, ${priceUsd(v.cache_hit_usd_per_mtok)} cache hit.`;
 }
 
 /** Cost per call, per task and per completed task, in nano-units, from one configuration and one tier's prices. */

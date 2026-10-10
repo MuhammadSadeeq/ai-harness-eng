@@ -72,7 +72,7 @@
   <section class="beat" data-beat="see" id="see">
     <h2>How the loop works</h2>
     <p>One model call gives one reply. An agent needs many calls, so something has to make them. That something is the <dfn data-term="agent-loop">agent loop</dfn>. It calls the model, runs the tools the model asks for, and calls the model again. Each pass is one <dfn data-term="turn">turn</dfn>: a call, and the results that follow it.</p>
-    <p>This loop is often called <dfn data-term="react">ReAct</dfn>, after a paper (<span class="fact" data-fact="papers.react-title-id">The authors' repo cites the paper as ReAct: Synergizing Reasoning and Acting in Language Models, ICLR 2023.</span>): reasoning and acting, in turns.</p>
+    <p>This loop is often called <dfn data-term="react">ReAct</dfn>, after the paper <span class="fact" data-fact="papers.react-title-id">ReAct: Synergizing Reasoning and Acting in Language Models (ICLR 2023)</span>: reasoning and acting, in turns.</p>
     <p>Read the code from the top. Each comment marks one step.</p>
 
     <pre data-run tabindex="0" role="region" aria-label="Python code"><code class="language-python">from collections.abc import Callable
@@ -134,6 +134,16 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
     </table>
     </div>
 
+    <hx-check mode="check" src="B2" item="B2-c1" data-objective="B2.o2">
+      <p>Without JavaScript, the question is: a reply comes back with stop_reason max_tokens, halfway through a tool call. What should the loop do?</p>
+      <ol>
+        <li>Run the half of the tool call it has, because most of it is there.</li>
+        <li>Retry with a higher max_tokens, so the whole tool call comes back. Never run the half-written call.</li>
+        <li>Return the partial text as the final answer.</li>
+        <li>Treat it as end_turn and check the work.</li>
+      </ol>
+    </hx-check>
+
     <h3>What the loop sends</h3>
     <p><span class="fact" data-fact="api.messages-stateless">The Messages API is stateless: you send the full conversational history with each request.</span> This loop only grows the history. Each turn adds the reply and its results, and each call sends all of it. <span class="fact" data-fact="api.tool-results-single-user-message">The docs say to return one tool_result for each tool_use block, all together in the next user message.</span> <span class="fact" data-fact="api.tool-result-ids-must-match">A tool_result's tool_use_id is the id of the tool use request that the result answers.</span> <span class="fact" data-fact="api.tool-result-unrun-call">A tool_use block that is not run still needs a tool_result with is_error true and a brief explanation.</span></p>
 
@@ -152,6 +162,15 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
 
     <h3>Where the other seven wires plug in</h3>
     <p>The other seven wires attach to the loop at fixed points. Control shapes the prompt before each call. Context &amp; memory decides what stays in the context window. Errors &amp; recovery decides what a failed call does. Permissions check each tool request before it runs. Verification checks the done claim. Observability records each step. The clock above shows where each one sits.</p>
+    <hx-check mode="check" src="B2" item="B2-c2" data-objective="B2.o5">
+      <p>Without JavaScript, the question is: a turn limit stops the loop after a set number of turns. Which wire does it belong to?</p>
+      <ol>
+        <li>Observability</li>
+        <li>Context &amp; memory</li>
+        <li>Loop &amp; state</li>
+        <li>Tools</li>
+      </ol>
+    </hx-check>
   </section>
 
   <section class="beat" data-beat="fix" id="fix">
@@ -160,7 +179,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
     <p>With a turn limit of <hx-num for="bench-par" name="knob" pointer-only>12</hx-num> turns, the new board passes <hx-num for="bench-par" name="passed.new">—</hx-num> of 20 runs.</p>
 
     <figure>
-      <hx-bench id="bench-par" tape="b2-spiral" old="b2-old" new="b2-new" knob="turn_limit.max_turns" knob-min="4" knob-max="30" par="cheapest-worst-case" data-objective="B2.o3">
+      <hx-bench id="bench-par" tape="b2-spiral" old="b2-old" new="b2-new" knob="turn_limit.max_turns" knob-min="4" knob-max="30" par="cheapest-worst-case" trials="20" data-objective="B2.o3">
         <p>Without JavaScript, the bench shows the old board and the new board on the same seeds, with a turn limit you can change.</p>
       </hx-bench>
       <figcaption>FIG B2.3 · The bench. Try this: find the cheapest turn limit that keeps every passing run.</figcaption>

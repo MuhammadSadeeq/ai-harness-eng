@@ -70,6 +70,18 @@ export function filterRegistry(registry, presentTags) {
   return presentTags.filter((tag) => Object.prototype.hasOwnProperty.call(registry, tag)).map((tag) => ({ tag, url: registry[tag] }));
 }
 
+/**
+ * Which tags load at once and which wait. `items` holds one entry per element, {tag, top} with top in CSS px from the
+ * page top. A tag loads at once when any of its elements starts within `eagerVh` viewport heights of the top.
+ */
+export function splitLoads(items, viewportHeight, eagerVh = 1.5) {
+  const limit = eagerVh * viewportHeight;
+  const eager = [...new Set(items.filter((item) => item.top < limit).map((item) => item.tag))];
+  const now = new Set(eager);
+  const lazy = [...new Set(items.map((item) => item.tag))].filter((tag) => !now.has(tag));
+  return { eager, lazy };
+}
+
 /** The module record's terms for popovers; empty (not an error) when the course has none for that id. */
 export function termEntry(terms, id) {
   return (Array.isArray(terms) ? terms : []).find((t) => t && t.id === id) ?? null;

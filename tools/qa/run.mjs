@@ -189,6 +189,13 @@ async function checkPageLoad(page, url, width, screenshotPath) {
     // (ready or failed; a failure is reported by its self-test), at most 60 s (Python in a kata).
     await page.evaluate(async () => {
       const { REGISTRY } = await import("/assets/components/registry.js");
+      // Components below the fold load as their element nears the viewport (shell/loader.js): visit each one,
+      // then return to the top, so every registered element can settle.
+      for (const el of [...document.querySelectorAll("*")].filter((e) => Object.hasOwn(REGISTRY, e.localName))) {
+        el.scrollIntoView({ block: "center" });
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      }
+      window.scrollTo(0, 0);
       const settle = async () => {
         const tags = new Set([...document.querySelectorAll("*")].map((el) => el.localName)
           .filter((tag) => Object.hasOwn(REGISTRY, tag)));

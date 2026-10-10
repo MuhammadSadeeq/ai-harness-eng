@@ -19,3 +19,4 @@ labs/sort.html
 labs/workbench.html
 labs/costcalc.html
 labs/step.html
+labs/module.html
