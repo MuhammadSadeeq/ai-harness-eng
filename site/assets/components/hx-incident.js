@@ -344,7 +344,10 @@ export class HxIncident extends HxElement {
     this.render();
     const { inc, events } = this.model;
     const early = events.findIndex((_, i) => i < inc.first_bad_seq && !this.model.noteAt.has(i));
-    const late = [...events.keys()].reverse().find((i) => i > inc.first_bad_seq && !inc.accept_seqs.includes(i) && !this.model.noteAt.has(i));
+    // the second wrong tap shows the hint: a later event if there is one, else a second early one (the bad event can be the last)
+    const wrong = (i) => i !== inc.first_bad_seq && !inc.accept_seqs.includes(i) && !this.model.noteAt.has(i);
+    const late = [...events.keys()].reverse().find((i) => i > inc.first_bad_seq && wrong(i))
+      ?? [...events.keys()].find((i) => i < inc.first_bad_seq && i !== early && wrong(i));
     const row = (i) => this.ui.querySelector(`.transcript-wrap li[data-index="${i}"]`);
     const tap = (i) => this.ui.querySelector(`[data-key="row-${i}"]`)?.click();
     let fired = null;

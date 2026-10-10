@@ -30,7 +30,7 @@
         <li data-objective="B2.o4">Read a replay of a loop and say, for any event, which turn it belongs to and what the loop does next.</li>
         <li data-objective="B2.o5">Point to where each of the other seven wires plugs into the loop.</li>
       </ol>
-      <p class="progress-line" data-progress><span data-progress-text>0 of 5 objectives shown</span></p>
+      <p class="progress-line" data-progress><span data-progress-text>0 of 5 objectives done</span></p>
       <p class="prereqs">Before this: <span>B1 · Tools give the model hands <span class="soon">soon</span></span></p>
       <nav class="beat-strip" aria-label="Beats in this module" data-beat-strip>
         <ol>
@@ -175,7 +175,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
 
   <section class="beat" data-beat="fix" id="fix">
     <h2>Set the exits</h2>
-    <p>Lower the turn limit, then run the bench on the same seeds. Find the cheapest turn limit that still lets every passing run finish.</p>
+    <p>The new board starts with a turn limit of 12, a safe guess. The bench runs both boards on the same 20 seeds; each seed is one scripted run, so it repeats exactly. Lower the limit and run again. Find the cheapest turn limit that still lets every passing run finish.</p>
     <p>With a turn limit of <hx-num for="bench-par" name="knob" pointer-only>12</hx-num> turns, the new board passes <hx-num for="bench-par" name="passed.new">—</hx-num> of 20 runs.</p>
 
     <figure>

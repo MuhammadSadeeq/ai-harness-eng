@@ -505,7 +505,7 @@ export class HxKata extends HxElement {
       solution_shown: s.solutionShown,
       mode: this.mode,
       seconds: Math.round(this.elapsedMs() / 1000),
-    });
+    }, allPass ? null : []); // a run that fails is recorded, but it is not evidence for an objective
     const count = `${results.passed} of ${results.total} tests pass`;
     this.live(allPass && this.mode === "memory" ? `${count}. Passed from memory in ${formatClock(passedMs)}.` : count);
     return results;

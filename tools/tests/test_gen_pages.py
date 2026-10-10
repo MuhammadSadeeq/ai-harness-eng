@@ -183,7 +183,7 @@ def test_a_module_page_gets_its_header_objectives_and_beat_strip(tmp_path: Path)
     b2 = next(m for m in course["modules"] if m["id"] == "B2")
     header = region(text, "module-meta")
     assert f'data-objectives-total="{len(b2["objectives"])}"' in header
-    assert f"0 of {len(b2['objectives'])} objectives shown" in header
+    assert f"0 of {len(b2['objectives'])} objectives done" in header
     for objective in b2["objectives"]:
         assert f'data-objective="{objective["id"]}"' in header
     for beat in course["kinds"]["core"]["beats"]:

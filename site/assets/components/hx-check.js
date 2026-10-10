@@ -185,7 +185,7 @@ export class HxCheck extends HxElement {
     }
     this.setState({ committed: choice });
     if (this.mode === "check") {
-      this.evidence("check", { item: this.item.id, choice, correct: choice === this.item.answer });
+      this.evidence("check", { item: this.item.id, choice, correct: choice === this.item.answer }, choice === this.item.answer ? null : []); // a wrong answer credits no objective
       return;
     }
     if (this.targetEl) {

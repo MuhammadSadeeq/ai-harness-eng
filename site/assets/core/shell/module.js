@@ -20,14 +20,29 @@ function mark(state) {
   return svg;
 }
 
-/** Writes "2 of 5 objectives shown" and the progress mark from the store. */
+/** Writes "2 of 5 objectives done", marks each done objective in the list, and sets the progress mark. */
 function paintProgress(store, doc, id, total) {
   const line = doc.querySelector("[data-progress]");
   if (!line) return;
   const shown = shownCount(store.state, id);
   const status = store.state.modules?.[id]?.status ?? "todo";
+  const seen = new Set(store.state.modules?.[id]?.objectives_seen ?? []);
+  for (const item of doc.querySelectorAll("[data-objective-list] [data-objective]")) {
+    const done = seen.has(item.dataset.objective);
+    item.classList.toggle("is-done", done);
+    const word = item.querySelector(".objective-done");
+    if (done && !word) {
+      const tag = doc.createElement("span");
+      tag.className = "objective-done";
+      tag.textContent = "done";
+      item.append(" ", tag);
+    } else if (!done && word) {
+      word.previousSibling?.remove();
+      word.remove();
+    }
+  }
   const text = line.querySelector("[data-progress-text]");
-  if (text) text.textContent = `${shown} of ${total} objectives shown`;
+  if (text) text.textContent = `${shown} of ${total} objectives done`;
   line.querySelector(".path-mark")?.remove();
   line.prepend(mark(status === "done" ? "done" : status === "started" ? "started" : "todo"));
 }

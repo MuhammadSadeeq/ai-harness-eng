@@ -24,8 +24,8 @@ const COPY_FILE = "Copy rein.py";
 const RUN_HERE = "Run it here";
 const CHECK_MINE = "Check my file";
 const RUN_MINE = "Run my file";
-const MATCH_COPY = "This matches the book's output.";
-const MISMATCH_COPY = "This does not match the book's output.";
+const MATCH_COPY = "This matches the expected output.";
+const MISMATCH_COPY = "This does not match the expected output.";
 const RUNNING_COPY = "Running…";
 const CHECK_HINT = "Paste your rein.py here. Run my file runs it with the same script and command.";
 const NORMAL = "Normal";
@@ -68,7 +68,7 @@ const glyph = (name) => {
   return icon;
 };
 
-/** What an output block shows: stdout, then the error name as the book prints it. */
+/** What an output block shows: stdout, then the error name as the reference prints it. */
 function showOutput(outcome) {
   return outcome.stdout + (outcome.error ? `error: ${outcome.error}\n` : "");
 }
@@ -426,7 +426,7 @@ export class HxStep extends HxElement {
   }
 
   /**
-   * Copies a chunk (the copy must be exactly its added lines), runs the reference (it must match the book), turns
+   * Copies a chunk (the copy must be exactly its added lines), runs the reference (it must match the expected output), turns
    * a break on (its output must be the break's expected output), then pastes the reference into Check my file (it
    * must match). Then it restores: the break goes off, the pasted file is cleared, and the check closes.
    */

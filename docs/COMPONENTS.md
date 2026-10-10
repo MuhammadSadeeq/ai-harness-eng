@@ -59,6 +59,10 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
   `<html data-module>` and `objectives` from the element's `data-objective`.
   The shell writes it to the store; components don't touch the store directly
   except for their own UI state (for example a kata's draft code, a card's box).
+- Only success credits an objective. Evidence of a failure (a kata run with a
+  failing test, a wrong check answer) is still recorded, with an empty
+  `objectives` list (`this.evidence(kind, detail, [])`), so it never moves the
+  progress line. Predictions, bench runs and card reviews credit as they are.
 
 ## 6. Accessibility and motion (binding)
 - DESIGN §9 in full: keyboard operable, visible focus, targets ≥ 44 px,

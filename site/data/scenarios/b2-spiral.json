@@ -195,7 +195,7 @@
   "accept_seqs": [
    31
   ],
-  "why": "Here the model stops fixing and starts circling: it turns + 1 into - 1 instead of removing it. Nothing in the loop counts turns, so the same four steps repeat until someone stops the run.",
+  "why": "Here the model stops fixing and starts circling. This reply asks to turn + 1 into - 1 instead of removing it, and the next rows run that edit. Nothing in the loop counts turns, so the same four steps repeat until someone stops the run.",
   "hint": "Look at what the model does right after the first failed test run in turn 3.",
   "notes": [
    {

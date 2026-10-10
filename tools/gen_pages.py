@@ -454,7 +454,7 @@ def module_meta_lines(d: Data, mod: Json) -> list[str]:
     lines += [
         "  </ol>",
         f'  <p class="progress-line" data-progress><span data-progress-text>0 of {total} '
-        "objectives shown</span></p>",
+        "objectives done</span></p>",
     ]
     if mod["prereqs"]:
         parts = []
