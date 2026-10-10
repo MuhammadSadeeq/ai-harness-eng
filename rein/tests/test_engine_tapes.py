@@ -165,6 +165,9 @@ def test_an_override_turns_the_misuse_off_through_sent_lacks() -> None:
     new = trial("eng-overrides", "eng-overrides-new", 0)
     assert [event["tool"] for event in of_kind(old, "tool_call")] == ["write_file"]
     assert [event["tool"] for event in of_kind(new, "tool_call")] == ["edit_file"]
+    # the whole-file write carries real newlines (the fixture once held a literal backslash-n)
+    written = of_kind(old, "tool_call")[0]["input"]["content"]
+    assert written == "def add(a, b):\n    return a\n"
     assert ended(old)["passed"] is False and ended(old)["turns"] == 2
     assert ended(new)["passed"] is True and ended(new)["turns"] == 2
 

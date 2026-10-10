@@ -31,6 +31,12 @@ export const getBoard = async (id) => (await strict())(await fetchText(`scenario
 export const getKata = async (id) => JSON.parse(await fetchText(`katas/${checkId("kata", id)}.json`));
 export const getFacts = async () => JSON.parse(await fetchText("facts.json"));
 export const getCourse = async () => JSON.parse(await fetchText("course.json"));
+/**
+ * The slim course (site/data/course-core.json, from tools/gen_data.py): wires, failure families, parts, path,
+ * counts, and each module's id, slug, title, kind, part, tag, minutes and wires. No objectives: a component that
+ * reads a module's objectives uses getCourse().
+ */
+export const getCourseCore = async () => JSON.parse(await fetchText("course-core.json"));
 export const getTerms = async () => JSON.parse(await fetchText("terms.json"));
 /**
  * kind is "cards", "say" or "checks". src is a module id such as "B2" (site/data/<kind>/B2.json) or, on

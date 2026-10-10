@@ -3,7 +3,7 @@
 // (a scenario board's tags), compare="old,new" (two boards, with What changes and Plug it in), and tape + turn
 // (one turn of a run). Every state the learner sees is derived in render() from the mode, the data and the UI.
 import { HxElement } from "./lib/hx-element.js";
-import { getCourse, getBoard, getTape, getFacts } from "./lib/data.js";
+import { getCourseCore, getBoard, getTape, getFacts } from "./lib/data.js";
 import { runTrial } from "../sim/index.js";
 import { drawFace, fitFace, svgEl, spokeAnchor, GLYPH_SPRITE } from "./lib/clockface.js";
 import {
@@ -30,7 +30,7 @@ export class HxClock extends HxElement {
   static styles = new URL("./hx-clock.css", import.meta.url).href;
 
   async setup() {
-    this.course = await getCourse();
+    this.course = await getCourseCore();
     this.wires = wiresInOrder(this.course);
     this.mode = this.#modeFromAttributes();
     this.data = {};

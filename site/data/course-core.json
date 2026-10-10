@@ -1,0 +1,1423 @@
+{
+ "counts": {
+  "failure_families": 35,
+  "minutes_all": 3000,
+  "minutes_path": 2790,
+  "modules": 70,
+  "modules_by_kind": {
+   "build": 11,
+   "career": 6,
+   "concept": 11,
+   "core": 29,
+   "guide": 3,
+   "primer": 10
+  },
+  "objectives": 271,
+  "parts": 11,
+  "terms_planned": 336,
+  "wires": 8
+ },
+ "failure_families": [
+  {
+   "id": "false-done",
+   "module": "S0",
+   "name": "False “done”",
+   "summary": "The agent reports success it never checked.",
+   "wire": "verify"
+  },
+  {
+   "id": "confident-lie",
+   "module": "A1",
+   "name": "The confident lie",
+   "summary": "Fluent, specific, wrong: an invented function, flag or fact.",
+   "wire": "verify"
+  },
+  {
+   "id": "forgetful-harness",
+   "module": "A3",
+   "name": "The forgetful harness",
+   "summary": "History isn't resent, so the model starts from nothing.",
+   "wire": "context"
+  },
+  {
+   "id": "first-block-only",
+   "module": "A4",
+   "name": "First block only",
+   "summary": "Code reads only content[0] and misses or crashes on other blocks.",
+   "wire": "loop"
+  },
+  {
+   "id": "schema-drift",
+   "module": "A5",
+   "name": "Schema drift",
+   "summary": "Model output has the wrong shape and breaks code downstream.",
+   "wire": "tools"
+  },
+  {
+   "id": "effort-mismatch",
+   "module": "A6",
+   "name": "Effort mismatch",
+   "summary": "Maximum reasoning on easy work: same answers, many times the cost and wait.",
+   "wire": "loop"
+  },
+  {
+   "id": "long-chain-collapse",
+   "module": "A7",
+   "name": "Long-chain collapse",
+   "summary": "Small per-step error rates multiply until long tasks mostly fail.",
+   "wire": "verify"
+  },
+  {
+   "id": "split-tool-results",
+   "module": "B1",
+   "name": "Split tool results",
+   "summary": "Parallel results sent in separate messages or with mismatched ids.",
+   "wire": "tools"
+  },
+  {
+   "id": "almost-done-spiral",
+   "module": "B2",
+   "name": "The “almost done” spiral",
+   "summary": "A loop with one exit keeps calling tools forever.",
+   "wire": "loop"
+  },
+  {
+   "id": "harness-regression",
+   "module": "B3",
+   "name": "Harness regression",
+   "summary": "A harness change, not the model, quietly makes results worse.",
+   "wire": "observe"
+  },
+  {
+   "id": "rule-ignored",
+   "module": "C1",
+   "name": "The ignored rule",
+   "summary": "A prompt-only rule holds early and breaks late in a long run.",
+   "wire": "control"
+  },
+  {
+   "id": "context-flood",
+   "module": "C2",
+   "name": "Context flood",
+   "summary": "One giant tool output buries the task.",
+   "wire": "context"
+  },
+  {
+   "id": "compaction-amnesia",
+   "module": "C3",
+   "name": "Compaction amnesia",
+   "summary": "A summary drops a constraint or redoes finished work.",
+   "wire": "context"
+  },
+  {
+   "id": "cold-cache",
+   "module": "C4",
+   "name": "Cold cache",
+   "summary": "A changing prefix (a timestamp, reordered tools) defeats prompt caching.",
+   "wire": "context"
+  },
+  {
+   "id": "orphaned-tool-call",
+   "module": "C5",
+   "name": "Orphaned tool call",
+   "summary": "An interrupt leaves a tool_use with no tool_result, and resume fails.",
+   "wire": "loop"
+  },
+  {
+   "id": "retry-storm",
+   "module": "C6",
+   "name": "Retry storm",
+   "summary": "Clients retry in lockstep without jitter and prolong the outage.",
+   "wire": "errors"
+  },
+  {
+   "id": "tool-confusion",
+   "module": "C7",
+   "name": "Tool confusion",
+   "summary": "A vague name or schema makes the model call the wrong tool or wrong inputs.",
+   "wire": "tools"
+  },
+  {
+   "id": "tool-overload",
+   "module": "C8",
+   "name": "Tool overload",
+   "summary": "Too many tool definitions eat the window and blur the choice.",
+   "wire": "tools"
+  },
+  {
+   "id": "approval-fatigue",
+   "module": "C9",
+   "name": "Approval fatigue",
+   "summary": "So many prompts that the dangerous one gets approved too.",
+   "wire": "permissions"
+  },
+  {
+   "id": "sandbox-escape",
+   "module": "C10",
+   "name": "Sandbox escape",
+   "summary": "A symlink or ../ path reaches outside the workspace.",
+   "wire": "permissions"
+  },
+  {
+   "id": "reviewer-rubber-stamp",
+   "module": "D3",
+   "name": "Reviewer rubber-stamp",
+   "summary": "A reviewer or judge that shares the author's view approves everything.",
+   "wire": "verify"
+  },
+  {
+   "id": "unexplained-bill",
+   "module": "C12",
+   "name": "The unexplained bill",
+   "summary": "Cost jumps and nobody can say where it went.",
+   "wire": "observe"
+  },
+  {
+   "id": "secret-in-trace",
+   "module": "C12",
+   "name": "Secret in the trace",
+   "summary": "A key or token is written into logs that many people can read.",
+   "wire": "observe"
+  },
+  {
+   "id": "silent-regression",
+   "module": "D1",
+   "name": "Works on my examples",
+   "summary": "A change looks fine on three examples and breaks many real tasks.",
+   "wire": "verify"
+  },
+  {
+   "id": "eval-noise",
+   "module": "D2",
+   "name": "Noise mistaken for progress",
+   "summary": "A difference that is inside the noise is reported as an improvement.",
+   "wire": "verify"
+  },
+  {
+   "id": "injected-page",
+   "module": "E1",
+   "name": "The injected page",
+   "summary": "Instructions hidden in fetched content steer the agent.",
+   "wire": "permissions"
+  },
+  {
+   "id": "poisoned-tool",
+   "module": "E2",
+   "name": "The poisoned tool",
+   "summary": "A tool's description or server is malicious or compromised.",
+   "wire": "permissions"
+  },
+  {
+   "id": "sub-agent-sprawl",
+   "module": "F1",
+   "name": "Sub-agent sprawl",
+   "summary": "Many agents, many times the cost, conflicting work.",
+   "wire": "loop"
+  },
+  {
+   "id": "shift-amnesia",
+   "module": "F2",
+   "name": "Shift amnesia",
+   "summary": "A new session redoes or undoes the last one's work.",
+   "wire": "context"
+  },
+  {
+   "id": "lost-session",
+   "module": "F3",
+   "name": "The lost session",
+   "summary": "The process dies and the run's state dies with it.",
+   "wire": "loop"
+  },
+  {
+   "id": "cheap-model-trap",
+   "module": "F4",
+   "name": "The cheap-model trap",
+   "summary": "Cheaper per call, more expensive per completed task.",
+   "wire": "observe"
+  },
+  {
+   "id": "double-charge",
+   "module": "F5",
+   "name": "Double charge",
+   "summary": "A retried action with side effects runs twice.",
+   "wire": "errors"
+  },
+  {
+   "id": "reward-hack",
+   "module": "F6",
+   "name": "Reward hack",
+   "summary": "The policy satisfies the grader instead of the task.",
+   "wire": "verify"
+  },
+  {
+   "id": "migration-break",
+   "module": "F7",
+   "name": "Migration break",
+   "summary": "A new model rejects or changes something the harness relied on.",
+   "wire": "loop"
+  },
+  {
+   "id": "stale-map",
+   "module": "G4",
+   "name": "The stale map",
+   "summary": "Agents follow outdated rules or docs as the codebase drifts.",
+   "wire": "control"
+  }
+ ],
+ "modules": [
+  {
+   "id": "S0",
+   "kind": "concept",
+   "minutes": 25,
+   "part": "S",
+   "slug": "same-model-different-harness",
+   "title": "Same model, different harness",
+   "wires": [
+    "verify",
+    "loop"
+   ]
+  },
+  {
+   "id": "A1",
+   "kind": "concept",
+   "minutes": 30,
+   "part": "A",
+   "slug": "what-a-model-does",
+   "title": "What a model does",
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "id": "A2",
+   "kind": "concept",
+   "minutes": 30,
+   "part": "A",
+   "slug": "tokens-and-the-window",
+   "title": "Tokens and the context window",
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "id": "A3",
+   "kind": "core",
+   "minutes": 40,
+   "part": "A",
+   "slug": "the-stateless-model",
+   "tag": {
+    "label": "history resend",
+    "wire": "context"
+   },
+   "title": "The stateless model",
+   "wires": [
+    "context",
+    "loop"
+   ]
+  },
+  {
+   "id": "A4",
+   "kind": "core",
+   "minutes": 50,
+   "part": "A",
+   "slug": "the-api-call-on-the-wire",
+   "tag": {
+    "label": "block-aware reply parser",
+    "wire": "loop"
+   },
+   "title": "The API call on the wire",
+   "wires": [
+    "loop",
+    "observe"
+   ]
+  },
+  {
+   "id": "A5",
+   "kind": "core",
+   "minutes": 45,
+   "part": "A",
+   "slug": "structured-outputs",
+   "tag": {
+    "label": "schema checks",
+    "wire": "tools"
+   },
+   "title": "Structured outputs and schemas",
+   "wires": [
+    "tools"
+   ]
+  },
+  {
+   "id": "A6",
+   "kind": "concept",
+   "minutes": 35,
+   "part": "A",
+   "slug": "reasoning-and-effort",
+   "title": "Reasoning and effort as harness knobs",
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "id": "A7",
+   "kind": "concept",
+   "minutes": 30,
+   "part": "A",
+   "slug": "why-a-model-alone-is-unreliable",
+   "title": "Why a model alone is unreliable",
+   "wires": [
+    "verify",
+    "errors"
+   ]
+  },
+  {
+   "id": "B1",
+   "kind": "core",
+   "minutes": 50,
+   "part": "B",
+   "slug": "tools-give-the-model-hands",
+   "tag": {
+    "label": "tool runner",
+    "wire": "tools"
+   },
+   "title": "Tools give the model hands",
+   "wires": [
+    "tools",
+    "permissions"
+   ]
+  },
+  {
+   "id": "B2",
+   "kind": "core",
+   "minutes": 60,
+   "part": "B",
+   "slug": "the-agent-loop",
+   "tag": {
+    "label": "turn limit and budget",
+    "wire": "loop"
+   },
+   "title": "The agent loop",
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "id": "B3",
+   "kind": "concept",
+   "minutes": 35,
+   "part": "B",
+   "slug": "what-a-harness-is",
+   "title": "What a harness is",
+   "wires": [
+    "control",
+    "loop",
+    "tools",
+    "permissions",
+    "context",
+    "errors",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "B4",
+   "kind": "concept",
+   "minutes": 30,
+   "part": "B",
+   "slug": "the-turn-clock",
+   "title": "The Turn Clock",
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "C1",
+   "kind": "core",
+   "minutes": 55,
+   "part": "C",
+   "slug": "control-plane",
+   "tag": {
+    "label": "rules in code",
+    "wire": "control"
+   },
+   "title": "Control plane: instructions as law",
+   "wires": [
+    "control"
+   ]
+  },
+  {
+   "id": "C2",
+   "kind": "core",
+   "minutes": 50,
+   "part": "C",
+   "slug": "context-budget",
+   "tag": {
+    "label": "context budget",
+    "wire": "context"
+   },
+   "title": "Context budget",
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "id": "C3",
+   "kind": "core",
+   "minutes": 50,
+   "part": "C",
+   "slug": "compaction-and-memory",
+   "tag": {
+    "label": "compaction",
+    "wire": "context"
+   },
+   "title": "Compaction and memory",
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "id": "C4",
+   "kind": "core",
+   "minutes": 45,
+   "part": "C",
+   "slug": "prompt-caching",
+   "tag": {
+    "label": "cache-friendly prefix",
+    "wire": "context"
+   },
+   "title": "Prompt caching",
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "id": "C5",
+   "kind": "core",
+   "minutes": 55,
+   "part": "C",
+   "slug": "loop-state-and-stopping",
+   "tag": {
+    "label": "close the books",
+    "wire": "loop"
+   },
+   "title": "Loop state and stopping well",
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "id": "C6",
+   "kind": "core",
+   "minutes": 55,
+   "part": "C",
+   "slug": "errors-and-recovery",
+   "tag": {
+    "label": "backoff and breaker",
+    "wire": "errors"
+   },
+   "title": "Errors are the main path",
+   "wires": [
+    "errors"
+   ]
+  },
+  {
+   "id": "C7",
+   "kind": "core",
+   "minutes": 55,
+   "part": "C",
+   "slug": "tool-design",
+   "tag": {
+    "label": "clear tool design",
+    "wire": "tools"
+   },
+   "title": "Tool design is agent UX",
+   "wires": [
+    "tools"
+   ]
+  },
+  {
+   "id": "C8",
+   "kind": "core",
+   "minutes": 50,
+   "part": "C",
+   "slug": "mcp-skills-and-tool-scale",
+   "tag": {
+    "label": "tools on demand",
+    "wire": "tools"
+   },
+   "title": "MCP, skills and tool scale",
+   "wires": [
+    "tools",
+    "context"
+   ]
+  },
+  {
+   "id": "C9",
+   "kind": "core",
+   "minutes": 55,
+   "part": "C",
+   "slug": "permissions",
+   "tag": {
+    "label": "allow, ask, deny rules",
+    "wire": "permissions"
+   },
+   "title": "Permissions",
+   "wires": [
+    "permissions"
+   ]
+  },
+  {
+   "id": "C10",
+   "kind": "core",
+   "minutes": 50,
+   "part": "C",
+   "slug": "sandboxes",
+   "tag": {
+    "label": "sandbox",
+    "wire": "permissions"
+   },
+   "title": "Sandboxes: blast walls",
+   "wires": [
+    "permissions"
+   ]
+  },
+  {
+   "id": "C11",
+   "kind": "core",
+   "minutes": 55,
+   "part": "C",
+   "slug": "verification",
+   "tag": {
+    "label": "verify gate",
+    "wire": "verify"
+   },
+   "title": "Verification: done is a claim",
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "id": "C12",
+   "kind": "core",
+   "minutes": 50,
+   "part": "C",
+   "slug": "observability",
+   "tag": {
+    "label": "readable trace",
+    "wire": "observe"
+   },
+   "title": "Observability: traces you can read",
+   "wires": [
+    "observe"
+   ]
+  },
+  {
+   "id": "D1",
+   "kind": "core",
+   "minutes": 50,
+   "part": "D",
+   "slug": "eval-anatomy",
+   "tag": {
+    "label": "eval suite",
+    "wire": "verify"
+   },
+   "title": "Eval anatomy",
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "id": "D2",
+   "kind": "core",
+   "minutes": 55,
+   "part": "D",
+   "slug": "statistics-for-a-random-system",
+   "tag": {
+    "label": "trials and intervals",
+    "wire": "verify"
+   },
+   "title": "Statistics for a random system",
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "id": "D3",
+   "kind": "core",
+   "minutes": 55,
+   "part": "D",
+   "slug": "evals-in-practice",
+   "tag": {
+    "label": "checked grader",
+    "wire": "verify"
+   },
+   "title": "Evals in practice",
+   "wires": [
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "E1",
+   "kind": "core",
+   "minutes": 55,
+   "part": "E",
+   "slug": "prompt-injection-and-the-trifecta",
+   "tag": {
+    "label": "trifecta check",
+    "wire": "permissions"
+   },
+   "title": "Prompt injection and the lethal trifecta",
+   "wires": [
+    "permissions"
+   ]
+  },
+  {
+   "id": "E2",
+   "kind": "core",
+   "minutes": 50,
+   "part": "E",
+   "slug": "defense-in-layers",
+   "tag": {
+    "label": "layered defenses",
+    "wire": "permissions"
+   },
+   "title": "Defense in layers",
+   "wires": [
+    "permissions",
+    "tools"
+   ]
+  },
+  {
+   "id": "F1",
+   "kind": "core",
+   "minutes": 55,
+   "part": "F",
+   "slug": "many-agents",
+   "tag": {
+    "label": "sub-agents with roles",
+    "wire": "loop"
+   },
+   "title": "Many agents: when and how",
+   "wires": [
+    "loop",
+    "context",
+    "verify"
+   ]
+  },
+  {
+   "id": "F2",
+   "kind": "core",
+   "minutes": 50,
+   "part": "F",
+   "slug": "long-running-agents",
+   "tag": {
+    "label": "handoff notes",
+    "wire": "context"
+   },
+   "title": "Long-running agents",
+   "wires": [
+    "context",
+    "loop",
+    "verify"
+   ]
+  },
+  {
+   "id": "F3",
+   "kind": "concept",
+   "minutes": 35,
+   "part": "F",
+   "slug": "managed-agents",
+   "title": "Managed agents: the harness as a service",
+   "wires": [
+    "loop",
+    "permissions",
+    "context"
+   ]
+  },
+  {
+   "id": "F4",
+   "kind": "core",
+   "minutes": 50,
+   "part": "F",
+   "slug": "cost-and-latency",
+   "tag": {
+    "label": "cost per task",
+    "wire": "observe"
+   },
+   "title": "Cost and latency engineering",
+   "wires": [
+    "observe",
+    "context"
+   ]
+  },
+  {
+   "id": "F5",
+   "kind": "core",
+   "minutes": 55,
+   "part": "F",
+   "slug": "production",
+   "tag": {
+    "label": "idempotent steps",
+    "wire": "errors"
+   },
+   "title": "Production: agents that survive real traffic",
+   "wires": [
+    "errors",
+    "loop",
+    "observe"
+   ]
+  },
+  {
+   "id": "F6",
+   "kind": "core",
+   "minutes": 60,
+   "part": "F",
+   "slug": "environments",
+   "tag": {
+    "label": "sealed grader",
+    "wire": "verify"
+   },
+   "title": "Environments: harnesses that train and test models",
+   "wires": [
+    "verify",
+    "permissions"
+   ]
+  },
+  {
+   "id": "F7",
+   "kind": "core",
+   "minutes": 50,
+   "part": "F",
+   "slug": "model-migrations",
+   "tag": {
+    "label": "migration checks",
+    "wire": "loop"
+   },
+   "title": "Model migrations: when the model changes under you",
+   "wires": [
+    "loop",
+    "verify",
+    "control"
+   ]
+  },
+  {
+   "id": "G1",
+   "kind": "concept",
+   "minutes": 40,
+   "part": "G",
+   "slug": "inside-claude-code",
+   "title": "Inside Claude Code, wire by wire",
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "G2",
+   "kind": "concept",
+   "minutes": 40,
+   "part": "G",
+   "slug": "codex-and-open-harnesses",
+   "title": "Codex and open harnesses: what everyone agrees on",
+   "wires": [
+    "loop",
+    "permissions",
+    "context",
+    "tools"
+   ]
+  },
+  {
+   "id": "G3",
+   "kind": "concept",
+   "minutes": 60,
+   "part": "G",
+   "slug": "reading-a-harness-repo",
+   "title": "Reading a real harness repository",
+   "wires": [
+    "loop",
+    "tools",
+    "observe"
+   ]
+  },
+  {
+   "id": "G4",
+   "kind": "core",
+   "minutes": 50,
+   "part": "G",
+   "slug": "the-daily-craft",
+   "tag": {
+    "label": "named failures",
+    "wire": "observe"
+   },
+   "title": "The daily craft",
+   "wires": [
+    "observe",
+    "verify",
+    "control"
+   ]
+  },
+  {
+   "id": "H0",
+   "kind": "guide",
+   "minutes": 20,
+   "part": "H",
+   "slug": "rein-setup",
+   "title": "Rein setup",
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "id": "H1",
+   "kind": "build",
+   "minutes": 35,
+   "part": "H",
+   "slug": "rein-1-talk-to-a-model",
+   "title": "Rein 1: talk to a model",
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "id": "H2",
+   "kind": "build",
+   "minutes": 40,
+   "part": "H",
+   "slug": "rein-2-one-tool-and-the-loop",
+   "title": "Rein 2: one tool and the loop",
+   "wires": [
+    "loop",
+    "tools"
+   ]
+  },
+  {
+   "id": "H3",
+   "kind": "build",
+   "minutes": 45,
+   "part": "H",
+   "slug": "rein-3-real-tools-inside-a-wall",
+   "title": "Rein 3: real tools inside a wall",
+   "wires": [
+    "tools",
+    "permissions"
+   ]
+  },
+  {
+   "id": "H4",
+   "kind": "build",
+   "minutes": 40,
+   "part": "H",
+   "slug": "rein-4-the-permission-gate",
+   "title": "Rein 4: the permission gate",
+   "wires": [
+    "permissions"
+   ]
+  },
+  {
+   "id": "H5",
+   "kind": "build",
+   "minutes": 35,
+   "part": "H",
+   "slug": "rein-5-a-trace",
+   "title": "Rein 5: a trace",
+   "wires": [
+    "observe"
+   ]
+  },
+  {
+   "id": "H6",
+   "kind": "build",
+   "minutes": 40,
+   "part": "H",
+   "slug": "rein-6-a-context-budget",
+   "title": "Rein 6: a context budget",
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "id": "H7",
+   "kind": "build",
+   "minutes": 45,
+   "part": "H",
+   "slug": "rein-7-retries-and-a-breaker",
+   "title": "Rein 7: retries and a breaker",
+   "wires": [
+    "errors"
+   ]
+  },
+  {
+   "id": "H8",
+   "kind": "build",
+   "minutes": 40,
+   "part": "H",
+   "slug": "rein-8-guards",
+   "title": "Rein 8: guards that stop the run well",
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "id": "H9",
+   "kind": "build",
+   "minutes": 40,
+   "part": "H",
+   "slug": "rein-9-the-verification-gate",
+   "title": "Rein 9: the verification gate",
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "id": "H10",
+   "kind": "build",
+   "minutes": 35,
+   "part": "H",
+   "slug": "rein-10-project-rules",
+   "title": "Rein 10: project rules",
+   "wires": [
+    "control"
+   ]
+  },
+  {
+   "id": "H11",
+   "kind": "build",
+   "minutes": 45,
+   "part": "H",
+   "slug": "rein-11-a-reviewer",
+   "title": "Rein 11: a reviewer sub-agent",
+   "wires": [
+    "verify",
+    "loop"
+   ]
+  },
+  {
+   "id": "H12",
+   "kind": "guide",
+   "minutes": 90,
+   "part": "H",
+   "slug": "rein-from-one-file-to-a-project",
+   "title": "From one file to a project",
+   "wires": [
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "H13",
+   "kind": "guide",
+   "minutes": 30,
+   "part": "H",
+   "slug": "rein-extensions",
+   "title": "Rein extensions, ranked",
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "I1",
+   "kind": "career",
+   "minutes": 30,
+   "part": "I",
+   "slug": "the-job-map",
+   "title": "The job map",
+   "wires": [
+    "observe",
+    "verify"
+   ]
+  },
+  {
+   "id": "I2",
+   "kind": "career",
+   "minutes": 30,
+   "part": "I",
+   "slug": "readiness",
+   "title": "Readiness self-assessment",
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "I3",
+   "kind": "career",
+   "minutes": 45,
+   "part": "I",
+   "slug": "portfolio-projects",
+   "title": "Four portfolio projects",
+   "wires": [
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "I4",
+   "kind": "career",
+   "minutes": 60,
+   "part": "I",
+   "slug": "capstone-rein-in-rust",
+   "title": "Capstone: Rein in Rust",
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "I5",
+   "kind": "career",
+   "minutes": 120,
+   "part": "I",
+   "slug": "interview-room",
+   "title": "Interview Room",
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "id": "I6",
+   "kind": "career",
+   "minutes": 30,
+   "part": "I",
+   "slug": "twelve-weeks-after",
+   "title": "Twelve weeks after the course",
+   "wires": [
+    "observe"
+   ]
+  },
+  {
+   "id": "T1",
+   "kind": "primer",
+   "minutes": 20,
+   "part": "T",
+   "slug": "py-typing-and-dataclasses",
+   "title": "Python typing and dataclasses",
+   "wires": []
+  },
+  {
+   "id": "T2",
+   "kind": "primer",
+   "minutes": 25,
+   "part": "T",
+   "slug": "asyncio",
+   "title": "asyncio",
+   "wires": []
+  },
+  {
+   "id": "T3",
+   "kind": "primer",
+   "minutes": 20,
+   "part": "T",
+   "slug": "subprocess-and-signals",
+   "title": "subprocess and signals",
+   "wires": []
+  },
+  {
+   "id": "T4",
+   "kind": "primer",
+   "minutes": 20,
+   "part": "T",
+   "slug": "json-schema-primer",
+   "title": "JSON Schema in depth",
+   "wires": []
+  },
+  {
+   "id": "T5",
+   "kind": "primer",
+   "minutes": 20,
+   "part": "T",
+   "slug": "http-and-sse",
+   "title": "HTTP and SSE streaming",
+   "wires": []
+  },
+  {
+   "id": "T6",
+   "kind": "primer",
+   "minutes": 20,
+   "part": "T",
+   "slug": "pytest-primer",
+   "title": "pytest",
+   "wires": []
+  },
+  {
+   "id": "T7",
+   "kind": "primer",
+   "minutes": 25,
+   "part": "T",
+   "slug": "containers-primer",
+   "title": "Containers",
+   "wires": []
+  },
+  {
+   "id": "T8",
+   "kind": "primer",
+   "minutes": 20,
+   "part": "T",
+   "slug": "git-primer",
+   "title": "git for agent work",
+   "wires": []
+  },
+  {
+   "id": "T9",
+   "kind": "primer",
+   "minutes": 20,
+   "part": "T",
+   "slug": "linux-processes",
+   "title": "Linux processes",
+   "wires": []
+  },
+  {
+   "id": "T10",
+   "kind": "primer",
+   "minutes": 20,
+   "part": "T",
+   "slug": "threads-vs-async",
+   "title": "Threads vs. async",
+   "wires": []
+  }
+ ],
+ "parts": [
+  {
+   "id": "S",
+   "title": "Start here"
+  },
+  {
+   "id": "A",
+   "title": "The model"
+  },
+  {
+   "id": "B",
+   "title": "From chatbot to agent"
+  },
+  {
+   "id": "C",
+   "title": "The eight wires"
+  },
+  {
+   "id": "D",
+   "title": "Measure"
+  },
+  {
+   "id": "E",
+   "title": "Secure"
+  },
+  {
+   "id": "F",
+   "title": "Scale"
+  },
+  {
+   "id": "G",
+   "title": "Real harnesses"
+  },
+  {
+   "id": "H",
+   "title": "Build Rein"
+  },
+  {
+   "id": "I",
+   "title": "Get hired"
+  },
+  {
+   "id": "T",
+   "title": "Toolbelt"
+  }
+ ],
+ "path": [
+  "S0",
+  "A1",
+  "A2",
+  "A3",
+  "A4",
+  "A5",
+  "A6",
+  "A7",
+  "B1",
+  "B2",
+  "H0",
+  "H1",
+  "H2",
+  "B3",
+  "B4",
+  "C1",
+  "C2",
+  "C3",
+  "C4",
+  "C5",
+  "C6",
+  "C7",
+  "C8",
+  "C9",
+  "C10",
+  "H3",
+  "H4",
+  "H5",
+  "H6",
+  "H7",
+  "H8",
+  "C11",
+  "H9",
+  "H10",
+  "H11",
+  "C12",
+  "D1",
+  "D2",
+  "D3",
+  "H12",
+  "E1",
+  "E2",
+  "F1",
+  "F2",
+  "F3",
+  "F4",
+  "F5",
+  "F6",
+  "F7",
+  "G1",
+  "G2",
+  "G3",
+  "G4",
+  "H13",
+  "I1",
+  "I2",
+  "I3",
+  "I4",
+  "I5",
+  "I6"
+ ],
+ "wires": [
+  {
+   "angle": 0,
+   "clock": "12",
+   "glyph": "layers",
+   "id": "control",
+   "law": "Words guide, code enforces.",
+   "line": "solid",
+   "n": 1,
+   "name": "Control plane",
+   "question": "What is the model told, and which instruction wins?",
+   "short": "Control"
+  },
+  {
+   "angle": 45,
+   "clock": "1–2",
+   "glyph": "window",
+   "id": "context",
+   "law": "The smallest window that works.",
+   "line": "10 4",
+   "n": 2,
+   "name": "Context & memory",
+   "question": "What is on the desk this call, and what is saved?",
+   "short": "Context"
+  },
+  {
+   "angle": 90,
+   "clock": "3",
+   "glyph": "cycle",
+   "id": "loop",
+   "law": "Every run needs more than one exit.",
+   "line": "solid-heavy",
+   "n": 3,
+   "name": "Loop & state",
+   "question": "What happens next, what do we carry, when do we stop?",
+   "short": "Loop"
+  },
+  {
+   "angle": 135,
+   "clock": "4–5",
+   "glyph": "zigzag",
+   "id": "errors",
+   "law": "Errors are the main path.",
+   "line": "8 3 2 3",
+   "n": 4,
+   "name": "Errors & recovery",
+   "question": "When something fails, how do we continue without spinning?",
+   "short": "Errors"
+  },
+  {
+   "angle": 180,
+   "clock": "6",
+   "glyph": "hexagon",
+   "id": "tools",
+   "law": "A tool is a user interface for a model.",
+   "line": "4 3",
+   "n": 5,
+   "name": "Tools",
+   "question": "What can the model do, and is each tool easy to use?",
+   "short": "Tools"
+  },
+  {
+   "angle": 225,
+   "clock": "7–8",
+   "glyph": "diamond",
+   "id": "permissions",
+   "law": "Judge the action and its target.",
+   "line": "8 3 2 3 2 3",
+   "n": 6,
+   "name": "Permissions & sandbox",
+   "question": "Which actions are allowed, and how bad can a mistake get?",
+   "short": "Permissions"
+  },
+  {
+   "angle": 285,
+   "clock": "9–10",
+   "glyph": "shield",
+   "id": "verify",
+   "law": "“Done” is a claim.",
+   "line": "0.1 4",
+   "n": 7,
+   "name": "Verification & evals",
+   "question": "How do we know it's really done, and did the change help?",
+   "short": "Verification"
+  },
+  {
+   "angle": 330,
+   "clock": "11 (rim)",
+   "glyph": "eye",
+   "id": "observe",
+   "law": "If it isn't in the trace, it didn't happen.",
+   "line": "2 2",
+   "n": 8,
+   "name": "Observability",
+   "question": "What exactly happened, and where did time and money go?",
+   "short": "Observability"
+  }
+ ]
+}

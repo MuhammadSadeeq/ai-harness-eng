@@ -47,7 +47,59 @@ function paintProgress(store, doc, id, total) {
   line.prepend(mark(status === "done" ? "done" : status === "started" ? "started" : "todo"));
 }
 
-function markCurrentBeat(doc) {
+/**
+ * The next beat the learner has not reached (BP-3.1b-next): beats are in page order, and reached is the index of the
+ * furthest beat the learner has been in (-1 before any). Null when every beat has been reached.
+ */
+export function nextBeatFor(beats, reached) {
+  const next = beats[reached + 1];
+  return next ? { id: next.id, label: next.label, title: next.title } : null;
+}
+
+/**
+ * The line under the progress line: "Next: 2 See · How the loop works", a link to that beat, or "You have seen
+ * every beat." It moves on when the learner reaches a later beat (the now-mark), never back.
+ * Returns the callback markCurrentBeat calls with each current beat's id.
+ */
+function nextBeatLine(doc) {
+  const beats = [...doc.querySelectorAll("[data-beat-link]")].map((link) => {
+    const section = doc.querySelector(`section[data-beat="${CSS.escape(link.dataset.beatLink)}"]`);
+    const label = [...link.childNodes]
+      .filter((node) => !(node.nodeType === 1 && node.classList.contains("now-mark")))
+      .map((node) => node.textContent)
+      .join("")
+      .trim();
+    return { beat: link.dataset.beatLink, id: section?.id ?? "", label, title: section?.querySelector("h2")?.textContent.trim() ?? label };
+  }).filter((b) => b.id);
+  const anchor = doc.querySelector("[data-progress]") ?? doc.querySelector(".module-meta");
+  if (beats.length === 0 || !anchor) return () => {};
+  const line = doc.createElement("p");
+  line.className = "next-beat";
+  anchor.after(line);
+  let reached = -1;
+  const paint = () => {
+    line.replaceChildren();
+    const next = nextBeatFor(beats, reached);
+    if (!next) {
+      line.textContent = "You have seen every beat.";
+      return;
+    }
+    const link = doc.createElement("a");
+    link.href = `#${next.id}`;
+    link.textContent = `${next.label} · ${next.title}`;
+    line.append("Next: ", link);
+  };
+  paint();
+  return (beat) => {
+    const index = beats.findIndex((b) => b.beat === beat);
+    if (index > reached) {
+      reached = index;
+      paint();
+    }
+  };
+}
+
+function markCurrentBeat(doc, onCurrent = () => {}) {
   const links = [...doc.querySelectorAll("[data-beat-link]")];
   if (links.length === 0 || typeof IntersectionObserver !== "function") return;
   const current = new Map();
@@ -63,6 +115,7 @@ function markCurrentBeat(doc) {
         link.append(word);
       }
     }
+    onCurrent(beat);
   };
   const observer = new IntersectionObserver((entries) => {
     for (const entry of entries) current.set(entry.target.dataset.beat, entry.isIntersecting ? entry.intersectionRatio : 0);
@@ -124,8 +177,12 @@ export function mountModule(store, doc = document) {
     paintProgress(store, doc, id, total);
     store.subscribe(() => paintProgress(store, doc, id, total));
   }
-  markCurrentBeat(doc);
+  markCurrentBeat(doc, nextBeatLine(doc));
   upgradeNotes(doc);
   decorateLaw(doc);
+  // B-13: the Run key under a pre[data-run]. Only a page with one loads run.js; Python loads on the key's first Run.
+  if (doc.querySelector("pre[data-run]")) {
+    import("./run.js").then((run) => run.mountRunKeys(doc)).catch(() => {});
+  }
   return true;
 }

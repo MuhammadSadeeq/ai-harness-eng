@@ -42,7 +42,7 @@ def test_dump_json_is_deterministic_and_turns_dates_into_strings() -> None:
 def test_write_creates_every_output(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     root = copy_root(tmp_path)
     assert run(root) == 0
-    assert capsys.readouterr().out.strip().splitlines()[-1] == "gen_data: wrote 11 files"
+    assert capsys.readouterr().out.strip().splitlines()[-1] == "gen_data: wrote 12 files"
 
     course = json.loads((root / "site" / "data" / "course.json").read_text(encoding="utf-8"))
     assert course == json.loads((root / "course.json").read_text(encoding="utf-8"))
@@ -98,7 +98,7 @@ def test_outputs_are_byte_identical_across_runs(tmp_path: Path) -> None:
         for p in (root / "site" / "data").rglob("*")
         if p.is_file()
     }
-    assert first == second and len(first) == 10  # README.md is outside site/data
+    assert first == second and len(first) == 11  # README.md is outside site/data
 
 
 def test_check_passes_right_after_a_write(
@@ -108,7 +108,7 @@ def test_check_passes_right_after_a_write(
     run(root)
     capsys.readouterr()
     assert run(root, "--check") == 0
-    assert capsys.readouterr().out.strip().splitlines()[-1] == "gen_data: 11 files up to date"
+    assert capsys.readouterr().out.strip().splitlines()[-1] == "gen_data: 12 files up to date"
 
 
 def test_check_writes_nothing(tmp_path: Path) -> None:
@@ -159,7 +159,7 @@ def test_missing_readme_markers_are_reported_and_the_readme_is_left_alone(
     assert "README.md:0: README.md is missing the counts markers" in out
     assert readme.read_text(encoding="utf-8") == "# No markers here\n"
     assert (root / "site" / "data" / "course.json").is_file()
-    assert out.strip().splitlines()[-1].startswith("gen_data: FAILED (1 problems); wrote 10 files")
+    assert out.strip().splitlines()[-1].startswith("gen_data: FAILED (1 problems); wrote 11 files")
 
 
 def test_missing_readme_file_is_reported_and_not_created(

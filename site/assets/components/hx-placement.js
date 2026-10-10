@@ -3,7 +3,7 @@
 // compiled from content/<id>/placement.yaml by tools/gen_data.py) or, on demo pages, a path to a .json file
 // (COMPONENTS.md §11). One question at a time; right and wrong show only at the end.
 import { HxElement } from "./lib/hx-element.js";
-import { getContent, getCourse } from "./lib/data.js";
+import { getContent, getCourseCore } from "./lib/data.js";
 import { plural } from "./lib/format.js";
 import { localToday } from "./lib/leitner.js";
 import { tally, suggestStart, skippable } from "./lib/placement.js";
@@ -39,7 +39,7 @@ class HxPlacement extends HxElement {
   static observedAttributes = ["src"];
 
   async setup() {
-    const [content, course] = await Promise.all([getContent("placement", this.getAttribute("src")), getCourse()]);
+    const [content, course] = await Promise.all([getContent("placement", this.getAttribute("src")), getCourseCore()]);
     checkContent(content);
     this.content = content;
     this.course = course;

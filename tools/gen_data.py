@@ -3,7 +3,8 @@
 
 Usage: python tools/gen_data.py [--check]
 
-Writes (D-020): site/data/course.json, facts.json (verified facts only), terms.json,
+Writes (D-020): site/data/course.json, course-core.json (the slim course the components read),
+facts.json (verified facts only), terms.json,
 site/data/{cards,say,checks}/<ID>.json, site/data/placement/<ID>.json
 (from content/<ID>/placement.yaml), site/data/katas/<id>.json (from katas/<id>/), and
 byte-for-byte copies of the scenario tapes and boards (site/data/scenarios/<id>.json,
@@ -406,6 +407,23 @@ def _kata(kata_dir: Path, plan: Plan) -> dict[str, Any] | None:
     }
 
 
+# What the components read from course.json (site/data/course-core.json; lib/data.js getCourseCore).
+# A module's objectives are not here: hx-kata reads them, from the full course.json.
+COURSE_CORE_KEYS = ("wires", "failure_families", "parts", "path", "counts")
+COURSE_CORE_MODULE_KEYS = ("id", "slug", "title", "kind", "part", "tag", "minutes", "wires")
+
+
+def _course_core(course: dict[str, Any]) -> dict[str, Any]:
+    """The slim course: the keys components use, and per module only COURSE_CORE_MODULE_KEYS."""
+    core: dict[str, Any] = {key: course[key] for key in COURSE_CORE_KEYS if key in course}
+    core["modules"] = [
+        {key: module[key] for key in COURSE_CORE_MODULE_KEYS if key in module}
+        for module in course.get("modules", [])
+        if isinstance(module, dict)
+    ]
+    return core
+
+
 def build_plan(root: Path) -> Plan:
     """Compile every output in memory. Writes nothing."""
     plan = Plan()
@@ -416,6 +434,7 @@ def build_plan(root: Path) -> Plan:
         plan.skipped.add("README.md")
     else:
         plan.outputs.append(Output("site/data/course.json", dump_json(course)))
+        plan.outputs.append(Output("site/data/course-core.json", dump_json(_course_core(course))))
     facts = _facts(root, plan)
     if facts is None:
         plan.skipped.add("site/data/facts.json")
