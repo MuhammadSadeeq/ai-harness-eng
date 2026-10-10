@@ -1,0 +1,7 @@
+- id: mcp.no-note
+  claim: "An unverifiable fact with no note."
+  source: https://example.com/a
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable
+  status: unverifiable

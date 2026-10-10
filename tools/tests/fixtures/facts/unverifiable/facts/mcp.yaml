@@ -1,4 +1,4 @@
-- id: standards.example-unverified
+- id: mcp.example-unverified
   claim: "A claim that could not be verified."
   source: https://example.com/spec/revision-2
   quote: "Revision 2 is in draft."

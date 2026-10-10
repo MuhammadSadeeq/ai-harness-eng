@@ -14,8 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-# jsonschema ships no type stubs and types-jsonschema is not in DECISIONS D-018 (see doubts).
-import jsonschema  # type: ignore[import-untyped]
+import jsonschema
 from jsonschema import exceptions as schema_errors
 
 REPO_ROOT = Path(__file__).resolve().parent.parent

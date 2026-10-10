@@ -20,3 +20,11 @@
   verified_on: 2026-10-10
   volatility: stable
   kind: docs
+- id: api.fixture-priced
+  claim: "A fixture price per million tokens."
+  source: https://example.com/price
+  quote: "A fixture price per million tokens."
+  verified_on: 2026-10-10
+  volatility: volatile
+  kind: company-report
+  value: {input_usd_per_mtok: 4, output_usd_per_mtok: 20}

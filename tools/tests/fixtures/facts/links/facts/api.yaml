@@ -29,3 +29,11 @@
   quote: "Quote."
   verified_on: 2026-10-01
   volatility: stable
+- id: api.link-unverified
+  claim: "An unverified claim whose source answers 404."
+  source: https://example.com/gone
+  quote: "Quote."
+  verified_on: 2026-10-01
+  volatility: stable
+  status: unverifiable
+  note: "Recorded for the link-check warning path; not used by any page."

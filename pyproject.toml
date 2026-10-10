@@ -17,7 +17,7 @@ files = ["tools", "site/assets/py"]
 exclude = ["tools/tests/fixtures/"]
 
 [[tool.mypy.overrides]]
-module = ["fontTools", "fontTools.*"]
+module = ["fontTools", "fontTools.*", "jsonschema", "jsonschema.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
@@ -26,4 +26,4 @@ disallow_untyped_defs = false
 
 [tool.pytest.ini_options]
 testpaths = ["tools/tests"]
-addopts = "-q -p no:cacheprovider"
+addopts = "-p no:cacheprovider"

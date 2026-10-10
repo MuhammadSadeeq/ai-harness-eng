@@ -169,3 +169,28 @@ preferences. The site never asks for, stores or transmits an API key.
 The remote repository was empty; all work happens on
 `claude/funny-darwin-daqksa`, which becomes its first branch. The owner can
 make `main` from it when ready; the Pages workflow deploys only from `main`.
+
+### D-029 · One PRNG per trial, same seeds on every board · *decided*
+Comparisons (old board vs new board, bench knobs) give each trial its own
+PRNG seeded by the trial number, identical across boards (common random
+numbers). A shared stream let one board's extra draws shift the other's
+trials: in the Phase 0 fixture it showed a turn limit "changing" the pass
+rate (15/20 vs 13/20), which a turn limit can't do. Binding for the Phase 1
+simulator and Rein's eval runner.
+
+### D-030 · The kata runner never uses bytecode caches · *decided*
+`hxtest.py` loads the kata and its tests from source on every run. Python
+validates `.pyc` files by mtime and size, so a same-size edit within one second
+ran the learner's old code (found in review; the builder's report had missed
+it). Covered by tests that rewrite same-size sources repeatedly and plant a
+stale `.pyc`.
+
+### D-031 · Design is open again: exploration before the Phase 0 gate · *decided*
+The owner asked for the best UI/UX, fun and intuitive, not bound to the SPEC's
+or the book's look. DESIGN.md v1 and its specimen are kept as baseline "D0".
+Three further directions are prototyped on the same three screens (home, B2
+Break replay, B2 Prove bench with a par puzzle) from one shared fixture, judged
+on learning clarity, fun, intuitiveness, phone ergonomics, accessibility,
+budget and meaningful motion, with a novice cognitive walkthrough per
+prototype. The winner becomes DESIGN.md v2. Prototypes live in `site/proto/`
+and are removed once the decision is recorded.

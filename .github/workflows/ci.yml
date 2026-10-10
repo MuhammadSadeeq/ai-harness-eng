@@ -1,8 +1,8 @@
 name: CI
 
-# Push/PR triggers are switched on when the Phase 0 skeleton is accepted
-# (until then the checkers it runs are still being built).
 on:
+  push:
+  pull_request:
   workflow_dispatch:
 
 permissions:

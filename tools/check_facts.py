@@ -34,6 +34,26 @@ OPTIONAL_KEYS = frozenset({"status", "kind", "value", "note", "source_alt"})
 STATUSES = ("verified", "unverifiable", "contradicted")
 KINDS = ("company-report", "paper", "spec", "docs")
 VOLATILITIES = ("volatile", "stable")
+AREAS = frozenset(
+    {
+        "api",
+        "models",
+        "harnesses",
+        "mcp",
+        "otel",
+        "owasp",
+        "skills",
+        "agentsmd",
+        "a2a",
+        "aaif",
+        "anthropic",
+        "openai",
+        "security",
+        "evals",
+        "papers",
+        "careers",
+    }
+)
 ID_PATTERN = re.compile(r"^[a-z0-9]+(\.[a-z0-9-]+)+$")
 DATA_FACT_PATTERN = re.compile(r"""data-fact\s*=\s*(?:"([^"]*)"|'([^']*)')""")
 
@@ -147,6 +167,12 @@ def load_registry(facts_dir: Path, today: dt.date, report: Report) -> list[Fact]
     if not facts_dir.is_dir():
         return facts
     for file in sorted(facts_dir.glob("*.yaml")):
+        if file.stem not in AREAS:
+            report.error(
+                _display(file),
+                1,
+                f"unknown area '{file.stem}'; a new area needs a director decision (FACTS §2)",
+            )
         for line, data, key_lines in _load_file(file, report):
             fact = _validate_entry(file, line, data, key_lines, today, report)
             if fact is None:
@@ -313,7 +339,9 @@ def _freshness_warnings(
     age = fact.age_days(today)
     if age is None:
         return
-    if fact.volatility == "volatile" and age > FRESH_DAYS:
+    if fact.volatility != "volatile":
+        return
+    if age > FRESH_DAYS:
         if fact.id not in used:
             report.warn(
                 fact.file,
@@ -324,7 +352,9 @@ def _freshness_warnings(
         return
     if age > warn_days:
         report.warn(
-            fact.file, fact.line, f"fact '{fact.id}' is {age} days old (warn at {warn_days})"
+            fact.file,
+            fact.line,
+            f"volatile fact '{fact.id}' is {age} days old (warn at {warn_days})",
         )
 
 
@@ -337,8 +367,13 @@ def _check_links(facts: list[Fact], fetch: Fetch, report: Report) -> None:
             if url not in cache:
                 cache[url] = _link_error(url, fetch)
             error = cache[url]
-            if error is not None:
-                report.error(fact.file, fact.line, f"source of '{fact.id}' failed: {url} ({error})")
+            if error is None:
+                continue
+            message = f"source of '{fact.id}' failed: {url} ({error})"
+            if fact.status == "verified":
+                report.error(fact.file, fact.line, message)
+            else:
+                report.warn(fact.file, fact.line, message)
 
 
 def _link_error(url: str, fetch: Fetch) -> str | None:

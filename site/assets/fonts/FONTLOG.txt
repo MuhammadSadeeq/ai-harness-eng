@@ -13,8 +13,9 @@ Subset: IBM Plex complete static WOFF2 files, Latin subset.
 
 Rename: IBM Plex reserves the name "Plex" under the SIL OFL 1.1 (Reserved Font Name).
 A subset is a modified version, so the family names in the name table are changed:
-  IBM Plex Sans -> Harnessed Sans; IBM Plex Sans Condensed -> Harnessed Sans Condensed;
-  IBM Plex Mono -> Harnessed Mono; PostScript IBMPlexSans-* / IBMPlexMono-* -> Harnessed*.
+  IBM Plex Sans -> Harnessed Sans; IBM Plex Sans Condensed -> Harnessed Sans
+  Condensed; IBM Plex Mono -> Harnessed Mono; PostScript IBMPlexSans-* and
+  IBMPlexMono-* -> HarnessedSans-* and HarnessedMono-*.
   renamed name IDs: 1, 3, 4, 6, 16, 17, 21, 22
   kept name IDs (notices): 0, 7, 13, 14
 Reason: OFL reserved font name. CSS uses the new family names only.

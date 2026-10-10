@@ -109,8 +109,10 @@ def _facts(root: Path, plan: Plan) -> dict[str, Any] | None:
                 continue
             fact = {k: item[k] for k in ("claim", "source", "verified_on", "volatility")
                     if k in item}
-            if "kind" in item:
-                fact["kind"] = item["kind"]
+            fact["status"] = item.get("status", "verified")
+            for optional in ("kind", "value"):
+                if optional in item:
+                    fact[optional] = item[optional]
             result[item["id"]] = fact
     return None if failed else result
 

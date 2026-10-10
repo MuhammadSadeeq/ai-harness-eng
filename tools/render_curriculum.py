@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 DOC = ROOT / "docs" / "CURRICULUM.md"
@@ -17,7 +18,7 @@ BEGIN = "<!-- BEGIN GENERATED: tools/render_curriculum.py -->"
 END = "<!-- END GENERATED -->"
 
 
-def render(course: dict) -> str:
+def render(course: dict[str, Any]) -> str:
     mods = course["modules"]
     byid = {m["id"]: m for m in mods}
     wires = {w["id"]: w for w in course["wires"]}
@@ -51,7 +52,8 @@ def render(course: dict) -> str:
             ws = " ".join(wires[x]["short"] for x in m["wires"]) or "—"
             pre = ", ".join(m["prereqs"]) or "—"
             vol = " (dated)" if m.get("volatile") else ""
-            w(f"| {m['id']} | {m['title']}{vol} | {m['kind']} | {ws} | {pre} | {m['minutes']} | {m['law']} |")
+            w(f"| {m['id']} | {m['title']}{vol} | {m['kind']} | {ws} | {pre} "
+              f"| {m['minutes']} | {m['law']} |")
         w("")
 
     w("### Module details\n")
@@ -95,7 +97,8 @@ def main() -> int:
     new = f"{head}{BEGIN}\n{render(course)}\n{END}{tail}"
     if "--check" in sys.argv:
         if new != doc:
-            print("docs/CURRICULUM.md is stale: run python tools/render_curriculum.py", file=sys.stderr)
+            print("docs/CURRICULUM.md is stale: run python tools/render_curriculum.py",
+                  file=sys.stderr)
             return 1
         print("CURRICULUM.md generated block is up to date")
         return 0

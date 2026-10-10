@@ -188,7 +188,7 @@ a:hover { text-decoration-thickness: 2px; }
   line-height: 1;
   margin: 0 0 var(--sp-3);
 }
-.connector { display: block; width: 100%; max-width: 240px; height: auto; }
+.connector { display: block; width: 48.5px; height: 12px; margin: 0 0 var(--sp-5); }
 .connector rect { fill: var(--c); }
 
 /* Glyphs: one sprite, currentColor strokes. */

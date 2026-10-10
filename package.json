@@ -7,7 +7,7 @@
   },
   "scripts": {
     "qa": "node tools/qa/run.mjs",
-    "fonts": "python3 tools/vendor/build_fonts.py"
+    "fonts": "python tools/vendor/build_fonts.py"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

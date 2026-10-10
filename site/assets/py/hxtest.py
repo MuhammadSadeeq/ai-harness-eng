@@ -11,11 +11,14 @@ from __future__ import annotations
 import argparse
 import ast
 import contextlib
+import importlib.abc
 import importlib.util
 import io
 import json
 import os
 import sys
+from collections.abc import Sequence
+from importlib.machinery import ModuleSpec
 from types import FrameType, ModuleType, TracebackType
 from typing import TypedDict
 
@@ -35,6 +38,7 @@ class RunResult(TypedDict):
 
 COLLECTION = "<collection>"
 MODULE_NAME = "hxtest_test_module"
+KATA_MODULE = "kata"
 _OPS: dict[type[ast.cmpop], str] = {
     ast.Eq: "==",
     ast.NotEq: "!=",
@@ -49,13 +53,55 @@ _OPS: dict[type[ast.cmpop], str] = {
 }
 
 
+class _SourceLoader(importlib.abc.Loader):
+    """Runs a .py file from its source text.
+
+    Bytecode caches are never read or written for kata files. A cached .pyc is
+    validated only by source mtime (seconds) and size, so an edit that keeps the
+    size and lands in the same second would run the old code.
+    """
+
+    def __init__(self, location: str) -> None:
+        self.location = location
+
+    def exec_module(self, module: ModuleType) -> None:
+        with open(self.location, encoding="utf-8") as handle:
+            source = handle.read()
+        code = compile(source, self.location, "exec", dont_inherit=True)
+        exec(code, module.__dict__)
+
+
+class _KataFinder:
+    """Finds ``kata`` in the test file's own folder, from source (see _SourceLoader)."""
+
+    def __init__(self, directory: str) -> None:
+        self.directory = directory
+
+    def find_spec(
+        self,
+        fullname: str,
+        path: Sequence[str] | None = None,
+        target: ModuleType | None = None,
+    ) -> ModuleSpec | None:
+        if fullname != KATA_MODULE:
+            return None
+        location = os.path.join(self.directory, "kata.py")
+        if not os.path.isfile(location):
+            return None
+        return importlib.util.spec_from_file_location(
+            fullname, location, loader=_SourceLoader(location)
+        )
+
+
 def run(test_path: str) -> RunResult:
     """Run every top-level ``test_*`` function of ``test_path`` in source order."""
     path = os.path.abspath(test_path)
     directory = os.path.dirname(path)
-    sys.modules.pop("kata", None)
+    sys.modules.pop(KATA_MODULE, None)
     saved_path = list(sys.path)
     sys.path.insert(0, directory)
+    finder = _KataFinder(directory)
+    sys.meta_path.insert(0, finder)
     results: list[TestResult] = []
     try:
         try:
@@ -68,8 +114,10 @@ def run(test_path: str) -> RunResult:
                 fn = getattr(module, node.name, None)
                 results.append(_run_one(node.name, fn, path, source, tree))
     finally:
+        sys.meta_path.remove(finder)
         sys.path[:] = saved_path
         sys.modules.pop(MODULE_NAME, None)
+        sys.modules.pop(KATA_MODULE, None)
     return _summarize(results)
 
 
@@ -77,7 +125,9 @@ def _load(path: str) -> tuple[ModuleType, str, ast.Module]:
     with open(path, encoding="utf-8") as handle:
         source = handle.read()
     tree = ast.parse(source, filename=path)
-    spec = importlib.util.spec_from_file_location(MODULE_NAME, path)
+    spec = importlib.util.spec_from_file_location(
+        MODULE_NAME, path, loader=_SourceLoader(path)
+    )
     if spec is None or spec.loader is None:
         raise ImportError(f"cannot load {path}")
     module = importlib.util.module_from_spec(spec)

@@ -74,7 +74,8 @@ def test_vendor_pages_are_not_scanned() -> None:
         ("bad_note", "note is required when status is unverifiable"),
         ("bad_source", "source must start with https://"),
         ("bad_yaml", "invalid YAML"),
-        ("unverifiable", "fact 'standards.example-unverified' is unverifiable"),
+        ("unverifiable", "fact 'mcp.example-unverified' is unverifiable"),
+        ("bad_area", "unknown area 'misc'"),
     ],
 )
 def test_bad_registry_cases_are_reported(case: str, expected: str) -> None:
@@ -106,10 +107,12 @@ def test_unknown_fact_id_in_a_page_is_an_error() -> None:
     assert _errors(report) == ["unknown fact id 'api.missing'"]
 
 
-def test_warn_days_zero_warns_for_every_fact_but_passes() -> None:
+def test_warn_days_applies_to_volatile_facts_only() -> None:
     report = _case("good", warn_days=0)
     assert _errors(report) == []
-    assert len(_warnings(report)) == 3
+    warnings = _warnings(report)
+    assert len(warnings) == 1
+    assert "volatile fact 'api.example-stop' is 9 days old" in warnings[0]
 
 
 def test_links_are_checked_with_an_injected_fetcher() -> None:
@@ -130,6 +133,9 @@ def test_links_are_checked_with_an_injected_fetcher() -> None:
     assert any("api.link-alt" in e and "HTTP 500" in e for e in errors), errors
     assert not any("api.link-head-only" in e for e in errors), errors
     assert not any("api.link-ok" in e for e in errors), errors
+    assert not any("api.link-unverified" in e for e in errors), errors
+    warnings = _warnings(report)
+    assert any("api.link-unverified" in w and "HTTP 404" in w for w in warnings), warnings
     assert calls.count(("https://example.com/ok", "HEAD")) == 1
     assert ("https://example.com/head-only", "GET") in calls
 

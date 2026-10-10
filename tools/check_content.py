@@ -12,17 +12,16 @@ from __future__ import annotations
 
 import argparse
 import bisect
-import importlib
 import json
 import re
 import sys
-from collections.abc import Callable, Iterable, Iterator, Sequence
+from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
-import jsonschema  # type: ignore[import-untyped]
+import jsonschema
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -41,13 +40,7 @@ from tools.lib.course import (  # noqa: E402
     term_owners,
     yaml_item_lines,
 )
-
-# render_curriculum.py is director-owned and annotates `dict` without type arguments, which
-# `mypy --strict` reports inside that file. Loading it dynamically keeps mypy off it.
-_curriculum_module = importlib.import_module("tools.render_curriculum")
-BEGIN: str = _curriculum_module.BEGIN
-END: str = _curriculum_module.END
-render: Callable[[Any], str] = _curriculum_module.render
+from tools.render_curriculum import BEGIN, END, render  # noqa: E402
 
 LAB_EXCLUDED = frozenset({"hx-kata", "hx-cards", "hx-say", "hx-check", "hx-count", "hx-step"})
 DRILL_TAGS = frozenset({"hx-say", "hx-design", "hx-kata", "hx-incident"})
@@ -69,11 +62,14 @@ EVERYDAY = frozenset({
     "reliability", "entropy", "calibration", "variance", "sandbox", "permissions",
     "verification", "recovery", "observability", "wire",
 })
+# Counts of two or more only: digits 2+ or two..twelve, then a plural noun from the list.
+# "one lab" and "one module" are not counts and are not flagged.
 TYPED_COUNT = re.compile(
-    r"\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+"
-    r"(modules?|katas?|parts|lessons?|labs?|objectives|failure families|terms|primers|cards)\b",
+    r"\b((?:[2-9]|\d{2,})|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+"
+    r"(modules|katas|parts|lessons|labs|objectives|failure families|terms|primers|cards)\b",
     re.IGNORECASE,
 )
+URL_ATTRS = ("href", "src")
 WORD = re.compile(r"[^\W_]+(?:['’-][^\W_]+)*")
 PROSE_TARGET = 900
 PROSE_LIMIT = 1000
@@ -855,6 +851,16 @@ def _check_hygiene(page: Page, shown: str, report: Report) -> None:
     for element in descendants(page.root):
         if "style" in element.attrs:
             report.problem(shown, element.line, "[B8] inline style attributes are not allowed")
+        for name in element.attrs:
+            if name.startswith("on"):
+                report.problem(shown, element.line,
+                               f"[B8] inline event-handler attribute '{name}' is not allowed")
+        for name in URL_ATTRS:
+            # Browsers ignore whitespace and control characters inside a URL scheme.
+            url = re.sub(r"[\s\x00-\x1f]+", "", element.attrs.get(name, "")).lower()
+            if url.startswith("javascript:"):
+                report.problem(shown, element.line,
+                               f"[B8] javascript: URLs are not allowed in {name}")
         if element.tag == "script":
             module_script = (element.attrs.get("type") == "module"
                              and element.attrs.get("src") == SCRIPT_SRC

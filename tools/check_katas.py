@@ -30,6 +30,7 @@ HXTEST = REPO_ROOT / "site" / "assets" / "py" / "hxtest.py"
 RUN_TIMEOUT = 60.0
 KATA_FILES = ("meta.yaml", "starter.py", "solution.py", "test_kata.py")
 META_REQUIRED = ("id", "module", "title", "objectives", "minutes", "hints", "from_memory")
+META_OPTIONAL = ("wrong_solutions",)
 COLLECTION = "<collection>"
 STDLIB = frozenset(sys.stdlib_module_names)
 
@@ -317,6 +318,9 @@ def _check_meta(
     def fail(message: str) -> None:
         report.error(display, 0, message)
 
+    for key in meta:
+        if key not in META_REQUIRED and key not in META_OPTIONAL:
+            fail(f"unknown key '{key}'")
     for key in META_REQUIRED:
         if key not in meta:
             fail(f"missing key '{key}'")

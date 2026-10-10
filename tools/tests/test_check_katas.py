@@ -90,6 +90,10 @@ def test_metadata_mistakes_are_reported() -> None:
         assert any(expected in message for message in messages), messages
 
 
+def test_unknown_meta_key_is_an_error() -> None:
+    assert _messages(_run("unknown-key")) == ["unknown key 'colour'"]
+
+
 def test_unknown_kata_id_is_reported() -> None:
     assert _messages(_run("no-such-kata")) == ["no such kata folder"]
 

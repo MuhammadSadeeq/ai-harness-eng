@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
+import py_compile
+import subprocess
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -26,6 +29,11 @@ def _load() -> ModuleType:
 
 
 hxtest = _load()
+
+
+KATA_IMPORT_TEST = (
+    "from kata import value\n\n\ndef test_value():\n    assert value == {expected}\n"
+)
 
 
 def _write(tmp_path: Path, test_source: str, kata_source: str | None = None) -> Path:
@@ -117,6 +125,40 @@ def test_kata_import_works_and_a_new_kata_is_loaded_each_run(tmp_path: Path) -> 
     (tmp_path / "kata.py").write_text("value = 8\n", encoding="utf-8")
     result = hxtest.run(str(path))
     assert _message(result, "test_value") == "assert 8 == 7"
+
+
+def test_rewrites_in_a_row_with_same_size_sources_are_each_seen(tmp_path: Path) -> None:
+    path = _write(tmp_path, KATA_IMPORT_TEST.format(expected=9))
+    messages: list[str] = []
+    for number in (7, 8, 9):
+        (tmp_path / "kata.py").write_text(f"value = {number}\n", encoding="utf-8")
+        messages.append(_message(hxtest.run(str(path)), "test_value"))
+    assert messages == ["assert 7 == 9", "assert 8 == 9", ""]
+
+
+def test_stale_bytecode_for_kata_is_never_used(tmp_path: Path) -> None:
+    kata = tmp_path / "kata.py"
+    kata.write_text("value = 7\n", encoding="utf-8")
+    original = kata.stat()
+    py_compile.compile(
+        str(kata),
+        cfile=importlib.util.cache_from_source(str(kata)),
+        doraise=True,
+        invalidation_mode=py_compile.PycInvalidationMode.TIMESTAMP,
+    )
+    kata.write_text("value = 8\n", encoding="utf-8")  # same size as before
+    os.utime(kata, ns=(original.st_atime_ns, original.st_mtime_ns))
+    # Sanity check: an ordinary import trusts this stale cache, so the setup is a real trap.
+    ordinary = subprocess.run(
+        [sys.executable, "-c", "import kata; print(kata.value)"],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert ordinary.stdout.strip() == "7"
+    path = _write(tmp_path, KATA_IMPORT_TEST.format(expected=8))
+    assert _outcomes(hxtest.run(str(path))) == {"test_value": "passed"}
 
 
 def test_print_inside_a_test_does_not_corrupt_json(

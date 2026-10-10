@@ -1,7 +1,6 @@
-- id: standards.no-note
-  claim: "An unverifiable fact with no note."
+- id: misc.thing
+  claim: "A fact filed under an area that is not on the list."
   source: https://example.com/a
   quote: "Quote."
   verified_on: 2026-10-01
   volatility: stable
-  status: unverifiable

@@ -1,0 +1,4518 @@
+{
+ "counts": {
+  "failure_families": 35,
+  "minutes_all": 2940,
+  "minutes_path": 2730,
+  "modules": 69,
+  "modules_by_kind": {
+   "build": 11,
+   "career": 5,
+   "concept": 11,
+   "core": 29,
+   "guide": 3,
+   "primer": 10
+  },
+  "objectives": 267,
+  "parts": 11,
+  "terms_planned": 336,
+  "wires": 8
+ },
+ "failure_families": [
+  {
+   "id": "false-done",
+   "module": "S0",
+   "name": "False “done”",
+   "summary": "The agent reports success it never checked.",
+   "wire": "verify"
+  },
+  {
+   "id": "confident-lie",
+   "module": "A1",
+   "name": "The confident lie",
+   "summary": "Fluent, specific, wrong: an invented function, flag or fact.",
+   "wire": "verify"
+  },
+  {
+   "id": "forgetful-harness",
+   "module": "A3",
+   "name": "The forgetful harness",
+   "summary": "History isn't resent, so the model starts from nothing.",
+   "wire": "context"
+  },
+  {
+   "id": "first-block-only",
+   "module": "A4",
+   "name": "First block only",
+   "summary": "Code reads only content[0] and misses or crashes on other blocks.",
+   "wire": "loop"
+  },
+  {
+   "id": "schema-drift",
+   "module": "A5",
+   "name": "Schema drift",
+   "summary": "Model output has the wrong shape and breaks code downstream.",
+   "wire": "tools"
+  },
+  {
+   "id": "effort-mismatch",
+   "module": "A6",
+   "name": "Effort mismatch",
+   "summary": "Maximum reasoning on easy work: same answers, many times the cost and wait.",
+   "wire": "loop"
+  },
+  {
+   "id": "long-chain-collapse",
+   "module": "A7",
+   "name": "Long-chain collapse",
+   "summary": "Small per-step error rates multiply until long tasks mostly fail.",
+   "wire": "verify"
+  },
+  {
+   "id": "split-tool-results",
+   "module": "B1",
+   "name": "Split tool results",
+   "summary": "Parallel results sent in separate messages or with mismatched ids.",
+   "wire": "tools"
+  },
+  {
+   "id": "almost-done-spiral",
+   "module": "B2",
+   "name": "The “almost done” spiral",
+   "summary": "A loop with one exit keeps calling tools forever.",
+   "wire": "loop"
+  },
+  {
+   "id": "harness-regression",
+   "module": "B3",
+   "name": "Harness regression",
+   "summary": "A harness change, not the model, quietly makes results worse.",
+   "wire": "observe"
+  },
+  {
+   "id": "rule-ignored",
+   "module": "C1",
+   "name": "The ignored rule",
+   "summary": "A prompt-only rule holds early and breaks late in a long run.",
+   "wire": "control"
+  },
+  {
+   "id": "context-flood",
+   "module": "C2",
+   "name": "Context flood",
+   "summary": "One giant tool output buries the task.",
+   "wire": "context"
+  },
+  {
+   "id": "compaction-amnesia",
+   "module": "C3",
+   "name": "Compaction amnesia",
+   "summary": "A summary drops a constraint or redoes finished work.",
+   "wire": "context"
+  },
+  {
+   "id": "cold-cache",
+   "module": "C4",
+   "name": "Cold cache",
+   "summary": "A changing prefix (a timestamp, reordered tools) defeats prompt caching.",
+   "wire": "context"
+  },
+  {
+   "id": "orphaned-tool-call",
+   "module": "C5",
+   "name": "Orphaned tool call",
+   "summary": "An interrupt leaves a tool_use with no tool_result, and resume fails.",
+   "wire": "loop"
+  },
+  {
+   "id": "retry-storm",
+   "module": "C6",
+   "name": "Retry storm",
+   "summary": "Clients retry in lockstep without jitter and prolong the outage.",
+   "wire": "errors"
+  },
+  {
+   "id": "tool-confusion",
+   "module": "C7",
+   "name": "Tool confusion",
+   "summary": "A vague name or schema makes the model call the wrong tool or wrong inputs.",
+   "wire": "tools"
+  },
+  {
+   "id": "tool-overload",
+   "module": "C8",
+   "name": "Tool overload",
+   "summary": "Too many tool definitions eat the window and blur the choice.",
+   "wire": "tools"
+  },
+  {
+   "id": "approval-fatigue",
+   "module": "C9",
+   "name": "Approval fatigue",
+   "summary": "So many prompts that the dangerous one gets approved too.",
+   "wire": "permissions"
+  },
+  {
+   "id": "sandbox-escape",
+   "module": "C10",
+   "name": "Sandbox escape",
+   "summary": "A symlink or ../ path reaches outside the workspace.",
+   "wire": "permissions"
+  },
+  {
+   "id": "reviewer-rubber-stamp",
+   "module": "D3",
+   "name": "Reviewer rubber-stamp",
+   "summary": "A reviewer or judge that shares the author's view approves everything.",
+   "wire": "verify"
+  },
+  {
+   "id": "unexplained-bill",
+   "module": "C12",
+   "name": "The unexplained bill",
+   "summary": "Cost jumps and nobody can say where it went.",
+   "wire": "observe"
+  },
+  {
+   "id": "secret-in-trace",
+   "module": "C12",
+   "name": "Secret in the trace",
+   "summary": "A key or token is written into logs that many people can read.",
+   "wire": "observe"
+  },
+  {
+   "id": "silent-regression",
+   "module": "D1",
+   "name": "Works on my examples",
+   "summary": "A change looks fine on three examples and breaks many real tasks.",
+   "wire": "verify"
+  },
+  {
+   "id": "eval-noise",
+   "module": "D2",
+   "name": "Noise mistaken for progress",
+   "summary": "A difference that is inside the noise is reported as an improvement.",
+   "wire": "verify"
+  },
+  {
+   "id": "injected-page",
+   "module": "E1",
+   "name": "The injected page",
+   "summary": "Instructions hidden in fetched content steer the agent.",
+   "wire": "permissions"
+  },
+  {
+   "id": "poisoned-tool",
+   "module": "E2",
+   "name": "The poisoned tool",
+   "summary": "A tool's description or server is malicious or compromised.",
+   "wire": "permissions"
+  },
+  {
+   "id": "sub-agent-sprawl",
+   "module": "F1",
+   "name": "Sub-agent sprawl",
+   "summary": "Many agents, many times the cost, conflicting work.",
+   "wire": "loop"
+  },
+  {
+   "id": "shift-amnesia",
+   "module": "F2",
+   "name": "Shift amnesia",
+   "summary": "A new session redoes or undoes the last one's work.",
+   "wire": "context"
+  },
+  {
+   "id": "lost-session",
+   "module": "F3",
+   "name": "The lost session",
+   "summary": "The process dies and the run's state dies with it.",
+   "wire": "loop"
+  },
+  {
+   "id": "cheap-model-trap",
+   "module": "F4",
+   "name": "The cheap-model trap",
+   "summary": "Cheaper per call, more expensive per completed task.",
+   "wire": "observe"
+  },
+  {
+   "id": "double-charge",
+   "module": "F5",
+   "name": "Double charge",
+   "summary": "A retried action with side effects runs twice.",
+   "wire": "errors"
+  },
+  {
+   "id": "reward-hack",
+   "module": "F6",
+   "name": "Reward hack",
+   "summary": "The policy satisfies the grader instead of the task.",
+   "wire": "verify"
+  },
+  {
+   "id": "migration-break",
+   "module": "F7",
+   "name": "Migration break",
+   "summary": "A new model rejects or changes something the harness relied on.",
+   "wire": "loop"
+  },
+  {
+   "id": "stale-map",
+   "module": "G4",
+   "name": "The stale map",
+   "summary": "Agents follow outdated rules or docs as the codebase drifts.",
+   "wire": "control"
+  }
+ ],
+ "kinds": {
+  "build": {
+   "beats": [
+    "break",
+    "see",
+    "fix",
+    "prove",
+    "keep"
+   ],
+   "requires": [
+    "incident",
+    "step",
+    "prove",
+    "cards",
+    "say"
+   ]
+  },
+  "career": {
+   "beats": [
+    "see",
+    "do",
+    "keep"
+   ],
+   "requires": [
+    "drill"
+   ]
+  },
+  "concept": {
+   "beats": [
+    "break",
+    "see",
+    "lab",
+    "check",
+    "keep"
+   ],
+   "requires": [
+    "incident",
+    "lab",
+    "check",
+    "cards",
+    "say"
+   ]
+  },
+  "core": {
+   "beats": [
+    "break",
+    "see",
+    "fix",
+    "prove",
+    "keep"
+   ],
+   "requires": [
+    "incident",
+    "lab",
+    "kata",
+    "prove",
+    "cards",
+    "say"
+   ]
+  },
+  "guide": {
+   "beats": [
+    "see",
+    "do",
+    "keep"
+   ],
+   "requires": [
+    "cards",
+    "say"
+   ]
+  },
+  "primer": {
+   "beats": [
+    "see",
+    "fix",
+    "keep"
+   ],
+   "requires": [
+    "kata",
+    "cards"
+   ]
+  }
+ },
+ "modules": [
+  {
+   "family": "false-done",
+   "id": "S0",
+   "interactions": [
+    "hx-replay",
+    "hx-bench",
+    "hx-board",
+    "hx-check",
+    "hx-placement"
+   ],
+   "kind": "concept",
+   "law": "Same model, different harness, different results.",
+   "minutes": 25,
+   "misconceptions": [
+    "“A better model is the only way to get better results.”",
+    "“If the agent says it's done, it's done.”",
+    "“One good run proves the setup works.”"
+   ],
+   "objectives": [
+    {
+     "id": "S0.o1",
+     "text": "Replay an agent run and describe it as a sequence of model calls and tool actions."
+    },
+    {
+     "id": "S0.o2",
+     "text": "Predict whether a run's “done” is real before replaying it, then check your prediction."
+    },
+    {
+     "id": "S0.o3",
+     "text": "Change one harness setting and measure its effect over 20 seeded trials as a pass rate."
+    },
+    {
+     "id": "S0.o4",
+     "text": "State the course thesis with your own numbers: same model, different harness, different results."
+    },
+    {
+     "id": "S0.o5",
+     "text": "Find your way around the course: the five beats, the eight wires, your Harness Board, and progress export."
+    }
+   ],
+   "part": "S",
+   "prereqs": [],
+   "primers": [],
+   "slug": "same-model-different-harness",
+   "source": [
+    "start",
+    "c7"
+   ],
+   "status": "planned",
+   "terms": [
+    "agent",
+    "harness",
+    "tool",
+    "run",
+    "trace",
+    "trial",
+    "seed",
+    "pass rate",
+    "failure family",
+    "Harness Board"
+   ],
+   "title": "Same model, different harness",
+   "volatile": false,
+   "wires": [
+    "verify",
+    "loop"
+   ]
+  },
+  {
+   "family": "confident-lie",
+   "id": "A1",
+   "interactions": [
+    "hx-sampler",
+    "hx-check",
+    "hx-replay"
+   ],
+   "kind": "concept",
+   "law": "A model predicts; it doesn't know.",
+   "minutes": 30,
+   "misconceptions": [
+    "“The model looks facts up.”",
+    "“Temperature 0 makes the model correct and repeatable.”",
+    "“The model learns from our conversation as we talk.”"
+   ],
+   "objectives": [
+    {
+     "id": "A1.o1",
+     "text": "Explain next-token prediction: the model scores every possible next token and a sampler picks one."
+    },
+    {
+     "id": "A1.o2",
+     "text": "Predict how temperature changes the spread of outputs, then check it in the Sampler."
+    },
+    {
+     "id": "A1.o3",
+     "text": "Explain why a fluent, confident answer can be false, and why fluency is not evidence."
+    },
+    {
+     "id": "A1.o4",
+     "text": "Distinguish training from inference, and say which one a harness engineer controls."
+    }
+   ],
+   "part": "A",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "what-a-model-does",
+   "source": [
+    "c1",
+    "c4"
+   ],
+   "status": "planned",
+   "terms": [
+    "language model",
+    "token",
+    "next-token prediction",
+    "probability",
+    "sampling",
+    "temperature",
+    "hallucination",
+    "training",
+    "inference",
+    "weights"
+   ],
+   "title": "What a model does",
+   "volatile": false,
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "family": "context-flood",
+   "id": "A2",
+   "interactions": [
+    "hx-tokenizer",
+    "hx-check",
+    "hx-replay"
+   ],
+   "kind": "concept",
+   "law": "Everything on the desk costs tokens.",
+   "minutes": 30,
+   "misconceptions": [
+    "“A token is a word.”",
+    "“The context window is memory that lasts between chats.”",
+    "“If it fits in the window, the model reads all of it equally well.”"
+   ],
+   "objectives": [
+    {
+     "id": "A2.o1",
+     "text": "Estimate the token count of a text with the course's rule of thumb, then check it in the Tokenizer."
+    },
+    {
+     "id": "A2.o2",
+     "text": "Explain the context window as one fixed-size desk shared by instructions, history, tool results and the reply."
+    },
+    {
+     "id": "A2.o3",
+     "text": "Distinguish the input limit from the output limit, and predict what happens when each is hit."
+    },
+    {
+     "id": "A2.o4",
+     "text": "Explain why tokens drive cost and latency."
+    }
+   ],
+   "part": "A",
+   "prereqs": [
+    "A1"
+   ],
+   "primers": [],
+   "slug": "tokens-and-the-window",
+   "source": [
+    "c2"
+   ],
+   "status": "planned",
+   "terms": [
+    "tokenizer",
+    "context window",
+    "input tokens",
+    "output tokens",
+    "output limit",
+    "latency"
+   ],
+   "title": "Tokens and the context window",
+   "volatile": false,
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "family": "forgetful-harness",
+   "id": "A3",
+   "interactions": [
+    "hx-forgetful",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "The messages array is the memory.",
+   "minutes": 40,
+   "misconceptions": [
+    "“The model remembers earlier calls.”",
+    "“The API keeps the conversation for me.”",
+    "“Resending history is free.”"
+   ],
+   "objectives": [
+    {
+     "id": "A3.o1",
+     "text": "Explain why each model call starts from nothing, and where conversation memory actually lives."
+    },
+    {
+     "id": "A3.o2",
+     "text": "Build a conversation by appending user and assistant messages and resending the whole list."
+    },
+    {
+     "id": "A3.o3",
+     "text": "Predict what the model can know on a given call from the list that was sent."
+    },
+    {
+     "id": "A3.o4",
+     "text": "Name three kinds of memory (in the window, in saved files, in the weights) and say which the harness controls."
+    }
+   ],
+   "part": "A",
+   "prereqs": [
+    "A2"
+   ],
+   "primers": [],
+   "slug": "the-stateless-model",
+   "source": [
+    "c3"
+   ],
+   "status": "planned",
+   "terms": [
+    "stateless",
+    "messages array",
+    "role",
+    "system prompt",
+    "conversation history",
+    "memory"
+   ],
+   "title": "The stateless model",
+   "volatile": false,
+   "wires": [
+    "context",
+    "loop"
+   ]
+  },
+  {
+   "family": "first-block-only",
+   "id": "A4",
+   "interactions": [
+    "hx-wire",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Read the whole reply: every block, every stop reason.",
+   "minutes": 50,
+   "misconceptions": [
+    "“The response is a string.”",
+    "“The first content block is the answer.”",
+    "“stop_reason only matters when something goes wrong.”"
+   ],
+   "objectives": [
+    {
+     "id": "A4.o1",
+     "text": "Read a Messages API request and response in the Wire View and name each part."
+    },
+    {
+     "id": "A4.o2",
+     "text": "Explain why a reply is a list of typed content blocks, not one string."
+    },
+    {
+     "id": "A4.o3",
+     "text": "Handle every stop_reason value the API can return, on purpose."
+    },
+    {
+     "id": "A4.o4",
+     "text": "Read the usage fields to get a call's input and output tokens and its cost."
+    },
+    {
+     "id": "A4.o5",
+     "text": "Describe streaming as a sequence of events that build the same message."
+    }
+   ],
+   "part": "A",
+   "prereqs": [
+    "A3"
+   ],
+   "primers": [
+    "T5"
+   ],
+   "slug": "the-api-call-on-the-wire",
+   "source": [
+    "c5",
+    "c6"
+   ],
+   "status": "planned",
+   "terms": [
+    "Messages API",
+    "request",
+    "response",
+    "model ID",
+    "content block",
+    "text block",
+    "stop_reason",
+    "end_turn",
+    "max_tokens",
+    "refusal",
+    "pause_turn",
+    "usage",
+    "streaming",
+    "server-sent events"
+   ],
+   "title": "The API call on the wire",
+   "volatile": true,
+   "wires": [
+    "loop",
+    "observe"
+   ]
+  },
+  {
+   "family": "schema-drift",
+   "id": "A5",
+   "interactions": [
+    "hx-kata",
+    "hx-bench",
+    "hx-wire",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Valid isn't true: check the shape, then the meaning.",
+   "minutes": 45,
+   "misconceptions": [
+    "“Valid JSON means a correct answer.”",
+    "“A schema in the prompt guarantees the shape.”",
+    "“If parsing fails, the harness should crash.”"
+   ],
+   "objectives": [
+    {
+     "id": "A5.o1",
+     "text": "Write a JSON Schema for a small object using types, required fields, enums and additionalProperties."
+    },
+    {
+     "id": "A5.o2",
+     "text": "Validate model output against a schema and turn a validation error into a message the model can fix."
+    },
+    {
+     "id": "A5.o3",
+     "text": "Compare three ways to get structured output: asking in the prompt, validating afterwards, and constrained decoding."
+    },
+    {
+     "id": "A5.o4",
+     "text": "Say what a strict schema guarantees and what it cannot (the values can still be wrong)."
+    }
+   ],
+   "part": "A",
+   "prereqs": [
+    "A4"
+   ],
+   "primers": [
+    "T4"
+   ],
+   "slug": "structured-outputs",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "JSON Schema",
+    "additionalProperties",
+    "schema validation",
+    "structured output",
+    "constrained decoding",
+    "enum"
+   ],
+   "title": "Structured outputs and schemas",
+   "volatile": true,
+   "wires": [
+    "tools"
+   ]
+  },
+  {
+   "family": "effort-mismatch",
+   "id": "A6",
+   "interactions": [
+    "hx-bench",
+    "hx-costcalc",
+    "hx-wire",
+    "hx-check"
+   ],
+   "kind": "concept",
+   "law": "Effort is a dial with a price.",
+   "minutes": 35,
+   "misconceptions": [
+    "“More thinking is always better.”",
+    "“Thinking tokens are free.”",
+    "“The visible thinking is a faithful record of why the model acted.”"
+   ],
+   "objectives": [
+    {
+     "id": "A6.o1",
+     "text": "Explain extended thinking: extra tokens the model writes before answering, billed as output."
+    },
+    {
+     "id": "A6.o2",
+     "text": "Predict how raising effort changes pass rate, cost and latency on easy and hard tasks, then measure it on the Bench."
+    },
+    {
+     "id": "A6.o3",
+     "text": "Explain why thinking blocks must be passed back unchanged during a tool loop."
+    },
+    {
+     "id": "A6.o4",
+     "text": "Choose an effort level for a class of tasks and justify it with cost per completed task."
+    }
+   ],
+   "part": "A",
+   "prereqs": [
+    "A4"
+   ],
+   "primers": [],
+   "slug": "reasoning-and-effort",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "extended thinking",
+    "thinking block",
+    "effort",
+    "cost per completed task"
+   ],
+   "title": "Reasoning and effort as harness knobs",
+   "volatile": true,
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "family": "long-chain-collapse",
+   "id": "A7",
+   "interactions": [
+    "hx-dice",
+    "hx-check",
+    "hx-replay"
+   ],
+   "kind": "concept",
+   "law": "Small errors multiply; the harness has to catch them.",
+   "minutes": 30,
+   "misconceptions": [
+    "“A model that is right 98 % of the time is reliable enough for long tasks.”",
+    "“Wrong answers look uncertain.”",
+    "“Next year's model will make the harness unnecessary.”"
+   ],
+   "objectives": [
+    {
+     "id": "A7.o1",
+     "text": "Name the six weaknesses of a model alone (hallucination, randomness, drift, self-praise, no ground truth, stale knowledge) and give an example of each."
+    },
+    {
+     "id": "A7.o2",
+     "text": "Compute how per-step reliability compounds over n steps, and predict the success of a 30-step task at 98 % per step."
+    },
+    {
+     "id": "A7.o3",
+     "text": "Explain the first principle: reliability comes from the system around the model, checked from outside."
+    },
+    {
+     "id": "A7.o4",
+     "text": "Argue both sides of “models keep getting better, so harnesses matter less”, with evidence."
+    }
+   ],
+   "part": "A",
+   "prereqs": [
+    "A4"
+   ],
+   "primers": [],
+   "slug": "why-a-model-alone-is-unreliable",
+   "source": [
+    "c4"
+   ],
+   "status": "planned",
+   "terms": [
+    "failure mode",
+    "randomness",
+    "drift",
+    "self-praise",
+    "ground truth",
+    "stale knowledge",
+    "compounding error",
+    "reliability"
+   ],
+   "title": "Why a model alone is unreliable",
+   "volatile": false,
+   "wires": [
+    "verify",
+    "errors"
+   ]
+  },
+  {
+   "family": "split-tool-results",
+   "id": "B1",
+   "interactions": [
+    "hx-workbench",
+    "hx-wire",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "The model asks; the harness acts.",
+   "minutes": 50,
+   "misconceptions": [
+    "“The model runs the tool itself.”",
+    "“A tool error should crash the harness.”",
+    "“Each tool result goes in its own message.”"
+   ],
+   "objectives": [
+    {
+     "id": "B1.o1",
+     "text": "Explain the trick: the model only writes a tool request, and the harness runs it and sends back the result."
+    },
+    {
+     "id": "B1.o2",
+     "text": "Write a tool definition with a name, a description and an input schema."
+    },
+    {
+     "id": "B1.o3",
+     "text": "Match every tool_result to its tool_use id, mark failures with is_error, and return all results for one turn in a single user message."
+    },
+    {
+     "id": "B1.o4",
+     "text": "Explain why a tool is a user interface for a model."
+    }
+   ],
+   "part": "B",
+   "prereqs": [
+    "A5",
+    "A7"
+   ],
+   "primers": [],
+   "slug": "tools-give-the-model-hands",
+   "source": [
+    "c5"
+   ],
+   "status": "planned",
+   "terms": [
+    "tool definition",
+    "input_schema",
+    "tool_use",
+    "tool_result",
+    "tool_use_id",
+    "is_error",
+    "parallel tool calls",
+    "function calling"
+   ],
+   "title": "Tools give the model hands",
+   "volatile": true,
+   "wires": [
+    "tools",
+    "permissions"
+   ]
+  },
+  {
+   "family": "almost-done-spiral",
+   "id": "B2",
+   "interactions": [
+    "hx-replay",
+    "hx-clock",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident",
+    "hx-wire"
+   ],
+   "kind": "core",
+   "law": "Every run needs more than one exit.",
+   "minutes": 60,
+   "misconceptions": [
+    "“end_turn means the task is done.”",
+    "“The model decides when to stop, so it will stop.”",
+    "“The loop is a framework detail I don't need to understand.”"
+   ],
+   "objectives": [
+    {
+     "id": "B2.o1",
+     "text": "Write the agent loop: call the model, run the requested tools, append the results, and repeat until it stops asking."
+    },
+    {
+     "id": "B2.o2",
+     "text": "Handle each stop_reason on purpose: tool_use, end_turn, max_tokens, and the rest."
+    },
+    {
+     "id": "B2.o3",
+     "text": "Explain why a single exit is not enough, and add a turn limit and a token budget."
+    },
+    {
+     "id": "B2.o4",
+     "text": "Read a replay of a loop and say, for any event, which turn it belongs to and what the loop does next."
+    },
+    {
+     "id": "B2.o5",
+     "text": "Point to where each of the other seven wires plugs into the loop."
+    }
+   ],
+   "part": "B",
+   "prereqs": [
+    "B1"
+   ],
+   "primers": [],
+   "slug": "the-agent-loop",
+   "source": [
+    "c6"
+   ],
+   "status": "planned",
+   "terms": [
+    "agent loop",
+    "turn",
+    "ReAct",
+    "turn limit",
+    "exit",
+    "token budget",
+    "done claim"
+   ],
+   "title": "The agent loop",
+   "volatile": false,
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "family": "harness-regression",
+   "id": "B3",
+   "interactions": [
+    "hx-sort",
+    "hx-check",
+    "hx-replay"
+   ],
+   "kind": "concept",
+   "law": "Agent = Model + Harness.",
+   "minutes": 35,
+   "misconceptions": [
+    "“The harness is just the system prompt.”",
+    "“Frameworks and harnesses are the same thing.”",
+    "“If results got worse, the model got worse.”"
+   ],
+   "objectives": [
+    {
+     "id": "B3.o1",
+     "text": "Use Agent = Model + Harness to sort behaviors into “the model” or “the harness”."
+    },
+    {
+     "id": "B3.o2",
+     "text": "Distinguish prompt engineering, context engineering and harness engineering."
+    },
+    {
+     "id": "B3.o3",
+     "text": "Explain the operating-system picture of an agent and where the picture breaks down."
+    },
+    {
+     "id": "B3.o4",
+     "text": "Distinguish the product harness a vendor ships from the user harness you add around it."
+    },
+    {
+     "id": "B3.o5",
+     "text": "Cite evidence that harness changes alone move results, and one counterpoint."
+    }
+   ],
+   "part": "B",
+   "prereqs": [
+    "B2"
+   ],
+   "primers": [],
+   "slug": "what-a-harness-is",
+   "source": [
+    "c7"
+   ],
+   "status": "planned",
+   "terms": [
+    "harness engineering",
+    "prompt engineering",
+    "context engineering",
+    "product harness",
+    "user harness",
+    "framework"
+   ],
+   "title": "What a harness is",
+   "volatile": true,
+   "wires": [
+    "control",
+    "loop",
+    "tools",
+    "permissions",
+    "context",
+    "errors",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": "false-done",
+   "id": "B4",
+   "interactions": [
+    "hx-clock",
+    "hx-sort",
+    "hx-check",
+    "hx-replay"
+   ],
+   "kind": "concept",
+   "law": "One turn, eight wires, one order.",
+   "minutes": 30,
+   "misconceptions": [
+    "“The wires are separate features you add one by one.”",
+    "“Observability is optional extra.”"
+   ],
+   "objectives": [
+    {
+     "id": "B4.o1",
+     "text": "Name the eight wires in turn order and the question each one answers."
+    },
+    {
+     "id": "B4.o2",
+     "text": "Walk one turn around the clock out loud, saying what each wire does."
+    },
+    {
+     "id": "B4.o3",
+     "text": "Name the wire at fault for a failure shown in a replay."
+    },
+    {
+     "id": "B4.o4",
+     "text": "Match each wire to its law."
+    }
+   ],
+   "part": "B",
+   "prereqs": [
+    "B3"
+   ],
+   "primers": [],
+   "slug": "the-turn-clock",
+   "source": [
+    "c8"
+   ],
+   "status": "planned",
+   "terms": [
+    "wire",
+    "Turn Clock",
+    "control plane",
+    "context management",
+    "recovery",
+    "permissions",
+    "sandbox",
+    "verification",
+    "observability"
+   ],
+   "title": "The Turn Clock",
+   "volatile": false,
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": "rule-ignored",
+   "id": "C1",
+   "interactions": [
+    "hx-stack",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Words guide, code enforces.",
+   "minutes": 55,
+   "misconceptions": [
+    "“Writing MUST or NEVER makes a rule enforced.”",
+    "“The system prompt is set once.”",
+    "“Longer instructions are safer.”"
+   ],
+   "objectives": [
+    {
+     "id": "C1.o1",
+     "text": "Assemble a prompt from layers and predict which instruction wins when two conflict."
+    },
+    {
+     "id": "C1.o2",
+     "text": "Write an instruction at the right altitude: specific enough to act on, general enough to transfer."
+    },
+    {
+     "id": "C1.o3",
+     "text": "Move a rule that matters from the prompt into code with a pre-tool hook that fails closed, and show it holds."
+    },
+    {
+     "id": "C1.o4",
+     "text": "Structure a project rules file (AGENTS.md or CLAUDE.md) as a map, not a manual."
+    },
+    {
+     "id": "C1.o5",
+     "text": "Treat prompt lines as code: version them, review them and test them."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "B4"
+   ],
+   "primers": [],
+   "slug": "control-plane",
+   "source": [
+    "c9"
+   ],
+   "status": "planned",
+   "terms": [
+    "instruction layer",
+    "instruction hierarchy",
+    "altitude",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "hook",
+    "pre-tool hook",
+    "fail closed",
+    "project rules",
+    "rules file"
+   ],
+   "title": "Control plane: instructions as law",
+   "volatile": true,
+   "wires": [
+    "control"
+   ]
+  },
+  {
+   "family": "context-flood",
+   "id": "C2",
+   "interactions": [
+    "hx-desk",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "The smallest window that works.",
+   "minutes": 50,
+   "misconceptions": [
+    "“More context is always better.”",
+    "“If it fits, it's fine.”",
+    "“The model reads the whole window equally well.”"
+   ],
+   "objectives": [
+    {
+     "id": "C2.o1",
+     "text": "Explain context rot: answer quality falls as the window fills, well before the hard limit."
+    },
+    {
+     "id": "C2.o2",
+     "text": "Audit a trace to find what eats the budget: instructions, tool definitions, history or tool outputs."
+    },
+    {
+     "id": "C2.o3",
+     "text": "Apply the four levers in order: don't load it, shrink it, move it out, summarize it."
+    },
+    {
+     "id": "C2.o4",
+     "text": "Cap a tool's output so it points to more instead of dumping everything."
+    },
+    {
+     "id": "C2.o5",
+     "text": "Order context for attention: stable material first, the current task last."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "B4"
+   ],
+   "primers": [],
+   "slug": "context-budget",
+   "source": [
+    "c13"
+   ],
+   "status": "planned",
+   "terms": [
+    "context rot",
+    "context budget",
+    "just-in-time retrieval",
+    "output cap",
+    "attention budget"
+   ],
+   "title": "Context budget",
+   "volatile": true,
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "family": "compaction-amnesia",
+   "id": "C3",
+   "interactions": [
+    "hx-desk",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Summarize the story, keep the commitments.",
+   "minutes": 50,
+   "misconceptions": [
+    "“A summary keeps everything important.”",
+    "“Memory means the model learns.”",
+    "“Compaction is free.”"
+   ],
+   "objectives": [
+    {
+     "id": "C3.o1",
+     "text": "Explain compaction and its main failure: losing what matters."
+    },
+    {
+     "id": "C3.o2",
+     "text": "Write a compactor that keeps the goal, constraints, decisions, progress and file pointers, and drops raw tool output."
+    },
+    {
+     "id": "C3.o3",
+     "text": "Choose between compaction and a clean reset with a handoff note, and give reasons."
+    },
+    {
+     "id": "C3.o4",
+     "text": "Describe the memory tiers (window, session log, project files, long-term store) and what belongs in each."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "C2"
+   ],
+   "primers": [],
+   "slug": "compaction-and-memory",
+   "source": [
+    "c14"
+   ],
+   "status": "planned",
+   "terms": [
+    "compaction",
+    "compaction threshold",
+    "clean reset",
+    "handoff note",
+    "memory tier",
+    "memory file",
+    "session log"
+   ],
+   "title": "Compaction and memory",
+   "volatile": true,
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "family": "cold-cache",
+   "id": "C4",
+   "interactions": [
+    "hx-cacheline",
+    "hx-wire",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Stable first, changing last.",
+   "minutes": 45,
+   "misconceptions": [
+    "“Caching remembers the conversation.”",
+    "“A small change only invalidates the changed part.”",
+    "“Caching changes the model's answers.”"
+   ],
+   "objectives": [
+    {
+     "id": "C4.o1",
+     "text": "Explain prompt caching as exact prefix matching: one changed byte invalidates everything after it."
+    },
+    {
+     "id": "C4.o2",
+     "text": "Order a request (tools, system, stable context, history, new turn) to maximize cache hits."
+    },
+    {
+     "id": "C4.o3",
+     "text": "Find a silent cache invalidator in a Wire View diff."
+    },
+    {
+     "id": "C4.o4",
+     "text": "Compute the cache hit rate and the savings from a response's usage fields."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "C2"
+   ],
+   "primers": [],
+   "slug": "prompt-caching",
+   "source": [
+    "c14"
+   ],
+   "status": "planned",
+   "terms": [
+    "prompt caching",
+    "cache prefix",
+    "cache hit",
+    "cache write",
+    "cache read",
+    "cache breakpoint",
+    "cache TTL",
+    "cache invalidation"
+   ],
+   "title": "Prompt caching",
+   "volatile": true,
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "family": "orphaned-tool-call",
+   "id": "C5",
+   "interactions": [
+    "hx-replay",
+    "hx-wire",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident"
+   ],
+   "kind": "core",
+   "law": "Close the books before you stop.",
+   "minutes": 55,
+   "misconceptions": [
+    "“State lives in the model.”",
+    "“After an interrupt, just retry from scratch.”",
+    "“Editing earlier history is harmless.”"
+   ],
+   "objectives": [
+    {
+     "id": "C5.o1",
+     "text": "Keep all run state in one state object and change it in one place."
+    },
+    {
+     "id": "C5.o2",
+     "text": "Give every way a run can end its own exit and final status."
+    },
+    {
+     "id": "C5.o3",
+     "text": "Handle an interrupt so that no tool call is left without a result."
+    },
+    {
+     "id": "C5.o4",
+     "text": "Pause and resume a run from saved state, keeping history append-only."
+    },
+    {
+     "id": "C5.o5",
+     "text": "Detect a loop (the same action again and again) and stop it."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "B4"
+   ],
+   "primers": [
+    "T9"
+   ],
+   "slug": "loop-state-and-stopping",
+   "source": [
+    "c10"
+   ],
+   "status": "planned",
+   "terms": [
+    "run state",
+    "final status",
+    "interrupt",
+    "orphaned tool call",
+    "pause and resume",
+    "append-only history",
+    "loop detection"
+   ],
+   "title": "Loop state and stopping well",
+   "volatile": true,
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "family": "retry-storm",
+   "id": "C6",
+   "interactions": [
+    "hx-outage",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Errors are the main path.",
+   "minutes": 55,
+   "misconceptions": [
+    "“Retrying more is safer.”",
+    "“Hide errors from the model.”",
+    "“Every error should be retried.”"
+   ],
+   "objectives": [
+    {
+     "id": "C6.o1",
+     "text": "Classify an error as transient, permanent or the model's mistake, and route each one correctly."
+    },
+    {
+     "id": "C6.o2",
+     "text": "Write retries with exponential backoff, jitter and a cap, and explain why jitter matters."
+    },
+    {
+     "id": "C6.o3",
+     "text": "Add a circuit breaker and a retry budget so recovery has brakes of its own."
+    },
+    {
+     "id": "C6.o4",
+     "text": "Keep wrong outputs and error messages in context so the model can correct itself."
+    },
+    {
+     "id": "C6.o5",
+     "text": "Make a retried action safe with an idempotency key."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "B4"
+   ],
+   "primers": [],
+   "slug": "errors-and-recovery",
+   "source": [
+    "c15"
+   ],
+   "status": "planned",
+   "terms": [
+    "transient error",
+    "permanent error",
+    "exponential backoff",
+    "jitter",
+    "circuit breaker",
+    "retry budget",
+    "idempotency",
+    "idempotency key",
+    "rate limit",
+    "overloaded error"
+   ],
+   "title": "Errors are the main path",
+   "volatile": true,
+   "wires": [
+    "errors"
+   ]
+  },
+  {
+   "family": "tool-confusion",
+   "id": "C7",
+   "interactions": [
+    "hx-workbench",
+    "hx-scheduler",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "A tool is a user interface for a model.",
+   "minutes": 55,
+   "misconceptions": [
+    "“More tools make the agent more capable.”",
+    "“The description is documentation for humans.”",
+    "“Tool output should be complete.”"
+   ],
+   "objectives": [
+    {
+     "id": "C7.o1",
+     "text": "Apply the six rules for tools that work to a weak tool and fix it."
+    },
+    {
+     "id": "C7.o2",
+     "text": "Write descriptions and schemas that make wrong calls hard: clear names, enums, required fields and examples."
+    },
+    {
+     "id": "C7.o3",
+     "text": "Return results and errors that tell the model what to do next, in few tokens."
+    },
+    {
+     "id": "C7.o4",
+     "text": "Describe a tool's risk with annotations: read-only, destructive, idempotent, open-world."
+    },
+    {
+     "id": "C7.o5",
+     "text": "Batch tool calls into rounds that are safe to run in parallel."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "B4"
+   ],
+   "primers": [
+    "T10"
+   ],
+   "slug": "tool-design",
+   "source": [
+    "c11",
+    "c12"
+   ],
+   "status": "planned",
+   "terms": [
+    "agent-computer interface",
+    "tool description",
+    "actionable error",
+    "tool annotation",
+    "read-only tool",
+    "destructive tool",
+    "parallel-safe"
+   ],
+   "title": "Tool design is agent UX",
+   "volatile": false,
+   "wires": [
+    "tools"
+   ]
+  },
+  {
+   "family": "tool-overload",
+   "id": "C8",
+   "interactions": [
+    "hx-bench",
+    "hx-wire",
+    "hx-kata",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Load the menu, not the kitchen.",
+   "minutes": 50,
+   "misconceptions": [
+    "“MCP is a model feature.”",
+    "“Connecting more servers is free.”",
+    "“Skills are fine-tuning.”"
+   ],
+   "objectives": [
+    {
+     "id": "C8.o1",
+     "text": "Describe MCP's shape: hosts and clients, servers, transports, and the primitives a server offers."
+    },
+    {
+     "id": "C8.o2",
+     "text": "Explain skills: a short description loaded up front, the full procedure loaded only when needed."
+    },
+    {
+     "id": "C8.o3",
+     "text": "Measure what many tool definitions cost in tokens and accuracy, then apply tool search or deferred loading."
+    },
+    {
+     "id": "C8.o4",
+     "text": "Explain how letting the model write code that calls tools can replace many tool round trips."
+    },
+    {
+     "id": "C8.o5",
+     "text": "Vet an MCP server before connecting it: who wrote it, what it can reach, how it is pinned."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "C7"
+   ],
+   "primers": [],
+   "slug": "mcp-skills-and-tool-scale",
+   "source": [
+    "c11"
+   ],
+   "status": "planned",
+   "terms": [
+    "Model Context Protocol",
+    "MCP server",
+    "MCP client",
+    "MCP host",
+    "transport",
+    "MCP resource",
+    "skill",
+    "SKILL.md",
+    "progressive disclosure",
+    "tool search",
+    "deferred loading",
+    "programmatic tool calling"
+   ],
+   "title": "MCP, skills and tool scale",
+   "volatile": true,
+   "wires": [
+    "tools",
+    "context"
+   ]
+  },
+  {
+   "family": "approval-fatigue",
+   "id": "C9",
+   "interactions": [
+    "hx-gatekeeper",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Judge the action and its target.",
+   "minutes": 55,
+   "misconceptions": [
+    "“Asking the human is always safe.”",
+    "“Allow-listing commands by name is enough.”",
+    "“Permissions replace a sandbox.”"
+   ],
+   "objectives": [
+    {
+     "id": "C9.o1",
+     "text": "Return allow, ask or deny for each tool call, always with a reason."
+    },
+    {
+     "id": "C9.o2",
+     "text": "Judge risk as action × target: the same command can be safe in one place and dangerous in another."
+    },
+    {
+     "id": "C9.o3",
+     "text": "Explain approval fatigue and write rules that ask rarely, and only when it matters."
+    },
+    {
+     "id": "C9.o4",
+     "text": "Apply a fixed decision order: deny rules, then ask rules, then allow rules, then the mode's default."
+    },
+    {
+     "id": "C9.o5",
+     "text": "Write a permission policy as code and test it with a table of cases."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "C7"
+   ],
+   "primers": [],
+   "slug": "permissions",
+   "source": [
+    "c12"
+   ],
+   "status": "planned",
+   "terms": [
+    "permission policy",
+    "allow",
+    "ask",
+    "deny",
+    "permission mode",
+    "approval fatigue",
+    "allow-list",
+    "decision order"
+   ],
+   "title": "Permissions",
+   "volatile": true,
+   "wires": [
+    "permissions"
+   ]
+  },
+  {
+   "family": "sandbox-escape",
+   "id": "C10",
+   "interactions": [
+    "hx-kata",
+    "hx-bench",
+    "hx-incident",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Assume the wall will be tested.",
+   "minutes": 50,
+   "misconceptions": [
+    "“A container is a perfect wall.”",
+    "“A string prefix check on paths is enough.”",
+    "“The model won't try to leave.”"
+   ],
+   "objectives": [
+    {
+     "id": "C10.o1",
+     "text": "Explain a sandbox as a blast wall that limits how bad a mistake can get, whatever the permissions said."
+    },
+    {
+     "id": "C10.o2",
+     "text": "Confine file access to a workspace root and defeat path traversal and symlinks."
+    },
+    {
+     "id": "C10.o3",
+     "text": "Restrict network egress with an allow-list, and explain why exfiltration needs the network."
+    },
+    {
+     "id": "C10.o4",
+     "text": "Keep secrets out of the sandbox and out of the trace."
+    },
+    {
+     "id": "C10.o5",
+     "text": "Compare OS sandboxes, containers and virtual machines by isolation, speed and cost."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "C9"
+   ],
+   "primers": [
+    "T3",
+    "T7",
+    "T9"
+   ],
+   "slug": "sandboxes",
+   "source": [
+    "c12"
+   ],
+   "status": "planned",
+   "terms": [
+    "blast radius",
+    "workspace root",
+    "path traversal",
+    "symlink",
+    "network egress",
+    "egress allow-list",
+    "container",
+    "virtual machine",
+    "secret",
+    "exfiltration"
+   ],
+   "title": "Sandboxes: blast walls",
+   "volatile": true,
+   "wires": [
+    "permissions"
+   ]
+  },
+  {
+   "family": "false-done",
+   "id": "C11",
+   "interactions": [
+    "hx-bugcatch",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "“Done” is a claim.",
+   "minutes": 55,
+   "misconceptions": [
+    "“The agent said the tests pass, so they pass.”",
+    "“A reviewer model with the same context is independent.”",
+    "“More checks always make the run slower.”"
+   ],
+   "objectives": [
+    {
+     "id": "C11.o1",
+     "text": "Put a verification gate between the model's done claim and the run's success."
+    },
+    {
+     "id": "C11.o2",
+     "text": "Prefer computational checks (tests, linters, type checks) over inferential ones, and say when each fits."
+    },
+    {
+     "id": "C11.o3",
+     "text": "Distinguish guides, which steer before the work, from sensors, which check after it."
+    },
+    {
+     "id": "C11.o4",
+     "text": "Set up an independent reviewer that sees the task and the diff, not the author's reasoning."
+    },
+    {
+     "id": "C11.o5",
+     "text": "Spot and block test tampering: edited tests, special-cased answers, skipped checks."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "B4"
+   ],
+   "primers": [],
+   "slug": "verification",
+   "source": [
+    "c16"
+   ],
+   "status": "planned",
+   "terms": [
+    "verification gate",
+    "computational check",
+    "inferential check",
+    "guide",
+    "sensor",
+    "independent reviewer",
+    "sub-agent",
+    "self-report",
+    "test tampering"
+   ],
+   "title": "Verification: done is a claim",
+   "volatile": false,
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "family": "unexplained-bill",
+   "id": "C12",
+   "interactions": [
+    "hx-incident",
+    "hx-replay",
+    "hx-kata",
+    "hx-bench"
+   ],
+   "kind": "core",
+   "law": "If it isn't in the trace, it didn't happen.",
+   "minutes": 50,
+   "misconceptions": [
+    "“Logs are enough.”",
+    "“Record everything raw.”",
+    "“Traces are only for incidents.”"
+   ],
+   "objectives": [
+    {
+     "id": "C12.o1",
+     "text": "Record the events that matter, with ids, timing, tokens and cost."
+    },
+    {
+     "id": "C12.o2",
+     "text": "Read a trace and find the first event where things went wrong."
+    },
+    {
+     "id": "C12.o3",
+     "text": "Structure a trace as spans (run, turn, model call, tool call) and map them to the OpenTelemetry GenAI conventions."
+    },
+    {
+     "id": "C12.o4",
+     "text": "Redact secrets before they reach the trace."
+    },
+    {
+     "id": "C12.o5",
+     "text": "Answer “where did the time and money go?” from a trace."
+    }
+   ],
+   "part": "C",
+   "prereqs": [
+    "B4"
+   ],
+   "primers": [],
+   "slug": "observability",
+   "source": [
+    "c18"
+   ],
+   "status": "planned",
+   "terms": [
+    "span",
+    "event",
+    "trace id",
+    "OpenTelemetry",
+    "GenAI semantic conventions",
+    "redaction",
+    "cost attribution"
+   ],
+   "title": "Observability: traces you can read",
+   "volatile": true,
+   "wires": [
+    "observe"
+   ]
+  },
+  {
+   "family": "silent-regression",
+   "id": "D1",
+   "interactions": [
+    "hx-evalbench",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "No number, no claim.",
+   "minutes": 50,
+   "misconceptions": [
+    "“A few hand-picked examples are an eval.”",
+    "“A model grader is objective.”",
+    "“Evals are for model makers, not harness engineers.”"
+   ],
+   "objectives": [
+    {
+     "id": "D1.o1",
+     "text": "Name the parts of an eval: task, environment, trials, grader, transcript and outcome."
+    },
+    {
+     "id": "D1.o2",
+     "text": "Choose a grader (code, model or human) for a task and name how each can fail."
+    },
+    {
+     "id": "D1.o3",
+     "text": "Write a small eval with a code grader and run it over seeded trials."
+    },
+    {
+     "id": "D1.o4",
+     "text": "Distinguish capability evals from regression evals."
+    }
+   ],
+   "part": "D",
+   "prereqs": [
+    "C11"
+   ],
+   "primers": [
+    "T6"
+   ],
+   "slug": "eval-anatomy",
+   "source": [
+    "c19"
+   ],
+   "status": "planned",
+   "terms": [
+    "eval",
+    "task",
+    "environment",
+    "grader",
+    "code grader",
+    "model grader",
+    "human grader",
+    "transcript",
+    "outcome",
+    "trajectory",
+    "capability eval",
+    "regression eval"
+   ],
+   "title": "Eval anatomy",
+   "volatile": true,
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "family": "eval-noise",
+   "id": "D2",
+   "interactions": [
+    "hx-dice",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "One run is an anecdote.",
+   "minutes": 55,
+   "misconceptions": [
+    "“A higher number on 10 trials is an improvement.”",
+    "“pass@k and pass^k measure the same thing.”",
+    "“The model is the only source of randomness.”"
+   ],
+   "objectives": [
+    {
+     "id": "D2.o1",
+     "text": "Compute pass@k and pass^k from trial results and explain why they tell opposite stories."
+    },
+    {
+     "id": "D2.o2",
+     "text": "Compute a 95 % confidence interval for a pass rate and judge whether two results really differ."
+    },
+    {
+     "id": "D2.o3",
+     "text": "Estimate how many trials you need to detect a given difference."
+    },
+    {
+     "id": "D2.o4",
+     "text": "Name sources of noise beyond sampling: infrastructure, time limits and flaky checks."
+    }
+   ],
+   "part": "D",
+   "prereqs": [
+    "D1"
+   ],
+   "primers": [],
+   "slug": "statistics-for-a-random-system",
+   "source": [
+    "c19"
+   ],
+   "status": "planned",
+   "terms": [
+    "pass@k",
+    "pass^k",
+    "variance",
+    "confidence interval",
+    "Wilson interval",
+    "sample size",
+    "infrastructure noise"
+   ],
+   "title": "Statistics for a random system",
+   "volatile": true,
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "family": "reviewer-rubber-stamp",
+   "id": "D3",
+   "interactions": [
+    "hx-evalbench",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident"
+   ],
+   "kind": "core",
+   "law": "Grade the grader.",
+   "minutes": 55,
+   "misconceptions": [
+    "“If the judge says 95 %, it's 95 %.”",
+    "“A public benchmark measures my use case.”",
+    "“Once an eval is written, it stays valid.”"
+   ],
+   "objectives": [
+    {
+     "id": "D3.o1",
+     "text": "Run regression evals in CI and block a change that falls below a noise-aware threshold."
+    },
+    {
+     "id": "D3.o2",
+     "text": "Calibrate a model grader against human labels and report how often they agree."
+    },
+    {
+     "id": "D3.o3",
+     "text": "Explain contamination and models that notice they are being tested, and reduce their effect."
+    },
+    {
+     "id": "D3.o4",
+     "text": "Read eval transcripts to find graders that pass work for the wrong reason."
+    }
+   ],
+   "part": "D",
+   "prereqs": [
+    "D2"
+   ],
+   "primers": [],
+   "slug": "evals-in-practice",
+   "source": [
+    "c19"
+   ],
+   "status": "planned",
+   "terms": [
+    "LLM judge",
+    "calibration",
+    "agreement rate",
+    "contamination",
+    "eval awareness",
+    "golden set"
+   ],
+   "title": "Evals in practice",
+   "volatile": true,
+   "wires": [
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": "injected-page",
+   "id": "E1",
+   "interactions": [
+    "hx-escape",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Remove a leg; don't ask nicely.",
+   "minutes": 55,
+   "misconceptions": [
+    "“A good system prompt prevents injection.”",
+    "“Only web pages carry injections; tool output is safe.”",
+    "“A detection classifier makes it safe.”"
+   ],
+   "objectives": [
+    {
+     "id": "E1.o1",
+     "text": "Explain prompt injection: instructions hidden in content the agent reads."
+    },
+    {
+     "id": "E1.o2",
+     "text": "Find the three legs of the lethal trifecta in a tool set: private data, untrusted content, and a way to send data out."
+    },
+    {
+     "id": "E1.o3",
+     "text": "Remove one leg by design and show the attack fails, where prompt wording only lowers the rate."
+    },
+    {
+     "id": "E1.o4",
+     "text": "Explain why “the model will ignore malicious text” is not a defense."
+    }
+   ],
+   "part": "E",
+   "prereqs": [
+    "C10"
+   ],
+   "primers": [],
+   "slug": "prompt-injection-and-the-trifecta",
+   "source": [
+    "c20"
+   ],
+   "status": "planned",
+   "terms": [
+    "prompt injection",
+    "indirect prompt injection",
+    "lethal trifecta",
+    "untrusted content",
+    "taint"
+   ],
+   "title": "Prompt injection and the lethal trifecta",
+   "volatile": true,
+   "wires": [
+    "permissions"
+   ]
+  },
+  {
+   "family": "poisoned-tool",
+   "id": "E2",
+   "interactions": [
+    "hx-escape",
+    "hx-kata",
+    "hx-bench",
+    "hx-incident"
+   ],
+   "kind": "core",
+   "law": "Every layer fails sometimes; stack them.",
+   "minutes": 50,
+   "misconceptions": [
+    "“One strong layer is enough.”",
+    "“Official-looking servers are safe.”",
+    "“Red-teaming is for security teams only.”"
+   ],
+   "objectives": [
+    {
+     "id": "E2.o1",
+     "text": "Layer defenses (least privilege, sandbox, egress control, confirmation, monitoring) and say what each one stops."
+    },
+    {
+     "id": "E2.o2",
+     "text": "Audit a tool supply chain: pin, review and isolate MCP servers, and spot tool poisoning."
+    },
+    {
+     "id": "E2.o3",
+     "text": "Remove excessive agency by applying least privilege to a tool set."
+    },
+    {
+     "id": "E2.o4",
+     "text": "Red-team your own agent with a seeded attack suite and report the attack success rate."
+    }
+   ],
+   "part": "E",
+   "prereqs": [
+    "E1",
+    "C8"
+   ],
+   "primers": [],
+   "slug": "defense-in-layers",
+   "source": [
+    "c20"
+   ],
+   "status": "planned",
+   "terms": [
+    "defense in depth",
+    "least privilege",
+    "excessive agency",
+    "tool poisoning",
+    "supply chain",
+    "red-teaming",
+    "attack success rate"
+   ],
+   "title": "Defense in layers",
+   "volatile": true,
+   "wires": [
+    "permissions",
+    "tools"
+   ]
+  },
+  {
+   "family": "sub-agent-sprawl",
+   "id": "F1",
+   "interactions": [
+    "hx-topology",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Add agents for a reason, not for a picture.",
+   "minutes": 55,
+   "misconceptions": [
+    "“More agents means better results.”",
+    "“Sub-agents are free parallelism.”",
+    "“Agents can share decisions implicitly.”",
+    "“A sub-agent's output is as trustworthy as your own code.”"
+   ],
+   "objectives": [
+    {
+     "id": "F1.o1",
+     "text": "Name the two honest reasons for many agents (parallel work, context isolation) and the warning that comes with them."
+    },
+    {
+     "id": "F1.o2",
+     "text": "Compare five topologies by cost, wall-clock time and failure modes."
+    },
+    {
+     "id": "F1.o3",
+     "text": "Choose an isolated or a forked context for a sub-agent and explain the trade-off."
+    },
+    {
+     "id": "F1.o4",
+     "text": "Write a sub-agent brief whose result can be checked."
+    },
+    {
+     "id": "F1.o5",
+     "text": "Treat a multi-agent system as a distributed system: timeouts, partial failure, conflicting writes, cleanup."
+    }
+   ],
+   "part": "F",
+   "prereqs": [
+    "C3",
+    "C11"
+   ],
+   "primers": [],
+   "slug": "many-agents",
+   "source": [
+    "c17"
+   ],
+   "status": "planned",
+   "terms": [
+    "orchestrator",
+    "topology",
+    "isolated context",
+    "forked context",
+    "fan-out",
+    "brief"
+   ],
+   "title": "Many agents: when and how",
+   "volatile": true,
+   "wires": [
+    "loop",
+    "context",
+    "verify"
+   ]
+  },
+  {
+   "family": "shift-amnesia",
+   "id": "F2",
+   "interactions": [
+    "hx-shift",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Leave the desk ready for the next shift.",
+   "minutes": 50,
+   "misconceptions": [
+    "“A bigger window solves long tasks.”",
+    "“The next session will figure it out from the code.”",
+    "“The agent can grade its own long task.”"
+   ],
+   "objectives": [
+    {
+     "id": "F2.o1",
+     "text": "Explain the shift-worker problem: each new session starts with no memory of the last one."
+    },
+    {
+     "id": "F2.o2",
+     "text": "Use the initializer pattern: a first session that sets up the environment, a feature list and a progress file."
+    },
+    {
+     "id": "F2.o3",
+     "text": "Split work into planner, generator and evaluator roles with clear handoffs."
+    },
+    {
+     "id": "F2.o4",
+     "text": "Write a handoff note the next session can act on without guessing."
+    }
+   ],
+   "part": "F",
+   "prereqs": [
+    "C3",
+    "F1"
+   ],
+   "primers": [],
+   "slug": "long-running-agents",
+   "source": [
+    "c23"
+   ],
+   "status": "planned",
+   "terms": [
+    "long-running agent",
+    "session",
+    "initializer agent",
+    "progress file",
+    "feature list",
+    "planner",
+    "generator",
+    "evaluator"
+   ],
+   "title": "Long-running agents",
+   "volatile": true,
+   "wires": [
+    "context",
+    "loop",
+    "verify"
+   ]
+  },
+  {
+   "family": "lost-session",
+   "id": "F3",
+   "interactions": [
+    "hx-replay",
+    "hx-check",
+    "hx-bench"
+   ],
+   "kind": "concept",
+   "law": "Keep the state outside the process.",
+   "minutes": 35,
+   "misconceptions": [
+    "“A crash loses the run.”",
+    "“The session log is the context window.”",
+    "“Managed means I don't need to understand the harness.”"
+   ],
+   "objectives": [
+    {
+     "id": "F3.o1",
+     "text": "Describe a managed agent as a brain (model and loop), hands (sandboxes and tools) and a session (an append-only event log)."
+    },
+    {
+     "id": "F3.o2",
+     "text": "Explain how separating the three lets each one fail and be replaced alone."
+    },
+    {
+     "id": "F3.o3",
+     "text": "Explain why credentials stay with the brain, outside the sandbox."
+    },
+    {
+     "id": "F3.o4",
+     "text": "Decide when a managed agent service fits better than your own harness, and when it doesn't."
+    }
+   ],
+   "part": "F",
+   "prereqs": [
+    "F2",
+    "C10"
+   ],
+   "primers": [],
+   "slug": "managed-agents",
+   "source": [
+    "c22"
+   ],
+   "status": "planned",
+   "terms": [
+    "managed agent",
+    "brain",
+    "hands",
+    "event log"
+   ],
+   "title": "Managed agents: the harness as a service",
+   "volatile": true,
+   "wires": [
+    "loop",
+    "permissions",
+    "context"
+   ]
+  },
+  {
+   "family": "cheap-model-trap",
+   "id": "F4",
+   "interactions": [
+    "hx-costcalc",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Price the outcome, not the call.",
+   "minutes": 50,
+   "misconceptions": [
+    "“The cheapest model is the cheapest option.”",
+    "“Latency is the model's speed.”",
+    "“Budgets are an accounting problem.”"
+   ],
+   "objectives": [
+    {
+     "id": "F4.o1",
+     "text": "Compute cost per completed task from trial results, not cost per call."
+    },
+    {
+     "id": "F4.o2",
+     "text": "Cut cost with caching, batching, effort and model routing, and predict each one's effect before measuring."
+    },
+    {
+     "id": "F4.o3",
+     "text": "Set budgets per run and per task, and degrade gracefully when one is hit."
+    },
+    {
+     "id": "F4.o4",
+     "text": "Find the main sources of latency in a trace and reduce them."
+    }
+   ],
+   "part": "F",
+   "prereqs": [
+    "C4",
+    "D2",
+    "A6"
+   ],
+   "primers": [],
+   "slug": "cost-and-latency",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "batch processing",
+    "model routing",
+    "time to first token",
+    "latency budget",
+    "budget guard"
+   ],
+   "title": "Cost and latency engineering",
+   "volatile": true,
+   "wires": [
+    "observe",
+    "context"
+   ]
+  },
+  {
+   "family": "double-charge",
+   "id": "F5",
+   "interactions": [
+    "hx-outage",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "Assume the process dies mid-step.",
+   "minutes": 55,
+   "misconceptions": [
+    "“It works on my laptop, so it works.”",
+    "“Retries make side effects safe.”",
+    "“Ship the new harness to everyone at once if evals pass.”"
+   ],
+   "objectives": [
+    {
+     "id": "F5.o1",
+     "text": "Handle rate limits with a queue and a token bucket, and honor retry-after."
+    },
+    {
+     "id": "F5.o2",
+     "text": "Make runs durable: checkpoint after each step and resume without repeating side effects."
+    },
+    {
+     "id": "F5.o3",
+     "text": "Design streaming and human-in-the-loop screens that show progress and ask clearly."
+    },
+    {
+     "id": "F5.o4",
+     "text": "Roll out a harness change gradually (shadow, canary, A/B) with eval gates."
+    }
+   ],
+   "part": "F",
+   "prereqs": [
+    "C5",
+    "C6"
+   ],
+   "primers": [
+    "T2",
+    "T10"
+   ],
+   "slug": "production",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "token bucket",
+    "queue",
+    "durable execution",
+    "checkpoint",
+    "human-in-the-loop",
+    "shadow mode",
+    "canary",
+    "rollout"
+   ],
+   "title": "Production: agents that survive real traffic",
+   "volatile": true,
+   "wires": [
+    "errors",
+    "loop",
+    "observe"
+   ]
+  },
+  {
+   "family": "reward-hack",
+   "id": "F6",
+   "interactions": [
+    "hx-envbuilder",
+    "hx-kata",
+    "hx-bench",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "The grader is the spec.",
+   "minutes": 60,
+   "misconceptions": [
+    "“A passing grader means a solved task.”",
+    "“More tasks fix a weak grader.”",
+    "“Environments are only for research labs.”"
+   ],
+   "objectives": [
+    {
+     "id": "F6.o1",
+     "text": "Describe an environment: tasks, a sandbox, tools, a grader and a reward."
+    },
+    {
+     "id": "F6.o2",
+     "text": "Make an environment deterministic and resettable so results can be reproduced."
+    },
+    {
+     "id": "F6.o3",
+     "text": "Find a reward hack that a scripted policy exploits, and close it in the grader."
+    },
+    {
+     "id": "F6.o4",
+     "text": "Explain how eval environments and training environments differ in what they need."
+    },
+    {
+     "id": "F6.o5",
+     "text": "Contain an environment: no network egress by default, scoped credentials, and monitoring for unexpected actions."
+    }
+   ],
+   "part": "F",
+   "prereqs": [
+    "D3",
+    "C10"
+   ],
+   "primers": [],
+   "slug": "environments",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "reward",
+    "policy",
+    "reward hacking",
+    "reinforcement learning",
+    "RL environment",
+    "hidden tests",
+    "reset",
+    "determinism"
+   ],
+   "title": "Environments: harnesses that train and test models",
+   "volatile": true,
+   "wires": [
+    "verify",
+    "permissions"
+   ]
+  },
+  {
+   "family": "migration-break",
+   "id": "F7",
+   "interactions": [
+    "hx-bench",
+    "hx-wire",
+    "hx-kata",
+    "hx-replay"
+   ],
+   "kind": "core",
+   "law": "New model, old assumptions: test them again.",
+   "minutes": 50,
+   "misconceptions": [
+    "“A newer model is a drop-in replacement.”",
+    "“If the API call succeeds, nothing broke.”",
+    "“Prompts tuned for one model transfer unchanged.”"
+   ],
+   "objectives": [
+    {
+     "id": "F7.o1",
+     "text": "Read a model migration guide and list the changes that break your harness: removed parameters, new stop reasons, changed defaults."
+    },
+    {
+     "id": "F7.o2",
+     "text": "Put model-specific behavior behind one adapter with capability checks, so a migration is a config change plus a test run."
+    },
+    {
+     "id": "F7.o3",
+     "text": "Run a regression eval on the old and the new model and decide with intervals, not impressions."
+    },
+    {
+     "id": "F7.o4",
+     "text": "Retire harness parts the new model no longer needs and keep the ones it still does, with evidence for each."
+    }
+   ],
+   "part": "F",
+   "prereqs": [
+    "D3",
+    "A6"
+   ],
+   "primers": [],
+   "slug": "model-migrations",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "model migration",
+    "breaking change",
+    "deprecation",
+    "capability check",
+    "migration guide"
+   ],
+   "title": "Model migrations: when the model changes under you",
+   "volatile": true,
+   "wires": [
+    "loop",
+    "verify",
+    "control"
+   ]
+  },
+  {
+   "family": "harness-regression",
+   "id": "G1",
+   "interactions": [
+    "hx-sort",
+    "hx-clock",
+    "hx-check",
+    "hx-incident"
+   ],
+   "kind": "concept",
+   "law": "Read real harnesses wire by wire.",
+   "minutes": 40,
+   "misconceptions": [
+    "“A product harness is a black box I can't learn from.”",
+    "“Every feature is about the model.”"
+   ],
+   "objectives": [
+    {
+     "id": "G1.o1",
+     "text": "Map Claude Code's main features onto the eight wires."
+    },
+    {
+     "id": "G1.o2",
+     "text": "Explain four design lessons worth stealing from it."
+    },
+    {
+     "id": "G1.o3",
+     "text": "Read a vendor postmortem and name the wire and failure family behind each issue."
+    }
+   ],
+   "part": "G",
+   "prereqs": [
+    "C1",
+    "C2",
+    "C5",
+    "C6",
+    "C7",
+    "C9",
+    "C11",
+    "C12"
+   ],
+   "primers": [],
+   "slug": "inside-claude-code",
+   "source": [
+    "c21"
+   ],
+   "status": "planned",
+   "terms": [
+    "plan mode",
+    "auto mode"
+   ],
+   "title": "Inside Claude Code, wire by wire",
+   "volatile": true,
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": "stale-map",
+   "id": "G2",
+   "interactions": [
+    "hx-sort",
+    "hx-check"
+   ],
+   "kind": "concept",
+   "law": "Laws are what everyone agrees on; the rest is taste.",
+   "minutes": 40,
+   "misconceptions": [
+    "“One harness is simply better.”",
+    "“Open-source harnesses are toys.”"
+   ],
+   "objectives": [
+    {
+     "id": "G2.o1",
+     "text": "Compare Codex and Claude Code wire by wire, naming each design choice and its trade-off."
+    },
+    {
+     "id": "G2.o2",
+     "text": "Explain what OpenAI's harness engineering report found, labeled as the company's own numbers."
+    },
+    {
+     "id": "G2.o3",
+     "text": "Name the ideas every serious harness shares and where they differ."
+    }
+   ],
+   "part": "G",
+   "prereqs": [
+    "G1",
+    "F3"
+   ],
+   "primers": [],
+   "slug": "codex-and-open-harnesses",
+   "source": [
+    "c22"
+   ],
+   "status": "planned",
+   "terms": [
+    "sandbox-first",
+    "approval mode"
+   ],
+   "title": "Codex and open harnesses: what everyone agrees on",
+   "volatile": true,
+   "wires": [
+    "loop",
+    "permissions",
+    "context",
+    "tools"
+   ]
+  },
+  {
+   "family": "harness-regression",
+   "id": "G3",
+   "interactions": [
+    "hx-check",
+    "hx-sort"
+   ],
+   "kind": "concept",
+   "law": "Find the loop first.",
+   "minutes": 60,
+   "misconceptions": [
+    "“I have to read every file.”",
+    "“Small harnesses can't be serious.”"
+   ],
+   "objectives": [
+    {
+     "id": "G3.o1",
+     "text": "Read an unfamiliar harness in a set order: the loop, the model adapter, tools, config, then the trace."
+    },
+    {
+     "id": "G3.o2",
+     "text": "Locate each of the eight wires in a real repository, or note that it is missing."
+    },
+    {
+     "id": "G3.o3",
+     "text": "Run the harness locally on a toy task (with its test model or your own key) and read its trajectory."
+    },
+    {
+     "id": "G3.o4",
+     "text": "Propose one change and say how you would measure it."
+    }
+   ],
+   "part": "G",
+   "prereqs": [
+    "G1",
+    "D1"
+   ],
+   "primers": [],
+   "slug": "reading-a-harness-repo",
+   "source": [
+    "c22"
+   ],
+   "status": "planned",
+   "terms": [
+    "code tour"
+   ],
+   "title": "Reading a real harness repository",
+   "volatile": true,
+   "wires": [
+    "loop",
+    "tools",
+    "observe"
+   ]
+  },
+  {
+   "family": "stale-map",
+   "id": "G4",
+   "interactions": [
+    "hx-incident",
+    "hx-kata",
+    "hx-bench"
+   ],
+   "kind": "core",
+   "law": "Name the failure before you fix it.",
+   "minutes": 50,
+   "misconceptions": [
+    "“A good fix needs no measurement.”",
+    "“Harness parts are permanent.”",
+    "“Agent-written code doesn't need cleanup.”"
+   ],
+   "objectives": [
+    {
+     "id": "G4.o1",
+     "text": "Run the steering loop: watch, name the failure family, fix the harness, measure."
+    },
+    {
+     "id": "G4.o2",
+     "text": "Name the failure family of an incident before choosing a fix."
+    },
+    {
+     "id": "G4.o3",
+     "text": "Build to delete: prefer harness parts that can be removed when models improve, and spot ones that should go."
+    },
+    {
+     "id": "G4.o4",
+     "text": "Fight entropy on a schedule with mechanical checks and cleanup agents."
+    },
+    {
+     "id": "G4.o5",
+     "text": "Make a codebase easy to harness: fast checks, clear errors, readable structure, docs as a map."
+    }
+   ],
+   "part": "G",
+   "prereqs": [
+    "G1",
+    "D3"
+   ],
+   "primers": [
+    "T8"
+   ],
+   "slug": "the-daily-craft",
+   "source": [
+    "c24"
+   ],
+   "status": "planned",
+   "terms": [
+    "steering loop",
+    "build to delete",
+    "entropy",
+    "harnessable codebase",
+    "self-tuning harness"
+   ],
+   "title": "The daily craft",
+   "volatile": false,
+   "wires": [
+    "observe",
+    "verify",
+    "control"
+   ]
+  },
+  {
+   "family": null,
+   "id": "H0",
+   "interactions": [
+    "hx-step",
+    "hx-check"
+   ],
+   "kind": "guide",
+   "law": "Script first, then go live.",
+   "minutes": 20,
+   "misconceptions": [
+    "“I need an API key to start.”",
+    "“A scripted model teaches nothing about real models.”"
+   ],
+   "objectives": [
+    {
+     "id": "H0.o1",
+     "text": "Run Rein in the browser with the scripted model."
+    },
+    {
+     "id": "H0.o2",
+     "text": "Set up a local Python environment and run Rein offline with a scenario tape."
+    },
+    {
+     "id": "H0.o3",
+     "text": "Explain why the build starts with a scripted model: repeatable, free and offline."
+    },
+    {
+     "id": "H0.o4",
+     "text": "Configure a real model with your own API key, kept out of the browser and out of git (optional)."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [
+    "T6"
+   ],
+   "slug": "rein-setup",
+   "source": [
+    "b0"
+   ],
+   "status": "planned",
+   "terms": [
+    "Rein",
+    "FakeModel",
+    "scenario tape",
+    "virtual environment"
+   ],
+   "title": "Rein setup",
+   "volatile": false,
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "family": "first-block-only",
+   "id": "H1",
+   "interactions": [
+    "hx-step",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "One interface, many models.",
+   "minutes": 35,
+   "misconceptions": [
+    "“The fake and real models need different code paths.”"
+   ],
+   "objectives": [
+    {
+     "id": "H1.o1",
+     "text": "Define one model interface with a scripted and a real implementation behind it."
+    },
+    {
+     "id": "H1.o2",
+     "text": "Print a reply with its stop_reason and token usage."
+    },
+    {
+     "id": "H1.o3",
+     "text": "Show statelessness on your own machine: three separate runs don't remember each other."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H0",
+    "A4"
+   ],
+   "primers": [
+    "T1"
+   ],
+   "slug": "rein-1-talk-to-a-model",
+   "source": [
+    "b1"
+   ],
+   "status": "planned",
+   "terms": [
+    "model interface",
+    "dataclass"
+   ],
+   "title": "Rein 1: talk to a model",
+   "volatile": false,
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "family": "almost-done-spiral",
+   "id": "H2",
+   "interactions": [
+    "hx-step",
+    "hx-replay",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "The model asks; the harness acts.",
+   "minutes": 40,
+   "misconceptions": [
+    "“An unknown tool name should raise an exception.”"
+   ],
+   "objectives": [
+    {
+     "id": "H2.o1",
+     "text": "Add a tool registry and run the tool calls the model requests."
+    },
+    {
+     "id": "H2.o2",
+     "text": "Implement the agent loop with a turn limit."
+    },
+    {
+     "id": "H2.o3",
+     "text": "Return tool errors to the model as is_error results instead of crashing."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H1",
+    "B2"
+   ],
+   "primers": [],
+   "slug": "rein-2-one-tool-and-the-loop",
+   "source": [
+    "b1"
+   ],
+   "status": "planned",
+   "terms": [
+    "tool registry"
+   ],
+   "title": "Rein 2: one tool and the loop",
+   "volatile": false,
+   "wires": [
+    "loop",
+    "tools"
+   ]
+  },
+  {
+   "family": "sandbox-escape",
+   "id": "H3",
+   "interactions": [
+    "hx-step",
+    "hx-replay",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "Assume the wall will be tested.",
+   "minutes": 45,
+   "misconceptions": [
+    "“Running in a practice folder is enough isolation.”"
+   ],
+   "objectives": [
+    {
+     "id": "H3.o1",
+     "text": "Add file and shell tools that only work inside a workspace root."
+    },
+    {
+     "id": "H3.o2",
+     "text": "Cap every tool's output."
+    },
+    {
+     "id": "H3.o3",
+     "text": "Defeat path traversal in your own tool code and prove it with a hostile tape."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H2",
+    "C7",
+    "C10"
+   ],
+   "primers": [
+    "T3"
+   ],
+   "slug": "rein-3-real-tools-inside-a-wall",
+   "source": [
+    "b2"
+   ],
+   "status": "planned",
+   "terms": [
+    "edit_file",
+    "run_command"
+   ],
+   "title": "Rein 3: real tools inside a wall",
+   "volatile": false,
+   "wires": [
+    "tools",
+    "permissions"
+   ]
+  },
+  {
+   "family": "approval-fatigue",
+   "id": "H4",
+   "interactions": [
+    "hx-step",
+    "hx-replay",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "Judge the action and its target.",
+   "minutes": 40,
+   "misconceptions": [
+    "“The gate can be added after the tools are written.”"
+   ],
+   "objectives": [
+    {
+     "id": "H4.o1",
+     "text": "Add a gate that returns allow, ask or deny with a reason before any tool runs."
+    },
+    {
+     "id": "H4.o2",
+     "text": "Apply the decision order and test the policy with a table of cases."
+    },
+    {
+     "id": "H4.o3",
+     "text": "Show the gate stopping a dangerous call that the model asked for politely."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H3",
+    "C9"
+   ],
+   "primers": [],
+   "slug": "rein-4-the-permission-gate",
+   "source": [
+    "b2"
+   ],
+   "status": "planned",
+   "terms": [
+    "gate"
+   ],
+   "title": "Rein 4: the permission gate",
+   "volatile": false,
+   "wires": [
+    "permissions"
+   ]
+  },
+  {
+   "family": "unexplained-bill",
+   "id": "H5",
+   "interactions": [
+    "hx-step",
+    "hx-replay",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "If it isn't in the trace, it didn't happen.",
+   "minutes": 35,
+   "misconceptions": [
+    "“print() is a trace.”"
+   ],
+   "objectives": [
+    {
+     "id": "H5.o1",
+     "text": "Write every harness event to a JSONL trace with the course's event schema."
+    },
+    {
+     "id": "H5.o2",
+     "text": "Load your own trace into the Replay Deck and read it."
+    },
+    {
+     "id": "H5.o3",
+     "text": "Keep the trace useful: ids, turns, tokens, and no secrets."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H4",
+    "B4"
+   ],
+   "primers": [],
+   "slug": "rein-5-a-trace",
+   "source": [
+    "b3"
+   ],
+   "status": "planned",
+   "terms": [
+    "JSONL"
+   ],
+   "title": "Rein 5: a trace",
+   "volatile": false,
+   "wires": [
+    "observe"
+   ]
+  },
+  {
+   "family": "context-flood",
+   "id": "H6",
+   "interactions": [
+    "hx-step",
+    "hx-bench",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "The smallest window that works.",
+   "minutes": 40,
+   "misconceptions": [
+    "“The provider will reject it if it's too big, so I don't need a budget.”"
+   ],
+   "objectives": [
+    {
+     "id": "H6.o1",
+     "text": "Estimate the tokens of every request before sending it."
+    },
+    {
+     "id": "H6.o2",
+     "text": "Cap and trim to stay inside a budget, and record what was dropped in the trace."
+    },
+    {
+     "id": "H6.o3",
+     "text": "Show the flood tape passing with the budget and failing without it."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H5",
+    "C2"
+   ],
+   "primers": [],
+   "slug": "rein-6-a-context-budget",
+   "source": [
+    "b3"
+   ],
+   "status": "planned",
+   "terms": [
+    "token estimate"
+   ],
+   "title": "Rein 6: a context budget",
+   "volatile": false,
+   "wires": [
+    "context"
+   ]
+  },
+  {
+   "family": "retry-storm",
+   "id": "H7",
+   "interactions": [
+    "hx-step",
+    "hx-outage",
+    "hx-bench",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "Errors are the main path.",
+   "minutes": 45,
+   "misconceptions": [
+    "“Testing retries needs real waiting.”"
+   ],
+   "objectives": [
+    {
+     "id": "H7.o1",
+     "text": "Retry transient model errors with backoff and jitter on a virtual clock."
+    },
+    {
+     "id": "H7.o2",
+     "text": "Open a circuit breaker after repeated failures and end the run with a clear status."
+    },
+    {
+     "id": "H7.o3",
+     "text": "Show the outage tape: a calm breaker instead of a retry storm."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H6",
+    "C6"
+   ],
+   "primers": [],
+   "slug": "rein-7-retries-and-a-breaker",
+   "source": [
+    "b4"
+   ],
+   "status": "planned",
+   "terms": [
+    "virtual clock"
+   ],
+   "title": "Rein 7: retries and a breaker",
+   "volatile": false,
+   "wires": [
+    "errors"
+   ]
+  },
+  {
+   "family": "orphaned-tool-call",
+   "id": "H8",
+   "interactions": [
+    "hx-step",
+    "hx-replay",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "Every run needs more than one exit.",
+   "minutes": 40,
+   "misconceptions": [
+    "“A turn limit is the only guard I need.”"
+   ],
+   "objectives": [
+    {
+     "id": "H8.o1",
+     "text": "Add guards for turns, tokens, time and repeated actions, each with its own final status."
+    },
+    {
+     "id": "H8.o2",
+     "text": "Close the books on interrupt: every pending tool call gets a result."
+    },
+    {
+     "id": "H8.o3",
+     "text": "Show each guard firing on its own tape."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H7",
+    "C5"
+   ],
+   "primers": [],
+   "slug": "rein-8-guards",
+   "source": [
+    "b4"
+   ],
+   "status": "planned",
+   "terms": [
+    "guard"
+   ],
+   "title": "Rein 8: guards that stop the run well",
+   "volatile": false,
+   "wires": [
+    "loop"
+   ]
+  },
+  {
+   "family": "false-done",
+   "id": "H9",
+   "interactions": [
+    "hx-step",
+    "hx-bench",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "“Done” is a claim.",
+   "minutes": 40,
+   "misconceptions": [
+    "“If the model ran the tests itself, I don't need to.”"
+   ],
+   "objectives": [
+    {
+     "id": "H9.o1",
+     "text": "Run the project's checks when the model claims done."
+    },
+    {
+     "id": "H9.o2",
+     "text": "Send failures back to the model, and end with status unverified when checks can't pass."
+    },
+    {
+     "id": "H9.o3",
+     "text": "Show the false-done tape caught by the gate."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H8",
+    "C11"
+   ],
+   "primers": [],
+   "slug": "rein-9-the-verification-gate",
+   "source": [
+    "b5"
+   ],
+   "status": "planned",
+   "terms": [
+    "unverified"
+   ],
+   "title": "Rein 9: the verification gate",
+   "volatile": false,
+   "wires": [
+    "verify"
+   ]
+  },
+  {
+   "family": "rule-ignored",
+   "id": "H10",
+   "interactions": [
+    "hx-step",
+    "hx-bench",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "Words guide, code enforces.",
+   "minutes": 35,
+   "misconceptions": [
+    "“Rules belong in the system prompt only.”"
+   ],
+   "objectives": [
+    {
+     "id": "H10.o1",
+     "text": "Load project rules from a file into the right layer of the prompt."
+    },
+    {
+     "id": "H10.o2",
+     "text": "Enforce one rule in code with a hook, and show the difference against the prompt-only version."
+    },
+    {
+     "id": "H10.o3",
+     "text": "Keep the stable prefix stable so the prompt stays cacheable."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H9",
+    "C1"
+   ],
+   "primers": [],
+   "slug": "rein-10-project-rules",
+   "source": [
+    "b5"
+   ],
+   "status": "planned",
+   "terms": [
+    "rules loader"
+   ],
+   "title": "Rein 10: project rules",
+   "volatile": false,
+   "wires": [
+    "control"
+   ]
+  },
+  {
+   "family": "reviewer-rubber-stamp",
+   "id": "H11",
+   "interactions": [
+    "hx-step",
+    "hx-bench",
+    "hx-cards"
+   ],
+   "kind": "build",
+   "law": "Independence is designed, not assumed.",
+   "minutes": 45,
+   "misconceptions": [
+    "“Any second model call is an independent review.”"
+   ],
+   "objectives": [
+    {
+     "id": "H11.o1",
+     "text": "Start a reviewer sub-agent with its own fresh context and a narrow brief."
+    },
+    {
+     "id": "H11.o2",
+     "text": "Give it only what independence needs: the task, the diff and the check output."
+    },
+    {
+     "id": "H11.o3",
+     "text": "Show the reviewer catching what the tests missed, and measure how often it rubber-stamps."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H10",
+    "C11"
+   ],
+   "primers": [],
+   "slug": "rein-11-a-reviewer",
+   "source": [
+    "b6"
+   ],
+   "status": "planned",
+   "terms": [
+    "reviewer"
+   ],
+   "title": "Rein 11: a reviewer sub-agent",
+   "volatile": false,
+   "wires": [
+    "verify",
+    "loop"
+   ]
+  },
+  {
+   "family": null,
+   "id": "H12",
+   "interactions": [
+    "hx-step",
+    "hx-check",
+    "hx-say"
+   ],
+   "kind": "guide",
+   "law": "Ship the numbers with the code.",
+   "minutes": 90,
+   "misconceptions": [
+    "“A demo video is a portfolio.”",
+    "“One good real run proves the harness works.”"
+   ],
+   "objectives": [
+    {
+     "id": "H12.o1",
+     "text": "Turn the build's checkpoints into an automated test suite."
+    },
+    {
+     "id": "H12.o2",
+     "text": "Package Rein as a small project with typed code, tests and an eval runner."
+    },
+    {
+     "id": "H12.o3",
+     "text": "Run a real eval with a real model on a small capped budget and record the numbers with intervals."
+    },
+    {
+     "id": "H12.o4",
+     "text": "Run your first experiment: one harness change, measured against a baseline."
+    },
+    {
+     "id": "H12.o5",
+     "text": "Write a showcase README a reviewer can verify."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H11",
+    "D2"
+   ],
+   "primers": [
+    "T6",
+    "T8"
+   ],
+   "slug": "rein-from-one-file-to-a-project",
+   "source": [
+    "b7"
+   ],
+   "status": "planned",
+   "terms": [
+    "eval runner",
+    "baseline",
+    "experiment"
+   ],
+   "title": "From one file to a project",
+   "volatile": true,
+   "wires": [
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": null,
+   "id": "H13",
+   "interactions": [
+    "hx-check",
+    "hx-say"
+   ],
+   "kind": "guide",
+   "law": "Extend where the evidence points.",
+   "minutes": 30,
+   "misconceptions": [
+    "“The most impressive extension is the best one.”"
+   ],
+   "objectives": [
+    {
+     "id": "H13.o1",
+     "text": "Pick an extension by expected learning and hiring value, not by novelty."
+    },
+    {
+     "id": "H13.o2",
+     "text": "Scope it with a measurable success criterion before writing code."
+    },
+    {
+     "id": "H13.o3",
+     "text": "Report the result honestly, including a null result."
+    }
+   ],
+   "part": "H",
+   "prereqs": [
+    "H12"
+   ],
+   "primers": [],
+   "slug": "rein-extensions",
+   "source": [
+    "b7"
+   ],
+   "status": "planned",
+   "terms": [
+    "null result"
+   ],
+   "title": "Rein extensions, ranked",
+   "volatile": false,
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": null,
+   "id": "I1",
+   "interactions": [
+    "hx-sort",
+    "hx-check"
+   ],
+   "kind": "career",
+   "law": "Evidence beats adjectives.",
+   "minutes": 30,
+   "misconceptions": [
+    "“The title matters more than the work.”",
+    "“Certificates are evidence.”"
+   ],
+   "objectives": [
+    {
+     "id": "I1.o1",
+     "text": "Name the roles that hire harness engineers and what each does day to day."
+    },
+    {
+     "id": "I1.o2",
+     "text": "Map a job posting's requirements to the eight wires and to evidence you can show."
+    },
+    {
+     "id": "I1.o3",
+     "text": "Explain what AI labs look for in this work: building, measuring and debugging, shown in public."
+    }
+   ],
+   "part": "I",
+   "prereqs": [
+    "B4"
+   ],
+   "primers": [],
+   "slug": "the-job-map",
+   "source": [
+    "j1"
+   ],
+   "status": "planned",
+   "terms": [
+    "applied AI engineer",
+    "forward-deployed engineer",
+    "evals engineer",
+    "research engineer"
+   ],
+   "title": "The job map",
+   "volatile": true,
+   "wires": [
+    "observe",
+    "verify"
+   ]
+  },
+  {
+   "family": null,
+   "id": "I2",
+   "interactions": [
+    "hx-check"
+   ],
+   "kind": "career",
+   "law": "Claim only what you can show.",
+   "minutes": 30,
+   "misconceptions": [
+    "“Finishing the course means I'm ready.”"
+   ],
+   "objectives": [
+    {
+     "id": "I2.o1",
+     "text": "Read your readiness radar and name the evidence behind each level."
+    },
+    {
+     "id": "I2.o2",
+     "text": "Adjust a level honestly and pick your two weakest wires to work on next."
+    },
+    {
+     "id": "I2.o3",
+     "text": "Produce a brag sheet in which every claim links to evidence."
+    }
+   ],
+   "part": "I",
+   "prereqs": [
+    "I1"
+   ],
+   "primers": [],
+   "slug": "readiness",
+   "source": [
+    "j1"
+   ],
+   "status": "planned",
+   "terms": [
+    "readiness level",
+    "brag sheet"
+   ],
+   "title": "Readiness self-assessment",
+   "volatile": false,
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": null,
+   "id": "I3",
+   "interactions": [
+    "hx-check"
+   ],
+   "kind": "career",
+   "law": "A result is a number, an interval and a method.",
+   "minutes": 45,
+   "misconceptions": [
+    "“More projects beat one measured project.”"
+   ],
+   "objectives": [
+    {
+     "id": "I3.o1",
+     "text": "Choose one of four portfolio projects and scope it to two weeks."
+    },
+    {
+     "id": "I3.o2",
+     "text": "Fill a results table with real numbers and confidence intervals."
+    },
+    {
+     "id": "I3.o3",
+     "text": "Write a technical write-up that a reviewer can reproduce."
+    }
+   ],
+   "part": "I",
+   "prereqs": [
+    "H12",
+    "I2"
+   ],
+   "primers": [],
+   "slug": "portfolio-projects",
+   "source": [
+    "j1"
+   ],
+   "status": "planned",
+   "terms": [
+    "write-up"
+   ],
+   "title": "Four portfolio projects",
+   "volatile": false,
+   "wires": [
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": null,
+   "id": "I4",
+   "interactions": [
+    "hx-say",
+    "hx-design",
+    "hx-kata",
+    "hx-incident"
+   ],
+   "kind": "career",
+   "law": "Walk the clock out loud.",
+   "minutes": 120,
+   "misconceptions": [
+    "“Design interviews reward naming frameworks.”",
+    "“I'll know it when I'm asked.”"
+   ],
+   "objectives": [
+    {
+     "id": "I4.o1",
+     "text": "Answer interview questions out loud and self-grade against a rubric."
+    },
+    {
+     "id": "I4.o2",
+     "text": "Solve timed coding katas from memory."
+    },
+    {
+     "id": "I4.o3",
+     "text": "Run a system design answer with the eight-wire checklist, including cost, risks and rollout."
+    },
+    {
+     "id": "I4.o4",
+     "text": "Debug a failing trace under time pressure."
+    },
+    {
+     "id": "I4.o5",
+     "text": "Tell two behavioral stories with evidence."
+    }
+   ],
+   "part": "I",
+   "prereqs": [
+    "I2",
+    "D2",
+    "G4",
+    "F5"
+   ],
+   "primers": [],
+   "slug": "interview-room",
+   "source": [
+    "j2"
+   ],
+   "status": "planned",
+   "terms": [
+    "system design interview",
+    "take-home"
+   ],
+   "title": "Interview Room",
+   "volatile": false,
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": null,
+   "id": "I5",
+   "interactions": [
+    "hx-check"
+   ],
+   "kind": "career",
+   "law": "Practice in public, on a schedule.",
+   "minutes": 30,
+   "misconceptions": [
+    "“The course is the finish line.”"
+   ],
+   "objectives": [
+    {
+     "id": "I5.o1",
+     "text": "Plan twelve weeks of practice with weekly evidence goals."
+    },
+    {
+     "id": "I5.o2",
+     "text": "Run a mock interview with a friend using the kit."
+    },
+    {
+     "id": "I5.o3",
+     "text": "Keep your board energized with the daily shift."
+    }
+   ],
+   "part": "I",
+   "prereqs": [
+    "I4"
+   ],
+   "primers": [],
+   "slug": "twelve-weeks-after",
+   "source": [
+    "j1"
+   ],
+   "status": "planned",
+   "terms": [
+    "mock interview"
+   ],
+   "title": "Twelve weeks after the course",
+   "volatile": false,
+   "wires": [
+    "observe"
+   ]
+  },
+  {
+   "family": null,
+   "id": "T1",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "Types are documentation the checker reads.",
+   "local_terms": [
+    "dataclass"
+   ],
+   "minutes": 20,
+   "misconceptions": [
+    "“Type hints are enforced at runtime.”"
+   ],
+   "objectives": [
+    {
+     "id": "T1.o1",
+     "text": "Annotate functions and variables with types, including optional and union types."
+    },
+    {
+     "id": "T1.o2",
+     "text": "Define a dataclass with defaults and use it as a record."
+    },
+    {
+     "id": "T1.o3",
+     "text": "Run mypy and fix a type error it reports."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "py-typing-and-dataclasses",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "type hint",
+    "mypy"
+   ],
+   "title": "Python typing and dataclasses",
+   "volatile": false,
+   "wires": []
+  },
+  {
+   "family": null,
+   "id": "T2",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "Await what waits; don't block the loop.",
+   "minutes": 25,
+   "misconceptions": [
+    "“async makes code faster.”"
+   ],
+   "objectives": [
+    {
+     "id": "T2.o1",
+     "text": "Write and run coroutines with async and await."
+    },
+    {
+     "id": "T2.o2",
+     "text": "Run independent waits concurrently with gather and a timeout."
+    },
+    {
+     "id": "T2.o3",
+     "text": "Spot code that blocks the event loop."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "asyncio",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "coroutine",
+    "event loop"
+   ],
+   "title": "asyncio",
+   "volatile": false,
+   "wires": []
+  },
+  {
+   "family": null,
+   "id": "T3",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "Every child process needs a timeout.",
+   "minutes": 20,
+   "misconceptions": [
+    "“A finished command always returns quickly.”"
+   ],
+   "objectives": [
+    {
+     "id": "T3.o1",
+     "text": "Run a command with subprocess, capturing output and the exit code."
+    },
+    {
+     "id": "T3.o2",
+     "text": "Add a timeout and handle it."
+    },
+    {
+     "id": "T3.o3",
+     "text": "Explain what SIGINT and SIGTERM do to a running child."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "subprocess-and-signals",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "exit code",
+    "signal"
+   ],
+   "title": "subprocess and signals",
+   "volatile": false,
+   "wires": []
+  },
+  {
+   "family": null,
+   "id": "T4",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "Say what's allowed, not just what's expected.",
+   "local_terms": [
+    "JSON Schema",
+    "additionalProperties"
+   ],
+   "minutes": 20,
+   "misconceptions": [
+    "“A schema without required fields requires them.”"
+   ],
+   "objectives": [
+    {
+     "id": "T4.o1",
+     "text": "Write schemas with nested objects, arrays and enums."
+    },
+    {
+     "id": "T4.o2",
+     "text": "Use required and additionalProperties to reject unexpected input."
+    },
+    {
+     "id": "T4.o3",
+     "text": "Validate data with the jsonschema library and read its errors."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "json-schema-primer",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "nested schema"
+   ],
+   "title": "JSON Schema in depth",
+   "volatile": false,
+   "wires": []
+  },
+  {
+   "family": null,
+   "id": "T5",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "A stream is a message in pieces.",
+   "local_terms": [
+    "streaming",
+    "server-sent events"
+   ],
+   "minutes": 20,
+   "misconceptions": [
+    "“A 200 status means the whole stream succeeded.”"
+   ],
+   "objectives": [
+    {
+     "id": "T5.o1",
+     "text": "Read an HTTP request and response: method, headers, status, body."
+    },
+    {
+     "id": "T5.o2",
+     "text": "Explain status codes that matter to agents: 400, 401, 429, 500, 529."
+    },
+    {
+     "id": "T5.o3",
+     "text": "Parse a server-sent events stream into events."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "http-and-sse",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "HTTP status code",
+    "header"
+   ],
+   "title": "HTTP and SSE streaming",
+   "volatile": false,
+   "wires": []
+  },
+  {
+   "family": null,
+   "id": "T6",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "A test that can't fail proves nothing.",
+   "minutes": 20,
+   "misconceptions": [
+    "“Green tests mean correct code.”"
+   ],
+   "objectives": [
+    {
+     "id": "T6.o1",
+     "text": "Write test functions with plain asserts and run them."
+    },
+    {
+     "id": "T6.o2",
+     "text": "Use fixtures and parametrize to cover many cases."
+    },
+    {
+     "id": "T6.o3",
+     "text": "Check that a test fails on purpose before trusting it."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "pytest-primer",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "fixture",
+    "parametrize"
+   ],
+   "title": "pytest",
+   "volatile": false,
+   "wires": []
+  },
+  {
+   "family": null,
+   "id": "T7",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "A container is a process with a smaller view.",
+   "local_terms": [
+    "virtual machine"
+   ],
+   "minutes": 25,
+   "misconceptions": [
+    "“Containers are virtual machines.”"
+   ],
+   "objectives": [
+    {
+     "id": "T7.o1",
+     "text": "Explain what a container isolates and what it shares with the host."
+    },
+    {
+     "id": "T7.o2",
+     "text": "Run a command in a container with no network and a read-only filesystem."
+    },
+    {
+     "id": "T7.o3",
+     "text": "Mount only the folder a task needs."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "containers-primer",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "image",
+    "mount"
+   ],
+   "title": "Containers",
+   "volatile": false,
+   "wires": []
+  },
+  {
+   "family": null,
+   "id": "T8",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "Commits are the undo button.",
+   "minutes": 20,
+   "misconceptions": [
+    "“git reset is always safe.”"
+   ],
+   "objectives": [
+    {
+     "id": "T8.o1",
+     "text": "Make small commits and read a diff."
+    },
+    {
+     "id": "T8.o2",
+     "text": "Undo an agent's change safely with restore and revert."
+    },
+    {
+     "id": "T8.o3",
+     "text": "Use a branch or worktree to isolate an agent's work."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "git-primer",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "commit",
+    "diff",
+    "worktree"
+   ],
+   "title": "git for agent work",
+   "volatile": false,
+   "wires": []
+  },
+  {
+   "family": null,
+   "id": "T9",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "Know who your process is and what it can touch.",
+   "minutes": 20,
+   "misconceptions": [
+    "“Killing the parent kills the children.”"
+   ],
+   "objectives": [
+    {
+     "id": "T9.o1",
+     "text": "Read a process's id, parent, user and working directory."
+    },
+    {
+     "id": "T9.o2",
+     "text": "Explain file permissions and why the agent's user matters."
+    },
+    {
+     "id": "T9.o3",
+     "text": "Find and stop a runaway child process."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "linux-processes",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "process",
+    "file permissions"
+   ],
+   "title": "Linux processes",
+   "volatile": false,
+   "wires": []
+  },
+  {
+   "family": null,
+   "id": "T10",
+   "interactions": [
+    "hx-kata"
+   ],
+   "kind": "primer",
+   "law": "Concurrency is about waiting, not speed.",
+   "local_terms": [
+    "parallel-safe"
+   ],
+   "minutes": 20,
+   "misconceptions": [
+    "“Threads make Python code run in parallel.”"
+   ],
+   "objectives": [
+    {
+     "id": "T10.o1",
+     "text": "Choose threads, async or processes for a given kind of work."
+    },
+    {
+     "id": "T10.o2",
+     "text": "Run parallel-safe tool calls concurrently and collect results in order."
+    },
+    {
+     "id": "T10.o3",
+     "text": "Explain a race condition on a shared file."
+    }
+   ],
+   "part": "T",
+   "prereqs": [
+    "S0"
+   ],
+   "primers": [],
+   "slug": "threads-vs-async",
+   "source": [],
+   "status": "planned",
+   "terms": [
+    "race condition",
+    "concurrency"
+   ],
+   "title": "Threads vs. async",
+   "volatile": false,
+   "wires": []
+  }
+ ],
+ "parts": [
+  {
+   "id": "S",
+   "title": "Start here"
+  },
+  {
+   "id": "A",
+   "title": "The model"
+  },
+  {
+   "id": "B",
+   "title": "From chatbot to agent"
+  },
+  {
+   "id": "C",
+   "title": "The eight wires"
+  },
+  {
+   "id": "D",
+   "title": "Measure"
+  },
+  {
+   "id": "E",
+   "title": "Secure"
+  },
+  {
+   "id": "F",
+   "title": "Scale"
+  },
+  {
+   "id": "G",
+   "title": "Real harnesses"
+  },
+  {
+   "id": "H",
+   "title": "Build Rein"
+  },
+  {
+   "id": "I",
+   "title": "Get hired"
+  },
+  {
+   "id": "T",
+   "title": "Toolbelt"
+  }
+ ],
+ "path": [
+  "S0",
+  "A1",
+  "A2",
+  "A3",
+  "A4",
+  "A5",
+  "A6",
+  "A7",
+  "B1",
+  "B2",
+  "H0",
+  "H1",
+  "H2",
+  "B3",
+  "B4",
+  "C1",
+  "C2",
+  "C3",
+  "C4",
+  "C5",
+  "C6",
+  "C7",
+  "C8",
+  "C9",
+  "C10",
+  "H3",
+  "H4",
+  "H5",
+  "H6",
+  "H7",
+  "H8",
+  "C11",
+  "H9",
+  "H10",
+  "H11",
+  "C12",
+  "D1",
+  "D2",
+  "D3",
+  "H12",
+  "E1",
+  "E2",
+  "F1",
+  "F2",
+  "F3",
+  "F4",
+  "F5",
+  "F6",
+  "F7",
+  "G1",
+  "G2",
+  "G3",
+  "G4",
+  "H13",
+  "I1",
+  "I2",
+  "I3",
+  "I4",
+  "I5"
+ ],
+ "product": {
+  "build_project": "Rein",
+  "mnemonic": "Clever Crews Launch Early; Test Pilots Verify Often.",
+  "name": "HARNESSED",
+  "tagline": "From zero to a hireable AI harness engineer, one replayable run at a time."
+ },
+ "schema": 1,
+ "wires": [
+  {
+   "angle": 0,
+   "clock": "12",
+   "glyph": "layers",
+   "id": "control",
+   "law": "Words guide, code enforces.",
+   "line": "solid",
+   "n": 1,
+   "name": "Control plane",
+   "question": "What is the model told, and which instruction wins?",
+   "short": "Control"
+  },
+  {
+   "angle": 45,
+   "clock": "1–2",
+   "glyph": "window",
+   "id": "context",
+   "law": "The smallest window that works.",
+   "line": "10 4",
+   "n": 2,
+   "name": "Context & memory",
+   "question": "What is on the desk this call, and what is saved?",
+   "short": "Context"
+  },
+  {
+   "angle": 90,
+   "clock": "3",
+   "glyph": "cycle",
+   "id": "loop",
+   "law": "Every run needs more than one exit.",
+   "line": "solid-heavy",
+   "n": 3,
+   "name": "Loop & state",
+   "question": "What happens next, what do we carry, when do we stop?",
+   "short": "Loop"
+  },
+  {
+   "angle": 135,
+   "clock": "4–5",
+   "glyph": "zigzag",
+   "id": "errors",
+   "law": "Errors are the main path.",
+   "line": "8 3 2 3",
+   "n": 4,
+   "name": "Errors & recovery",
+   "question": "When something fails, how do we continue without spinning?",
+   "short": "Errors"
+  },
+  {
+   "angle": 180,
+   "clock": "6",
+   "glyph": "hexagon",
+   "id": "tools",
+   "law": "A tool is a user interface for a model.",
+   "line": "4 3",
+   "n": 5,
+   "name": "Tools",
+   "question": "What can the model do, and is each tool easy to use?",
+   "short": "Tools"
+  },
+  {
+   "angle": 225,
+   "clock": "7–8",
+   "glyph": "diamond",
+   "id": "permissions",
+   "law": "Judge the action and its target.",
+   "line": "8 3 2 3 2 3",
+   "n": 6,
+   "name": "Permissions & sandbox",
+   "question": "Which actions are allowed, and how bad can a mistake get?",
+   "short": "Permissions"
+  },
+  {
+   "angle": 285,
+   "clock": "9–10",
+   "glyph": "shield",
+   "id": "verify",
+   "law": "“Done” is a claim.",
+   "line": "0.1 4",
+   "n": 7,
+   "name": "Verification & evals",
+   "question": "How do we know it's really done, and did the change help?",
+   "short": "Verification"
+  },
+  {
+   "angle": 330,
+   "clock": "11 (rim)",
+   "glyph": "eye",
+   "id": "observe",
+   "law": "If it isn't in the trace, it didn't happen.",
+   "line": "2 2",
+   "n": 8,
+   "name": "Observability",
+   "question": "What exactly happened, and where did time and money go?",
+   "short": "Observability"
+  }
+ ]
+}
