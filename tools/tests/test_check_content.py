@@ -355,3 +355,11 @@ def test_a_module_page_needs_both_generated_regions(tmp_path: Path) -> None:
     assert [p.message for p in report.problems] == [
         "[B9] the page needs a generated region gen:course-map"
     ]
+
+
+def test_placement_yaml_is_a_mapping_and_is_not_read_as_a_list(tmp_path: Path) -> None:
+    root = copy_fixture(tmp_path)
+    owner = next(p for p in (root / "content").iterdir() if p.is_dir())
+    (owner / "placement.yaml").write_text("questions: []\nrules: []\nstart: X1\n", encoding="utf-8")
+    report, _ = run_on(root)
+    assert report.problems == []

@@ -549,6 +549,8 @@ def build_context(course: Course, content_dir: Path, katas_dir: Path, report: Re
                                f"content folder '{owner}' is not a module in course.json")
                 continue
             for yaml_path in sorted(folder.glob("*.yaml")):
+                if yaml_path.name == "placement.yaml":
+                    continue  # a mapping (questions, rules, start), checked by tools/gen_data.py
                 shown = display_path(yaml_path)
                 for line, item in _load_list(yaml_path, shown, report):
                     if not isinstance(item, dict):

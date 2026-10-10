@@ -286,7 +286,10 @@ async function checkAxe(page) {
   const results = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
   for (const violation of results.violations) {
     const nodes = violation.nodes.length;
-    const line = `axe ${violation.impact ?? "unknown"} ${violation.id}: ${violation.help} (${nodes} nodes)`;
+    // name the first offending node, so an intermittent failure can be traced from the log alone
+    const first = violation.nodes[0];
+    const where = first ? ` at ${first.target.join(" ")} ${first.html.slice(0, 120).replace(/\s+/g, " ")}` : "";
+    const line = `axe ${violation.impact ?? "unknown"} ${violation.id}: ${violation.help} (${nodes} nodes)${where}`;
     if (violation.impact === "serious" || violation.impact === "critical") failures.push(line);
     else if (violation.impact === "moderate") warnings.push(line);
   }

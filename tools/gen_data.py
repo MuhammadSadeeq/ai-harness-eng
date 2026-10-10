@@ -6,7 +6,8 @@ Usage: python tools/gen_data.py [--check]
 Writes (D-020): site/data/course.json, course-core.json (the slim course the components read),
 facts.json (verified facts only), facts-core.json (the facts the components read), terms.json,
 site/data/{cards,say,checks}/<ID>.json, site/data/placement/<ID>.json
-(from content/<ID>/placement.yaml), site/data/katas/<id>.json (from katas/<id>/), and
+(from content/<ID>/placement.yaml), site/data/labs/<ID>/<name>.json (a module's lab data, from
+content/<ID>/labs/<name>.json, re-serialized), site/data/katas/<id>.json (from katas/<id>/), and
 byte-for-byte copies of the scenario tapes and boards (site/data/scenarios/<id>.json,
 site/data/scenarios/boards/<id>.json). Rewrites only the text
 between the counts markers in README.md. Generated JSON is written as
@@ -482,6 +483,18 @@ def build_plan(root: Path) -> Plan:
                     plan.skipped.add(rel)
                 else:
                     plan.outputs.append(Output(rel, dump_json(value)))
+            labs = folder / "labs"
+            if labs.is_dir():
+                for lab in sorted(labs.glob("*.json")):
+                    rel = f"site/data/labs/{folder.name}/{lab.name}"
+                    data = _read_json(lab, display_path(lab), plan)
+                    if not isinstance(data, dict):
+                        if data is not None:
+                            plan.problems.append(
+                                Problem(display_path(lab), 0, "a lab's data must be a JSON object"))
+                        plan.skipped.add(rel)
+                    else:
+                        plan.outputs.append(Output(rel, dump_json(data)))
     _katas(root, plan)
     _steps(root, plan)
     _scenarios(root, plan)
