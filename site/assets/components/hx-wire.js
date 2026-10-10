@@ -2,7 +2,7 @@
 // Friendly (cards with token counts) or Wire (the exact JSON). "Show what changed" diffs this turn's request
 // against the previous turn's. Everything shown is derived in render() from the run and the UI state.
 import { HxElement } from "./lib/hx-element.js";
-import { getTape, getBoard, getFacts } from "./lib/data.js";
+import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runTrial, tokens, pyjson } from "../sim/index.js";
 import { diffMessages } from "./lib/wirediff.js";
 import { formatInt, plural } from "./lib/format.js";
@@ -50,7 +50,7 @@ export class HxWire extends HxElement {
     const boardId = this.getAttribute("board") ?? this.tape.boards[0];
     const seed = Number(this.getAttribute("seed") ?? this.tape.golden_seeds[0]);
     const board = await getBoard(boardId);
-    const facts = await getFacts();
+    const facts = await getFactsCore();
     const run = runTrial(this.tape, board, seed, { facts });
     this.wire = run.wire;
     this.turns = Math.floor(run.wire.length / 2);

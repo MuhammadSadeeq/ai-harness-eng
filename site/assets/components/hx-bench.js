@@ -1,7 +1,7 @@
 // hx-bench: the Knob Bench (DESIGN §7.5–§7.6, COMPONENTS §10). Every number is computed from runBench results.
 // Attributes are read at upgrade. Values: knob, passed.*, worst_turns.*, worst_cost.*, trials; hxLabel(name).
 import { HxElement } from "./lib/hx-element.js";
-import { getTape, getBoard, getFacts } from "./lib/data.js";
+import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runBench } from "../sim/index.js";
 import { summarize, wilson, percent, histogram, TURN_EDGES, sweepPar } from "./lib/stats.js";
 import { formatCost, formatInt, plural, pricingIsUsd, statusWords, isPass } from "./lib/format.js";
@@ -240,7 +240,7 @@ export class HxBench extends HxElement {
     if (!tapeId) throw new Error("hx-bench needs tape");
     this.uid = `hxb${++uidCount}`;
     this.N = this.intAttr("trials", 20, 1, 50);
-    const [tape, facts] = await Promise.all([getTape(tapeId), getFacts()]);
+    const [tape, facts] = await Promise.all([getTape(tapeId), getFactsCore()]);
     this.tape = tape;
     this.facts = facts;
     const oldId = this.getAttribute("old") ?? tape.boards[0];

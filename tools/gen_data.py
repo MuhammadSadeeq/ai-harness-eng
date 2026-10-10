@@ -4,7 +4,7 @@
 Usage: python tools/gen_data.py [--check]
 
 Writes (D-020): site/data/course.json, course-core.json (the slim course the components read),
-facts.json (verified facts only), terms.json,
+facts.json (verified facts only), facts-core.json (the facts the components read), terms.json,
 site/data/{cards,say,checks}/<ID>.json, site/data/placement/<ID>.json
 (from content/<ID>/placement.yaml), site/data/katas/<id>.json (from katas/<id>/), and
 byte-for-byte copies of the scenario tapes and boards (site/data/scenarios/<id>.json,
@@ -190,6 +190,21 @@ def _placement(path: Path, course: dict[str, Any], plan: Plan) -> dict[str, Any]
         return None
     value: dict[str, Any] = data
     return value
+
+
+# What the page reads from a fact (site/data/facts-core.json; lib/data.js getFactsCore): the status,
+# the date it was verified, its source, and a value where it has one (the price facts). No claim.
+FACTS_CORE_KEYS = ("status", "verified_on", "source", "value")
+
+
+def _facts_core(facts: dict[str, Any]) -> dict[str, Any]:
+    """Each fact keyed by its id, with its id and FACTS_CORE_KEYS only."""
+    core: dict[str, Any] = {}
+    for fact_id, fact in facts.items():
+        entry: dict[str, Any] = {"id": fact_id}
+        entry.update({key: fact[key] for key in FACTS_CORE_KEYS if key in fact})
+        core[fact_id] = entry
+    return core
 
 
 def _facts(root: Path, plan: Plan) -> dict[str, Any] | None:
@@ -438,8 +453,10 @@ def build_plan(root: Path) -> Plan:
     facts = _facts(root, plan)
     if facts is None:
         plan.skipped.add("site/data/facts.json")
+        plan.skipped.add("site/data/facts-core.json")
     else:
         plan.outputs.append(Output("site/data/facts.json", dump_json(facts)))
+        plan.outputs.append(Output("site/data/facts-core.json", dump_json(_facts_core(facts))))
     terms = _terms(root, plan)
     if terms is None:
         plan.skipped.add("site/data/terms.json")

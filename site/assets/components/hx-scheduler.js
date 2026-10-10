@@ -5,7 +5,7 @@
 //   <hx-scheduler src="data/scheduler-demo.json"></hx-scheduler>
 // Evidence: "scheduler" on each Check my plan, {safe, saved_ms, rounds}. Values: saved_ms, conflicts (read-only).
 import { HxElement } from "./lib/hx-element.js";
-import { getFacts } from "./lib/data.js";
+import { getFactsCore } from "./lib/data.js";
 import { formatInt, formatMs, plural } from "./lib/format.js";
 import { mountFacts } from "../core/shell/facts.js";
 
@@ -99,7 +99,7 @@ export class HxScheduler extends HxElement {
     if (!response.ok) throw new Error(`HTTP ${response.status} for ${src}`);
     this.data = validSchedule(await response.json());
     this.srcName = src;
-    this.facts = await getFacts();
+    this.facts = await getFactsCore();
     if (!this.facts["mcp.annotations-hints"]) throw new Error("hx-scheduler: the annotations fact is missing");
     this.uid = `hxs${++uidCount}`;
     // Every call starts in round 1: the learner sees every conflict and works them out.

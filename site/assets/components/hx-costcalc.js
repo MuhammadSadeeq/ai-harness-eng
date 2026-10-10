@@ -5,7 +5,7 @@
 //   <hx-costcalc src="data/costcalc-demo.json"></hx-costcalc>
 // Values: cost_per_task, cost_per_completed (read-only, nano-units).
 import { HxElement } from "./lib/hx-element.js";
-import { getFacts } from "./lib/data.js";
+import { getFactsCore } from "./lib/data.js";
 import { formatCost, formatInt, plural } from "./lib/format.js";
 import { mountFacts } from "../core/shell/facts.js";
 
@@ -102,7 +102,7 @@ export class HxCostcalc extends HxElement {
     if (!response.ok) throw new Error(`HTTP ${response.status} for ${src}`);
     const data = await response.json();
     if (!data.efforts || !data.defaults) throw new Error("hx-costcalc: bad data");
-    this.facts = await getFacts();
+    this.facts = await getFactsCore();
     this.models = familiesOf(this.facts);
     if (this.models.length === 0) throw new Error("hx-costcalc: no priced models in the facts");
     this.data = data;

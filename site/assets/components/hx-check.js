@@ -4,7 +4,7 @@
 // predict without for: the reveal comes right after the commit. check: the reveal comes right after the commit.
 // Evidence: "check" on a check commit; "prediction" when a prediction is revealed (COMPONENTS §5).
 import { HxElement } from "./lib/hx-element.js";
-import { getContent, getFacts } from "./lib/data.js";
+import { getContent, getFactsCore } from "./lib/data.js";
 import { mountFacts } from "../core/shell/facts.js";
 import { validAnswer } from "./lib/restore.js";
 
@@ -75,7 +75,7 @@ export class HxCheck extends HxElement {
     validItem(item, mode);
     this.item = item;
     this.mode = mode;
-    this.facts = item.options.some((o) => typeof o.fact === "string") ? await getFacts() : null;
+    this.facts = item.options.some((o) => typeof o.fact === "string") ? await getFactsCore() : null;
     this.uid = `hxc${++uidCount}`;
     this.targetEl = null;
     const forId = this.getAttribute("for");

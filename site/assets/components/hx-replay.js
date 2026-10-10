@@ -2,7 +2,7 @@
 // learner sees is derived from the run's events and the UI state in render(). Step, scrub and play only
 // move the playhead and the readouts; the transcript is rebuilt only when detail, filter or expansion change.
 import { HxElement } from "./lib/hx-element.js";
-import { getTape, getBoard, getFacts } from "./lib/data.js";
+import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runTrial } from "../sim/index.js";
 import { explain, turnSummary } from "./lib/explain.js";
 import { formatCost, formatMs } from "./lib/format.js";
@@ -35,7 +35,7 @@ export class HxReplay extends HxElement {
     const boardId = this.getAttribute("board") ?? tape.boards[0];
     const seed = Number(this.getAttribute("seed") ?? tape.golden_seeds[0]);
     const board = await getBoard(boardId);
-    const facts = await getFacts();
+    const facts = await getFactsCore();
     const run = runTrial(tape, board, seed, { facts });
     const events = run.events;
     const n = events.length;

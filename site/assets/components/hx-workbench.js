@@ -4,7 +4,7 @@
 //   <hx-workbench src="data/workbench-demo.json"></hx-workbench>
 // Values: misuse_percent (read-only), rules_held (read-only).
 import { HxElement } from "./lib/hx-element.js";
-import { getTape, getBoard, getFacts } from "./lib/data.js";
+import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runBench } from "../sim/index.js";
 import { summarize } from "./lib/stats.js";
 import { plural } from "./lib/format.js";
@@ -120,7 +120,7 @@ export class HxWorkbench extends HxElement {
     if (!data.tool || !Array.isArray(data.checks) || typeof data.base_misuse_percent !== "number") throw new Error("hx-workbench: bad data");
     const misuse = data.misuse;
     if (!misuse || typeof misuse.branch !== "string" || !Number.isInteger(misuse.option)) throw new Error("hx-workbench: misuse needs a branch pointer and an option");
-    const [tape, board, facts] = await Promise.all([getTape(data.tape), getBoard(data.board), getFacts()]);
+    const [tape, board, facts] = await Promise.all([getTape(data.tape), getBoard(data.board), getFactsCore()]);
     writeMisuse(tape, misuse.branch, misuse.option, data.base_misuse_percent);
     this.data = data;
     this.tape = tape;

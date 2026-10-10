@@ -9,7 +9,7 @@
 // Evidence: "cacheline" on each reorder that changes the hit rate, {order, hit_percent}; and on the invalidator pick,
 // {order, hit_percent, pick, right}. Values: hit_percent, saving_percent (read-only).
 import { HxElement } from "./lib/hx-element.js";
-import { getFacts } from "./lib/data.js";
+import { getFactsCore } from "./lib/data.js";
 import { formatCost, formatInt, plural } from "./lib/format.js";
 import { mountFacts } from "../core/shell/facts.js";
 import { tokens } from "../sim/tokens.js";
@@ -181,7 +181,7 @@ export class HxCacheline extends HxElement {
       throw new Error("hx-cacheline: cache_rules needs min_tokens and ttl_ms");
     }
     if (data.invalidator !== undefined && !ids.has(data.invalidator.block)) throw new Error("hx-cacheline: the invalidator names no block");
-    this.facts = await getFacts();
+    this.facts = await getFactsCore();
     for (const id of Object.values(data.cache_rules.facts ?? {})) {
       if (!this.facts[id]) throw new Error(`hx-cacheline: unknown fact ${id}`);
     }

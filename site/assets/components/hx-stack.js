@@ -5,7 +5,7 @@
 // Evidence: "stack" on each pick, {src, conflict, right} (right: this pick named the winner).
 // Values: right (picks right so far), tokens (the stack's estimate before the task); both read-only.
 import { HxElement } from "./lib/hx-element.js";
-import { getFacts } from "./lib/data.js";
+import { getFactsCore } from "./lib/data.js";
 import { formatInt, plural } from "./lib/format.js";
 import { tokens } from "../sim/tokens.js";
 import { mountFacts } from "../core/shell/facts.js";
@@ -101,7 +101,7 @@ export class HxStack extends HxElement {
     if (!response.ok) throw new Error(`HTTP ${response.status} for ${src}`);
     this.data = validStack(await response.json());
     this.srcName = src;
-    this.facts = this.data.conflicts.some((conflict) => typeof conflict.fact === "string") ? await getFacts() : null;
+    this.facts = this.data.conflicts.some((conflict) => typeof conflict.fact === "string") ? await getFactsCore() : null;
     this.uid = `hxs${++uidCount}`;
     this.total = stackTokens(this.data.layers);
     this.state = { current: 0, picks: {}, enforce: {}, expanded: [] };

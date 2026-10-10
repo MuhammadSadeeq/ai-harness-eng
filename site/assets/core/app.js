@@ -13,7 +13,7 @@ import { mountFacts } from "./shell/facts.js";
 import { mountModule } from "./shell/module.js";
 import { mountStartMark } from "./shell/start-mark.js";
 import { loadComponents } from "./shell/loader.js";
-import { getFacts, getTerms } from "../components/lib/data.js";
+import { getFactsCore, getTerms } from "../components/lib/data.js";
 import { mountEvidence } from "./shell/evidence.js";
 import { setContext } from "./context.js";
 
@@ -34,7 +34,7 @@ mountStartMark(store);
 // The data comes through lib/data.js, which fetches each file once per page (a component's facts and the shell's
 // are the same request; a second download of facts.json is 77 KB on a page that has a 300 KB budget).
 if (document.querySelector("[data-fact]:not([data-verified])")) {
-  getFacts().then((facts) => mountFacts(facts)).catch(() => mountFacts(null));
+  getFactsCore().then((facts) => mountFacts(facts)).catch(() => mountFacts(null));
 } else {
   mountFacts(null);
 }

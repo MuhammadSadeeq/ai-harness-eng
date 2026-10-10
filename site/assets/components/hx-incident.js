@@ -3,7 +3,7 @@
 // tape's incident block) and the state. A wrong tap never hides or resets the hunt: its answer appears under
 // the tapped row, and the transcript keeps its scroll position.
 import { HxElement } from "./lib/hx-element.js";
-import { getTape, getBoard, getFacts, getCourseCore } from "./lib/data.js";
+import { getTape, getBoard, getFactsCore, getCourseCore } from "./lib/data.js";
 import { runTrial, createPrng } from "../sim/index.js";
 import { el, glyph, WIRES, repeats, transcriptList, laneStrip, ensureSprite } from "./lib/transcript.js";
 import { formatMs, plural } from "./lib/format.js";
@@ -42,7 +42,7 @@ export class HxIncident extends HxElement {
     if (!tape.incident) throw new Error(`${tapeId} has no incident block`);
     const inc = tape.incident;
     const board = await getBoard(inc.board);
-    const facts = await getFacts();
+    const facts = await getFactsCore();
     const course = await getCourseCore();
     const { events } = runTrial(tape, board, inc.seed, { facts });
     const family = course.failure_families.find((f) => f.id === inc.family);

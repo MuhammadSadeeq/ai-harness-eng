@@ -1,0 +1,1294 @@
+{
+ "a2a.governance-linux-foundation": {
+  "id": "a2a.governance-linux-foundation",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "a2a.governance-tsc": {
+  "id": "a2a.governance-tsc",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/docs/index.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "a2a.latest-version": {
+  "id": "a2a.latest-version",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/CHANGELOG.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "aaif.a2a-growth-stage": {
+  "id": "aaif.a2a-growth-stage",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/docs/blog/posts/a2a-joins-aaif.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "aaif.founding": {
+  "id": "aaif.founding",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2025-12-09-mcp-joins-agentic-ai-foundation.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "aaif.projects-a2a-post": {
+  "id": "aaif.projects-a2a-post",
+  "source": "https://github.com/a2aproject/A2A/blob/12e9d2fbb9badfe98f8ab4f660697870eeb1940b/docs/blog/posts/a2a-joins-aaif.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "agentsmd.definition": {
+  "id": "agentsmd.definition",
+  "source": "https://github.com/agentsmd/agents.md/blob/d001185d792eb6402a58e4cbef1c228b309ec25d/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "agentsmd.stewardship": {
+  "id": "agentsmd.stewardship",
+  "source": "https://github.com/agentsmd/agents.md/blob/d001185d792eb6402a58e4cbef1c228b309ec25d/components/AboutSection.tsx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.bea-agents": {
+  "id": "anthropic.bea-agents",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.bea-published": {
+  "id": "anthropic.bea-published",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.bea-start-simple": {
+  "id": "anthropic.bea-start-simple",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.bea-tooling-changed": {
+  "id": "anthropic.bea-tooling-changed",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.bea-workflows": {
+  "id": "anthropic.bea-workflows",
+  "source": "https://www.anthropic.com/engineering/building-effective-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.ctx-attention-budget": {
+  "id": "anthropic.ctx-attention-budget",
+  "source": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.ctx-context-rot": {
+  "id": "anthropic.ctx-context-rot",
+  "source": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.ctx-definition": {
+  "id": "anthropic.ctx-definition",
+  "source": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.ctx-published": {
+  "id": "anthropic.ctx-published",
+  "source": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.harn-initializer-agent": {
+  "id": "anthropic.harn-initializer-agent",
+  "source": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.harn-progress-file": {
+  "id": "anthropic.harn-progress-file",
+  "source": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.harn-published": {
+  "id": "anthropic.harn-published",
+  "source": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.twt-meaningful-context": {
+  "id": "anthropic.twt-meaningful-context",
+  "source": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.twt-namespacing": {
+  "id": "anthropic.twt-namespacing",
+  "source": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.twt-published": {
+  "id": "anthropic.twt-published",
+  "source": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "anthropic.twt-token-efficiency": {
+  "id": "anthropic.twt-token-efficiency",
+  "source": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-control-top-level": {
+  "id": "api.cache-control-top-level",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-invalidation-effort": {
+  "id": "api.cache-invalidation-effort",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-invalidation-hierarchy": {
+  "id": "api.cache-invalidation-hierarchy",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-invalidation-images": {
+  "id": "api.cache-invalidation-images",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-invalidation-system-web-search": {
+  "id": "api.cache-invalidation-system-web-search",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-invalidation-thinking": {
+  "id": "api.cache-invalidation-thinking",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-invalidation-tool-choice": {
+  "id": "api.cache-invalidation-tool-choice",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-invalidation-tool-definitions": {
+  "id": "api.cache-invalidation-tool-definitions",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-read-refreshes-ttl": {
+  "id": "api.cache-read-refreshes-ttl",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-ttl-default-5m-and-1h": {
+  "id": "api.cache-ttl-default-5m-and-1h",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.cache-usage-fields": {
+  "id": "api.cache-usage-fields",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.compaction-each-kind-own-header": {
+  "id": "api.compaction-each-kind-own-header",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.compaction-on-demand-beta-header": {
+  "id": "api.compaction-on-demand-beta-header",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.compaction-on-demand-parameter": {
+  "id": "api.compaction-on-demand-parameter",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.compaction-threshold-beta-header": {
+  "id": "api.compaction-threshold-beta-header",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction-threshold",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.compaction-threshold-strategy": {
+  "id": "api.compaction-threshold-strategy",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/compaction-threshold",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.consecutive-turns-combined": {
+  "id": "api.consecutive-turns-combined",
+  "source": "https://platform.claude.com/docs/en/api/messages",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.content-multiple-blocks": {
+  "id": "api.content-multiple-blocks",
+  "source": "https://platform.claude.com/docs/en/api/messages/create",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.context-editing-beta-header": {
+  "id": "api.context-editing-beta-header",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.context-editing-clear-thinking": {
+  "id": "api.context-editing-clear-thinking",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.context-editing-clear-tool-uses": {
+  "id": "api.context-editing-clear-tool-uses",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/context-editing",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.effort-default-medium-opus-5-5-haiku-5-5": {
+  "id": "api.effort-default-medium-opus-5-5-haiku-5-5",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.effort-five-levels": {
+  "id": "api.effort-five-levels",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.effort-location": {
+  "id": "api.effort-location",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.effort-max-availability": {
+  "id": "api.effort-max-availability",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.effort-not-all-max-support-xhigh": {
+  "id": "api.effort-not-all-max-support-xhigh",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.effort-xhigh-availability": {
+  "id": "api.effort-xhigh-availability",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/effort",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.error-400-invalid-request": {
+  "id": "api.error-400-invalid-request",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.error-429-rate-limit": {
+  "id": "api.error-429-rate-limit",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.error-429-retry-after": {
+  "id": "api.error-429-retry-after",
+  "source": "https://platform.claude.com/docs/en/api/rate-limits",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.error-429-spend-cap-no-retry-after": {
+  "id": "api.error-429-spend-cap-no-retry-after",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.error-500-api-error": {
+  "id": "api.error-500-api-error",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.error-504-timeout": {
+  "id": "api.error-504-timeout",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.error-529-overloaded": {
+  "id": "api.error-529-overloaded",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.error-sdk-retries": {
+  "id": "api.error-sdk-retries",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.max-tokens-incomplete-tool-use": {
+  "id": "api.max-tokens-incomplete-tool-use",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.messages-create-endpoint": {
+  "id": "api.messages-create-endpoint",
+  "source": "https://platform.claude.com/docs/en/api/messages/create",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.messages-stateless": {
+  "id": "api.messages-stateless",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/working-with-messages",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.parallel-results-one-message": {
+  "id": "api.parallel-results-one-message",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.prefill-claude-4-6-and-later": {
+  "id": "api.prefill-claude-4-6-and-later",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.prefill-claude-fable-5-1": {
+  "id": "api.prefill-claude-fable-5-1",
+  "source": "https://platform.claude.com/docs/en/models/fable-5-1/migration-guide",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.prefill-claude-haiku-5-5": {
+  "id": "api.prefill-claude-haiku-5-5",
+  "source": "https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.prefill-claude-opus-5-5": {
+  "id": "api.prefill-claude-opus-5-5",
+  "source": "https://platform.claude.com/docs/en/models/opus-5-5/migration-guide",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.prefill-claude-sonnet-5-5": {
+  "id": "api.prefill-claude-sonnet-5-5",
+  "source": "https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.prefill-thinking-on-or-off": {
+  "id": "api.prefill-thinking-on-or-off",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.retry-after-meaning": {
+  "id": "api.retry-after-meaning",
+  "source": "https://platform.claude.com/docs/en/api/rate-limits",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.split-results-teach-serial": {
+  "id": "api.split-results-teach-serial",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.stop-reason-end-turn": {
+  "id": "api.stop-reason-end-turn",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.stop-reason-max-tokens": {
+  "id": "api.stop-reason-max-tokens",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.stop-reason-model-context-window-exceeded": {
+  "id": "api.stop-reason-model-context-window-exceeded",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.stop-reason-pause-turn": {
+  "id": "api.stop-reason-pause-turn",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.stop-reason-refusal": {
+  "id": "api.stop-reason-refusal",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.stop-reason-stop-sequence": {
+  "id": "api.stop-reason-stop-sequence",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.stop-reason-tool-use": {
+  "id": "api.stop-reason-tool-use",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.structured-outputs-citations-incompatible": {
+  "id": "api.structured-outputs-citations-incompatible",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.structured-outputs-ga": {
+  "id": "api.structured-outputs-ga",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.structured-outputs-json-param": {
+  "id": "api.structured-outputs-json-param",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.structured-outputs-output-format-deprecated": {
+  "id": "api.structured-outputs-output-format-deprecated",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.structured-outputs-parse-helper-arg": {
+  "id": "api.structured-outputs-parse-helper-arg",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.structured-outputs-prefill-incompatible": {
+  "id": "api.structured-outputs-prefill-incompatible",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.structured-outputs-strict-tool-use": {
+  "id": "api.structured-outputs-strict-tool-use",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.system-prompt-role": {
+  "id": "api.system-prompt-role",
+  "source": "https://platform.claude.com/docs/en/api/messages",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.temperature-deprecated-after-opus-4-6": {
+  "id": "api.temperature-deprecated-after-opus-4-6",
+  "source": "https://platform.claude.com/docs/en/api/messages/create",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.temperature-range": {
+  "id": "api.temperature-range",
+  "source": "https://platform.claude.com/docs/en/api/messages/create",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.thinking-adaptive-recommended": {
+  "id": "api.thinking-adaptive-recommended",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.thinking-billed-as-output": {
+  "id": "api.thinking-billed-as-output",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.thinking-blocks-pass-back-tool-use": {
+  "id": "api.thinking-blocks-pass-back-tool-use",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.thinking-budget-tokens-deprecated": {
+  "id": "api.thinking-budget-tokens-deprecated",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.thinking-display-default-omitted": {
+  "id": "api.thinking-display-default-omitted",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.token-count-endpoint": {
+  "id": "api.token-count-endpoint",
+  "source": "https://platform.claude.com/docs/en/api/messages/count_tokens",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.token-count-response": {
+  "id": "api.token-count-response",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.token-count-status": {
+  "id": "api.token-count-status",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-choice-adaptive-forced-exceptions": {
+  "id": "api.tool-choice-adaptive-forced-exceptions",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-choice-manual-thinking-allowed": {
+  "id": "api.tool-choice-manual-thinking-allowed",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-choice-unsupported-fallback": {
+  "id": "api.tool-choice-unsupported-fallback",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-result-blocks-first": {
+  "id": "api.tool-result-blocks-first",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-result-ids-must-match": {
+  "id": "api.tool-result-ids-must-match",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-result-is-error": {
+  "id": "api.tool-result-is-error",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-result-text-after-results": {
+  "id": "api.tool-result-text-after-results",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-result-unrun-call": {
+  "id": "api.tool-result-unrun-call",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-results-are-data": {
+  "id": "api.tool-results-are-data",
+  "source": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-results-single-user-message": {
+  "id": "api.tool-results-single-user-message",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "api.tool-use-without-result-error": {
+  "id": "api.tool-use-without-result-error",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "evals.grader": {
+  "id": "evals.grader",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "evals.outcome": {
+  "id": "evals.outcome",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "evals.pass-at-k": {
+  "id": "evals.pass-at-k",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "evals.pass-hat-k": {
+  "id": "evals.pass-hat-k",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "evals.published": {
+  "id": "evals.published",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "evals.task": {
+  "id": "evals.task",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "evals.tau-successor": {
+  "id": "evals.tau-successor",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "evals.transcript": {
+  "id": "evals.transcript",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "evals.trial": {
+  "id": "evals.trial",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.annotation-destructive": {
+  "id": "mcp.annotation-destructive",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.annotation-idempotent": {
+  "id": "mcp.annotation-idempotent",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.annotation-openworld": {
+  "id": "mcp.annotation-openworld",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.annotation-readonly": {
+  "id": "mcp.annotation-readonly",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.annotations-hints": {
+  "id": "mcp.annotations-hints",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.annotations-names": {
+  "id": "mcp.annotations-names",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.annotations-untrusted-schema": {
+  "id": "mcp.annotations-untrusted-schema",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.annotations-untrusted-tools": {
+  "id": "mcp.annotations-untrusted-tools",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/server/tools.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.auth-basis": {
+  "id": "mcp.auth-basis",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/authorization/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.auth-oauth21-must": {
+  "id": "mcp.auth-oauth21-must",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/authorization/security-considerations.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.auth-optional": {
+  "id": "mcp.auth-optional",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/authorization/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.client-features-2025-11-25": {
+  "id": "mcp.client-features-2025-11-25",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/docs/specification/2025-11-25/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.client-features-2026": {
+  "id": "mcp.client-features-2026",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.deprecated-guidance": {
+  "id": "mcp.deprecated-guidance",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.deprecated-roots-sampling-logging": {
+  "id": "mcp.deprecated-roots-sampling-logging",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.docs-latest-label": {
+  "id": "mcp.docs-latest-label",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/docs.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.ga-announcement": {
+  "id": "mcp.ga-announcement",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2026-07-28-spec-ga/index.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.governance-aaif": {
+  "id": "mcp.governance-aaif",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2025-12-09-mcp-joins-agentic-ai-foundation.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.governance-lf-neutral": {
+  "id": "mcp.governance-lf-neutral",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/c518f7a927cff918bce35d3522fcdb046d264d7c/blog/content/posts/2025-12-09-mcp-joins-agentic-ai-foundation.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.latest-revision": {
+  "id": "mcp.latest-revision",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/schema/2026-07-28/schema.ts",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.release-tag": {
+  "id": "mcp.release-tag",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/commit/5f5440bb26a62e2cf3440b92da5a667efa03b267",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.server-discover": {
+  "id": "mcp.server-discover",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.server-features": {
+  "id": "mcp.server-features",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.sessions-removed": {
+  "id": "mcp.sessions-removed",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.stateless-core": {
+  "id": "mcp.stateless-core",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.tasks-extension": {
+  "id": "mcp.tasks-extension",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.transport-http-sse-changelog": {
+  "id": "mcp.transport-http-sse-changelog",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/changelog.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.transports-standard": {
+  "id": "mcp.transports-standard",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/transports/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "mcp.transports-streamable-http": {
+  "id": "mcp.transports-streamable-http",
+  "source": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/5f5440bb26a62e2cf3440b92da5a667efa03b267/docs/specification/2026-07-28/basic/transports/index.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.aliases": {
+  "id": "models.aliases",
+  "source": "https://platform.claude.com/docs/en/models/overview",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.cache-min-1024-tokens": {
+  "id": "models.cache-min-1024-tokens",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.cache-min-2048-tokens": {
+  "id": "models.cache-min-2048-tokens",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.cache-min-4096-tokens": {
+  "id": "models.cache-min-4096-tokens",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.cache-min-512-tokens": {
+  "id": "models.cache-min-512-tokens",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.cache-read-multiplier": {
+  "id": "models.cache-read-multiplier",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.cache-write-1h-multiplier": {
+  "id": "models.cache-write-1h-multiplier",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.cache-write-5m-multiplier": {
+  "id": "models.cache-write-5m-multiplier",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.context-window": {
+  "id": "models.context-window",
+  "source": "https://platform.claude.com/docs/en/models/overview",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.fable-5-1-price": {
+  "id": "models.fable-5-1-price",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.25,
+   "cache_write_usd_per_mtok": 12.5,
+   "input_usd_per_mtok": 10,
+   "output_usd_per_mtok": 50
+  },
+  "verified_on": "2026-10-10"
+ },
+ "models.haiku-5-5-price-over-100k": {
+  "id": "models.haiku-5-5-price-over-100k",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.05,
+   "cache_write_usd_per_mtok": 0.625,
+   "input_usd_per_mtok": 0.5,
+   "output_usd_per_mtok": 2.5,
+   "over_prompt_tokens": 100000
+  },
+  "verified_on": "2026-10-10"
+ },
+ "models.haiku-5-5-price-up-to-100k": {
+  "id": "models.haiku-5-5-price-up-to-100k",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.01,
+   "cache_write_usd_per_mtok": 0.125,
+   "input_usd_per_mtok": 0.1,
+   "max_prompt_tokens": 100000,
+   "output_usd_per_mtok": 0.5
+  },
+  "verified_on": "2026-10-10"
+ },
+ "models.ids-current": {
+  "id": "models.ids-current",
+  "source": "https://platform.claude.com/docs/en/models/overview",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.max-output": {
+  "id": "models.max-output",
+  "source": "https://platform.claude.com/docs/en/models/overview",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "models.opus-5-5-price": {
+  "id": "models.opus-5-5-price",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.2,
+   "cache_write_usd_per_mtok": 5,
+   "input_usd_per_mtok": 4,
+   "output_usd_per_mtok": 20
+  },
+  "verified_on": "2026-10-10"
+ },
+ "models.sonnet-5-5-price": {
+  "id": "models.sonnet-5-5-price",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "status": "verified",
+  "value": {
+   "cache_hit_usd_per_mtok": 0.1,
+   "cache_write_usd_per_mtok": 2.5,
+   "input_usd_per_mtok": 2,
+   "output_usd_per_mtok": 10
+  },
+  "verified_on": "2026-10-10"
+ },
+ "otel.attr-conversation-id": {
+  "id": "otel.attr-conversation-id",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.attr-request-model": {
+  "id": "otel.attr-request-model",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.attr-system-deprecated": {
+  "id": "otel.attr-system-deprecated",
+  "source": "https://github.com/open-telemetry/semantic-conventions/blob/68e89181d4cb9bbce975c8128e694363214ab5fb/CHANGELOG.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.attr-system-renamed": {
+  "id": "otel.attr-system-renamed",
+  "source": "https://github.com/open-telemetry/semantic-conventions/blob/68e89181d4cb9bbce975c8128e694363214ab5fb/CHANGELOG.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.attr-tool-call-id": {
+  "id": "otel.attr-tool-call-id",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.attr-tool-name": {
+  "id": "otel.attr-tool-name",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.attr-usage-input": {
+  "id": "otel.attr-usage-input",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.attr-usage-output": {
+  "id": "otel.attr-usage-output",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.genai-moved-repo": {
+  "id": "otel.genai-moved-repo",
+  "source": "https://github.com/open-telemetry/semantic-conventions/blob/68e89181d4cb9bbce975c8128e694363214ab5fb/CHANGELOG.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.genai-registry-version": {
+  "id": "otel.genai-registry-version",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/manifest.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.genai-stability": {
+  "id": "otel.genai-stability",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/manifest.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.op-chat": {
+  "id": "otel.op-chat",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/registry.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.op-execute-tool": {
+  "id": "otel.op-execute-tool",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.op-invoke-agent": {
+  "id": "otel.op-invoke-agent",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.span-chat-name": {
+  "id": "otel.span-chat-name",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.span-create-agent-name": {
+  "id": "otel.span-create-agent-name",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.span-execute-tool-name": {
+  "id": "otel.span-execute-tool-name",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "otel.span-invoke-agent-name": {
+  "id": "otel.span-invoke-agent-name",
+  "source": "https://github.com/open-telemetry/semantic-conventions-genai/blob/6fd0d763a092db245a54104fc1124031eb3c51d2/model/gen-ai/spans.yaml",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi01-agent-goal-hijack": {
+  "id": "owasp.asi-asi01-agent-goal-hijack",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi02-tool-misuse-exploitation": {
+  "id": "owasp.asi-asi02-tool-misuse-exploitation",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi03-identity-privilege-abuse": {
+  "id": "owasp.asi-asi03-identity-privilege-abuse",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi04-agentic-supply-chain-vulnerabilities": {
+  "id": "owasp.asi-asi04-agentic-supply-chain-vulnerabilities",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi05-unexpected-code-execution-rce": {
+  "id": "owasp.asi-asi05-unexpected-code-execution-rce",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi06-memory-context-poisoning": {
+  "id": "owasp.asi-asi06-memory-context-poisoning",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi07-insecure-inter-agent-communication": {
+  "id": "owasp.asi-asi07-insecure-inter-agent-communication",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi08-cascading-failures": {
+  "id": "owasp.asi-asi08-cascading-failures",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi09-human-agent-trust-exploitation": {
+  "id": "owasp.asi-asi09-human-agent-trust-exploitation",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-asi10-rogue-agents": {
+  "id": "owasp.asi-asi10-rogue-agents",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.asi-list-version": {
+  "id": "owasp.asi-list-version",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/mappings/asi-2026.json",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.llm-2026-release": {
+  "id": "owasp.llm-2026-release",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.llm01-2025-definition": {
+  "id": "owasp.llm01-2025-definition",
+  "source": "https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/blob/99f4395589bdbd120ae961f9cd179e79d7f9b27f/2_0_vulns/LLM01_PromptInjection.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.llm01-2026-definition": {
+  "id": "owasp.llm01-2026-definition",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM01_PromptInjection.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.llm03-2026-agentic-mapping": {
+  "id": "owasp.llm03-2026-agentic-mapping",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM03_ExcessiveAgency.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.llm03-2026-definition": {
+  "id": "owasp.llm03-2026-definition",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM03_ExcessiveAgency.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.llm03-2026-excessive-agency": {
+  "id": "owasp.llm03-2026-excessive-agency",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM03_ExcessiveAgency.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.llm06-2025-excessive-agency": {
+  "id": "owasp.llm06-2025-excessive-agency",
+  "source": "https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/blob/99f4395589bdbd120ae961f9cd179e79d7f9b27f/2_0_vulns/LLM06_ExcessiveAgency.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.llm06-2026-definition": {
+  "id": "owasp.llm06-2026-definition",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM06_UnboundedConsumption.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "owasp.llm06-2026-unbounded-consumption": {
+  "id": "owasp.llm06-2026-unbounded-consumption",
+  "source": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/9253e38ade58e959b531c0c5c9a4842272c9cd0e/2026/final/LLM06_UnboundedConsumption.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "papers.react-authors": {
+  "id": "papers.react-authors",
+  "source": "https://github.com/ysymyth/ReAct/blob/6bdb3a1fd38b8188fc7ba4102969fe483df8fdc9/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "papers.react-title-id": {
+  "id": "papers.react-title-id",
+  "source": "https://github.com/ysymyth/ReAct/blob/6bdb3a1fd38b8188fc7ba4102969fe483df8fdc9/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "papers.tau-bench-eprint": {
+  "id": "papers.tau-bench-eprint",
+  "source": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "papers.tau-bench-title-id": {
+  "id": "papers.tau-bench-title-id",
+  "source": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "papers.tau-passk-code": {
+  "id": "papers.tau-passk-code",
+  "source": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/tau_bench/run.py",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "skills.maintainer": {
+  "id": "skills.maintainer",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "skills.progressive-disclosure": {
+  "id": "skills.progressive-disclosure",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "skills.progressive-tier1": {
+  "id": "skills.progressive-tier1",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "skills.required-description": {
+  "id": "skills.required-description",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "skills.required-name": {
+  "id": "skills.required-name",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ },
+ "skills.spec-frontmatter": {
+  "id": "skills.spec-frontmatter",
+  "source": "https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx",
+  "status": "verified",
+  "verified_on": "2026-10-10"
+ }
+}

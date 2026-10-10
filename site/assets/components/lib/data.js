@@ -30,6 +30,11 @@ export const getBoard = async (id) => (await strict())(await fetchText(`scenario
 /** A compiled kata (site/data/katas/<id>.json, from katas/<id>/ by tools/gen_data.py). */
 export const getKata = async (id) => JSON.parse(await fetchText(`katas/${checkId("kata", id)}.json`));
 export const getFacts = async () => JSON.parse(await fetchText("facts.json"));
+/**
+ * The facts the page reads (site/data/facts-core.json, from tools/gen_data.py): each fact keyed by id, with its
+ * status, verified_on, source, and value where it has one (the price facts). No claim: use getFacts() for that.
+ */
+export const getFactsCore = async () => JSON.parse(await fetchText("facts-core.json"));
 export const getCourse = async () => JSON.parse(await fetchText("course.json"));
 /**
  * The slim course (site/data/course-core.json, from tools/gen_data.py): wires, failure families, parts, path,
