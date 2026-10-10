@@ -11,6 +11,7 @@ import { mountEditor } from "./lib/editor.js";
 import { sharedPython } from "./lib/py-host.js";
 import { getKata, getCourse } from "./lib/data.js";
 import { isKataId } from "./lib/kata-id.js";
+import { captionTitle, passLine } from "./lib/next-step.js";
 
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -415,7 +416,11 @@ export class HxKata extends HxElement {
     const r = s.results;
     dom.results.hidden = r === null;
     if (r !== null) {
-      dom.count.textContent = `${r.passed} of ${r.total} tests pass`;
+      const count = `${r.passed} of ${r.total} tests pass`;
+      // Practice, all pass: the line points to what comes next (the nextLink set when the run finished).
+      const next = this.nextLink && r.total > 0 && r.passed === r.total ? this.nextLink : null;
+      if (next) dom.count.replaceChildren(`${count}. Next: `, el("a", { href: `#${next.id}`, text: next.title }));
+      else dom.count.textContent = count;
       dom.error.textContent = r.error ?? "";
       dom.error.hidden = !r.error;
       dom.rows.replaceChildren(...r.rows.map((row) => el("li", { class: "kata-row", "data-outcome": row.outcome },
@@ -489,6 +494,7 @@ export class HxKata extends HxElement {
       }
     }
     const allPass = results.total > 0 && results.passed === results.total;
+    this.nextLink = allPass && this.mode === "practice" ? this.nextTarget() : null;
     let passedMs = s.passedMs;
     if (allPass && this.mode === "memory" && passedMs === null) {
       passedMs = this.elapsedMs();
@@ -507,8 +513,37 @@ export class HxKata extends HxElement {
       seconds: Math.round(this.elapsedMs() / 1000),
     }, allPass ? null : []); // a run that fails is recorded, but it is not evidence for an objective
     const count = `${results.passed} of ${results.total} tests pass`;
-    this.live(allPass && this.mode === "memory" ? `${count}. Passed from memory in ${formatClock(passedMs)}.` : count);
+    if (allPass && this.mode === "memory") this.live(`${count}. Passed from memory in ${formatClock(passedMs)}.`);
+    else this.live(this.nextLink ? passLine(count, this.nextLink.title) : count);
     return results;
+  }
+
+  /**
+   * The next thing a reader meets after this kata: a captioned figure later in the same beat, else the next
+   * beat's heading. Its id is the link target; a target without one gets a generated id. Null when none.
+   */
+  nextTarget() {
+    const beat = this.closest("section.beat");
+    if (!beat) return null;
+    const follows = (node) => Boolean(this.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const figure = [...beat.querySelectorAll("figure")].find((f) => follows(f) && f.querySelector("figcaption"));
+    let target = null;
+    let title = "";
+    if (figure) {
+      target = figure;
+      title = captionTitle(figure.querySelector("figcaption").textContent);
+    } else {
+      let sibling = beat.nextElementSibling;
+      while (sibling && !sibling.matches("section.beat")) sibling = sibling.nextElementSibling;
+      const heading = sibling?.querySelector("h2");
+      if (sibling && heading) {
+        target = sibling;
+        title = heading.textContent.trim();
+      }
+    }
+    if (!target || title === "") return null;
+    target.id ||= `hx-next-${this.uid}`;
+    return { id: target.id, title };
   }
 
   /**
@@ -531,6 +566,8 @@ export class HxKata extends HxElement {
       const solved = await this.runAndWait();
       if (!solved || solved.total === 0 || solved.passed !== solved.total) return false;
       if (this.mode === "memory") return true;
+      // A practice pass names what comes next, as a link to it, when the page has one.
+      if (this.nextLink && !this.dom.count.querySelector(`a[href="#${this.nextLink.id}"]`)) return false;
       this.dom.hint.click();
       return this.state.hintsShown === 1;
     } finally {

@@ -37,7 +37,12 @@ hx-wire .wire-json { display: grid; gap: var(--sp-5); }
 hx-wire .wire-json-part { display: grid; gap: var(--sp-2); }
 hx-wire .wire-json-part h3 { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
 hx-wire .wire-json-part .key { justify-self: start; }
-hx-wire .wire-json-scroll { max-height: 26rem; overflow: auto; border-radius: var(--r-chip); }
+hx-wire .wire-json-scroll { border-radius: var(--r-chip); }
+/* Below 700 px there is no inner box: the JSON flows with the page, and Next tool_use_id scrolls the page
+   to the line. From 700 px up the box keeps its height and scrolls inside. */
+@media (min-width: 700px) {
+  hx-wire .wire-json-scroll { max-height: 26rem; overflow: auto; }
+}
 hx-wire .wire-json-scroll:focus-visible { outline: 3px solid var(--hx-focus); outline-offset: 2px; }
 
 /* Next tool_use_id (B2 round 2): the highlighted lines are inverted and carry a visible mark; the words say the rest. */

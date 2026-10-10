@@ -8,7 +8,7 @@ import { Vfs, isInside } from "./vfs.js";
 import {
   Tools, toolDefs, applyOverrides, checksHold, testsHold, catPath, searchMatches, TOOL_SEARCH_DEF, TOOL_SEARCH_MAX,
 } from "./tools.js";
-import { decidePermission, fieldMatch, egressHost } from "./policy.js";
+import { decidePermission, egressHost } from "./policy.js";
 import { createHuman } from "./human.js";
 import { Trace } from "./trace.js";
 import { wireRequest, wireResponse } from "./wire.js";

@@ -3,7 +3,7 @@
 // tape's incident block) and the state. A wrong tap never hides or resets the hunt: its answer appears under
 // the tapped row, and the transcript keeps its scroll position.
 import { HxElement } from "./lib/hx-element.js";
-import { getTape, getBoard, getFacts, getCourse } from "./lib/data.js";
+import { getTape, getBoard, getFacts, getCourseCore } from "./lib/data.js";
 import { runTrial, createPrng } from "../sim/index.js";
 import { el, glyph, WIRES, repeats, transcriptList, laneStrip, ensureSprite } from "./lib/transcript.js";
 import { formatMs, plural } from "./lib/format.js";
@@ -43,7 +43,7 @@ export class HxIncident extends HxElement {
     const inc = tape.incident;
     const board = await getBoard(inc.board);
     const facts = await getFacts();
-    const course = await getCourse();
+    const course = await getCourseCore();
     const { events } = runTrial(tape, board, inc.seed, { facts });
     const family = course.failure_families.find((f) => f.id === inc.family);
     if (!family) throw new Error(`unknown failure family ${inc.family}`);
@@ -351,7 +351,7 @@ export class HxIncident extends HxElement {
     const again = el("button", { class: "key", type: "button", "data-key": "hunt-again", text: "Hunt again" });
     again.addEventListener("click", () => this.huntAgain());
     return el("div", { class: "result", role: "status" },
-      el("p", { class: "result-time", text: `Found in ${s.seconds ?? this.seconds()} s. Par is ${formatMs(inc.par_s * 1000)}.` }),
+      el("p", { class: "result-time", text: `Found in ${s.seconds ?? this.seconds()} s. A good time is ${formatMs(inc.par_s * 1000)}.` }),
       el("p", { class: "result-taps", text: s.wrongTaps === 0 ? "No wrong taps." : `${taps}.` }),
       el("p", { class: `verdict ${fixOk ? "is-pass" : "is-fail"}`, text: fixOk ? "Your fix is the one that works." : "That fix does not stop it. The one that works is marked." }),
       el("div", { class: "row-commit" }, again));

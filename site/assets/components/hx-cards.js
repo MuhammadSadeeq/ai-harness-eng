@@ -4,9 +4,11 @@
 // Session: the due cards, then the new cards, at most 20. A right answer moves a card up a box; a miss
 // returns it to box 1 and it comes back later in the same session. Boxes live in
 // store.state.cards[<card id>] = {box, due, seen, last}. Evidence "cards" when a session ends.
-// Keys: Space shows the answer on the self-graded types, 1 is Again, 2 is Got it (a visible line says so).
+// Recall first: a self-graded card shows its front and a primary Show answer key; the back and the grade
+// keys come after the reveal. Keys: Space or Enter shows the answer on the self-graded types, 1 is Again,
+// 2 is Got it (a visible line says so).
 import { HxElement } from "./lib/hx-element.js";
-import { getContent, getCourse } from "./lib/data.js";
+import { getContent, getCourseCore } from "./lib/data.js";
 import {
   localToday, addDays, grade as gradeCard, stored, sessionQueue, sessionSummary, cardProblem,
   seedOf, shuffleAway, familyChoices, jsonRows, pointerGet,
@@ -15,7 +17,7 @@ import {
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
 const SELF_GRADED = new Set(["term", "wire-question"]);
-const KEY_LINE = "Space shows the answer. 1 is Again, 2 is Got it.";
+const KEY_LINE = "Space or Enter shows the answer. 1 is Again, 2 is Got it.";
 const RIGHT = "Right.";
 const NOT_QUITE = "Not quite.";
 let uidCount = 0;
@@ -60,7 +62,7 @@ export class HxCards extends HxElement {
   async setup() {
     const src = this.getAttribute("src");
     if (!src) throw new Error("hx-cards needs src");
-    const [cards, course] = await Promise.all([getContent("cards", src), getCourse()]);
+    const [cards, course] = await Promise.all([getContent("cards", src), getCourseCore()]);
     if (!Array.isArray(cards) || cards.length === 0) throw new Error("hx-cards: no cards");
     const wires = [...course.wires].sort((a, b) => a.n - b.n);
     const wireIds = wires.map((wire) => wire.id);
@@ -244,8 +246,10 @@ export class HxCards extends HxElement {
     if (s.done) return;
     const card = this.cards.get(this.currentId());
     if (!SELF_GRADED.has(card.type)) return;
-    if (event.key === " " && !s.reveal) {
-      if (event.target instanceof HTMLButtonElement || event.target instanceof HTMLInputElement) return;
+    if ((event.key === " " || event.key === "Enter") && !s.reveal) {
+      // A button or link under focus keeps its own key (Enter clicks it; Space presses it).
+      if (event.target instanceof HTMLButtonElement || event.target instanceof HTMLInputElement
+        || event.target instanceof HTMLAnchorElement) return;
       event.preventDefault();
       this.setState({ reveal: true });
     } else if ((event.key === "1" || event.key === "2") && s.reveal) {
@@ -502,7 +506,18 @@ export class HxCards extends HxElement {
     this.setState({});
     const initial = this.queue.length;
     if (initial === 0) return false;
+    // A restored or fresh deck starts on a front, never on a back.
+    if (this.state.reveal) return false;
     const first = this.queue[0];
+    // Recall first: a self-graded front shows Show answer as the primary key and no back; Enter on the
+    // front reveals it, as Space does.
+    if (SELF_GRADED.has(this.cards.get(first).type)) {
+      const show = this.ui.querySelector('[data-key="show"]');
+      const front = this.ui.querySelector(".card-front");
+      if (!show || !show.classList.contains("key-primary") || this.ui.querySelector(".card-back") || !front) return false;
+      front.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+      if (!this.state.reveal || !this.ui.querySelector(".card-back")) return false;
+    }
     let missed = false;
     for (let steps = 0; !this.state.done; steps += 1) {
       if (steps > 100) return false;
