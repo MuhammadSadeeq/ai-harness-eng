@@ -11,8 +11,8 @@ import {
   turnCount, turnEvents, stepText, SCENARIO_CODE, taggedModules,
 } from "./lib/board-tags.js";
 import { formatInt, plural } from "./lib/format.js";
+import { localToday } from "./lib/leitner.js";
 
-const TODAY = () => new Date().toISOString().slice(0, 10);
 const HOP_MS = 300;
 const STATUS_WORD = { done: "done", started: "started", todo: "not started" };
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()));
@@ -113,7 +113,7 @@ export class HxClock extends HxElement {
     const board = preview
       ? learnerBoard(this.course, { modules: Object.fromEntries(preview.map((id) => [id, { status: "done" }])) })
       : learnerBoard(this.course, doc);
-    const due = preview ? {} : dueByWire(this.course, doc?.cards, TODAY());
+    const due = preview ? {} : dueByWire(this.course, doc?.cards, localToday());
     const spokes = {};
     for (const wire of this.wires) {
       const tags = board.byWire[wire.id];

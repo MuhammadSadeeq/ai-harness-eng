@@ -2,8 +2,14 @@
 // course map's open state (open on desktop, a drawer below 1100 px).
 import { dueCards } from "./pure.js";
 
-export function todayIso(now = new Date()) {
-  return now.toISOString().slice(0, 10);
+/**
+ * The learner's local calendar date as YYYY-MM-DD. offsetMinutes is the zone's offset east of UTC; by default it is
+ * the machine's zone, so the date is the one the learner sees on their clock. Tests pass an offset.
+ */
+export function todayIso(now = new Date(), offsetMinutes = -now.getTimezoneOffset()) {
+  const local = new Date(now.getTime() + offsetMinutes * 60000);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${local.getUTCFullYear()}-${pad(local.getUTCMonth() + 1)}-${pad(local.getUTCDate())}`;
 }
 
 export function mountChrome(store, doc = document) {
