@@ -409,6 +409,7 @@ hx-clock { display: block; }
 .map-modules .module-label { flex: 1; min-width: 0; }
 .map-modules a.module-label { color: var(--hx-ink); text-decoration: underline; text-underline-offset: 3px; }
 .soon { flex: none; padding: 0 var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-chip); font: 600 var(--fs-small)/1.6 var(--font-sans); color: var(--hx-ink-2); white-space: nowrap; }
+.start-mark { flex: none; padding: 0 var(--sp-2); border: 2px solid var(--hx-ink); border-radius: var(--r-chip); font: 600 var(--fs-small)/1.6 var(--font-sans); color: var(--hx-ink); white-space: nowrap; }
 .footer a { display: inline-flex; align-items: center; min-height: 44px; }
 
 /* Module pages (BP-2.1, DESIGN §6.3): the header, the beat strip, the reading column, margin notes, the law and asides */

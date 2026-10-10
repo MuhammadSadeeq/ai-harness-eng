@@ -31,6 +31,9 @@ hx-clock .spoke-group .tag-text { fill: var(--hx-ink); font-weight: 600; }
 hx-clock .spoke-group .tag-group[data-added="true"] .tag-box { stroke-width: 2.5; }
 hx-clock .tag-group.plug-in { animation: plug-in var(--dur-base) var(--ease-signal) both; }
 hx-clock .spoke-group:has(> .tag-group[data-added="true"]) .spoke { stroke-width: 5; }
+/* a bug tag (ENGINE A5.4, A6.4, A7.2): the warning mark is a shape, so the meaning is not colour alone */
+hx-clock .bug-triangle { fill: var(--hx-panel); stroke: var(--hx-ink); stroke-width: 1.5; stroke-linejoin: round; }
+hx-clock .bug-bang { fill: none; stroke: var(--hx-ink); stroke-width: 1.6; stroke-linecap: round; }
 @keyframes plug-in { from { transform: translate(22px, -16px); opacity: 0; } to { transform: none; opacity: 1; } }
 hx-clock .clock-legend { margin-top: var(--sp-2); }
 @media (min-width: 520px) { hx-clock .clock-legend { display: none; } }

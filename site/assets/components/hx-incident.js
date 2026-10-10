@@ -7,6 +7,7 @@ import { getTape, getBoard, getFacts, getCourse } from "./lib/data.js";
 import { runTrial, createPrng } from "../sim/index.js";
 import { el, glyph, WIRES, repeats, transcriptList, laneStrip, ensureSprite } from "./lib/transcript.js";
 import { formatMs, plural } from "./lib/format.js";
+import { validHunt } from "./lib/restore.js";
 
 /** The three families for the naming step: the right one, then two others, all shuffled by the same PRNG. */
 export function familyOptions(tapeId, correctId, families) {
@@ -53,13 +54,43 @@ export class HxIncident extends HxElement {
       noteAt: new Map(inc.notes.map((n) => [n.seq, n.text])),
     };
     this.resetHunt();
+    // B2 round 2: a finished hunt is restored from the store with no evidence (it was credited once already).
+    const saved = validHunt(this.store?.state?.hunts?.[tapeId], inc,
+      course.failure_families.map((f) => f.id), WIRES.map((w) => w.id), inc.fixes.length);
+    if (saved) this.restoreFinished(saved);
     this.clockStart = this.hasAttribute("locked") ? null : performance.now();
+  }
+
+  /** The hunt as it finished: found, the family and wire named, the fix chosen, the result line. */
+  restoreFinished(saved) {
+    this.state = {
+      ...this.state,
+      started: true,
+      found: saved.found,
+      foundAt: null,
+      marks: new Map([[saved.found, { kind: "found", word: "found" }]]),
+      familyPick: saved.familyPick,
+      wirePick: saved.wirePick,
+      named: true,
+      fixPick: saved.fixPick,
+      fixed: true,
+      dispatched: true,
+      wrongTaps: saved.wrongTaps,
+      seconds: saved.seconds,
+    };
+  }
+
+  /** "none" before the hunt starts, "started" while it runs, "finished" once the fix is committed (COMPONENTS §10). */
+  huntStage() {
+    if (!this.state || !this.state.started) return "none";
+    return this.state.fixed ? "finished" : "started";
   }
 
   resetHunt() {
     this.state = {
       wrongTaps: 0, wrongRows: new Set(), marks: new Map(), feedback: new Map(), found: null, foundAt: null,
       familyPick: null, wirePick: null, named: false, fixPick: null, fixed: false, dispatched: false, focusRow: null,
+      started: false, seconds: null,
     };
   }
 
@@ -85,6 +116,11 @@ export class HxIncident extends HxElement {
   tap(index) {
     const s = this.state;
     if (s.found !== null || this.hasAttribute("locked")) return;
+    // COMPONENTS §10: the hunt starts on the first allowed tap; the check that waits on it may reveal now.
+    if (!s.started) {
+      this.state = { ...s, started: true };
+      this.dispatchEvent(new CustomEvent("hx-result", { bubbles: true, detail: { source: "incident", stage: "start" } }));
+    }
     const { inc, noteAt } = this.model;
     const marks = new Map(s.marks);
     const feedback = new Map(s.feedback);
@@ -159,10 +195,14 @@ export class HxIncident extends HxElement {
     const { inc } = this.model;
     const seconds = this.seconds();
     const fixOk = this.state.fixPick === inc.correct_fix;
-    this.setState({ dispatched: true });
+    this.setState({ dispatched: true, seconds });
+    this.saveHunt({
+      found: this.state.found, wrong_taps: this.state.wrongTaps, seconds,
+      family_pick: this.state.familyPick, wire_pick: this.state.wirePick, fix_pick: this.state.fixPick,
+    });
     this.dispatchEvent(new CustomEvent("hx-result", {
       bubbles: true,
-      detail: { source: "incident", wrong_taps: this.state.wrongTaps, seconds, fix_ok: fixOk },
+      detail: { source: "incident", stage: "end", wrong_taps: this.state.wrongTaps, seconds, fix_ok: fixOk },
     }));
     this.evidence("incident", {
       tape: this.model.tapeId, wrong_taps: this.state.wrongTaps, seconds,
@@ -173,6 +213,36 @@ export class HxIncident extends HxElement {
   seconds() {
     const start = this.clockStart ?? this.state.foundAt;
     return Math.round(((this.state.foundAt ?? start) - start) / 1000);
+  }
+
+  /** Writes the finished hunt to the store (the learner's own UI state). Skipped while a self-test runs. */
+  saveHunt(record) {
+    if (this.testing) return;
+    try {
+      this.store?.update((doc) => {
+        doc.hunts ??= {};
+        doc.hunts[this.model.tapeId] = record;
+      });
+    } catch {
+      // The store refused the write; the result still shows for this visit.
+    }
+  }
+
+  /** Clears the saved hunt and starts again on the same run. The evidence already given stays as it was. */
+  huntAgain() {
+    if (!this.testing) {
+      try {
+        this.store?.update((doc) => {
+          if (doc.hunts) delete doc.hunts[this.model.tapeId];
+        });
+      } catch {
+        // Nothing to clear if the store refused.
+      }
+    }
+    this.resetHunt();
+    this.clockStart = this.hasAttribute("locked") ? null : performance.now();
+    this.setState({});
+    this.live("Hunt again: tap the first event where things went wrong.");
   }
 
   // ---------- render (everything derived from the state) ----------
@@ -197,6 +267,7 @@ export class HxIncident extends HxElement {
     });
     const strip = laneStrip({ events, onPick: (i) => this.focusRow(i) });
     const pieces = [el("h3", { class: "incident-title", text: "Tap the first event where things went wrong." })];
+    pieces.push(el("p", { class: "hunt-keys", text: "With a keyboard: arrow keys move between events, Enter picks one." }));
     if (locked) pieces.push(el("p", { class: "gate", text: "Make your prediction above to unlock the run." }));
     pieces.push(el("div", { class: "lanes-area" }, strip));
     pieces.push(el("div", { class: "transcript-wrap", role: "region", "aria-label": "Run transcript" }, list));
@@ -277,10 +348,13 @@ export class HxIncident extends HxElement {
     const { inc } = this.model;
     const taps = plural(s.wrongTaps, "wrong tap", "wrong taps");
     const fixOk = s.fixPick === inc.correct_fix;
+    const again = el("button", { class: "key", type: "button", "data-key": "hunt-again", text: "Hunt again" });
+    again.addEventListener("click", () => this.huntAgain());
     return el("div", { class: "result", role: "status" },
-      el("p", { class: "result-time", text: `Found in ${this.seconds()} s. Par is ${formatMs(inc.par_s * 1000)}.` }),
+      el("p", { class: "result-time", text: `Found in ${s.seconds ?? this.seconds()} s. Par is ${formatMs(inc.par_s * 1000)}.` }),
       el("p", { class: "result-taps", text: s.wrongTaps === 0 ? "No wrong taps." : `${taps}.` }),
-      el("p", { class: `verdict ${fixOk ? "is-pass" : "is-fail"}`, text: fixOk ? "Your fix is the one that works." : "That fix does not stop it. The one that works is marked." }));
+      el("p", { class: `verdict ${fixOk ? "is-pass" : "is-fail"}`, text: fixOk ? "Your fix is the one that works." : "That fix does not stop it. The one that works is marked." }),
+      el("div", { class: "row-commit" }, again));
   }
 
   // ---------- focus ----------
@@ -340,6 +414,15 @@ export class HxIncident extends HxElement {
   }
 
   async selfTest() {
+    this.testing = true;
+    try {
+      return await this.runSelfTest();
+    } finally {
+      this.testing = false;
+    }
+  }
+
+  async runSelfTest() {
     this.resetHunt();
     this.render();
     const { inc, events } = this.model;

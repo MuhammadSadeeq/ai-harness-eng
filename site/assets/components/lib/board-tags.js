@@ -18,6 +18,15 @@ export const SCENARIO_WIRE = Object.freeze({
   verify_gate: "verify",
   rules_file: "control",
   redact: "observe",
+  // ENGINE A5.4, A6.4, A6.5, A7 (the board labels those amendments give).
+  history: "loop",
+  first_block_only: "loop",
+  compaction: "context",
+  cache: "context",
+  system_clock: "context",
+  validate_inputs: "tools",
+  split_results: "tools",
+  effort: "control",
 });
 
 /** One label per ENGINE §9 event kind (the kinds the engine emits). */
@@ -121,8 +130,26 @@ export function tagLabel(name, params) {
     case "verify_gate": return "verify gate";
     case "rules_file": return "rules file";
     case "redact": return "redact";
+    // ENGINE A5.4: `history` with resend false is a bug on purpose; with resend true (or absent) it draws nothing.
+    case "history": return params.resend === false ? "history not resent" : null;
+    case "first_block_only": return "reads the first block only";
+    case "compaction": return "compaction";
+    case "cache": return "cache-friendly prefix";
+    case "system_clock": return "time at the top of the prompt";
+    case "validate_inputs": return "schema checks";
+    case "split_results": return "results split across messages";
+    case "effort": return `effort ${params.level}`;
     default: throw new Error(`unknown board module: ${name}`);
   }
+}
+
+/**
+ * A harness bug on purpose (ENGINE A5.4, A6.4, A7.2; the fix is removing the module). These tags are drawn with the
+ * warning mark and say "bug" in their accessible name.
+ */
+export function tagIsBug(name, params) {
+  if (name === "history") return params.resend === false;
+  return name === "first_block_only" || name === "system_clock" || name === "split_results";
 }
 
 /** A scenario board's modules on their wires. Throws on a module the map does not know. */
@@ -131,7 +158,9 @@ export function scenarioBoard(board) {
   for (const [name, params] of Object.entries(board.modules ?? {})) {
     const wire = SCENARIO_WIRE[name];
     if (!wire) throw new Error(`unknown board module: ${name}`);
-    (byWire[wire] ??= []).push({ id: name, label: tagLabel(name, params) });
+    const label = tagLabel(name, params);
+    if (label === null) continue; // `history` with resend true draws nothing (ENGINE A5.5c)
+    (byWire[wire] ??= []).push({ id: name, label, bug: tagIsBug(name, params) });
   }
   return { byWire, count: Object.keys(board.modules ?? {}).length };
 }
@@ -187,6 +216,8 @@ export function stepText(event, course) {
 export const SCENARIO_CODE = Object.freeze({
   turn_limit: "TL", token_budget: "TB", loop_detect: "LD", close_books: "CB", output_cap: "OC", retry: "RT",
   breaker: "BR", permissions: "PM", sandbox: "SB", verify_gate: "VG", rules_file: "RF", redact: "RD",
+  history: "HR", first_block_only: "FB", compaction: "CP", cache: "CA", system_clock: "SC", validate_inputs: "VI",
+  split_results: "SR", effort: "EF",
 });
 
 /** The name of each scenario module, for the key that explains a code ("TL turn limit"). */
@@ -203,6 +234,14 @@ export const SCENARIO_NAME = Object.freeze({
   verify_gate: "verify gate",
   rules_file: "rules file",
   redact: "redact",
+  history: "history",
+  first_block_only: "first block only",
+  compaction: "compaction",
+  cache: "cache",
+  system_clock: "system clock",
+  validate_inputs: "input checks",
+  split_results: "split results",
+  effort: "effort",
 });
 
 /** The title of the module that comes in on a wire, from course.json ("Permissions" for C9). */

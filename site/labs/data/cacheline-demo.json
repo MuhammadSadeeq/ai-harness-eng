@@ -1,0 +1,66 @@
+{
+  "calls": 6,
+  "call_gap_ms": 30000,
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "cache_rules": {
+    "min_tokens": 512,
+    "ttl_ms": 300000,
+    "model_label": "Sonnet 5.5",
+    "facts": {
+      "price": "models.sonnet-5-5-price",
+      "minimum": "models.cache-min-512-tokens",
+      "ttl": "api.cache-ttl-default-5m-and-1h"
+    }
+  },
+  "blocks": [
+    {
+      "id": "tools",
+      "label": "Tool definitions",
+      "part": "tools",
+      "changes": "never",
+      "text": "Tool definitions for this session.\nTool 1: search_files. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 2: read_file. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 3: write_file. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 4: run_tests. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 5: git_status. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 6: git_diff. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 7: grep_code. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 8: list_dir. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 9: fetch_url. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 10: parse_log. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 11: open_ticket. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 12: summarize_text. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 13: search_files. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 14: read_file. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 15: write_file. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 16: run_tests. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 17: git_status. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it.\nTool 18: git_diff. Input: a JSON object with the fields the tool needs, each typed and described. It returns the result as text, and an error string when the call fails. Use it only for the job its description names, and check the result before you act on it."
+    },
+    {
+      "id": "system",
+      "label": "System prompt",
+      "part": "system",
+      "changes": "never",
+      "text": "You are a coding assistant working in one repository for one team.\nRule 1: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 2: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 3: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 4: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 5: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 6: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 7: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 8: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 9: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 10: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 11: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 12: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 13: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session.\nRule 14: answer in plain language, keep the work small and reversible, say what you checked and what you did not, and never claim a test passed unless you ran it in this session."
+    },
+    {
+      "id": "clock",
+      "label": "Clock line",
+      "part": "system",
+      "changes": "every_call",
+      "text": "Session clock, call {t}: use it when a date or a deadline matters."
+    },
+    {
+      "id": "rules",
+      "label": "Project rules file",
+      "part": "system",
+      "changes": "never",
+      "text": "Project rules file.\nProject note 1: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 2: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 3: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 4: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 5: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 6: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 7: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 8: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 9: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 10: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 11: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG.\nProject note 12: the parser lives in src/parse, its tests in tests/parse, and changes to the public API need a version bump and a short note in CHANGELOG."
+    },
+    {
+      "id": "task",
+      "label": "The task",
+      "part": "messages",
+      "changes": "never",
+      "text": "Task: fix the parser bug that fails on the 40 KB test log, without changing the public API."
+    },
+    {
+      "id": "history",
+      "label": "Conversation so far",
+      "part": "messages",
+      "changes": "grows",
+      "turn_text": "the model read a file and ran the tests.",
+      "text": "Conversation so far:"
+    }
+  ],
+  "invalidator": {
+    "block": "clock",
+    "why": "The clock line names a different call every time. A block that changes on every call breaks the cache wherever it sits in the request, so everything after it misses. Stamp it into the new turn instead: the time then joins the newest message, which never changes again."
+  }
+}

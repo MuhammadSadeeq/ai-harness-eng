@@ -141,7 +141,7 @@ export class HxClock extends HxElement {
       const tags = byWire[wire.id] ?? [];
       spokes[wire.id] = {
         name: `${wire.name}, ${wire.clock} o'clock`,
-        tags: tags.map((t) => ({ code: SCENARIO_CODE[t.id] ?? t.id, text: t.label, id: t.id, name: SCENARIO_NAME[t.id] ?? t.id })),
+        tags: tags.map((t) => ({ code: SCENARIO_CODE[t.id] ?? t.id, text: t.label, id: t.id, name: SCENARIO_NAME[t.id] ?? t.id, label: t.label, bug: t.bug === true })),
         sub: tags.length ? tags.map((t) => t.label).join(", ") : "not on this board",
         muted: tags.length === 0,
       };

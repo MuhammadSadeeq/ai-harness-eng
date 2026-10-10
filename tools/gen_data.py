@@ -4,7 +4,8 @@
 Usage: python tools/gen_data.py [--check]
 
 Writes (D-020): site/data/course.json, facts.json (verified facts only), terms.json,
-site/data/{cards,say,checks}/<ID>.json, site/data/katas/<id>.json (from katas/<id>/), and
+site/data/{cards,say,checks}/<ID>.json, site/data/placement/<ID>.json
+(from content/<ID>/placement.yaml), site/data/katas/<id>.json (from katas/<id>/), and
 byte-for-byte copies of the scenario tapes and boards (site/data/scenarios/<id>.json,
 site/data/scenarios/boards/<id>.json). Rewrites only the text
 between the counts markers in README.md. Generated JSON is written as
@@ -85,6 +86,109 @@ def _yaml_entries(path: Path, plan: Plan) -> list[Any] | None:
         plan.problems.append(Problem(shown, 0, "must be a YAML list"))
         return None
     return data
+
+
+PLACEMENT_KEYS = ("questions", "rules", "start")
+
+
+def _placement(path: Path, course: dict[str, Any], plan: Plan) -> dict[str, Any] | None:
+    """A placement file (BP-3.1b §1): questions, rules, start. None on a problem, each named."""
+    shown = display_path(path)
+    data, problems = load_yaml_file(path, shown)
+    if problems:
+        plan.problems.extend(problems)
+        return None
+    found: list[Problem] = []
+
+    def bad(message: str) -> None:
+        found.append(Problem(shown, 0, message))
+
+    parts = {p["id"] for p in course.get("parts", []) if isinstance(p, dict)}
+    modules = {m["id"] for m in course.get("modules", []) if isinstance(m, dict)}
+    if not isinstance(data, dict):
+        bad("must be a mapping with questions, rules and start")
+    else:
+        for key in sorted(set(data) - set(PLACEMENT_KEYS)):
+            bad(f"unknown key: {key}")
+        for key in PLACEMENT_KEYS:
+            if key not in data:
+                bad(f"missing key: {key}")
+        questions = data.get("questions")
+        ids: set[str] = set()
+        per_part: dict[str, int] = {}
+        if not isinstance(questions, list) or not questions:
+            bad("questions must be a non-empty list")
+        else:
+            for number, q in enumerate(questions, start=1):
+                where = f"question {number}"
+                if not isinstance(q, dict):
+                    bad(f"{where} must be a mapping")
+                    continue
+                qid = q.get("id")
+                if not isinstance(qid, str) or not qid or qid in ids:
+                    bad(f"{where} needs a unique id")
+                else:
+                    ids.add(qid)
+                if q.get("part") not in parts:
+                    bad(f"{where} part {q.get('part')!r} is not a course part")
+                else:
+                    per_part[q["part"]] = per_part.get(q["part"], 0) + 1
+                for text_key in ("question", "why"):
+                    if not isinstance(q.get(text_key), str) or not q.get(text_key, "").strip():
+                        bad(f"{where} needs a {text_key}")
+                options = q.get("options")
+                if not isinstance(options, list) or len(options) < 2:
+                    bad(f"{where} needs at least two options")
+                    continue
+                rights = 0
+                for option in options:
+                    if (
+                        not isinstance(option, dict)
+                        or not isinstance(option.get("text"), str)
+                        or not option["text"]
+                    ):
+                        bad(f"{where} has an option without text")
+                    elif option.get("right") is True:
+                        rights += 1
+                    elif "right" in option and option["right"] is not False:
+                        bad(f"{where} option right must be true or false")
+                if rights != 1:
+                    bad(f"{where} needs exactly one option with right: true")
+        rules = data.get("rules")
+        if not isinstance(rules, list):
+            bad("rules must be a list (it may be empty)")
+        else:
+            for number, rule in enumerate(rules, start=1):
+                where = f"rule {number}"
+                if not isinstance(rule, dict):
+                    bad(f"{where} must be a mapping")
+                    continue
+                part = rule.get("part")
+                if part not in parts:
+                    bad(f"{where} part {part!r} is not a course part")
+                elif part not in per_part:
+                    bad(f"{where} part {part} has no questions")
+                of, skip = rule.get("of"), rule.get("skip_if_right")
+                if not isinstance(of, int) or isinstance(of, bool) or of < 1:
+                    bad(f"{where} of must be a whole number of at least 1")
+                elif part in per_part and of != per_part[part]:
+                    bad(f"{where} of is {of}, but part {part} has {per_part[part]} questions")
+                if (
+                    not isinstance(skip, int)
+                    or isinstance(skip, bool)
+                    or skip < 0
+                    or (isinstance(of, int) and skip > of)
+                ):
+                    bad(f"{where} skip_if_right must be a whole number from 0 to of")
+                if rule.get("start") not in modules:
+                    bad(f"{where} start {rule.get('start')!r} is not a course module")
+        if data.get("start") not in modules:
+            bad(f"start {data.get('start')!r} is not a course module")
+    if found:
+        plan.problems.extend(found)
+        return None
+    value: dict[str, Any] = data
+    return value
 
 
 def _facts(root: Path, plan: Plan) -> dict[str, Any] | None:
@@ -334,6 +438,14 @@ def build_plan(root: Path) -> Plan:
                     plan.skipped.add(rel)
                 else:
                     plan.outputs.append(Output(rel, dump_json(entries)))
+            placement = folder / "placement.yaml"
+            if placement.is_file() and course is not None:
+                rel = f"site/data/placement/{folder.name}.json"
+                value = _placement(placement, course, plan)
+                if value is None:
+                    plan.skipped.add(rel)
+                else:
+                    plan.outputs.append(Output(rel, dump_json(value)))
     _katas(root, plan)
     _steps(root, plan)
     _scenarios(root, plan)

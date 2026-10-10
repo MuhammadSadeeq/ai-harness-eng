@@ -1,0 +1,31 @@
+/* hx-placement (BP-3.1b §1): one question at a time, the suggestion, per-part marks and the words why. Tokens only. */
+hx-placement { display: block; margin: var(--sp-5) 0; }
+hx-placement .hx-ui { display: grid; gap: var(--sp-3); }
+hx-placement .placement-note { margin: 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+hx-placement .placement-count { margin: 0; font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); }
+hx-placement .placement-question { margin: 0; padding: 0; border: 0; min-width: 0; }
+hx-placement .placement-question legend { padding: 0; margin: 0 0 var(--sp-3); font: 400 var(--fs-body)/1.4 var(--font-serif); color: var(--hx-ink); }
+hx-placement .placement-options { display: grid; gap: var(--sp-1); margin: 0; padding: 0; list-style: none; }
+hx-placement .placement-choice { display: flex; align-items: center; gap: var(--sp-2); min-height: 44px; padding: var(--sp-2) var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 400 var(--fs-ui)/1.4 var(--font-sans); cursor: pointer; }
+hx-placement .placement-choice input[type="radio"] { appearance: none; flex: none; width: 20px; height: 20px; margin: 0; border: 2px solid var(--hx-ink-2); border-radius: 50%; background: var(--hx-panel); }
+hx-placement .placement-choice input[type="radio"]:checked { border-color: var(--hx-ink); background: radial-gradient(circle, var(--hx-ink) 0 5px, transparent 6px); }
+hx-placement .placement-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+hx-placement .placement-actions button { min-height: 44px; min-width: 44px; padding: 0 var(--sp-4); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 600 var(--fs-ui) var(--font-sans); cursor: pointer; }
+hx-placement .placement-actions button[aria-disabled="true"] { color: var(--hx-ink-2); cursor: not-allowed; }
+hx-placement .placement-next, hx-placement .placement-again { background: var(--hx-ink); color: var(--hx-paper); border-color: var(--hx-ink); }
+hx-placement .placement-next[aria-disabled="true"] { background: var(--hx-panel); color: var(--hx-ink-2); border-color: var(--hx-rule-strong); }
+hx-placement .placement-title { margin: 0; font: 400 var(--fs-h3, var(--fs-body))/1.2 var(--font-serif); color: var(--hx-ink); }
+hx-placement .placement-suggest { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+hx-placement .placement-suggest a { color: var(--hx-ink); text-underline-offset: 3px; }
+hx-placement .placement-parts { display: grid; gap: var(--sp-2); }
+hx-placement .placement-part { display: grid; gap: var(--sp-1); }
+hx-placement .placement-part-line { margin: 0; font: 600 var(--fs-small) var(--font-sans); color: var(--hx-ink); }
+hx-placement .placement-bar { height: 8px; border-radius: 4px; background: var(--hx-rule); overflow: hidden; }
+hx-placement .placement-bar span { display: block; height: 100%; background: var(--hx-ink); }
+hx-placement .placement-whys { display: grid; gap: var(--sp-1); }
+hx-placement .placement-why { padding: var(--sp-2) var(--sp-3); border: 1px solid var(--hx-rule); border-radius: var(--r-btn); background: var(--hx-panel); }
+hx-placement .placement-why summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font: 600 var(--fs-small) var(--font-sans); color: var(--hx-ink); }
+hx-placement .placement-why p { margin: 0 0 var(--sp-1); font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+hx-placement .placement-skip p { margin: 0 0 var(--sp-1); font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+hx-placement .placement-skip ul { margin: 0; padding-left: var(--sp-5); font: 400 var(--fs-ui)/1.5 var(--font-sans); color: var(--hx-ink); }
+hx-placement :focus-visible { outline: 3px solid var(--hx-ink); outline-offset: 3px; }

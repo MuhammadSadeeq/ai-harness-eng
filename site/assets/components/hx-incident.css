@@ -31,3 +31,6 @@
 
 .pick-line { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
 .incident .choice-text .choice-mark { display: block; margin: 0 0 var(--sp-1); }
+
+/* The keyboard line under the hunt instruction (B2 round 2): visible to everyone, not only assistive tech. */
+.incident .hunt-keys { margin: 0 0 var(--sp-2); font: 500 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }

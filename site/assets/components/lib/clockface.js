@@ -85,18 +85,32 @@ function glyphUse(name, x, y, size) {
 }
 
 /** A tag: a box on its spoke. Narrow faces show the code; wide faces show the label, wrapped to two lines. */
+/** The warning mark of a bug tag: a triangle with an exclamation mark, so the meaning is a shape, not a colour. */
+function warningMark(x, y) {
+  const mark = svgEl("g", { class: "bug-mark", "aria-hidden": "true" });
+  mark.append(svgEl("path", { class: "bug-triangle", d: `M${x + 5} ${y} L${x + 10} ${y + 10} L${x} ${y + 10} Z` }));
+  mark.append(svgEl("path", { class: "bug-bang", d: `M${x + 5} ${y + 3.5} V${y + 6.8} M${x + 5} ${y + 8.1} V${y + 8.3}` }));
+  return mark;
+}
+
 function tagBox(group, x, y, parts, cls, added, W) {
   const lines = parts.lines;
   const widest = Math.max(...lines.map((l) => l.length));
-  const w = Math.max(36, Math.round(widest * CHAR_TAG + 16));
+  const room = parts.bug ? 14 : 0; // the warning mark sits at the box's left edge
+  const w = Math.max(36, Math.round(widest * CHAR_TAG + 16)) + room;
   const h = lines.length * 17 + 8;
   const left = Math.min(W - 4 - w, Math.max(4, x - w / 2));
   const top = y - h / 2;
   const tag = svgEl("g", { class: `tag-group ${cls}`, "data-tag": parts.code, "data-added": added ? "true" : "false" });
+  if (parts.bug) {
+    tag.setAttribute("role", "img");
+    tag.setAttribute("aria-label", `bug: ${parts.label ?? lines.join(" ")}`);
+  }
   tag.append(svgEl("rect", { class: "tag-box", x: left, y: top, width: w, height: h, rx: 6 }));
+  if (parts.bug) tag.append(warningMark(left + 3, top + (h - 10) / 2));
   lines.forEach((line, i) => {
     const text = svgEl("text", {
-      class: "tag-text", x: left + w / 2, y: top + 15 + i * 17, "text-anchor": "middle", "font-size": 14,
+      class: "tag-text", x: left + room + (w - room) / 2, y: top + 15 + i * 17, "text-anchor": "middle", "font-size": 14,
     });
     text.textContent = line;
     tag.append(text);
@@ -158,7 +172,8 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
       spoke.tags.slice(0, 2).forEach((tag) => {
         const [tx, ty] = pos(wire.angle, along);
         codes.push({ code: tag.code, name: tag.name ?? tag.code });
-        const height = tagBox(group, tx, ty, { code: tag.code, lines: [tag.code] }, group.querySelector(".tag-group") ? "tag-extra" : "tag-main", Boolean(tag.added), W);
+        const parts = { code: tag.code, lines: [tag.code], bug: tag.bug === true, label: tag.label ?? tag.text };
+        const height = tagBox(group, tx, ty, parts, group.querySelector(".tag-group") ? "tag-extra" : "tag-main", Boolean(tag.added), W);
         along += height + 6;
       });
     } else if (spoke.tags.length > 0) {
@@ -171,7 +186,7 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
       const labelWidth = Math.max(...lines.map((l) => l.length)) * CHAR_TAG + 16;
       const fits = labelWidth <= room;
       if (!fits) codes.push({ code: tag.code, name: tag.name ?? tag.code });
-      const parts = { code: tag.code, lines: fits ? lines : [tag.code] };
+      const parts = { code: tag.code, lines: fits ? lines : [tag.code], bug: tag.bug === true, label: tag.label ?? tag.text };
       const [tx, ty] = pos(wire.angle, hubR + 4 + room / 2);
       tagBox(group, tx, ty, parts, "tag-main", Boolean(tag.added), W);
     }

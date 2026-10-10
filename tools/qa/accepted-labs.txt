@@ -22,3 +22,6 @@ labs/step.html
 labs/module.html
 labs/stack.html
 labs/outage.html
+labs/desk.html
+labs/cacheline.html
+labs/placement.html

@@ -1,0 +1,71 @@
+{
+  "demo": true,
+  "questions": [
+    {
+      "id": "a-1",
+      "part": "A",
+      "question": "Does a model give the same answer every time it gets the same prompt?",
+      "options": [
+        {"text": "Yes, with the same prompt it always says the same thing"},
+        {"text": "Not necessarily: sampling makes answers vary from run to run", "right": true}
+      ],
+      "why": "Sampling makes answers vary, so one good run proves little about the next one."
+    },
+    {
+      "id": "a-2",
+      "part": "A",
+      "question": "What does a model remember between two calls?",
+      "options": [
+        {"text": "Everything from the last call"},
+        {"text": "Only what the harness sends in this call", "right": true}
+      ],
+      "why": "A model is stateless. Each call carries the whole prompt, so the harness keeps the history and resends it."
+    },
+    {
+      "id": "a-3",
+      "part": "A",
+      "question": "What is a context window?",
+      "options": [
+        {"text": "The number of messages in a chat"},
+        {"text": "The most tokens the model can read in one call", "right": true},
+        {"text": "A browser tab that holds the chat"}
+      ],
+      "why": "Everything in one call, the prompt and the tools included, has to fit inside the window."
+    },
+    {
+      "id": "b-1",
+      "part": "B",
+      "question": "What makes a chatbot into an agent?",
+      "options": [
+        {"text": "It answers faster"},
+        {"text": "It asks for tools, the harness runs them, and it calls the model again", "right": true}
+      ],
+      "why": "The model asks; the harness acts; the loop goes on until something stops it."
+    },
+    {
+      "id": "b-2",
+      "part": "B",
+      "question": "When should an agent loop stop?",
+      "options": [
+        {"text": "Only when the model says it is done"},
+        {"text": "When the model is done, or a limit stops it first", "right": true}
+      ],
+      "why": "A model saying it is done is a claim. The harness needs limits too: a turn limit and a budget."
+    },
+    {
+      "id": "b-3",
+      "part": "B",
+      "question": "Who decides whether a requested tool actually runs?",
+      "options": [
+        {"text": "The model"},
+        {"text": "The harness, under its permission rules", "right": true}
+      ],
+      "why": "The model asks for a tool. The harness checks its rules, then runs the tool or refuses it."
+    }
+  ],
+  "rules": [
+    {"part": "A", "skip_if_right": 2, "of": 3, "start": "A1"},
+    {"part": "B", "skip_if_right": 2, "of": 3, "start": "B1"}
+  ],
+  "start": "A1"
+}

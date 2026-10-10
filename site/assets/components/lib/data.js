@@ -37,7 +37,7 @@ export const getTerms = async () => JSON.parse(await fetchText("terms.json"));
  * demo pages, a path ending in .json relative to the page (COMPONENTS.md §11).
  */
 export async function getContent(kind, src) {
-  if (!["cards", "say", "checks"].includes(kind)) throw new Error(`bad content kind: ${kind}`);
+  if (!["cards", "say", "checks", "placement"].includes(kind)) throw new Error(`bad content kind: ${kind}`);
   if (typeof src === "string" && src.endsWith(".json") && !src.includes("//")) {
     const url = new URL(src, document.baseURI).href;
     if (!cache.has(url)) {

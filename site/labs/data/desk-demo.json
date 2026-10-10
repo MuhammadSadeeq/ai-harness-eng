@@ -1,0 +1,22 @@
+{
+  "window": 32000,
+  "turn": 7,
+  "keep": ["goal", "constraint", "decision"],
+  "questions": 20,
+  "items": [
+    { "id": "system", "label": "System prompt", "kind": "system", "tokens": 1600, "needed": true },
+    { "id": "tools", "label": "Tool definitions", "kind": "tools", "tokens": 4200, "needed": false },
+    { "id": "rules", "label": "Project rules file", "kind": "file", "tokens": 2400, "needed": true },
+    { "id": "log", "label": "Test log, 40 KB", "kind": "tool_output", "tokens": 9800, "needed": true, "pointer_tokens": 20 },
+    { "id": "spec", "label": "Design spec", "kind": "file", "tokens": 5200, "needed": true, "summary_tokens": 1100 },
+    { "id": "old", "label": "Old chat turns", "kind": "history", "tokens": 6100, "needed": false }
+  ],
+  "recall": [[0, 96], [50, 94], [80, 86], [100, 74], [120, 50], [150, 20]],
+  "notes": [
+    { "id": "n1", "kind": "goal", "turn": 0, "text": "Ship the parser fix this week.", "item": "spec" },
+    { "id": "n2", "kind": "constraint", "turn": 1, "text": "Do not change the public API.", "item": "rules" },
+    { "id": "n3", "kind": "decision", "turn": 2, "text": "Use the existing tokenizer.", "item": "spec" },
+    { "id": "n4", "kind": "progress", "turn": 4, "text": "Parser passes 38 of 40 cases.", "item": "log" },
+    { "id": "n5", "kind": "file", "turn": 5, "text": "Spec lives in docs/spec.md.", "item": "spec" }
+  ]
+}

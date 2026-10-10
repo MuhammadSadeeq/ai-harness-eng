@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prompt caching, block by block · HARNESSED</title>
+<meta name="description" content="Put the stable parts of a request first, watch the cache read them call after call, and find the block that breaks it.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · prompt caching</p>
+    <h1>Prompt caching, block by block</h1>
+    <p class="lede">The cache reads a prefix that did not change. Order the blocks, watch the hit rate, and find the one that breaks it.</p>
+  </header>
+  <section class="row" aria-labelledby="cl-h">
+    <h2 id="cl-h">Order the request</h2>
+    <hx-cacheline src="data/cacheline-demo.json">
+      <p>The request's blocks, the calls, and what the cache reads and writes.</p>
+    </hx-cacheline>
+  </section>
+</main>
+</body>
+</html>

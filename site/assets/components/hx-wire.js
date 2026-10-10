@@ -6,6 +6,7 @@ import { getTape, getBoard, getFacts } from "./lib/data.js";
 import { runTrial, tokens, pyjson } from "../sim/index.js";
 import { diffMessages } from "./lib/wirediff.js";
 import { formatInt, plural } from "./lib/format.js";
+import { toolUseHits, toolsRange, foldTools } from "./lib/wire-hits.js";
 
 const MARK_PLUS = "M12 5v14M5 12h14";
 const MARK_BANG = "M12 4.5v10M12 19v.5";
@@ -61,6 +62,8 @@ export class HxWire extends HxElement {
       diff: this.hasAttribute("diff"),
       showSystem: false,
       copied: null,
+      hit: -1,
+      toolsOpen: false,
       ver: 0,
     };
   }
@@ -79,7 +82,7 @@ export class HxWire extends HxElement {
     if (name !== "turn") return;
     const turn = Math.min(this.turns, Math.max(1, Math.round(Number(value))));
     if (turn === this.state.turn) return;
-    this.setState({ turn });
+    this.setState({ turn, hit: -1 });
     this.dispatchEvent(new CustomEvent("hx-change", { bubbles: true, detail: { name: "turn", value: turn } }));
   }
 
@@ -250,15 +253,24 @@ export class HxWire extends HxElement {
 
   #wireView(request, response) {
     const wrap = el("div", "wire-json");
+    const texts = { request: JSON.stringify(request, null, 2), response: JSON.stringify(response, null, 2) };
+    const hits = toolUseHits(texts.request, texts.response);
+    const hit = hits.length > 0 && this.state.hit >= 0 ? hits[this.state.hit % hits.length] : null;
+    wrap.append(this.#hitRow(hits, hit));
+    // B2 round 3: the request's tools are one line by default, so the messages sit near the top of the box.
+    const range = toolsRange(texts.request);
+    const label = `${plural(request.tools.length, "definition", "definitions")}, ≈ ${formatInt(tokens(request.tools))} tokens`;
+    const fold = range && !this.state.toolsOpen ? foldTools(texts.request, range, label) : null;
     for (const [name, payload] of [["request", request], ["response", response]]) {
       const section = el("section", "wire-json-part");
       section.append(el("h3", null, name === "request" ? "Request" : "Response"));
-      const text = JSON.stringify(payload, null, 2);
+      const text = texts[name];
       const region = el("div", "wire-json-scroll");
       region.setAttribute("role", "region");
       region.setAttribute("tabindex", "0");
       region.setAttribute("aria-label", `${name === "request" ? "Request" : "Response"} JSON, turn ${this.state.turn}`);
-      region.append(el("pre", "wire-code", text));
+      if (name === "request" && range) section.append(this.#toolsToggle(this.state.toolsOpen));
+      region.append(this.#pre(text, hit, name, name === "request" ? fold : null));
       const copy = el("button", "key", this.state.copied === name ? "Copied" : "Copy");
       copy.type = "button";
       copy.dataset.key = `copy-${name}`;
@@ -267,6 +279,76 @@ export class HxWire extends HxElement {
       wrap.append(section);
     }
     return wrap;
+  }
+
+  /** The Next tool_use_id key and its status words (Wire view only). */
+  #hitRow(hits, hit) {
+    const row = el("div", "wire-hit-row");
+    const next = el("button", "key", "Next tool_use_id");
+    next.type = "button";
+    next.dataset.key = "next-tool-use";
+    next.disabled = hits.length === 0;
+    next.addEventListener("click", () => this.#nextHit(hits.length));
+    const words = hits.length === 0
+      ? "No tool_use_id in this turn."
+      : hit === null
+        ? `${plural(hits.length, "tool_use_id", "tool_use_ids")} in this turn. Press Next to find each one.`
+        : hit.kind === "answers"
+          ? `tool_use_id ${this.state.hit % hits.length + 1} of ${hits.length}: result for ${hit.id}${hit.callLine >= 0 ? `, answered by the call on line ${hit.callLine + 1} of the request` : ""}.`
+          : `tool_use_id ${this.state.hit % hits.length + 1} of ${hits.length}: call ${hit.id} in the response.`;
+    row.append(next, el("p", "wire-hit-status", words));
+    return row;
+  }
+
+  #nextHit(count) {
+    if (count === 0) return;
+    const hit = (this.state.hit + 1) % count;
+    this.setState({ hit });
+    this.live(this.ui?.querySelector(".wire-hit-status")?.textContent ?? "");
+    // The answer (the last highlighted line) is the one the learner is looking for; bring it into view.
+    const marks = this.ui?.querySelectorAll(".wire-json-scroll .wire-hit");
+    marks?.[marks.length - 1]?.scrollIntoView({ block: "nearest" });
+  }
+
+  /** Shows or hides the request's tools array (Wire view only). */
+  #toolsToggle(open) {
+    const button = el("button", "key", open ? "Hide tools" : "Show tools");
+    button.type = "button";
+    button.dataset.key = "toggle-tools";
+    button.setAttribute("aria-expanded", String(open));
+    button.addEventListener("click", () => this.setState({ toolsOpen: !this.state.toolsOpen }));
+    return button;
+  }
+
+  /** The JSON text, folded where asked, with the highlighted lines wrapped. Hit lines are full-text indices. */
+  #pre(text, hit, part, fold = null) {
+    const pre = el("pre", "wire-code");
+    const lines = fold ? fold.lines : text.split("\n");
+    const at = (full) => (fold ? fold.map[full] : full);
+    if (hit === null) {
+      pre.textContent = lines.join("\n");
+      return pre;
+    }
+    const mark = new Set();
+    const add = (full) => {
+      const shown = at(full);
+      if (shown !== undefined && shown >= 0) mark.add(shown);
+    };
+    if (hit.kind === "answers" && part === "request") {
+      add(hit.line);
+      if (hit.callLine >= 0) add(hit.callLine);
+    } else if (hit.kind === "calls" && part === "response") {
+      add(hit.line);
+    }
+    lines.forEach((line, i) => {
+      if (i > 0) pre.append("\n");
+      if (mark.has(i)) {
+        const span = el("span", "wire-hit", line);
+        span.dataset.line = String(i);
+        pre.append(span);
+      } else pre.append(line);
+    });
+    return pre;
   }
 
   #copy(name, text) {
@@ -297,8 +379,22 @@ export class HxWire extends HxElement {
     const shown = this.ui?.querySelectorAll(".wire-message").length ?? 0;
     if (shown !== request.messages.length) return false;
     this.ui?.querySelector('[data-key="view-wire"]')?.click();
+    // Folded by default: the tools are one line, and the messages are still in the box.
+    const folded = this.ui?.querySelector(".wire-json-scroll pre")?.textContent ?? "";
+    if (!folded.includes("definitions") || folded.includes(request.tools[0].description)) return false;
+    // Shown on the key: the whole request is the JSON again. Then hidden, the default.
+    this.ui?.querySelector('[data-key="toggle-tools"]')?.click();
     const pre = this.ui?.querySelector(".wire-json-scroll pre");
     if (!pre || JSON.stringify(JSON.parse(pre.textContent)) !== JSON.stringify(request)) return false;
+    this.ui?.querySelector('[data-key="toggle-tools"]')?.click();
+    // The key cycles and wraps: after the last tool_use_id it starts again at the first.
+    this.ui?.querySelector('[data-key="view-wire"]')?.click();
+    const count = toolUseHits(JSON.stringify(request, null, 2), JSON.stringify(this.payloads(turn).response, null, 2)).length;
+    if (count > 0) {
+      for (let k = 0; k < count + 1; k += 1) this.ui?.querySelector('[data-key="next-tool-use"]')?.click();
+      if (this.state.hit !== 0) return false;
+      if (!this.ui?.querySelector(".wire-json-scroll .wire-hit")) return false;
+    }
     this.ui?.querySelector('[data-key="view-friendly"]')?.click();
     this.ui?.querySelector('[data-key="changes-on"]')?.click();
     const news = this.ui?.querySelectorAll(".wire-message.is-new").length ?? 0;

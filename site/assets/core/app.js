@@ -11,6 +11,7 @@ import { renderHome } from "./shell/home.js";
 import { mountTerms } from "./shell/terms.js";
 import { mountFacts } from "./shell/facts.js";
 import { mountModule } from "./shell/module.js";
+import { mountStartMark } from "./shell/start-mark.js";
 import { loadComponents } from "./shell/loader.js";
 import { mountEvidence } from "./shell/evidence.js";
 import { setContext } from "./context.js";
@@ -27,6 +28,7 @@ mountChrome(store);
 mountFooter(store, announce);
 if (document.querySelector("[data-continue-link]")) renderHome(store);
 mountModule(store);
+mountStartMark(store);
 // Facts without a build-time date (module pages) read the registry; a page that carries its dates (the design page) does not.
 if (document.querySelector("[data-fact]:not([data-verified])")) {
   fetch(new URL("../../data/facts.json", import.meta.url))

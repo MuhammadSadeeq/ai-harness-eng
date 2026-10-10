@@ -52,6 +52,11 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
 - Settings come from the store's prefs (`motion`, `theme`, `sound`).
 
 ## 5. Evidence and progress
+- A component keeps its own answers in the store under its own key (for example
+  `answers[<item id>]` for hx-check, `hunts[<tape id>]` for hx-incident) and
+  restores them on load. A restore sets the state only: it emits no evidence, and
+  it never credits the same thing twice. A saved answer is used only when it still
+  fits its item (`lib/restore.js`).
 - When the learner does something that counts (a prediction, a correct
   incident hunt, a kata pass, a bench run, a card review, a say-it self-grade),
   the component dispatches a bubbling `hx-evidence` CustomEvent:
@@ -106,8 +111,14 @@ Three small protocols, nothing else:
     `{source: "bench", old: Stats, new: Stats}` with
     `Stats = {n, passed, worst_turns, worst_cost, mean_cost}` (integers;
     `mean_cost` floored).
-  - `hx-incident`: the hunt is solved and the fix chosen:
-    `{source: "incident", wrong_taps, seconds, fix_ok}`.
+  - `hx-incident`: two stages, both bubbling `hx-result`:
+    `{source: "incident", stage: "start"}` when the hunt starts (the first
+    allowed tap), and `{source: "incident", stage: "end", wrong_taps, seconds, fix_ok}`
+    once the fix is committed. A predict check reveals on the first `hx-result`
+    of its target, whatever the stage, so a prediction on an incident is shown
+    as soon as the learner starts the hunt. `huntStage()` returns `"none"`,
+    `"started"` or `"finished"` for the same states.
+    A replay's `hx-result` (at its last event) has no stage and counts as an end.
   A predict check with `for` listens for its target's `hx-result` and then
   reveals.
 - **Values.** A component with numbers others can read or drive implements

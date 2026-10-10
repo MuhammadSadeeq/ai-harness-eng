@@ -6,6 +6,7 @@
 import { HxElement } from "./lib/hx-element.js";
 import { getContent, getFacts } from "./lib/data.js";
 import { mountFacts } from "../core/shell/facts.js";
+import { validAnswer } from "./lib/restore.js";
 
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -87,7 +88,20 @@ export class HxCheck extends HxElement {
       this.targetEl = target;
       target.addEventListener("hx-result", () => this.onResult());
     }
-    this.state = { choice: null, committed: null, resultSeen: false, evidenced: false, nudge: false };
+    // B2 round 2: a committed answer is restored from the store (COMPONENTS §5). A restored reveal was already
+    // credited, so it is not credited again; a restored prediction unlocks its target again.
+    const saved = validAnswer(this.store?.state?.answers?.[item.id], item.options.length);
+    this.state = {
+      choice: saved?.choice ?? null,
+      committed: saved?.choice ?? null,
+      resultSeen: saved?.revealed === true,
+      evidenced: saved?.revealed === true,
+      nudge: false,
+    };
+    if (saved && mode === "predict" && this.targetEl) {
+      this.targetEl.removeAttribute("locked");
+      if (this.targetEl.huntStage && this.targetEl.huntStage() !== "none") this.state.resultSeen = true;
+    }
   }
 
   derive() {
@@ -185,9 +199,11 @@ export class HxCheck extends HxElement {
     }
     this.setState({ committed: choice });
     if (this.mode === "check") {
+      this.saveAnswer({ choice, revealed: true });
       this.evidence("check", { item: this.item.id, choice, correct: choice === this.item.answer }, choice === this.item.answer ? null : []); // a wrong answer credits no objective
       return;
     }
+    this.saveAnswer({ choice, revealed: false });
     if (this.targetEl) {
       this.targetEl.removeAttribute("locked");
       if (this.state.resultSeen) this.revealPrediction();
@@ -205,12 +221,35 @@ export class HxCheck extends HxElement {
     if (this.state.evidenced) return;
     const choice = this.state.committed;
     this.setState({ evidenced: true });
+    this.saveAnswer({ choice, revealed: true });
     this.evidence("prediction", { item: this.item.id, choice, correct: choice === this.item.answer });
+  }
+
+  /** Writes this item's answer to the store (the learner's own UI state). Skipped while a self-test runs. */
+  saveAnswer(record) {
+    if (this.testing) return;
+    try {
+      this.store?.update((doc) => {
+        doc.answers ??= {};
+        doc.answers[this.item.id] = record;
+      });
+    } catch {
+      // The store refused the write (for example, an invalid document). The answer still shows.
+    }
   }
 
   // Self-test for any target: commit, check the target lost `locked`, send a synthetic result, check the reveal,
   // then restore the check to unanswered.
   async selfTest() {
+    this.testing = true;
+    try {
+      return await this.runSelfTest();
+    } finally {
+      this.testing = false;
+    }
+  }
+
+  runSelfTest() {
     const { dom } = this;
     dom.inputs[0].click();
     if (this.state.choice !== 0) return false;

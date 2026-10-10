@@ -39,3 +39,9 @@ hx-wire .wire-json-part h3 { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sa
 hx-wire .wire-json-part .key { justify-self: start; }
 hx-wire .wire-json-scroll { max-height: 26rem; overflow: auto; border-radius: var(--r-chip); }
 hx-wire .wire-json-scroll:focus-visible { outline: 3px solid var(--hx-focus); outline-offset: 2px; }
+
+/* Next tool_use_id (B2 round 2): the highlighted lines are inverted and carry a visible mark; the words say the rest. */
+.wire-hit-row { display: grid; gap: var(--sp-2); margin: 0 0 var(--sp-3); }
+.wire-hit-status { margin: 0; font: 500 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink); }
+.wire-json .wire-code .wire-hit { display: block; background: var(--hx-code-ink); color: var(--hx-code-bg); font-weight: 700; }
+.wire-json .wire-code .wire-hit::before { content: "> "; }
