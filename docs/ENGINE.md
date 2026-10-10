@@ -883,3 +883,91 @@ eventually notices; lessons say so).
   8. `cost` fields: `call_cost = input_cost + output_cost + cache_cost`, where
      `input_cost` is the uncached input; `top_part` is measured on the request
      as sent, before the reply joins the history.
+- **A11 (2026-10-10): evals, prompt injection and tool provenance** (wave
+  3.5: D1–D3, E1, E2). Absent modules and fields change nothing, so every
+  existing golden stays as it is.
+  1. *Condition `last_result_contains:<text>`* (§6.1): true when a
+     `tool_result` in the last user message of the harness's history contains
+     `<text>` (its content as appended, after the output cap). `<text>` is
+     everything after the first `:` (as A6.1); empty text is refused by the
+     loader. A tape uses it to make the scripted model act on an instruction
+     hidden in content it has just read (prompt injection): a `when` on the
+     planted text, whose steps `branch` between obeying and ignoring it. A
+     defense in the prompt's wording is modelled with `sent_lacks:` on that
+     wording, choosing a lower obey percent: wording lowers the rate; only
+     removing a leg of the trifecta stops the attack.
+  2. *A9.2's `tools_gte:<n>` and `tool_loaded:<name>`* read the request about
+     to be sent whether or not `tool_search` is plugged.
+  3. *Tape `canaries`* (optional, default `[]`): secret strings the tape
+     plants in `workspace` or `outside` (non-empty, distinct). After a custom
+     tool with `"effect": "network"` runs (it passed permission, sandbox and
+     the input check), if any string value inside its input (recursively;
+     values, not keys) contains a canary, emit
+     `leak(tool, canaries, tool_use_id)` (wire `permissions`) right after its
+     `tool_call`; `canaries` lists the ones found, in tape order. Matching
+     reads the input as the model sent it; redaction then applies to the
+     event as to every event. A denied or blocked call never runs, so it
+     never leaks.
+  4. *Custom tool provenance:* a custom tool may name the server it comes
+     from, `"server": "<name>"` with `"version": "<string>"` (both or
+     neither; the loader refuses one alone), and may carry
+     `"trifecta": [...]` with distinct values from `private_data`,
+     `untrusted_content`, `exfiltration`: labels the course's components show;
+     the run ignores them.
+  5. *`tool_pins: {"pins": {"<server>": "<version>"}}`* (board module): the
+     servers the harness trusts, at the version someone reviewed. Right after
+     `run_start`, for each custom tool with a `server` (tape order), when its
+     server is not in `pins` or its version differs, the tool is **rejected**:
+     emit `tool_rejected(tool, server, version, reason)` (wire `tools`, turn
+     0, t 0) with reason `server not pinned: <server>` or
+     `version <version> is not the pinned <pin>`. A rejected tool's definition
+     is never sent (also not through `tool_search`, which cannot load it), and
+     a call to it runs as an unknown tool (A3.2: `Unknown tool: <name>`, `ok`
+     false, 100 ms) after the permission and sandbox checks as usual. Tools
+     without a `server` are not affected. The tape models tool poisoning with
+     a server whose new version's description carries a hidden instruction,
+     and `tool_loaded:` or `sent_lacks:` on it. On the board: tools wire,
+     label `pinned tool servers`.
+  6. *Order within a tool call:* permission, sandbox, input check, run (a
+     rejected tool runs as unknown), cap, `tool_call`, `leak`.
+  7. *Evals* (`scenarios/evals/<id>.json`; engine ones in
+     `scenarios/engine/evals/`):
+     `{"id", "schema": 1, "title", "kind": "capability" | "regression", "tasks": [{"id", "tape"}], "trials", "boards": [ids], "seed_base"?, "model_grader"?: {"false_pass_percent", "false_fail_percent"}}`.
+     `tasks`: 1–20, distinct ids, each naming a tape (`scenarios/` or
+     `scenarios/engine/`; a tape may serve several tasks); `trials` 1–50;
+     `boards` the boards the goldens cover; `seed_base` default 0; percents
+     0–100. `kind` is shown, not used by the run. Running an eval with board
+     `B`: for each task `i` (0-based, in order) and trial `k` (1 to `trials`),
+     run the task's tape with `B` and seed `k`, an ordinary run (same events
+     as `run`; a board a tape refuses, A8.5, fails the whole eval as a loader
+     error). Each trial is graded:
+     - `passed` (the code grader): `run_end.passed`.
+     - `leaked`: the run emitted a `leak` event (the attack succeeded).
+     - `model` (only with `model_grader`): a simulated judge that reads the
+       transcript, the course's model and labelled so on screen. Draw
+       `d = percent()` from a **separate** PRNG (§3) seeded with
+       `seed_base + 1000 * i + k`, one draw per trial (never the run's PRNG,
+       whose draw order §3 keeps). If `passed`: pass unless
+       `d < false_fail_percent`. Else, if `status` is `done` (the run claimed
+       done): pass if `d < false_pass_percent` (it believed the claim). Else
+       fail.
+     Output, one canonical JSON object:
+     `{"eval", "board", "kind", "trials", "results": [{"task", "trial", "status", "passed", "leaked", "model"?, "turns", "tokens", "cost"}], "summary": {"runs", "passed", "leaked", "model_passed"?, "agree"?, "tasks", "tasks_any_pass", "tasks_all_pass", "cost"}}`,
+     results in task then trial order; `turns`, `tokens`, `cost` from
+     `run_end`. `agree` counts trials where `model` equals `passed`;
+     `tasks_any_pass` counts tasks with at least one passing trial (pass@k,
+     k = `trials`), `tasks_all_pass` tasks whose every trial passed (pass^k);
+     `cost` is the sum. Fields marked `?` appear only with `model_grader`.
+     Rates, confidence intervals and sample sizes are computed by components
+     and katas, never by the engine (§1: integers only).
+  8. *Files:* goldens `scenarios/golden/evals/<eval>.<board>.json` (canonical
+     JSON and a newline), written by `check_scenarios.py --update` from Python
+     and accepted only if JS produces the identical file. CLIs:
+     `python -m rein.sim eval --eval E --board B` and
+     `node tools/sim_cli.mjs eval --eval E --board B`. JS export
+     `runEval(spec, tapes, board, {facts})`, where `tapes` maps tape id to
+     tape object (the caller loads them; a component in the browser fetches
+     `site/data/scenarios/<id>.json`).
+  9. *Events:* `leak` (permissions: `tool`, `canaries`, `tool_use_id`) and
+     `tool_rejected` (tools: `tool`, `server`, `version`, `reason`) join §9's
+     table and `trace.schema.json`.

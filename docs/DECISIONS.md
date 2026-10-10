@@ -484,3 +484,14 @@ basis for Phase 1, and answered SPEC §14:
   denying all edits to reach 0 asks is not rewarded. Ten templates: rm, a
   pipe into a shell, force push, reads outside the project, writes, tests,
   edits, reads, lists, ls.
+
+## D-054 The Design Room's canvas is eight wire toggles with notes, not drag and drop
+
+- **Context:** SPEC §6.3 describes `hx-design` as "an 8-wire checklist
+  canvas: drag wire modules into a design and write notes". Drag and drop
+  needs a second, keyboard path to be accessible, and the labs of waves
+  3.3–3.4 taught one clear control per thing.
+- **Decision:** each wire is one toggle in turn order (`in the design`), and
+  switching it on opens its note. Keys and touch work alike; the design is
+  still the eight-wire checklist the SPEC asks for, and the reveal sets each
+  note beside that wire's model answer (BP-5.1-design-room).
