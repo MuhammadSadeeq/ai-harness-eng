@@ -10,7 +10,7 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
   exports its class. Shared helpers live in `site/assets/components/lib/`.
 - Every component **extends `HxElement`** (`lib/hx-element.js`, director-owned),
   which implements §2, §4 (focus kept across renders by `data-key`), §5
-  (`this.evidence(kind, detail)`), the live region (`this.live(text)`), motion
+  (`this.evidence(kind, detail, objectives?)`; per-item objectives override `data-objective`), the live region (`this.live(text)`), motion
   (`this.reducedMotion`) and §7 (`__test.run` calls your `selfTest()`). A
   component writes `setup()`, `render()` and `selfTest()`; it never re-implements
   these.

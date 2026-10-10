@@ -95,9 +95,10 @@ export class HxElement extends HTMLElement {
     this.liveRegion.textContent = text;
   }
 
-  evidence(kind, detail = {}) {
+  /** objectives: the element's data-objective by default; pass a list for per-item objectives (cards, say). */
+  evidence(kind, detail = {}, objectives = null) {
     const module = document.documentElement.dataset.module ?? null;
-    const objectives = (this.dataset.objective ?? "").split(/\s+/).filter(Boolean);
+    objectives ??= (this.dataset.objective ?? "").split(/\s+/).filter(Boolean);
     this.dispatchEvent(new CustomEvent("hx-evidence", {
       bubbles: true,
       detail: { module, objectives, kind, detail },
