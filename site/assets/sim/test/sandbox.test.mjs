@@ -39,7 +39,7 @@ test("a link inside the workspace is allowed; a link to outside is blocked by it
   assert.equal(ofKind(inside.events, "sandbox")[0].allowed, true);
   assert.equal(ofKind(inside.events, "tool_call")[0].output, "hello\n");
   const out = runWith({ outside: OUTSIDE, workspace: { "out.txt": { link: "../secret.env" } }, script: [READ("out.txt"), DONE] }, SANDBOX);
-  assert.equal(ofKind(out.events, "sandbox")[0].reason, "out.txt -> ../secret.env");
+  assert.equal(ofKind(out.events, "sandbox")[0].reason, "path outside the workspace: out.txt -> ../secret.env");
 });
 
 test("a chain of nine links is blocked as too many links", () => {

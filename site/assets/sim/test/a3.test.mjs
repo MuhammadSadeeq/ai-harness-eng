@@ -132,7 +132,7 @@ test("A3.7 more than 8 hops: ok false, output Too many levels of links: <path>, 
 // A3.8 sandbox reasons and egress.
 test("A3.8 a link followed to an outside path is blocked with '<path> -> <resolved>'", () => {
   const r = runWith({ outside: OUTSIDE, workspace: { "out.txt": { link: "../secret.env" } }, script: [READ("out.txt"), DONE] }, { sandbox: { egress: [] } });
-  assert.equal(ofKind(r.events, "sandbox")[0].reason, "out.txt -> ../secret.env");
+  assert.equal(ofKind(r.events, "sandbox")[0].reason, "path outside the workspace: out.txt -> ../secret.env");
   assert.equal(ofKind(r.events, "tool_call").length, 0);
 });
 

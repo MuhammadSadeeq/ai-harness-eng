@@ -180,13 +180,13 @@ export function runCore(tape, board, seed, facts) {
     return "error";
   };
 
-  // A3.8: "too many levels of links: <path>"; "<path> -> <resolved>" when a link was
-  // followed to an outside path; "path outside the workspace: <path>" otherwise.
+  // A3.8 and A13.1: "too many levels of links: <path>"; "path outside the workspace: <path>", where <path>
+  // reads "<path> -> <resolved>" when a link was followed to an outside path.
   const checkPath = (raw) => {
     const r = vfs.resolve(raw);
     if (!r.ok) return { allowed: false, reason: `too many levels of links: ${raw}` };
     if (isInside(r.path)) return TOOL_OK;
-    if (r.hops > 0) return { allowed: false, reason: `${raw} -> ${r.path}` };
+    if (r.hops > 0) return { allowed: false, reason: `path outside the workspace: ${raw} -> ${r.path}` };
     return { allowed: false, reason: `path outside the workspace: ${raw}` };
   };
 

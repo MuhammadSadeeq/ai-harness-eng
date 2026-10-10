@@ -990,3 +990,8 @@ eventually notices; lessons say so).
      matches `[a-z0-9][a-z0-9-]*`, else it is refused.
   4. The board label `pinned tool servers` lives with the other board labels
      (`site/assets/components/lib/board-tags.js`), not in the simulator.
+- **A13 (2026-10-10): rulings from wave 3.4.** Binding for both runtimes.
+  1. *A3.8's link reason* keeps the prefix: a path that a followed link takes
+     outside the workspace reads `path outside the workspace: <path> -> <resolved>`
+     (the `<path>` part written as `<path> -> <resolved>`). The two runtimes
+     had read A3.8 differently; no golden covered a link escape until C10.
