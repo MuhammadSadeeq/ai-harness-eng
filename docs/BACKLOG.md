@@ -16,3 +16,4 @@ says where it came from.
 | B-09 | Installable offline app (PWA manifest) | Phase 0 | The service worker already caches assets. |
 | B-10 | Code-generated launch film | SPEC §10 Phase 7 | Optional in Phase 7. |
 | B-11 | Translations | — | After v1 content is stable. |
+| B-12 | **Rein in Rust**: an optional, local-only track (cargo, no browser) that implements `docs/ENGINE.md` as a third runtime and must pass the same golden-trace parity; fits H13 extensions or an I3 portfolio project | Owner question, 2026-10-10 (owner is learning Rust) | Recommended by the director over replacing Python: Python stays primary for in-browser katas, eval/RL job fit and SDK support; awaiting the owner's go-ahead. |
