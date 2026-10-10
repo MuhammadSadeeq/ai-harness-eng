@@ -1,0 +1,38 @@
+{
+  "id": "evalbench-demo",
+  "schema": 1,
+  "title": "Five tasks, two boards, a model grader",
+  "kind": "capability",
+  "tasks": [
+    {
+      "id": "tamper",
+      "tape": "c11-tamper"
+    },
+    {
+      "id": "escape",
+      "tape": "c10-escape"
+    },
+    {
+      "id": "effort",
+      "tape": "a6-effort"
+    },
+    {
+      "id": "approval",
+      "tape": "c9-approval"
+    },
+    {
+      "id": "amnesia",
+      "tape": "c3-amnesia"
+    }
+  ],
+  "trials": 50,
+  "boards": [
+    "c11-old",
+    "c11-new"
+  ],
+  "seed_base": 7,
+  "model_grader": {
+    "false_pass_percent": 40,
+    "false_fail_percent": 10
+  }
+}

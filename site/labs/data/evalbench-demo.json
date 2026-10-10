@@ -1,0 +1,12 @@
+{
+  "eval": "evalbench-eval.json",
+  "boards": {
+    "old": "c11-old",
+    "new": "c11-new"
+  },
+  "start_tasks": [
+    "tamper",
+    "effort"
+  ],
+  "note": "Illustrative: five existing course tapes, a model grader whose false-pass rate is set to show rubber-stamping. The grader is a simulated judge, not a measurement."
+}

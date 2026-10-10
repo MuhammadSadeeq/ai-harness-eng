@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Attack, then defend · HARNESSED</title>
+<meta name="description" content="Hide an instruction where a page or a tool can carry it, then add defenses one at a time. See which legs of the trifecta each defense cuts, and replay the attack.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module" src="../assets/components/hx-escape.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · red team, then blue team</p>
+    <h1>Attack, then defend</h1>
+    <p class="lede">Hide an instruction where a page can carry it. Then add defenses one at a time and replay the attack to see which ones stop it.</p>
+  </header>
+  <section class="row" aria-labelledby="esc-h">
+    <h2 id="esc-h">One injected page</h2>
+    <hx-escape src="data/escape-demo.json">
+      <p>Without JavaScript, the lab shows the three legs of the trifecta, three places to hide an instruction, and five defenses. Replay the attack to see how many runs leak the secret.</p>
+    </hx-escape>
+    <p>In this course's model, where the instruction hides does not change how often the model obeys: it is in what the model reads either way.</p>
+  </section>
+</main>
+</body>
+</html>
