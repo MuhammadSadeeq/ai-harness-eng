@@ -1,6 +1,6 @@
 # HARNESSED: authoring contract
 
-Status: **v0 (Phase 0).** File layout, markup and data formats below are
+Status: **v0 (Phase 0), aligned with DESIGN v2.** File layout, markup and data formats below are
 binding now. Component attributes (§6) are provisional until each component
 ships in Phase 1. The whole file is finalized in Phase 2 against the exemplar
 module (B2), and every lesson learned there is written back here.
@@ -170,8 +170,7 @@ In the page:
 |---|---|---|
 | `hx-replay` | Replay Deck over a tape | `tape`, `board`, `predict` |
 | `hx-wire` | Wire View of a turn | `tape`, `turn`, `mode="friendly\|wire"`, `diff` |
-| `hx-clock` | Turn Clock | `tape`, `turn`, `focus` |
-| `hx-board` | Harness Board | `compare="old,new"` |
+| `hx-clock` | Turn Clock; with `board` it is the learner's Harness Board (DESIGN v2 §7.1, D-035) | `tape`, `turn`, `focus`, `board`, `compare="old,new"` |
 | `hx-bench` | Knob Bench, Run ×N | `tape`, `trials`, `knobs`, `old`, `new` |
 | `hx-incident` | Incident Room | `tape`, `family` |
 | `hx-kata` | Python kata (Pyodide) | `id` |
@@ -181,6 +180,7 @@ In the page:
 | `hx-check` | Prediction check / quiz | `src`, `item`, `mode="predict\|check"` |
 | `hx-sort` | Sort items into buckets | `src` |
 | `hx-count` | A count from course.json | `of` |
+| `hx-num` | A reactive number in prose that drives or reads a figure (DESIGN v2 §7.7) | `for`, `min`, `max`, `step`, `value` |
 | labs (§6.2 of SPEC) | `hx-sampler`, `hx-desk`, … | per component |
 
 Every component in a page must contain its **no-JS fallback** as children: a
