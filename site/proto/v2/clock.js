@@ -31,39 +31,18 @@ function glyphGroup(name, x, y, size) {
   return group;
 }
 
-// Tag text: the module id on the first line, its title wrapped to short lines (wide clock only).
-function tagLines(id, title, narrow) {
-  if (narrow) return [id];
-  const lines = [id];
-  let cur = "";
-  for (const word of String(title).split(" ")) {
-    const next = cur ? `${cur} ${word}` : word;
-    if (next.length > 14 && cur) {
-      lines.push(cur);
-      cur = word;
-    } else {
-      cur = next;
-    }
-  }
-  if (cur) lines.push(cur);
-  return lines.slice(0, 3);
-}
-
-function drawTag(group, x, y, id, title, narrow, cls, plugged) {
-  const lines = tagLines(id, title, narrow);
-  const longest = Math.max(...lines.map((l) => l.length));
-  const w = Math.round(longest * 7.8 + 16);
-  const h = 10 + lines.length * 18;
+// A code tag sits ON its spoke. The first tag is at 60 % of the spoke (50 % on phones); a second tag on the
+// same spoke stacks outward, 26 px further. Tags never reach another spoke: they are short codes.
+function drawCodeTag(group, x, y, id, cls, animate) {
+  const w = Math.max(36, Math.round(id.length * 9 + 16));
+  const h = 24;
   const tag = svgEl("g", { class: `tag-group ${cls}`, "data-tag": id });
-  if (plugged) tag.setAttribute("data-plug", "true");
+  if (animate) tag.setAttribute("data-plug", "true");
   tag.append(svgEl("rect", { class: "tag-box", x: x - w / 2, y: y - h / 2, width: w, height: h, rx: 6 }));
-  lines.forEach((line, k) => {
-    const text = svgEl("text", { class: k === 0 ? "tag-text tag-id" : "tag-text", x, y: y - h / 2 + 16 + k * 18, "text-anchor": "middle", "font-size": 14 });
-    text.textContent = line;
-    tag.append(text);
-  });
+  const text = svgEl("text", { class: "tag-text", x, y: y + 5, "text-anchor": "middle", "font-size": 14 });
+  text.textContent = id;
+  tag.append(text);
   group.append(tag);
-  return h;
 }
 
 /** Draws the clock at `width` px. opts: { states, hand, plugMotion }. */
@@ -109,16 +88,12 @@ export function drawClock(width, opts = {}) {
     if (!st.plugged) node.setAttribute("stroke-dasharray", "3 3");
     group.append(node, glyphGroup(w.glyph, nx, ny, narrow ? 16 : 18));
 
-    // earned modules sit on the spoke, between the hub and the node
-    if (st.plugged) {
-      const [tx, ty] = pos(rad, R * (narrow ? 0.62 : 0.5));
-      drawTag(group, tx, ty, st.plugged.id, st.plugged.title, narrow, "tag-main", opts.plugMotion === w.id);
-    }
-    if (st.extra) {
-      const [tx, ty] = pos(rad, R * (narrow ? 0.62 : 0.5));
-      const offset = narrow ? 34 : 56;
-      drawTag(group, tx, ty + offset, st.extra.id, st.extra.title, narrow, "tag-extra", opts.plugMotion === w.id);
-    }
+    // earned modules: code tags on the spoke; a second module stacks outward along the same spoke
+    [st.plugged, st.extra].filter(Boolean).forEach((m, k) => {
+      // a second tag stacks outward by one tag width plus a 4 px gap; the pair stays clear of the node
+      const [tx, ty] = pos(rad, R * (narrow ? 0.36 : 0.52) + k * (narrow ? 38 : 44));
+      drawCodeTag(group, tx, ty, m.id, k === 0 ? "tag-main" : "tag-extra", opts.plugMotion === w.id && k === 0);
+    });
 
     if (!narrow) {
       const [lx, ly] = pos(rad, rimR + 16);
@@ -175,4 +150,17 @@ export function legendList(states = wireStates()) {
           el("span", { class: "legend-state", text: status }),
           st.due > 0 ? el("span", { class: "badge", text: `${st.due} cards due` }) : null));
     }));
+}
+
+/** The names of what is plugged in, under the board (the tags carry codes; this list carries the titles). */
+export function moduleList(states = wireStates()) {
+  const items = [];
+  for (const w of WIRES) {
+    for (const m of [states[w.id].plugged, states[w.id].extra].filter(Boolean)) items.push({ wire: w, m });
+  }
+  return el("ul", { class: "module-list", "aria-label": "Modules on the board" },
+    items.map(({ wire, m }) => el("li", { class: `w-${wire.id}` },
+      el("span", { class: "module-code", text: m.id }),
+      el("span", { class: "module-title", text: m.title }),
+      el("span", { class: "module-wire", text: wire.short }))));
 }

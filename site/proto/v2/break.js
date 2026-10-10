@@ -202,7 +202,8 @@ export class BreakElement extends HTMLElement {
     this.bannerText = el("p", { class: "hint" });
     this.banner = el("div", { class: "hunt-banner", tabindex: "-1", hidden: true },
       el("p", { class: "banner-title", text: "Find the first bad moment" }), this.bannerText);
-    this.transcriptCol = el("div", { class: "transcript-col area-transcript" }, this.banner, this.filterText, this.list);
+    this.transcriptCol = el("div", { class: "transcript-col area-transcript" }, this.banner, this.list);
+    this.filterBar = el("div", { class: "filter-bar area-filter" }, this.chips, this.filterText);
     this.speedBtns = SPEEDS.map((n) => {
       const btn = el("button", { type: "button", "aria-pressed": n === 2 ? "true" : "false", text: `${n}×` });
       btn.addEventListener("click", () => this.setSpeed(n));
@@ -210,10 +211,9 @@ export class BreakElement extends HTMLElement {
     });
     this.gate = el("p", { class: "hint gate", text: "Lock in a prediction above to open the replay." });
     this.plateState = el("p", { class: "plate-state" });
-    this.chipsWrap = el("details", { class: "filter-details" }, el("summary", { text: "Show one wire" }), this.chips);
-    this.stripCol = el("div", { class: "strip-col area-strip" }, this.lanesHost, this.chipsWrap, this.filterText);
+    this.stripCol = el("div", { class: "strip-col area-strip" }, this.lanesHost);
     this.replayBody = el("div", { class: "replay-body" },
-      this.stripCol, this.readouts, this.transcriptCol, this.detail, this.transport);
+      this.stripCol, this.filterBar, this.readouts, this.transcriptCol, this.detail, this.transport);
     this.plate = el("figure", { class: "plate instrument replay-plate", "aria-labelledby": "fig-b2-1" },
       el("div", { class: "plate-head" },
         el("span", { class: "fig-label", id: "fig-b2-1", text: "FIG B2.1 · REPLAY" }),
@@ -258,15 +258,52 @@ export class BreakElement extends HTMLElement {
         this.markNodes[i] = mark;
         track.append(mark);
       });
-      track.addEventListener("pointerdown", (ev) => this.laneDown(ev, wire.id));
-      track.addEventListener("pointermove", (ev) => { if (this.laneDrag === wire.id) this.setIndex(this.laneIndex(ev, wire.id)); });
-      track.addEventListener("pointerup", () => { this.laneDrag = null; });
-      track.addEventListener("pointercancel", () => { this.laneDrag = null; });
+      if (!compact) {
+        track.addEventListener("pointerdown", (ev) => this.laneDown(ev, wire.id));
+        track.addEventListener("pointermove", (ev) => { if (this.laneDrag === wire.id) this.setIndex(this.laneIndex(ev, wire.id)); });
+        track.addEventListener("pointerup", () => { this.laneDrag = null; });
+        track.addEventListener("pointercancel", () => { this.laneDrag = null; });
+      }
       lanes.append(el("div", { class: `lane w-${wire.id}` }, label, track));
     }
     lanes.setAttribute("tabindex", "0");
+    if (compact) {
+      // The whole strip is one scrubber: tap or drag anywhere on it, arrow keys step through events.
+      lanes.setAttribute("role", "slider");
+      lanes.setAttribute("aria-label", "Event strip: all eight lanes, one scrubber");
+      lanes.setAttribute("aria-valuemin", "1");
+      lanes.setAttribute("aria-valuemax", String(TRACE.length));
+      lanes.addEventListener("pointerdown", (ev) => this.stripDown(ev));
+      lanes.addEventListener("pointermove", (ev) => { if (this.stripDrag) this.setIndex(this.stripIndex(ev)); });
+      const endStrip = () => { this.stripDrag = false; };
+      lanes.addEventListener("pointerup", endStrip);
+      lanes.addEventListener("pointercancel", endStrip);
+    } else {
+      lanes.setAttribute("role", "group");
+      lanes.setAttribute("aria-label", "Eight lanes, one per wire, in turn order");
+    }
     lanes.addEventListener("keydown", (ev) => this.onStripKey(ev));
     return lanes;
+  }
+
+  // Tap = the nearest event: the row under the pointer picks the wire, the x position picks the time.
+  stripIndex(ev) {
+    const rows = [...this.lanesHost.querySelectorAll(".lane")];
+    const box = this.lanesHost.getBoundingClientRect();
+    const row = clamp(Math.floor(((ev.clientY - box.top) / box.height) * rows.length), 0, rows.length - 1);
+    const track = rows[row].querySelector(".lane-track").getBoundingClientRect();
+    const frac = clamp((ev.clientX - track.left) / track.width, 0, 1);
+    const wire = WIRES[row].id;
+    const hasLane = TRACE.some((e) => e.wire === wire);
+    return nearestIndex(frac * MAX_T, hasLane ? wire : null);
+  }
+
+  stripDown(ev) {
+    if (ev.button !== 0) return;
+    this.stripDrag = true;
+    this.lanesHost.setPointerCapture(ev.pointerId);
+    this.stop();
+    this.activate(this.stripIndex(ev));
   }
 
   laneIndex(ev, wire) {
@@ -284,7 +321,7 @@ export class BreakElement extends HTMLElement {
   }
 
   onStripKey(ev) {
-    const keys = { ArrowLeft: -1, ArrowRight: 1 };
+    const keys = { ArrowLeft: -1, ArrowRight: 1, ArrowDown: 1, ArrowUp: -1 };
     if (!(ev.key in keys) && ev.key !== "Home" && ev.key !== "End") return;
     ev.preventDefault();
     this.stop();
@@ -353,18 +390,31 @@ export class BreakElement extends HTMLElement {
   }
 
   buildReadouts() {
-    this.roTurn = el("p", { class: "readout-value" });
-    this.roDesk = el("p", { class: "readout-value" });
-    this.roDeskPct = el("p", { class: "readout-note" });
+    this.roTurn = el("p", { class: "readout-value num" });
+    this.roTurnNote = el("p", { class: "readout-note num" });
+    this.roDesk = el("p", { class: "readout-value num" });
+    this.roDeskNote = el("p", { class: "readout-note num" });
     this.roDeskBar = drawDeskBar(0);
-    this.roCost = el("p", { class: "readout-value" });
+    this.roCost = el("p", { class: "readout-value num" });
+    this.roCostNote = el("p", { class: "readout-note" }, "units, relative");
     const window_ = (label, valueNode, extra = []) => el("div", { class: "readout" },
       el("p", { class: "readout-label", text: label }), valueNode, ...extra);
     this.deskBarTrack = el("span", { class: "bar" }, this.roDeskBar);
-    return el("div", { class: "readouts area-readouts" },
-      window_("Turn", this.roTurn),
-      window_("Desk (context)", this.roDesk, [this.deskBarTrack, this.roDeskPct]),
-      window_("Cost so far", this.roCost));
+    this.rbTurn = el("span", { class: "rb-value num" });
+    this.rbDesk = el("span", { class: "rb-value num" });
+    this.rbCost = el("span", { class: "rb-value num" });
+    // Phones: one compact instrument bar in one row. From 700 px: three readout windows.
+    this.readoutBar = el("p", { class: "readout-bar", "aria-live": "off" },
+      el("span", { class: "rb-label", text: "Turn" }), this.rbTurn,
+      el("span", { class: "rb-sep", text: "·" }),
+      el("span", { class: "rb-label", text: "Desk" }), this.rbDesk,
+      el("span", { class: "rb-sep", text: "·" }), this.rbCost);
+    return el("div", { class: "readouts-wrap area-readouts" },
+      this.readoutBar,
+      el("div", { class: "readouts" },
+        window_("Turn", this.roTurn, [this.roTurnNote]),
+        window_("Desk (context)", this.roDesk, [this.deskBarTrack, this.roDeskNote]),
+        window_("Cost so far", this.roCost, [this.roCostNote])));
   }
 
   buildTransport() {
@@ -571,7 +621,24 @@ export class BreakElement extends HTMLElement {
     s.idx = clamp(i, 0, LAST);
     if (s.idx === LAST) s.reachedEnd = true;
     this.paint();
+    this.followRow();
     if (s.idx !== before) this.announceTurn(s.idx);
+  }
+
+  // Keep the current event in view. Phones scroll the page (the sticky transport sits below the row);
+  // desktop scrolls the transcript column only, so the page does not jump.
+  followRow() {
+    const row = this.rowNodes[this.state.idx];
+    const col = this.transcriptCol;
+    const smooth = reduceMotion() ? "auto" : "smooth";
+    if (getComputedStyle(col).overflowY === "auto") {
+      const rr = row.getBoundingClientRect();
+      const cr = col.getBoundingClientRect();
+      if (rr.top < cr.top) col.scrollBy({ top: rr.top - cr.top - 8, behavior: smooth });
+      else if (rr.bottom > cr.bottom) col.scrollBy({ top: rr.bottom - cr.bottom + 8, behavior: smooth });
+    } else {
+      row.scrollIntoView({ block: "nearest", behavior: smooth });
+    }
   }
 
   announceTurn(i) {
@@ -720,11 +787,17 @@ export class BreakElement extends HTMLElement {
       }
     });
 
+    const deskPct = `${Math.round(pctDesk)}%`;
+    const costText = Number(cost).toFixed(3);
     this.roTurn.textContent = `${e.turn} of ${MAX_TURN}`;
-    this.roDesk.textContent = tokens ? `${fmtInt(tokens)} / ${fmtInt(WINDOW)}` : "No prompt yet";
-    this.roDeskPct.textContent = `${Math.round(pctDesk)}% of the desk`;
+    this.roTurnNote.textContent = `event ${n} of ${TRACE.length}`;
+    this.roDesk.textContent = tokens ? deskPct : "none yet";
+    this.roDeskNote.textContent = tokens ? `${fmtInt(tokens)} of ${fmtInt(WINDOW)} tokens` : "no prompt yet";
     this.roDeskBar.style.width = `${pctDesk}%`;
-    this.roCost.textContent = fmtCost(cost);
+    this.roCost.textContent = `≈ ${costText}`;
+    this.rbTurn.textContent = `${e.turn}/${MAX_TURN}`;
+    this.rbDesk.textContent = tokens ? deskPct : "–";
+    this.rbCost.textContent = `≈ ${costText}`;
 
     this.range.value = String(s.idx);
     this.range.setAttribute("aria-valuetext", `Event ${n} of ${TRACE.length}`);

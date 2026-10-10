@@ -21,11 +21,11 @@
     <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>
     <span>HARNESSED</span>
   </a>
-  <p class="module-id"><span class="mod-code">B2</span> The agent loop</p>
+  <p class="module-id"><span class="mod-code">B2</span> <span class="mod-title">The agent loop</span></p>
   <nav class="top-nav" aria-label="Pages">
     <ol>
       <li><a href="index.html" data-page="home">Home</a></li>
-      <li><a href="break.html" data-page="break">Break</a></li>
+      <li><a href="break.html" data-page="break" aria-current="page">Break</a></li>
       <li><a href="prove.html" data-page="prove">Prove</a></li>
     </ol>
   </nav>
@@ -33,7 +33,24 @@
     <div data-theme-slot></div>
     <div data-motion-slot></div>
   </div>
+  <button class="menu-btn" type="button" data-menu-btn aria-haspopup="dialog" aria-expanded="false" aria-controls="menu-sheet">Menu</button>
 </header>
+<dialog class="menu-sheet" id="menu-sheet" data-menu-sheet aria-labelledby="menu-title">
+  <h2 class="menu-title" id="menu-title">Menu</h2>
+  <nav aria-label="Pages in the menu">
+    <ol class="menu-pages">
+      <li><a href="index.html" data-page="home">Home</a></li>
+      <li><a href="break.html" data-page="break" aria-current="page">Break</a></li>
+      <li><a href="prove.html" data-page="prove">Prove</a></li>
+    </ol>
+  </nav>
+  <div class="menu-settings">
+    <p class="menu-label">Theme</p>
+    <div data-theme-slot-sheet></div>
+    <div data-motion-slot-sheet></div>
+  </div>
+  <button class="key menu-close" type="button" data-close>Close menu</button>
+</dialog>
 <main id="main" class="page">
   <hx-proto-break>
     <div class="article">

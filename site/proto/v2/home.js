@@ -1,7 +1,7 @@
 // Home: the Turn Clock board is the hero (the Harness Board), Continue is the one primary action, the
 // on-call card follows the theme (day: today's shift; night: the page), and path progress is compact.
 import { PARTS, PROGRESS, PLUGGED, SOCKETS } from "./data.js";
-import { drawClock, legendList, wireStates } from "./clock.js";
+import { drawClock, legendList, moduleList, wireStates } from "./clock.js";
 import { el, glyph, svgEl } from "./common.js";
 import { resolvedTheme } from "./prefs.js";
 
@@ -33,6 +33,8 @@ export class HomeElement extends HTMLElement {
     this.built = true;
     this.boardHost = this.querySelector("[data-board]");
     this.legendHost = this.querySelector("[data-legend]");
+    this.modulesHost = this.querySelector("[data-modules]");
+    this.modulesHost?.replaceChildren(moduleList(wireStates()));
     this.legendHost?.replaceChildren(legendList(wireStates()));
     this.oncallHost = this.querySelector("[data-oncall]");
     this.progressHost = this.querySelector("[data-progress]");
@@ -68,17 +70,17 @@ export class HomeElement extends HTMLElement {
         el("p", { class: "kicker", text: "PAGE · night shift" }),
         el("h2", { text: "Run b2-spiral has called tools 14 times and hasn't stopped." }),
         el("p", { class: "lede", text: "Nothing in the loop will end it. Take the page, then open the incident and find the first event that went wrong." }),
-        started
-          ? el("p", { class: "card-note", "data-state": "paged", text: "You have the page. Open the incident to start." })
-          : el("button", { class: "btn btn-primary", type: "button", "aria-pressed": "false", text: "Take the page", onclick: () => { this.paged = true; this.renderOnCall(); } }),
-        started ? el("a", { class: "btn btn-primary", href: BREAK_HREF, text: "Open the incident" }) : null);
+        ...(started
+          ? [el("p", { class: "card-note", "data-state": "paged", text: "You have the page. Open the incident to start." }),
+            el("a", { class: "btn btn-primary", href: BREAK_HREF, text: "Open the incident" })]
+          : [el("button", { class: "btn btn-primary", type: "button", "aria-pressed": "false", text: "Take the page", onclick: () => { this.paged = true; this.renderOnCall(); } })]));
     } else {
       this.oncallHost.replaceChildren(
         el("p", { class: "kicker", text: "Today's shift · about 10 min" }),
         el("h2", { text: "Today's shift" }),
         el("ul", { class: "shift-list" },
           el("li", { text: "1 incident: the “almost done” spiral" }),
-          el("li", { text: "6 cards due" }),
+          el("li", { text: "6 cards due today (2 on Context)" }),
           el("li", { text: "1 say-it drill" })),
         el("a", { class: "btn", href: BREAK_HREF, text: "Start shift" }));
     }
@@ -98,9 +100,22 @@ export class HomeElement extends HTMLElement {
 
   selfTest() {
     // Eight wires draw on the board, the primary action goes to the break page, and the plugged modules show.
+    // Both themes render the on-call card, and no text anywhere in the element reads "null" or "undefined".
     const spokes = this.boardHost.querySelectorAll(".spoke-group").length;
     const tags = this.boardHost.querySelectorAll("[data-tag]").length;
     const primary = this.querySelector('a[href="break.html"]');
-    return spokes === 8 && tags === Object.keys(PLUGGED).length && Boolean(primary) && Boolean(SOCKETS.loop);
+    const root = document.documentElement;
+    const previous = root.dataset.theme;
+    let clean = true;
+    for (const theme of ["light", "dark"]) {
+      root.dataset.theme = theme;
+      this.renderOnCall();
+      clean = clean && !/\b(null|undefined)\b/.test(this.textContent);
+    }
+    if (previous === undefined) delete root.dataset.theme;
+    else root.dataset.theme = previous;
+    this.renderOnCall();
+    clean = clean && !/\b(null|undefined)\b/.test(this.textContent);
+    return spokes === 8 && tags === Object.keys(PLUGGED).length && Boolean(primary) && Boolean(SOCKETS.loop) && clean;
   }
 }

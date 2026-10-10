@@ -124,7 +124,10 @@ pairs ≥ 12 under all four visions; any pair ≥ 8 (normal) and ≥ 3.5 (CVD).
 Unchanged from v1. The exact SVG path data is in
 `site/assets/core/glyphs.svg` (built from the v1 tables at `c82e35e`). All
 glyphs: `viewBox 0 0 24 24`, no fill, `currentColor` stroke 2 px, round caps
-and joins; minimum 16 px; lanes 18 px; clock 22 px.
+and joins; minimum 16 px; lanes 18 px; clock 22 px. One exception: the phone
+replay's overview strip draws its lane glyphs at 12 px, because the strip is an
+overview and never the only place a wire is identified (chips and transcript
+rows show the glyph at full size).
 
 - **Wire glyphs**: `layers` control · `window` context · `cycle` loop ·
   `zigzag` errors · `hexagon` tools · `diamond` permissions · `shield` verify ·

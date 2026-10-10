@@ -4,7 +4,7 @@
 import { FIXTURE } from "../shared/fixture.js";
 import { WIRES, PLUGGED, SOCKETS } from "./data.js";
 import { el, glyph, svgEl, makeAnnouncer, clamp, fmtInt, fmtCost, reduceMotion } from "./common.js";
-import { drawClock, wireStates } from "./clock.js";
+import { drawClock, moduleList, wireStates } from "./clock.js";
 
 const BENCH = FIXTURE.bench;
 const N = BENCH.old.length;
@@ -342,7 +342,10 @@ export class ProveElement extends HTMLElement {
     this.roWorst = el("p", { class: "readout-value" });
     this.roTried = el("p", { class: "readout-value" });
     this.roTriedNote = el("p", { class: "readout-note" });
-    this.parState = el("p", { class: "par-state", "aria-live": "polite" });
+    this.parLabel = el("p", { class: "readout-label", text: "Par" });
+    this.parValue = el("p", { class: "readout-value", text: "Not yet" });
+    this.parWindow = el("div", { class: "readout par-window" }, this.parLabel, this.parValue);
+    this.parState = el("p", { class: "par-line", "aria-live": "polite" });
     this.solutionHost = el("div", { class: "solution-host" });
     this.puzzleRow = el("section", { class: "row puzzle", "aria-labelledby": "puzzle-h" },
       el("h2", { id: "puzzle-h", text: "Beat par" }),
@@ -353,6 +356,7 @@ export class ProveElement extends HTMLElement {
         el("div", { class: "readout" }, el("p", { class: "readout-label", text: "Passing runs" }), this.roPass, this.roPassNote),
         el("div", { class: "readout" }, el("p", { class: "readout-label", text: "Worst run" }), this.roWorst),
         el("div", { class: "readout" }, el("p", { class: "readout-label", text: "Values tried" }), this.roTried, this.roTriedNote)),
+      this.parWindow,
       this.parState,
       el("figure", { class: "plate instrument solution-plate", "aria-labelledby": "fig-b2-4" },
         el("div", { class: "plate-head" }, el("span", { class: "fig-label", id: "fig-b2-4", text: "FIG B2.4 · SOLUTION SPACE" })),
@@ -436,10 +440,16 @@ export class ProveElement extends HTMLElement {
     this.roWorst.textContent = fmtCost(c.worst, 3);
     this.roTried.textContent = `${s.tried.size} tried`;
     this.roTriedNote.textContent = revealed ? "Par is in the chart." : `Par shows after ${REVEAL_TRIES} different values.`;
-    this.parState.replaceChildren(atPar
-      ? el("span", { class: "par-chip", text: `PAR ${PAR}` }, " No lost passes, cheapest worst case.")
-      : el("span", { class: "par-hint", text: revealed ? `Par is in the chart. Keep going.` : "Try a few more limits." }));
-    this.parState.classList.toggle("is-par", atPar);
+    if (atPar) {
+      this.parLabel.textContent = `PAR · limit ${PAR}`;
+      this.parValue.textContent = `${c.passes} of ${N} pass`;
+      this.parState.textContent = "No lost passes, cheapest worst case.";
+    } else {
+      this.parLabel.textContent = "Par";
+      this.parValue.textContent = revealed ? "Not yet" : "Hidden";
+      this.parState.textContent = revealed ? "Par is in the chart. Keep looking." : `Par appears after ${REVEAL_TRIES} different values.`;
+    }
+    this.parWindow.classList.toggle("is-par", atPar);
     this.plugBtn.disabled = !s.touched;
     if (atPar && !this.parCelebrated) {
       this.parCelebrated = true;
@@ -466,7 +476,7 @@ export class ProveElement extends HTMLElement {
     const width = Math.floor(this.clockHost.getBoundingClientRect().width);
     if (width < 300) return;
     const clock = drawClock(width, { states: this.clockStates(), plugMotion: animate && this.state.plugged ? "loop" : null });
-    this.clockHost.replaceChildren(clock);
+    this.clockHost.replaceChildren(clock, moduleList(this.clockStates()));
   }
 
   redraw() {
@@ -494,7 +504,7 @@ export class ProveElement extends HTMLElement {
         this.limitRange.dispatchEvent(new Event("input"));
       }
       if (COMPUTED_PAR !== PAR) return false;
-      return this.parState.classList.contains("is-par") && this.parState.textContent.startsWith(`PAR ${PAR}`);
+      return this.parWindow.classList.contains("is-par") && this.parLabel.textContent === `PAR · limit ${PAR}`;
     } catch (error) {
       console.error(error);
       return false;

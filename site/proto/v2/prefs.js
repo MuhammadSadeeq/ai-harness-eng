@@ -79,6 +79,10 @@ export function mountSettings(themeSlot, motionSlot) {
     group.setAttribute("aria-label", "Theme");
     group.append(...buttons);
     themeSlot.replaceChildren(group);
+    // Every copy of the control (top bar and menu sheet) follows the one stored choice.
+    document.addEventListener("hx:theme", (ev) => {
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.theme === ev.detail.choice)));
+    });
   }
 
   if (motionSlot) {

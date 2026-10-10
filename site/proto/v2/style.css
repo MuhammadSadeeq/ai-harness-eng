@@ -475,3 +475,116 @@ hx-proto-home .article > .row.path-section { grid-column: 2; }
 @media (min-width: 700px) { .puzzle-readouts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .puzzle-readouts .readout-value { font-size: 1.5rem; }
 .key-primary:hover, .btn-primary:hover { background: var(--hx-ink); color: var(--hx-paper); opacity: .92; }
+
+/* ===== v2 review round 1 ===== */
+
+/* top bar: one row (<= 56 px) on phones with a Menu key; the desktop bar is unchanged */
+.menu-btn {
+  display: none; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 14px;
+  border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel);
+  color: var(--hx-ink); font: 600 var(--fs-ui)/1 var(--font-sans); cursor: pointer; margin-left: auto;
+}
+.menu-sheet {
+  width: min(92vw, 22rem); padding: var(--sp-5); border: 1px solid var(--plate-edge); border-radius: var(--r-plate);
+  background: var(--hx-panel); color: var(--hx-ink); box-shadow: var(--shadow-pop);
+}
+.menu-sheet::backdrop { background: color-mix(in srgb, var(--hx-ink) 45%, transparent); }
+.menu-title { margin: 0 0 var(--sp-3); font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+.menu-pages { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-1); }
+.menu-pages a { display: flex; align-items: center; min-height: 48px; padding: 0 var(--sp-3); border-radius: var(--r-btn); font: 600 var(--fs-body)/1 var(--font-sans); color: var(--hx-ink); text-decoration: none; }
+.menu-pages a[aria-current="page"] { box-shadow: inset 4px 0 0 var(--hx-ink); background: var(--hx-panel-2); }
+.menu-settings { display: grid; gap: var(--sp-3); margin-top: var(--sp-5); padding-top: var(--sp-4); border-top: 1px solid var(--hx-rule); }
+.menu-label { margin: 0; font: 600 var(--fs-small)/1.2 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--hx-ink-2); }
+.menu-settings .seg, .menu-settings .toggle-btn { width: 100%; }
+.menu-settings .seg { display: flex; }
+.menu-settings .seg button { flex: 1; }
+.menu-close { margin-top: var(--sp-5); width: 100%; }
+@media (max-width: 699px) {
+  .topbar { position: static; flex-wrap: nowrap; min-height: 56px; padding: 6px var(--space-page); gap: var(--sp-2); align-items: center; }
+  .top-nav, .settings { display: none; }
+  .module-id { margin: 0; white-space: nowrap; }
+  .module-id .mod-title { display: none; }
+  .menu-btn { display: inline-flex; }
+  .plate-state { display: none; }
+}
+@media (min-width: 700px) {
+  .menu-btn { display: none; }
+}
+
+/* the module list under the board: codes on the tags, titles here */
+.module-host { margin-top: var(--sp-3); }
+.module-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.module-list li {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--sp-2); align-items: center; min-height: 44px; padding: 6px var(--sp-3);
+  border: 1px solid color-mix(in srgb, var(--w, var(--hx-ink-2)) 45%, transparent); border-radius: var(--r-btn);
+  background: color-mix(in srgb, var(--w, var(--hx-ink-2)) 10%, var(--hx-panel)); font: 500 var(--fs-ui)/1.3 var(--font-sans);
+}
+.module-code { font: 600 var(--fs-small) var(--font-mono); }
+.module-wire { font: 600 var(--fs-small) var(--font-sans); color: var(--hx-ink-2); }
+
+/* the 8-lane strip on phones: 8 rows of 12 px (96 px), one scrubber for the whole strip */
+.lanes-compact { height: 96px; touch-action: none; cursor: pointer; }
+.lanes-compact .lane { height: 12px; grid-template-columns: 14px minmax(0, 1fr); align-items: center; }
+.lanes-compact .lane-label { min-height: 12px; }
+.lanes-compact .lane-label .glyph { width: 12px; height: 12px; }
+.lanes-compact .lane-track { height: 12px; }
+.lanes-compact .mark { width: 12px; height: 12px; margin: -6px 0 0 -6px; }
+.lanes-compact .mark .glyph { width: 12px; height: 12px; }
+.lanes-compact:focus-visible { outline-offset: 3px; border-radius: 4px; }
+
+/* readouts: one compact bar on phones, three windows from 700 px */
+.readout-bar { display: none; }
+@media (max-width: 699px) {
+  .readout-bar {
+    display: flex; flex-wrap: nowrap; align-items: baseline; justify-content: space-between; gap: 6px; margin: 0;
+    padding: 10px 12px; border-radius: 6px; background: var(--hx-inst); color: var(--hx-inst-ink);
+    font: 600 15px/1.3 var(--font-mono); white-space: nowrap; overflow: hidden;
+  }
+  .readouts { display: none; }
+}
+.rb-label { font: 600 14px/1.3 var(--font-sans); color: var(--hx-inst-label); }
+.rb-value { color: var(--hx-inst-amber); }
+.rb-sep { color: var(--hx-inst-label); }
+.num { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.readout-value { overflow-wrap: normal; }
+
+/* the filter: one horizontally scrollable row of wire chips */
+.filter-bar { display: grid; gap: var(--sp-1); min-width: 0; }
+@media (max-width: 699px) {
+  .filter-chips { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: var(--sp-2); padding: 2px 0 6px; margin: 0; scrollbar-width: thin; }
+  .filter-chips li { flex: none; }
+  .filter-chips .chip { white-space: nowrap; }
+  .filter-chips .chip[aria-pressed="false"] { opacity: 1; }
+}
+.filter-state { font: 500 var(--fs-small)/1.35 var(--font-sans); color: var(--hx-ink-2); }
+
+/* the replay: story first on phones (strip, readouts, filter, transcript, detail, then the sticky transport) */
+.replay-body {
+  grid-template-areas: "strip" "readouts" "filter" "transcript" "detail" "transport";
+}
+.area-filter { grid-area: filter; }
+.area-readouts { grid-area: readouts; }
+@media (max-width: 699px) {
+  .ev { scroll-margin-top: 80px; scroll-margin-bottom: 150px; }
+}
+@media (min-width: 1100px) {
+  .replay-body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+    grid-template-areas: "strip transcript" "filter transcript" "readouts transcript" "transport transcript" "detail transcript";
+  }
+}
+
+/* PAR: one readout window, then the celebration sentence under it (no pill) */
+.par-window { margin-top: var(--sp-3); }
+.par-line { margin: var(--sp-2) 0 0; font: 600 var(--fs-body)/1.4 var(--font-serif); }
+.par-window.is-par { box-shadow: inset 0 0 0 2px var(--hx-pass); }
+.par-window.is-par .readout-value { color: var(--hx-inst-amber); }
+
+/* the limit readouts: one row on wide screens, stacked on phones */
+.puzzle-readouts { grid-template-columns: 1fr; }
+@media (min-width: 700px) { .puzzle-readouts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* the homepage module list and the board sit in the same plate */
+.module-host:empty { display: none; }
+@media (max-width: 699px) { .topbar { padding: 5px var(--space-page); } }
+.lanes-compact .lane-track.is-empty::after { display: none; }
