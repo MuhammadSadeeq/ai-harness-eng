@@ -103,7 +103,12 @@ export function makeAnnouncer() {
   }
   let last = "";
   return (message) => {
-    if (!message || message === last) return;
+    if (!message) {
+      region.textContent = "";
+      last = "";
+      return;
+    }
+    if (message === last) return;
     last = message;
     region.textContent = "";
     window.setTimeout(() => { region.textContent = message; }, 20);

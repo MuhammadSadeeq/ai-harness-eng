@@ -23,7 +23,7 @@ prototype re-walked:
 | D1 Patch Bay | 345 (two blocker bugs) |
 | D2 Field Guide | 370 |
 | D3 Night Shift | 400 |
-| **v2 (unified)** | **see §5** |
+| **v2 (unified)** | **470** |
 
 Click it yourself: `site/proto/v2/index.html`, `break.html`, `prove.html`
 (serve `site/` locally, or open the screenshots in `tools/qa/out/v2/`).
@@ -69,7 +69,24 @@ new **F7 Model migrations**; F6 adds eval containment; G3 tours mini-swe-agent.
 
 ## 5. v2 re-walkthrough
 
-(Filled in when the reviewer reports.)
+Same reviewer, same persona (Sam: career changer, basic Python, no AI
+background, on a phone), same five tasks and rubric: **v2 scored 470 of 500**
+(best single direction: 400). Of the 18 problems found in the three
+directions, 15 were fixed in v2 and 2 no longer apply; the last one and the
+four new v2 findings (2 major, 2 minor accessibility and wording issues) were
+fixed in the final review round.
+
+Final v2 checks: 0 failures across 24 accessibility audits (each page at
+375 and 1280 px, day and night, before and after interaction), 0 warnings;
+pages 123–172 KB (budget 300 KB); smallest text 14 px.
+
+The walkthrough also exposed a gap in our own QA (axe ran only at 1280 px,
+before interaction). The runner now audits both widths, both themes and the
+post-interaction state, and was proven to catch the bug on the old version
+(D-037).
+
+Pictures: `docs/gate/v2-desktop-day-night.png`, `docs/gate/v2-phone.png`,
+`docs/gate/v2-prove-night-1280.png`.
 
 ## 6. After approval: Phase 1 (engine)
 

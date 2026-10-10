@@ -294,7 +294,9 @@ state (two cues). Compare against the solution space, never a leaderboard.
 Numbers in prose can drive a figure ("With a limit of **[12]** turns, **13**
 runs pass"). The number has a visible highlight (`--hx-scrub`), a dotted
 underline, − / + steppers on focus, arrow keys and drag; its value is also
-shown in the figure. At most one per paragraph.
+shown in the figure. At most one per paragraph. If the figure already has a
+keyboard control for the same value (a slider with − / + keys), the inline
+number may be pointer-only (`aria-hidden`) so there is one tab stop per value.
 
 ### 7.8 Night shift and the daily on-call shift
 - The daily shift opens like a page: "**PAGE** · run b2-spiral has called

@@ -641,16 +641,17 @@ export class BreakElement extends HTMLElement {
     }
   }
 
+  // The live message always says what the screen shows now: the turn, or the end of the run.
+  // The region de-duplicates, so a turn is announced once.
   announceTurn(i) {
-    if (i === LAST) {
-      this.say(`The run ends: ${END.status} after ${END.turns} turns.`);
-      return;
-    }
-    const turn = TRACE[i].turn;
-    if (turn !== this.lastTurnSaid) {
-      this.lastTurnSaid = turn;
-      this.say(`Turn ${turn} of ${MAX_TURN}.`);
-    }
+    this.say(i === LAST ? `The run ends: ${END.status} after ${END.turns} turns.` : `Turn ${TRACE[i].turn} of ${MAX_TURN}.`);
+  }
+
+  // The strip is one slider: its value text names the event, the turn, the wire and the tool.
+  stripText(i) {
+    const e = TRACE[i];
+    const detail = e.tool ? `: ${e.tool}` : e.tool_use ? `: ${e.tool_use.name}` : "";
+    return `Event ${eventNo(i)} of ${TRACE.length}, turn ${e.turn}, ${WIRE_BY_ID[e.wire].name}${detail}`;
   }
 
   activate(i) {
@@ -757,6 +758,10 @@ export class BreakElement extends HTMLElement {
 
     const pct = `${(e.t / MAX_T) * 100}%`;
     for (const ph of this.playheads) ph.style.left = pct;
+    if (this.compact) {
+      this.lanesHost.setAttribute("aria-valuenow", String(n));
+      this.lanesHost.setAttribute("aria-valuetext", this.stripText(s.idx));
+    }
     this.markNodes.forEach((node, i) => {
       if (!node) return;
       node.classList.toggle("is-dim", Boolean(s.filter) && TRACE[i].wire !== s.filter);

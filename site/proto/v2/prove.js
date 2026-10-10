@@ -18,6 +18,7 @@ const STATUS_TEXT = { done: "done", interrupted: "a person stopped it", max_turn
 const STATUS_GLYPH = { done: "check", interrupted: "pause", max_turns: "noentry" };
 const sleep = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
 const costText = (c, digits = 2) => `≈ ${c.toFixed(digits)}`;
+const liveText = () => document.getElementById("live-polite")?.textContent ?? "";
 
 function summarize(trials) {
   return {
@@ -315,7 +316,7 @@ export class ProveElement extends HTMLElement {
       el("p", { class: "honest", text: OLD.passes === NEW.passes
         ? `The turn limit didn't make the agent smarter: the same ${NEW.passes} runs pass. It made every run end, and cut the worst case by about ${RATIO}×.`
         : `The new board passes ${NEW.passes} runs and the old one ${OLD.passes}. The worst case is about ${RATIO}× cheaper.` }),
-      el("p", { class: "noise", text: "These runs are scripted, so they repeat exactly. Real models vary." }),
+      el("p", { class: "noise", text: "These runs are scripted, so they repeat exactly; real models vary." }),
       el("figure", { class: "plate instrument hist-plate", "aria-labelledby": "fig-b2-3" },
         el("div", { class: "plate-head" }, el("span", { class: "fig-label", id: "fig-b2-3", text: "FIG B2.3 · SAME AXES, BEFORE AND AFTER" })),
         el("p", { class: "legend-inline" }, el("span", { class: "swatch hatch" }), "before (hatched)", el("span", { class: "swatch solid" }), "after (solid)"),
@@ -332,7 +333,8 @@ export class ProveElement extends HTMLElement {
     this.minus.addEventListener("click", () => this.setLimit(this.state.limit - 1));
     this.plus = el("button", { class: "key key-icon", type: "button", "aria-label": "Raise the turn limit" }, glyph("plus"));
     this.plus.addEventListener("click", () => this.setLimit(this.state.limit + 1));
-    this.scrubLimit = el("span", { class: "scrub", role: "slider", tabindex: "0", "aria-label": "Turn limit", "aria-valuemin": String(LIM_LO), "aria-valuemax": String(LIM_HI) });
+    // The number in the sentence is a pointer affordance only: the slider is the one keyboard control.
+    this.scrubLimit = el("span", { class: "scrub", "aria-hidden": "true" });
     this.bindLimitScrub(this.scrubLimit);
     this.passEl = el("strong");
     this.worstEl = el("strong");
@@ -415,7 +417,27 @@ export class ProveElement extends HTMLElement {
     s.tried.add(next);
     this.paintPuzzle();
     this.redraw();
-    if (s.plugged) this.redrawClock();
+    if (s.plugged) {
+      this.redrawClock();
+      this.plugMsg.textContent = this.plugText();
+    }
+    // The live message is replaced on every change, and always describes the current limit.
+    this.say(s.plugged ? this.plugText() : this.puzzleStatus());
+  }
+
+  // Derived from the current state, so it never describes a limit the learner has left.
+  puzzleStatus() {
+    const s = this.state;
+    const c = CURVE[s.limit - LIM_LO];
+    if (s.limit === PAR && s.tried.size >= REVEAL_TRIES) {
+      return `Par: limit ${PAR} keeps all ${BASE} passing runs and has the cheapest worst case.`;
+    }
+    return `Limit ${s.limit}: ${c.passes} of ${N} pass, and the worst run costs ${fmtCost(c.worst, 3)}.`;
+  }
+
+  plugText() {
+    const s = this.state;
+    return `Plugged: the loop now stops at ${s.limit} turns. The worst run costs ${fmtCost(CURVE[s.limit - LIM_LO].worst, 3)}.`;
   }
 
   paintPuzzle() {
@@ -426,8 +448,7 @@ export class ProveElement extends HTMLElement {
     const atPar = s.limit === PAR && revealed;
     this.limitRange.value = String(s.limit);
     this.scrubLimit.textContent = String(s.limit);
-    this.scrubLimit.setAttribute("aria-valuenow", String(s.limit));
-    this.scrubLimit.setAttribute("aria-valuetext", `${s.limit} turns`);
+    this.limitRange.setAttribute("aria-valuetext", `${s.limit} turns`);
     this.passEl.textContent = String(c.passes);
     this.worstEl.textContent = fmtCost(c.worst, 3);
     this.minus.disabled = s.limit <= LIM_LO;
@@ -451,10 +472,6 @@ export class ProveElement extends HTMLElement {
     }
     this.parWindow.classList.toggle("is-par", atPar);
     this.plugBtn.disabled = !s.touched;
-    if (atPar && !this.parCelebrated) {
-      this.parCelebrated = true;
-      this.say(`Par: limit ${PAR} keeps all ${BASE} passing runs and has the cheapest worst case.`);
-    }
   }
 
   // ---------- the clock board and the plug-in ----------
@@ -462,7 +479,7 @@ export class ProveElement extends HTMLElement {
     if (!this.state.touched) return;
     this.state.plugged = true;
     this.redrawClock(true);
-    this.plugMsg.textContent = `Plugged: the loop now stops at ${this.state.limit} turns. The worst run costs ${fmtCost(CURVE[this.state.limit - LIM_LO].worst, 3)}.`;
+    this.plugMsg.textContent = this.plugText();
     this.say(this.plugMsg.textContent);
   }
 
@@ -504,7 +521,15 @@ export class ProveElement extends HTMLElement {
         this.limitRange.dispatchEvent(new Event("input"));
       }
       if (COMPUTED_PAR !== PAR) return false;
-      return this.parWindow.classList.contains("is-par") && this.parLabel.textContent === `PAR · limit ${PAR}`;
+      if (!(this.parWindow.classList.contains("is-par") && this.parLabel.textContent === `PAR · limit ${PAR}`)) return false;
+      // The live region says par while the learner is at par...
+      await sleep(60);
+      if (!/\bpar\b/i.test(liveText())) return false;
+      // ...and stops saying it as soon as they leave par.
+      this.limitRange.value = "8";
+      this.limitRange.dispatchEvent(new Event("input"));
+      await sleep(60);
+      return !/\bpar\b/i.test(liveText());
     } catch (error) {
       console.error(error);
       return false;
