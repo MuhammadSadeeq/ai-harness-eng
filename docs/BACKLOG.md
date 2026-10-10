@@ -19,4 +19,4 @@ says where it came from.
 | B-12 | ~~Rein in Rust~~ | Owner question, 2026-10-10 | **In scope** as the I4 capstone (D-046). |
 | B-13 | ~~A Run button on `pre[data-run]` snippets~~ | B2 walkthrough, 2026-10-10 | **Done** (Phase 2): the shell's Run key on the shared Python worker. |
 | B-14 | Clock face legible below 320 px | Shell round, 2026-10-10 | The face's 300-unit minimum scales codes under 14 px on very narrow screens; QA covers 375 and up. |
-| B-15 | A scroll cue on the incident transcript at phone widths | Wave 3.2 review, 2026-10-10 | The transcript is a 46vh scroll region (focusable); at 375 its last row clips with no cue that more follows. |
+| B-15 | ~~A scroll cue on the incident transcript at phone widths~~ | Wave 3.2 review, 2026-10-10 | **Done**: a bottom fade and a "More below" chip while rows lie below, announced once. |

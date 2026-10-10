@@ -270,7 +270,10 @@ export class HxIncident extends HxElement {
     pieces.push(el("p", { class: "hunt-keys", text: "With a keyboard: arrow keys move between events, Enter picks one." }));
     if (locked) pieces.push(el("p", { class: "gate", text: "Make your prediction above to unlock the run." }));
     pieces.push(el("div", { class: "lanes-area" }, strip));
-    pieces.push(el("div", { class: "transcript-wrap", role: "region", "aria-label": "Run transcript" }, list));
+    // The cue sits outside the scroll region, so it stays at the bottom edge while the rows scroll (B-15).
+    const more = el("p", { class: "more-cue", "aria-hidden": "true", text: "More below" });
+    pieces.push(el("div", { class: "transcript-frame" },
+      el("div", { class: "transcript-wrap", role: "region", "aria-label": "Run transcript" }, list), more));
     if (s.found !== null) {
       pieces.push(el("div", { class: "found-block" },
         el("h4", { class: "found-heading", tabindex: "-1", text: "Found." }),
@@ -282,9 +285,31 @@ export class HxIncident extends HxElement {
 
     this.ui.replaceChildren(el("div", { class: "incident" }, ...pieces));
     const wrap = this.ui.querySelector(".transcript-wrap");
-    if (wrap) wrap.scrollTop = keep;
+    if (wrap) {
+      wrap.scrollTop = keep;
+      wrap.addEventListener("scroll", () => this.updateCue(), { passive: true });
+    }
+    this.updateCue();
+    if (!this.resizeBound) {
+      this.resizeBound = true;
+      globalThis.addEventListener("resize", () => this.updateCue());
+    }
     this.roveFocus(list);
     this.list = list;
+  }
+
+  /** The bottom cue: the fade and the "More below" text show only while rows lie below the visible part; the line is
+   *  read once, the first time it applies (B-15). No motion: the cue is shown or hidden, never animated. */
+  updateCue() {
+    const wrap = this.ui?.querySelector(".transcript-wrap");
+    const frame = wrap?.parentElement;
+    if (!wrap || !frame?.classList.contains("transcript-frame")) return;
+    const more = wrap.scrollTop + wrap.clientHeight < wrap.scrollHeight - 4;
+    frame.classList.toggle("has-more", more);
+    if (more && !this.cueSaid) {
+      this.cueSaid = true;
+      this.live("More below");
+    }
   }
 
   namingBlock(familyChoices) {

@@ -6,6 +6,12 @@
 .incident .gate { margin: 0; padding: var(--sp-2) var(--sp-3); border: 1px dashed var(--hx-rule-strong); border-radius: var(--r-btn); font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
 .lanes-area { min-width: 0; }
 .incident .transcript-wrap { max-height: 46vh; }
+/* The bottom cue (B-15): a fade and a "More below" line while rows lie under the visible part. Shape and words, not colour alone. */
+.transcript-frame { position: relative; min-width: 0; }
+.transcript-frame::after { content: ""; position: absolute; left: 1px; right: 1px; bottom: 1px; height: 3rem; border-radius: 0 0 var(--r-btn) var(--r-btn); background: linear-gradient(to bottom, transparent, var(--hx-panel)); pointer-events: none; display: none; }
+.transcript-frame.has-more::after { display: block; }
+.transcript-frame .more-cue { display: none; position: absolute; right: var(--sp-3); bottom: var(--sp-2); margin: 0; padding: 2px var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-chip); background: var(--hx-paper); font: 600 var(--fs-small)/1.3 var(--font-sans); color: var(--hx-ink); pointer-events: none; }
+.transcript-frame.has-more .more-cue { display: block; }
 @media (min-width: 700px) { .incident .transcript-wrap { max-height: 32rem; } }
 .found-heading { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); color: var(--hx-pass); }
 .found-heading:focus-visible { outline: 3px solid var(--hx-focus); outline-offset: 3px; }
