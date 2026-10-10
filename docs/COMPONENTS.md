@@ -17,8 +17,12 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
 - The shell's loader (`site/assets/core/app.js`) imports a component only if
   it is listed in the loader registry and present on the page (BP-1.1).
 - Components render in the **light DOM** (no shadow DOM) so `hx.css` applies.
-  CSS for a component goes in `hx.css` under a `/* hx-<name> */` section, using
-  tokens only.
+  A component's own CSS lives in `site/assets/components/hx-<name>.css`
+  (tokens only, no raw colors), declared as
+  `static styles = new URL("./hx-<name>.css", import.meta.url).href`; the base
+  adds it once per page and awaits it before the first render. Shared patterns
+  (keys, readouts, plates, radios) come from `hx.css` and are reused, not
+  copied.
 
 ## 2. No-JS fallback
 - An element's authored children are its fallback (a figure plus a sentence,

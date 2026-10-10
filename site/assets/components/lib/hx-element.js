@@ -18,7 +18,26 @@
 // - live(text) sets the component's one polite live region (only when the text changes).
 // - evidence(kind, detail) dispatches the bubbling hx-evidence event (§5).
 // - reducedMotion reads the stored motion setting, else the system setting (DESIGN §8.4).
+// - static styles = new URL("./hx-thing.css", import.meta.url).href: the component's stylesheet is
+//   added once per page and awaited before the first render (no flash of unstyled UI).
 import { hxContext } from "../../core/context.js";
+
+const sheets = new Map();
+
+/** Adds a stylesheet to the page once; resolves when it has loaded (or failed: the UI still works). */
+export function loadStyles(href) {
+  if (!sheets.has(href)) {
+    sheets.set(href, new Promise((resolve) => {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = href;
+      link.addEventListener("load", () => resolve(true), { once: true });
+      link.addEventListener("error", () => resolve(false), { once: true });
+      document.head.append(link);
+    }));
+  }
+  return sheets.get(href);
+}
 
 export class HxElement extends HTMLElement {
   #started = false;
@@ -109,7 +128,8 @@ export class HxElement extends HTMLElement {
     this.ui = ui;
     this.liveRegion = liveRegion;
     try {
-      await this.setup();
+      const styles = this.constructor.styles;
+      await Promise.all([styles ? loadStyles(styles) : null, this.setup()]);
       this.render();
       this.setAttribute("data-hx-ready", "");
       this.#resolveReady(true);
