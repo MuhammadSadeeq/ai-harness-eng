@@ -14,6 +14,8 @@ Rules:
 - Touch only the files the blueprint gives you. Never commit, push, branch,
   or delete files you did not create.
 - Never run two heavy checks at once (Playwright, Pyodide, full suites).
+- Run browser QA with `--out <your scratch>/qa`, so parallel runs by other
+  builders never overwrite your screenshots or report (and you never read theirs).
 - Put scratch work under the scratch path you are given; delete it at the end.
 - If a tool or command is denied, stop that line of work and report it.
   Never work around a denial.
