@@ -346,3 +346,14 @@ basis for Phase 1, and answered SPEC §14:
   permissions C9, verify C11, observe C12. `check_content` requires a tag on
   every core module, on one of its wires. Build modules raise a wire's level
   (L2) on the readiness radar later; they carry no tag.
+
+### D-044 · Pushes are gated on QA too; demo pages need acceptance · *decided*
+- A work-in-progress snapshot passed `ci_local.sh --committed` (which has no
+  browser QA) and was pushed; CI's Browser QA then failed on builders'
+  unreviewed demo pages. From now on every push is gated on
+  `tools/ci_local.sh --committed --qa`.
+- Default QA (and CI) checks `site/labs/` pages only once the director accepts
+  them (`tools/qa/accepted-labs.txt`, director-owned), matching the component
+  registry (only accepted components load on real pages). Builders keep
+  checking their own pages with `--only`. The Phase 1 gate requires every demo
+  page to be accepted, so nothing can hide there.
