@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="../../assets/core/tokens.css">
+<link rel="stylesheet" href="style.css">
+<link rel="preload" href="../../assets/fonts/harnessed-sans-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script type="module" src="app.js"></script>
+<script type="module" src="entry-home.js"></script>
+<title>Home · B2 · HARNESSED</title>
+<meta name="description" content="HARNESSED course home: continue the agent loop, the Harness Board, and today's shift or the night page.">
+</head>
+<body data-page="home">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="wordmark" href="index.html" aria-label="HARNESSED, home">
+    <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>
+    <span>HARNESSED</span>
+  </a>
+  <p class="module-id"><span class="mod-code">B2</span> The agent loop</p>
+  <nav class="top-nav" aria-label="Pages">
+    <ol>
+      <li><a href="index.html" data-page="home">Home</a></li>
+      <li><a href="break.html" data-page="break">Break</a></li>
+      <li><a href="prove.html" data-page="prove">Prove</a></li>
+    </ol>
+  </nav>
+  <div class="settings">
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+</header>
+<main id="main" class="page">
+  <hx-proto-home>
+    <div class="article">
+      <section class="row intro">
+        <p class="kicker">Part B · The model and the harness</p>
+        <h1>Read the run. Then change it.</h1>
+        <p class="lede">Each module is a reading page with working instruments. You step a real run, turn a real knob, and run twenty trials to read the numbers.</p>
+      </section>
+
+      <section class="row continue" aria-labelledby="continue-h">
+        <p class="kicker">Continue · B2 · The agent loop</p>
+        <h2 id="continue-h">The run that said it was almost done</h2>
+        <p class="meta">1 Break · 2 See · 3 Fix · 4 Prove · 5 Keep · about 60 minutes</p>
+        <a class="btn btn-primary" href="break.html">Continue to 1 Break</a>
+      </section>
+
+      <section class="row oncall" data-oncall aria-live="off">
+        <p class="fallback">Today's shift and the night page load with JavaScript.</p>
+        <a class="btn" href="break.html">Start the shift</a>
+      </section>
+
+      <section class="row board-section" aria-labelledby="board-h">
+        <h2 id="board-h">The Harness Board</h2>
+        <p class="lede">Eight wires, in turn order around the clock. Each wire is a spoke. The tags are the modules you have earned.</p>
+        <figure class="plate instrument board-plate">
+          <div class="plate-head"><span class="fig-label">FIG 0 · THE CLOCK</span><span class="plate-state">2 modules plugged in</span></div>
+          <div class="board-host" data-board><p class="fallback">The board needs JavaScript. Its eight wires are listed below.</p></div>
+          <figcaption class="caption">Try this: find the 7 o'clock spoke. That is permissions.</figcaption>
+        </figure>
+        <div class="legend-host" data-legend></div>
+      </section>
+
+      <section class="row path-section" aria-labelledby="path-h">
+        <h2 id="path-h">Path</h2>
+        <div data-progress><p class="fallback">Your path loads with JavaScript.</p></div>
+      </section>
+    </div>
+  </hx-proto-home>
+</main>
+<footer class="footer">
+  <p>Field Guide and Night Shift, unified (DESIGN v2). Costs are illustrative fixture values in relative units. Fonts: Newsreader (OFL), Harnessed Sans and Mono (OFL, renamed IBM Plex subsets).</p>
+</footer>
+</body>
+</html>

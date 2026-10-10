@@ -153,7 +153,8 @@ Three families, self-hosted, Latin subsets, `font-display: swap`; no CDN.
 | Code, Wire JSON, trace rows, readouts, numbers | **Harnessed Mono** (renamed IBM Plex Mono subset) | `@ibm/plex-mono` 2.5.0, OFL | 400, 600 | `--font-mono` |
 
 - Newsreader ships as static subsets (not the 132 KB variable file); target
-  ≤ 130 KB for all seven files; preload only serif 400, sans 600, mono 400.
+  ≤ 135 KB for all seven files (measured 133 KB in the v2 prototype); preload
+  only serif 400, sans 600, mono 400.
 - Plex's reserved font name keeps its subsets renamed (D-013). Newsreader's
   license is checked for a reserved name in Phase 1 and renamed the same way
   if it has one.
@@ -171,7 +172,7 @@ Three families, self-hosted, Latin subsets, `font-display: swap`; no CDN.
 | `--fs-h2` | 26 | 30 | serif 600 |
 | `--fs-h1` | `clamp(2.1rem, 1.4rem + 3vw, 3.1rem)` | | serif 600 |
 | `--fs-code` | 14 | 15 | code, JSON, trace rows |
-| `--fs-readout` | 28 | 36 | instrument values (mono 600) |
+| `--fs-readout` | 22 | 28 | instrument values (mono 600); long values must stay on one line |
 
 **Nothing under 14 px at any width, including SVG text.** Charts and diagrams
 draw at their measured pixel width (not a scaled viewBox) and redraw on
@@ -237,7 +238,11 @@ resend"); empty spokes are dashed with "comes in C9"; a de-energized wire
   harness decisions (permission, guard, retry) as one-line rows with their
   glyph. The current event is highlighted and carries its **plain explanation
   inline**. Above it, a compact **8-lane strip** (every event as a mark and a
-  playhead; ≥ 44 px tall; also a scrubber).
+  playhead; at most 96 px tall on phones). The **whole strip is one scrubber
+  control** (≥ 44 px tall, arrow keys, tap selects the nearest event); on
+  phones individual lanes are display-only. Then **one compact instrument bar**
+  ("Turn 4/14 · Desk 26 % · ≈ 0.026") instead of tiles; tiles on ≥ 700 px.
+  The transcript keeps the **current row visible** just above the transport.
 - **Transport, sticky in the thumb zone**: Back · **Step** (primary) · Play,
   speed 1×/2×/4×, and the event counter. At most 22 % of an 812 px screen;
   48 px keys. The scrubber has − / + steppers and arrow keys.
@@ -355,7 +360,7 @@ ticks; bins are chosen so every bin label is legible at 375 px.
 
 ≤ 300 KB per page (compressed, initial load), excluding Pyodide and the
 editor, which load lazily with a progress indicator and are cached by the
-service worker. Fonts ≤ 130 KB. Components load per page (only the `hx-*`
+service worker. Fonts ≤ 135 KB. Components load per page (only the `hx-*`
 elements present). Diagrams are SVG; images ≤ 60 KB.
 
 ---

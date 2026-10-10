@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="../../assets/core/tokens.css">
+<link rel="stylesheet" href="style.css">
+<link rel="preload" href="../../assets/fonts/harnessed-sans-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../assets/fonts/harnessed-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+<script type="module" src="app.js"></script>
+<script type="module" src="entry-prove.js"></script>
+<link rel="preload" href="../../assets/fonts/harnessed-sans-400.woff2" as="font" type="font/woff2" crossorigin>
+<title>3 Prove · B2 · HARNESSED</title>
+<meta name="description" content="Run the same 20 seeds on both boards, read the results, then find the turn limit that beats par.">
+</head>
+<body data-page="prove">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="wordmark" href="index.html" aria-label="HARNESSED, home">
+    <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>
+    <span>HARNESSED</span>
+  </a>
+  <p class="module-id"><span class="mod-code">B2</span> The agent loop</p>
+  <nav class="top-nav" aria-label="Pages">
+    <ol>
+      <li><a href="index.html" data-page="home">Home</a></li>
+      <li><a href="break.html" data-page="break">Break</a></li>
+      <li><a href="prove.html" data-page="prove">Prove</a></li>
+    </ol>
+  </nav>
+  <div class="settings">
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+</header>
+<main id="main" class="page">
+  <hx-proto-prove>
+    <div class="article">
+      <section class="row intro">
+        <p class="kicker">B2 · Prove</p>
+        <h1>Prove the fix, then beat par</h1>
+        <p class="lede">Two boards, the same 20 seeds. The only change is a turn limit and a token budget.</p>
+      </section>
+      <noscript><p class="note-inline">This page needs JavaScript to run the boards. Each board has 20 scripted seeds.</p></noscript>
+    </div>
+  </hx-proto-prove>
+</main>
+<footer class="footer">
+  <p>Field Guide and Night Shift, unified (DESIGN v2). Costs are illustrative fixture values in relative units. Fonts: Newsreader (OFL), Harnessed Sans and Mono (OFL, renamed IBM Plex subsets).</p>
+</footer>
+</body>
+</html>
