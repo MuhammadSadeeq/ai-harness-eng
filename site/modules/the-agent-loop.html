@@ -155,7 +155,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
     </figure>
 
     <h3>A loop needs more than one exit</h3>
-    <p>Each way out of the loop is an <dfn data-term="exit">exit</dfn>. The loop above has two. The first is the model's <dfn data-term="done-claim">done claim</dfn>, end_turn. It is a claim, and nothing in this loop checks it. The second belongs to the harness. A <dfn data-term="turn-limit">turn limit</dfn> stops the loop after a set number of model calls. A <dfn data-term="token-budget">token budget</dfn> stops it after a set number of tokens, input and output together. Neither depends on what the model thinks.</p>
+    <p>Each way out of the loop is an <dfn data-term="exit">exit</dfn>. The loop above has two. The first is the model's <dfn data-term="done-claim">done claim</dfn>, end_turn. It is a claim, and nothing in this loop checks it. The second belongs to the harness: a <dfn data-term="turn-limit">turn limit</dfn> stops the loop after a set number of model calls. A third exit you can add is a <dfn data-term="token-budget">token budget</dfn>: it stops the loop after a set number of tokens, input and output together. Neither harness exit depends on what the model thinks.</p>
     <aside class="note">
       <p>Why count model calls, not tool calls? Suppose one reply asks for three tools. That is still one turn, so the limit counts calls.</p>
     </aside>
