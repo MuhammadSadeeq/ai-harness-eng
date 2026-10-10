@@ -120,7 +120,8 @@ re-define a few terms locally (`local_terms`) without taking ownership.
 This rule already changed the plan in Phase 0: a dry run over the objectives
 found 22 uses before teaching. "Tool" moved into S0's starter vocabulary,
 "sub-agent" into C11 (the independent reviewer is the first sub-agent learners
-meet), "exfiltration" into C10, and F4, G3 and I4 gained prerequisites.
+meet), "exfiltration" into C10, and F4, G3 and the Interview Room (now I5)
+gained prerequisites.
 
 ## 6. Changes from the SPEC §5 draft, and why
 
@@ -138,18 +139,19 @@ meet), "exfiltration" into C10, and F4, G3 and I4 gained prerequisites.
 | **Rein build kept in the book's step order** | Each step's diff applies to the previous file; the steps are interleaved into the path as soon as their theory is taught. |
 | **Primers require S0** | Every learner does S0 first, so primers can say "agent" and "tool". |
 | **Basic Python is a stated prerequisite** | The course is code-first; a Python-basics primer is in the backlog. |
+| **Added I4 "Capstone: Rein in Rust"** (career, after the portfolio projects; the Interview Room becomes I5 and "Twelve weeks after" I6) | Owner request (2026-10-10, D-046). Reimplementing the engine spec in a second language and proving it with the same golden traces is strong portfolio and interview evidence, and it tests the spec itself. Rust is the suggested language; the parity runner accepts any command, so another language works too. It comes before the Interview Room so learners can tell its story there. |
 
 <!-- BEGIN GENERATED: tools/render_curriculum.py -->
 ## Generated from course.json
 
 Do not edit this block by hand: change `course.json`, then run `python tools/render_curriculum.py`.
 
-- **69 modules** (29 core, 11 concept, 11 build, 3 guide, 5 career, 10 primer) in 11 parts, 267 objectives, 336 planned terms, 35 failure families.
-- Lesson time on the default path: about 46 hours (all modules including primers: about 49 hours), before practice, portfolio and interview work.
+- **70 modules** (29 core, 11 concept, 11 build, 3 guide, 6 career, 10 primer) in 11 parts, 271 objectives, 336 planned terms, 35 failure families.
+- Lesson time on the default path: about 46 hours (all modules including primers: about 50 hours), before practice, portfolio and interview work.
 
 ### Default path
 
-S0 → A1 → A2 → A3 → A4 → A5 → A6 → A7 → B1 → B2 → H0 → H1 → H2 → B3 → B4 → C1 → C2 → C3 → C4 → C5 → C6 → C7 → C8 → C9 → C10 → H3 → H4 → H5 → H6 → H7 → H8 → C11 → H9 → H10 → H11 → C12 → D1 → D2 → D3 → H12 → E1 → E2 → F1 → F2 → F3 → F4 → F5 → F6 → F7 → G1 → G2 → G3 → G4 → H13 → I1 → I2 → I3 → I4 → I5
+S0 → A1 → A2 → A3 → A4 → A5 → A6 → A7 → B1 → B2 → H0 → H1 → H2 → B3 → B4 → C1 → C2 → C3 → C4 → C5 → C6 → C7 → C8 → C9 → C10 → H3 → H4 → H5 → H6 → H7 → H8 → C11 → H9 → H10 → H11 → C12 → D1 → D2 → D3 → H12 → E1 → E2 → F1 → F2 → F3 → F4 → F5 → F6 → F7 → G1 → G2 → G3 → G4 → H13 → I1 → I2 → I3 → I4 → I5 → I6
 
 ### Module map
 
@@ -259,8 +261,9 @@ S0 → A1 → A2 → A3 → A4 → A5 → A6 → A7 → B1 → B2 → H0 → H1 
 | I1 | The job map (dated) | career | Observability Verification | B4 | 30 | Evidence beats adjectives. |
 | I2 | Readiness self-assessment | career | Control Context Loop Errors Tools Permissions Verification Observability | I1 | 30 | Claim only what you can show. |
 | I3 | Four portfolio projects | career | Verification Observability | H12, I2 | 45 | A result is a number, an interval and a method. |
-| I4 | Interview Room | career | Control Context Loop Errors Tools Permissions Verification Observability | I2, D2, G4, F5 | 120 | Walk the clock out loud. |
-| I5 | Twelve weeks after the course | career | Observability | I4 | 30 | Practice in public, on a schedule. |
+| I4 | Capstone: Rein in Rust | career | Control Context Loop Errors Tools Permissions Verification Observability | H12, I3 | 60 | Same spec, same traces, any language. |
+| I5 | Interview Room | career | Control Context Loop Errors Tools Permissions Verification Observability | I2, D2, G4, F5 | 120 | Walk the clock out loud. |
+| I6 | Twelve weeks after the course | career | Observability | I5 | 30 | Practice in public, on a schedule. |
 
 #### Part T — Toolbelt
 
@@ -1249,17 +1252,34 @@ New terms: write-up
 
 Interactions: `hx-check`
 
-#### I4 · Interview Room
+#### I4 · Capstone: Rein in Rust
+
+kind **career** · slug `capstone-rein-in-rust`
+
+By the end you can:
+
+- `I4.o1` Implement the course's engine spec in Rust as a third runtime, with the same tapes, boards and command line as the JS simulator and Rein.
+- `I4.o2` Prove the port with golden-trace parity: byte-identical events and matching wire digests on every seed tape.
+- `I4.o3` Explain where languages drift apart (integer math, JSON key order, string escaping, random numbers) and how one exact spec keeps three runtimes in step.
+- `I4.o4` Present the capstone in an interview: the design, the parity evidence and one bug that parity caught.
+
+Misconceptions to confront: “If the port passes the examples, it behaves the same.” “A second implementation is wasted work.”
+
+New terms: 
+
+Interactions: `hx-say`
+
+#### I5 · Interview Room
 
 kind **career** · slug `interview-room` · book: j2
 
 By the end you can:
 
-- `I4.o1` Answer interview questions out loud and self-grade against a rubric.
-- `I4.o2` Solve timed coding katas from memory.
-- `I4.o3` Run a system design answer with the eight-wire checklist, including cost, risks and rollout.
-- `I4.o4` Debug a failing trace under time pressure.
-- `I4.o5` Tell two behavioral stories with evidence.
+- `I5.o1` Answer interview questions out loud and self-grade against a rubric.
+- `I5.o2` Solve timed coding katas from memory.
+- `I5.o3` Run a system design answer with the eight-wire checklist, including cost, risks and rollout.
+- `I5.o4` Debug a failing trace under time pressure.
+- `I5.o5` Tell two behavioral stories with evidence.
 
 Misconceptions to confront: “Design interviews reward naming frameworks.” “I'll know it when I'm asked.”
 
@@ -1267,15 +1287,15 @@ New terms: system design interview, take-home
 
 Interactions: `hx-say`, `hx-design`, `hx-kata`, `hx-incident`
 
-#### I5 · Twelve weeks after the course
+#### I6 · Twelve weeks after the course
 
 kind **career** · slug `twelve-weeks-after` · book: j1
 
 By the end you can:
 
-- `I5.o1` Plan twelve weeks of practice with weekly evidence goals.
-- `I5.o2` Run a mock interview with a friend using the kit.
-- `I5.o3` Keep your board energized with the daily shift.
+- `I6.o1` Plan twelve weeks of practice with weekly evidence goals.
+- `I6.o2` Run a mock interview with a friend using the kit.
+- `I6.o3` Keep your board energized with the daily shift.
 
 Misconceptions to confront: “The course is the finish line.”
 

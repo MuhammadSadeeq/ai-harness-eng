@@ -371,3 +371,23 @@ basis for Phase 1, and answered SPEC §14:
 - One wording module (`lib/format.js`) for costs (rounded half up to four
   decimals), counts, durations, plurals and status words, used by every
   component.
+
+### D-046 · Rust capstone: I4 "Capstone: Rein in Rust" · *decided (owner, 2026-10-10)*
+- The owner chose the Rust track as a **capstone at the end**, for portfolio
+  and interviews (backlog B-12, now in scope). It is module **I4** (career
+  kind, 60 minutes of guide on the default path; the project itself is
+  self-paced like I3's), after the portfolio projects and **before the
+  Interview Room** (now I5) so the learner can tell its story there;
+  "Twelve weeks after the course" becomes I6. Python stays the primary
+  language (D-038 context unchanged).
+- What the learner builds: `docs/ENGINE.md` implemented in Rust as a third
+  runtime with the same command line, proven by the same golden traces
+  (byte-identical events, matching wire digests). The parity runner accepts
+  any command, so another language also works; Rust is the suggestion.
+- What the course ships (Phase 4, the build track): a learner-facing parity
+  runner (`tools/parity.py --cmd "<your binary> run"`), a Rust skeleton
+  (argument parsing, file reading, one failing parity run) and a milestone
+  checklist. The director has a reference implementation built in Phase 4 to
+  prove the capstone is doable here (cargo is available) and to test the
+  runner; whether that reference ships publicly is decided at launch, like
+  `source/` (a public solution would undercut the portfolio value).

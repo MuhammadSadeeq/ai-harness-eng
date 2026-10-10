@@ -1,18 +1,18 @@
 {
  "counts": {
   "failure_families": 35,
-  "minutes_all": 2940,
-  "minutes_path": 2730,
-  "modules": 69,
+  "minutes_all": 3000,
+  "minutes_path": 2790,
+  "modules": 70,
   "modules_by_kind": {
    "build": 11,
-   "career": 5,
+   "career": 6,
    "concept": 11,
    "core": 29,
    "guide": 3,
    "primer": 10
   },
-  "objectives": 267,
+  "objectives": 271,
   "parts": 11,
   "terms_planned": 336,
   "wires": 8
@@ -3872,6 +3872,60 @@
    "family": null,
    "id": "I4",
    "interactions": [
+    "hx-say"
+   ],
+   "kind": "career",
+   "law": "Same spec, same traces, any language.",
+   "minutes": 60,
+   "misconceptions": [
+    "“If the port passes the examples, it behaves the same.”",
+    "“A second implementation is wasted work.”"
+   ],
+   "objectives": [
+    {
+     "id": "I4.o1",
+     "text": "Implement the course's engine spec in Rust as a third runtime, with the same tapes, boards and command line as the JS simulator and Rein."
+    },
+    {
+     "id": "I4.o2",
+     "text": "Prove the port with golden-trace parity: byte-identical events and matching wire digests on every seed tape."
+    },
+    {
+     "id": "I4.o3",
+     "text": "Explain where languages drift apart (integer math, JSON key order, string escaping, random numbers) and how one exact spec keeps three runtimes in step."
+    },
+    {
+     "id": "I4.o4",
+     "text": "Present the capstone in an interview: the design, the parity evidence and one bug that parity caught."
+    }
+   ],
+   "part": "I",
+   "prereqs": [
+    "H12",
+    "I3"
+   ],
+   "primers": [],
+   "slug": "capstone-rein-in-rust",
+   "source": [],
+   "status": "planned",
+   "terms": [],
+   "title": "Capstone: Rein in Rust",
+   "volatile": false,
+   "wires": [
+    "control",
+    "context",
+    "loop",
+    "errors",
+    "tools",
+    "permissions",
+    "verify",
+    "observe"
+   ]
+  },
+  {
+   "family": null,
+   "id": "I5",
+   "interactions": [
     "hx-say",
     "hx-design",
     "hx-kata",
@@ -3886,23 +3940,23 @@
    ],
    "objectives": [
     {
-     "id": "I4.o1",
+     "id": "I5.o1",
      "text": "Answer interview questions out loud and self-grade against a rubric."
     },
     {
-     "id": "I4.o2",
+     "id": "I5.o2",
      "text": "Solve timed coding katas from memory."
     },
     {
-     "id": "I4.o3",
+     "id": "I5.o3",
      "text": "Run a system design answer with the eight-wire checklist, including cost, risks and rollout."
     },
     {
-     "id": "I4.o4",
+     "id": "I5.o4",
      "text": "Debug a failing trace under time pressure."
     },
     {
-     "id": "I4.o5",
+     "id": "I5.o5",
      "text": "Tell two behavioral stories with evidence."
     }
    ],
@@ -3938,7 +3992,7 @@
   },
   {
    "family": null,
-   "id": "I5",
+   "id": "I6",
    "interactions": [
     "hx-check"
    ],
@@ -3950,21 +4004,21 @@
    ],
    "objectives": [
     {
-     "id": "I5.o1",
+     "id": "I6.o1",
      "text": "Plan twelve weeks of practice with weekly evidence goals."
     },
     {
-     "id": "I5.o2",
+     "id": "I6.o2",
      "text": "Run a mock interview with a friend using the kit."
     },
     {
-     "id": "I5.o3",
+     "id": "I6.o3",
      "text": "Keep your board energized with the daily shift."
     }
    ],
    "part": "I",
    "prereqs": [
-    "I4"
+    "I5"
    ],
    "primers": [],
    "slug": "twelve-weeks-after",
@@ -4524,7 +4578,8 @@
   "I2",
   "I3",
   "I4",
-  "I5"
+  "I5",
+  "I6"
  ],
  "product": {
   "build_project": "Rein",

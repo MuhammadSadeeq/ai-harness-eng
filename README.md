@@ -57,5 +57,5 @@ Code is MIT (`LICENSE`). Course content is CC BY-NC-SA 4.0, fonts are SIL OFL 1.
 and `source/` is all rights reserved. See `LICENSE-CONTENT.md` for the full split.
 
 <!-- BEGIN GENERATED: counts -->
-- 69 modules in 11 parts, 267 objectives, 35 failure families, about 46 hours of lessons on the default path.
+- 70 modules in 11 parts, 271 objectives, 35 failure families, about 46 hours of lessons on the default path.
 <!-- END GENERATED -->

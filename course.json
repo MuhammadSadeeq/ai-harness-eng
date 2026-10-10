@@ -4003,6 +4003,60 @@
     },
     {
       "id": "I4",
+      "slug": "capstone-rein-in-rust",
+      "part": "I",
+      "title": "Capstone: Rein in Rust",
+      "kind": "career",
+      "wires": [
+        "control",
+        "context",
+        "loop",
+        "errors",
+        "tools",
+        "permissions",
+        "verify",
+        "observe"
+      ],
+      "prereqs": [
+        "H12",
+        "I3"
+      ],
+      "primers": [],
+      "minutes": 60,
+      "law": "Same spec, same traces, any language.",
+      "objectives": [
+        {
+          "id": "I4.o1",
+          "text": "Implement the course's engine spec in Rust as a third runtime, with the same tapes, boards and command line as the JS simulator and Rein."
+        },
+        {
+          "id": "I4.o2",
+          "text": "Prove the port with golden-trace parity: byte-identical events and matching wire digests on every seed tape."
+        },
+        {
+          "id": "I4.o3",
+          "text": "Explain where languages drift apart (integer math, JSON key order, string escaping, random numbers) and how one exact spec keeps three runtimes in step."
+        },
+        {
+          "id": "I4.o4",
+          "text": "Present the capstone in an interview: the design, the parity evidence and one bug that parity caught."
+        }
+      ],
+      "misconceptions": [
+        "“If the port passes the examples, it behaves the same.”",
+        "“A second implementation is wasted work.”"
+      ],
+      "terms": [],
+      "interactions": [
+        "hx-say"
+      ],
+      "family": null,
+      "source": [],
+      "volatile": false,
+      "status": "planned"
+    },
+    {
+      "id": "I5",
       "slug": "interview-room",
       "part": "I",
       "title": "Interview Room",
@@ -4028,23 +4082,23 @@
       "law": "Walk the clock out loud.",
       "objectives": [
         {
-          "id": "I4.o1",
+          "id": "I5.o1",
           "text": "Answer interview questions out loud and self-grade against a rubric."
         },
         {
-          "id": "I4.o2",
+          "id": "I5.o2",
           "text": "Solve timed coding katas from memory."
         },
         {
-          "id": "I4.o3",
+          "id": "I5.o3",
           "text": "Run a system design answer with the eight-wire checklist, including cost, risks and rollout."
         },
         {
-          "id": "I4.o4",
+          "id": "I5.o4",
           "text": "Debug a failing trace under time pressure."
         },
         {
-          "id": "I4.o5",
+          "id": "I5.o5",
           "text": "Tell two behavioral stories with evidence."
         }
       ],
@@ -4070,7 +4124,7 @@
       "status": "planned"
     },
     {
-      "id": "I5",
+      "id": "I6",
       "slug": "twelve-weeks-after",
       "part": "I",
       "title": "Twelve weeks after the course",
@@ -4079,22 +4133,22 @@
         "observe"
       ],
       "prereqs": [
-        "I4"
+        "I5"
       ],
       "primers": [],
       "minutes": 30,
       "law": "Practice in public, on a schedule.",
       "objectives": [
         {
-          "id": "I5.o1",
+          "id": "I6.o1",
           "text": "Plan twelve weeks of practice with weekly evidence goals."
         },
         {
-          "id": "I5.o2",
+          "id": "I6.o2",
           "text": "Run a mock interview with a friend using the kit."
         },
         {
-          "id": "I5.o3",
+          "id": "I6.o3",
           "text": "Keep your board energized with the daily shift."
         }
       ],
@@ -4611,24 +4665,25 @@
     "I2",
     "I3",
     "I4",
-    "I5"
+    "I5",
+    "I6"
   ],
   "counts": {
-    "modules": 69,
+    "modules": 70,
     "modules_by_kind": {
       "core": 29,
       "concept": 11,
       "build": 11,
       "guide": 3,
-      "career": 5,
+      "career": 6,
       "primer": 10
     },
     "parts": 11,
     "wires": 8,
-    "objectives": 267,
+    "objectives": 271,
     "terms_planned": 336,
     "failure_families": 35,
-    "minutes_path": 2730,
-    "minutes_all": 2940
+    "minutes_path": 2790,
+    "minutes_all": 3000
   }
 }
