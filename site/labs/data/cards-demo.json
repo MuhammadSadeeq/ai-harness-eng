@@ -50,7 +50,7 @@
       ]
     },
     "bug_path": "/messages/1/content/0/tool_use_id",
-    "back": "The result names toolu_2, so the call toolu_1 has no result. That is an orphaned tool call, and the API rejects the next request. Every tool_use needs a tool_result with the same id in the next user message."
+    "back": "The result names toolu_2, so the call toolu_1 has no result. Every tool_use needs a tool_result with the same id in the next user message."
   },
   {
     "id": "lab-c5",

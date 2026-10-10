@@ -14,8 +14,13 @@ export function loadCodeMirror() {
 }
 
 /**
- * Mounts a Python editor in `host` holding `doc`. Resolves to {getValue, setValue, focus} or null.
- * setValue replaces the whole document through a transaction, so onChange runs as for typing.
+ * Mounts a Python editor in `host` holding `doc`. Resolves to {getValue, setValue, focus, refresh} or null.
+ * onChange(text, typed) runs on every change; `typed` is true for keystrokes and deletions, false for a
+ * programmatic replacement. setValue replaces the whole document through one transaction.
+ *
+ * Wrapped lines are laid out with the fonts and the width in use. CodeMirror measures when the document
+ * changes, but a font that finishes loading later, or a resize, changes the wrapping without a change, so
+ * the editor measures again then. Without that, the line numbers in the gutter fall behind the wrapped rows.
  */
 export async function mountEditor(host, { doc, label, onChange }) {
   const cm = await loadCodeMirror();
@@ -36,15 +41,32 @@ export async function mountEditor(host, { doc, label, onChange }) {
       cm.EditorView.lineWrapping,
       cm.EditorView.contentAttributes.of({ "aria-label": label }),
       cm.EditorView.updateListener.of((update) => {
-        if (update.docChanged) onChange(update.state.doc.toString());
+        if (!update.docChanged) return;
+        const typed = update.transactions.some((tr) => tr.isUserEvent("input") || tr.isUserEvent("delete"));
+        onChange(update.state.doc.toString(), typed);
       }),
     ],
   });
+  const refresh = () => view.requestMeasure();
+  document.fonts?.ready?.then(refresh);
+  document.fonts?.addEventListener?.("loadingdone", refresh);
+  if (typeof ResizeObserver === "function") new ResizeObserver(refresh).observe(host);
+  // CodeMirror does not measure while the editor is out of view: measure again when it comes into view.
+  if (typeof IntersectionObserver === "function") {
+    new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) refresh();
+    }).observe(host);
+  }
   return {
     getValue: () => view.state.doc.toString(),
-    setValue(text) {
-      view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: text } });
+    setValue(text, { typed = false } = {}) {
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: text },
+        userEvent: typed ? "input.type" : undefined,
+      });
+      refresh();
     },
     focus: () => view.focus(),
+    refresh,
   };
 }

@@ -223,8 +223,17 @@ export class HxCards extends HxElement {
     this.setState({ order });
   }
 
+  /**
+   * Space, 1 and 2 act when focus is inside this component, or on the page body when this is the only
+   * hx-cards on the page (so two decks never answer each other's keys).
+   */
   onKey(event) {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    const target = event.target;
+    const inside = target instanceof Node && this.contains(target);
+    const onBody = target === document.body || target === document.documentElement;
+    const alone = document.querySelectorAll("hx-cards").length === 1;
+    if (!inside && !(onBody && alone)) return;
     const s = this.state;
     if (s.done) return;
     const card = this.cards.get(this.currentId());
