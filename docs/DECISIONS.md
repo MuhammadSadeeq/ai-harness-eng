@@ -405,3 +405,8 @@ basis for Phase 1, and answered SPEC §14:
   passing.
 - The base class keeps the no-JS fallback visible while `setup()` loads data
   and swaps the UI in at once, so learners never see an empty figure.
+
+### D-048 · The Phase 0 prototypes are retired · *decided*
+- `site/proto/v2` and `site/proto/shared` are removed: every screen they
+  showed is now a production component (replay, incident, bench, check,
+  clock) on the DESIGN v2 system. They stay in git at `86e0c33`.

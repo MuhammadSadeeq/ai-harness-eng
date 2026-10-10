@@ -33,7 +33,7 @@ prototype re-walked:
 | D3 Night Shift | 400 |
 | **v2 (unified)** | **470** |
 
-Click it yourself: `site/proto/v2/index.html`, `break.html`, `prove.html`
+Click it yourself: `site/proto/v2/index.html`, `break.html`, `prove.html` (removed at the Phase 1 gate once the components replaced it; in git at `86e0c33`)
 (serve `site/` locally, or open the screenshots in `tools/qa/out/v2/`).
 
 ## 2. Approve: CURRICULUM — `docs/CURRICULUM.md` + `course.json`
