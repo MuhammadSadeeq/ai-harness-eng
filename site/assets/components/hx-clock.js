@@ -8,13 +8,14 @@ import { runTrial } from "../sim/index.js";
 import { drawFace, fitFace, svgEl, spokeAnchor, GLYPH_SPRITE } from "./lib/clockface.js";
 import {
   wiresInOrder, learnerBoard, dueByWire, wireLevel, comesIn, scenarioBoard, boardChanges, boardRows, changeText,
-  turnCount, turnEvents, stepText, SCENARIO_CODE, taggedModules,
+  turnCount, turnEvents, stepText, SCENARIO_CODE, SCENARIO_NAME, comesInTitle, taggedModules,
 } from "./lib/board-tags.js";
 import { formatInt, plural } from "./lib/format.js";
 import { localToday } from "./lib/leitner.js";
 
 const HOP_MS = 300;
 const STATUS_WORD = { done: "done", started: "started", todo: "not started" };
+let instances = 0;
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()));
 
 function el(tag, cls, text) {
@@ -66,6 +67,8 @@ export class HxClock extends HxElement {
     };
     this.lastWidth = 0;
     this.offsets = [];
+    instances += 1;
+    this.descId = `hx-clock-desc-${instances}`;
     // The face is drawn at its measured width, so a change of width redraws it (DESIGN §5.1).
     if (typeof ResizeObserver === "function") {
       this.resizer = new ResizeObserver(() => {
@@ -120,7 +123,7 @@ export class HxClock extends HxElement {
       const n = due[wire.id] ?? 0;
       spokes[wire.id] = {
         name: `${wire.name}, ${wire.clock} o'clock`,
-        tags: tags.map((t) => ({ code: t.id, text: `${t.id} · ${t.label}` })),
+        tags: tags.map((t) => ({ code: t.id, text: `${t.id} · ${t.label}`, name: t.label })),
         sub: tags.length ? tags.map((t) => `${t.id} · ${t.label}`).join("; ") : `comes in ${comesIn(this.course, wire.id)}`,
         empty: tags.length === 0,
         dim: n > 0,
@@ -138,7 +141,7 @@ export class HxClock extends HxElement {
       const tags = byWire[wire.id] ?? [];
       spokes[wire.id] = {
         name: `${wire.name}, ${wire.clock} o'clock`,
-        tags: tags.map((t) => ({ code: SCENARIO_CODE[t.id] ?? t.id, text: t.label, id: t.id })),
+        tags: tags.map((t) => ({ code: SCENARIO_CODE[t.id] ?? t.id, text: t.label, id: t.id, name: SCENARIO_NAME[t.id] ?? t.id })),
         sub: tags.length ? tags.map((t) => t.label).join(", ") : "not on this board",
         muted: tags.length === 0,
       };
@@ -180,6 +183,9 @@ export class HxClock extends HxElement {
     this.lastWidth = this.faceWidth();
     const root = el("div", `clock-root clock-${this.mode}`);
     const faces = el("div", this.mode === "compare" ? "clock-faces is-compare" : "clock-faces");
+    const desc = el("p", "sr-only", "Arrow keys move between wires. Enter opens a card.");
+    desc.id = this.descId;
+    root.append(desc);
     const svgs = [];
 
     let spokes;
@@ -201,12 +207,14 @@ export class HxClock extends HxElement {
     for (let k = 0; k < faceCount; k += 1) {
       const isNew = this.mode === "compare" && k === 1;
       const faceSpokes = this.mode === "compare" ? (isNew ? this.newFaceSpokes() : this.scenarioSpokes(this.data.old)) : spokes;
-      const label = this.mode === "compare" ? `${isNew ? "New" : "Old"} board: ${(isNew ? this.data.new : this.data.old).label}` : "Turn Clock board";
+      const label = this.#instanceName(isNew);
       const figure = el("figure", "clock-face");
-      const { svg, spokes: groups } = drawFace({ width: this.faceWidth(), wires: this.wires, spokes: faceSpokes, hand, label });
+      const { svg, spokes: groups, codes } = drawFace({ width: this.faceWidth(), wires: this.wires, spokes: faceSpokes, hand, label });
+      svg.setAttribute("aria-describedby", this.descId);
       this.#wireSpokes(groups, faceSpokes);
       this.#lightAdded(svg, faceSpokes, isNew);
       figure.append(svg);
+      if (codes.length) figure.append(el("p", "clock-key", codes.map((c) => `${c.code} ${c.name}`).join(" · ")));
       if (this.state.card && k === 0) figure.append(this.#card(doc, faceSpokes));
       svgs.push(svg);
       faces.append(figure);
@@ -214,6 +222,7 @@ export class HxClock extends HxElement {
     root.append(faces);
 
     root.append(el("p", "clock-caption", this.caption(doc)));
+    if (this.mode === "learner") root.append(el("p", "clock-note", "C9 and the like are modules. The course map lists them all."));
     if (this.mode === "compare") root.append(this.#changes());
     if (this.mode === "turn") root.append(this.#turnControls(turnEv));
     if (this.mode === "compare") root.append(this.#plugControls());
@@ -224,6 +233,13 @@ export class HxClock extends HxElement {
     if (this.mode === "turn" && turnEv) this.live(stepText(turnEv, this.course));
     if (this.state.plugNow) this.#afterPlug();
     if (this.pendingPulse) this.#pulse();
+  }
+
+  /** The name of one clock instance, for screen readers: each clock on a page is named apart. */
+  #instanceName(isNew) {
+    if (this.mode === "compare") return `${isNew ? "New" : "Old"} board: ${(isNew ? this.data.new : this.data.old).label}`;
+    if (this.mode === "learner" || this.mode === "preview") return "Your Harness Board";
+    return `Board: ${this.data.board.label}`;
   }
 
   faceWidth() {
@@ -252,7 +268,7 @@ export class HxClock extends HxElement {
   #spokeState(wire, spoke) {
     if (spoke.muted) return "not on this board";
     if (spoke.tags.length) return spoke.sub;
-    if (spoke.empty) return `Empty: comes in ${comesIn(this.course, wire.id)}`;
+    if (spoke.empty) return `Empty: comes in ${comesIn(this.course, wire.id)} · ${comesInTitle(this.course, wire.id)}`;
     return spoke.sub ?? "";
   }
 

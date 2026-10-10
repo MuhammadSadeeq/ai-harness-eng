@@ -24,6 +24,7 @@ const SITE = path.join(ROOT, "site");
 const WEIGHT_BUDGET_BYTES = 300 * 1000;
 const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const MIN_FONT_PX = 14;
+const hookCounts = []; // self-tests run per page view (reset per page)
 const ACCEPTED_LABS = new URL("./accepted-labs.txt", import.meta.url);
 const CVD_TYPES = ["protan", "deutan", "tritan"];
 // Machado et al. 2009, severity 1.0, applied in linearRGB (same as check_palette.py).
@@ -184,6 +185,28 @@ async function checkPageLoad(page, url, width, screenshotPath) {
   try {
     await page.goto(url, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
+    // Audit the upgraded UI, not the loading state: wait until every hx-* element has settled
+    // (ready or failed; a failure is reported by its self-test), at most 60 s (Python in a kata).
+    await page.evaluate(async () => {
+      const { REGISTRY } = await import("/assets/components/registry.js");
+      const settle = async () => {
+        const tags = new Set([...document.querySelectorAll("*")].map((el) => el.localName)
+          .filter((tag) => Object.hasOwn(REGISTRY, tag)));
+        await Promise.all([...tags].map((tag) => customElements.whenDefined(tag)));
+        await Promise.all([...document.querySelectorAll([...tags].join(",") || "hx-none")]
+          .map((el) => el.ready));
+      };
+      await Promise.race([settle(), new Promise((resolve) => setTimeout(resolve, 60000))]);
+    });
+    // A registered component that never upgraded, or that fell back to its no-JS content, fails.
+    const unready = await page.evaluate(async () => {
+      const { REGISTRY } = await import("/assets/components/registry.js");
+      return [...document.querySelectorAll("*")]
+        .filter((el) => Object.hasOwn(REGISTRY, el.localName))
+        .filter((el) => !el.hasAttribute("data-hx-ready") || el.hasAttribute("data-hx-error"))
+        .map((el) => `${el.localName}${el.id ? "#" + el.id : ""}: ${el.getAttribute("data-hx-error") ?? "not ready after 60 s"}`);
+    });
+    for (const item of unready) failures.push(`component not ready: ${item}`);
     // The token sheet and the fonts must actually load (a page once passed QA
     // with tokens.css unlinked and every colour and font token undefined).
     const sheet = await page.evaluate(() => ({
@@ -215,6 +238,7 @@ async function checkPageLoad(page, url, width, screenshotPath) {
     }
     const tests = await runHooks(page);
     for (const item of tests.failures) failures.push(item);
+    hookCounts.push(tests.count);
     await page.screenshot({ path: screenshotPath, fullPage: true, animations: "disabled", caret: "hide" });
     shot = true;
   } catch (error) {
@@ -462,7 +486,9 @@ async function main() {
       failureCount += pageFailures.length;
       for (const w of pageWarnings) console.log(`warn: ${pagePath}: ${w}`);
       for (const f of pageFailures) console.log(`fail: ${pagePath}: ${f}`);
-      console.log(`page ${pagePath}: weight ${(bytes / 1000).toFixed(1)} KB, ${pageFailures.length} failures`);
+      const selfTests = Math.max(0, ...hookCounts);
+      hookCounts.length = 0;
+      console.log(`page ${pagePath}: weight ${(bytes / 1000).toFixed(1)} KB, ${selfTests} self-tests, ${pageFailures.length} failures`);
       report.pages.push({ page: pagePath, weightBytes: bytes, failures: pageFailures, warnings: pageWarnings });
     }
   } finally {

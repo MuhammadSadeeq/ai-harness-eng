@@ -27,7 +27,7 @@
   </nav>
   <a class="board-btn" href="#board" aria-label="Harness Board, cards due">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12V6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    <span><span class="board-word">Board · </span><span data-due>0</span> due</span>
+    <span><span class="board-word">Board · </span><span data-due-text>0 cards due</span></span>
   </a>
   <div class="settings">
     <div data-theme-slot></div>
@@ -64,14 +64,14 @@
         <!-- gen:continue -->
         <h2 id="continue-h" data-continue-title>S0 · Same model, different harness</h2>
         <p class="meta" data-continue-meta>25 minutes · Part S</p>
-        <a class="btn btn-primary" data-continue-link aria-disabled="true">Continue</a>
+        <a class="btn btn-primary" data-continue-link aria-disabled="true">S0 opens soon</a>
         <p class="meta" data-soon-note>S0 opens soon. Its page is not built yet.</p>
         <!-- /gen:continue -->
       </section>
 
       <section class="oncall" aria-labelledby="oncall-h">
         <div data-shift>
-          <p class="kicker">Today's shift · about 10 min</p>
+          <p class="kicker">About 10 minutes</p>
           <h2 id="oncall-h">Today's shift</h2>
           <!-- gen:shift -->
           <ul class="shift-list">
@@ -102,21 +102,22 @@
           <hx-clock board="learner">
             <!-- gen:legend -->
             <ol class="legend" aria-label="Wires in turn order">
-              <li class="legend-row w-control"><span class="legend-n">1</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg><span class="legend-text"><span class="legend-name">Control plane, 12 o&#x27;clock</span><span class="legend-state">Empty: comes in C1</span></span></li>
-              <li class="legend-row w-context"><span class="legend-n">2</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg><span class="legend-text"><span class="legend-name">Context &amp; memory, 1–2 o&#x27;clock</span><span class="legend-state">Empty: comes in A3</span></span></li>
-              <li class="legend-row w-loop"><span class="legend-n">3</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg><span class="legend-text"><span class="legend-name">Loop &amp; state, 3 o&#x27;clock</span><span class="legend-state">Empty: comes in A4</span></span></li>
-              <li class="legend-row w-errors"><span class="legend-n">4</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg><span class="legend-text"><span class="legend-name">Errors &amp; recovery, 4–5 o&#x27;clock</span><span class="legend-state">Empty: comes in C6</span></span></li>
-              <li class="legend-row w-tools"><span class="legend-n">5</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg><span class="legend-text"><span class="legend-name">Tools, 6 o&#x27;clock</span><span class="legend-state">Empty: comes in A5</span></span></li>
-              <li class="legend-row w-permissions"><span class="legend-n">6</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg><span class="legend-text"><span class="legend-name">Permissions &amp; sandbox, 7–8 o&#x27;clock</span><span class="legend-state">Empty: comes in C9</span></span></li>
-              <li class="legend-row w-verify"><span class="legend-n">7</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg><span class="legend-text"><span class="legend-name">Verification &amp; evals, 9–10 o&#x27;clock</span><span class="legend-state">Empty: comes in C11</span></span></li>
-              <li class="legend-row w-observe"><span class="legend-n">8</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg><span class="legend-text"><span class="legend-name">Observability, 11 o&#x27;clock (rim)</span><span class="legend-state">Empty: comes in C12</span></span></li>
+              <li class="legend-row w-control"><span class="legend-n">1</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg><span class="legend-text"><span class="legend-name">Control plane, 12 o&#x27;clock</span><span class="legend-state">Empty: comes in C1 · Control plane: instructions as law</span></span></li>
+              <li class="legend-row w-context"><span class="legend-n">2</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg><span class="legend-text"><span class="legend-name">Context &amp; memory, 1–2 o&#x27;clock</span><span class="legend-state">Empty: comes in A3 · The stateless model</span></span></li>
+              <li class="legend-row w-loop"><span class="legend-n">3</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg><span class="legend-text"><span class="legend-name">Loop &amp; state, 3 o&#x27;clock</span><span class="legend-state">Empty: comes in A4 · The API call on the wire</span></span></li>
+              <li class="legend-row w-errors"><span class="legend-n">4</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg><span class="legend-text"><span class="legend-name">Errors &amp; recovery, 4–5 o&#x27;clock</span><span class="legend-state">Empty: comes in C6 · Errors are the main path</span></span></li>
+              <li class="legend-row w-tools"><span class="legend-n">5</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg><span class="legend-text"><span class="legend-name">Tools, 6 o&#x27;clock</span><span class="legend-state">Empty: comes in A5 · Structured outputs and schemas</span></span></li>
+              <li class="legend-row w-permissions"><span class="legend-n">6</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg><span class="legend-text"><span class="legend-name">Permissions &amp; sandbox, 7–8 o&#x27;clock</span><span class="legend-state">Empty: comes in C9 · Permissions</span></span></li>
+              <li class="legend-row w-verify"><span class="legend-n">7</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg><span class="legend-text"><span class="legend-name">Verification &amp; evals, 9–10 o&#x27;clock</span><span class="legend-state">Empty: comes in C11 · Verification: done is a claim</span></span></li>
+              <li class="legend-row w-observe"><span class="legend-n">8</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg><span class="legend-text"><span class="legend-name">Observability, 11 o&#x27;clock (rim)</span><span class="legend-state">Empty: comes in C12 · Observability: traces you can read</span></span></li>
             </ol>
             <!-- /gen:legend -->
             <!-- gen:caption -->
             <p class="clock-caption">Your board is empty. Each module you finish plugs a tag onto its wire.</p>
+            <p class="clock-note">C9 and the like are modules. The course map lists them all.</p>
             <!-- /gen:caption -->
           </hx-clock>
-          <figcaption class="caption">Try this: find the 7 o'clock spoke. That is permissions.</figcaption>
+          <figcaption class="caption">Try this: find the 7 o'clock spoke (arrow keys work too).</figcaption>
         </figure>
       </section>
 

@@ -78,6 +78,7 @@ export function renderHome(store, doc = document) {
     if (next) {
       if (title) title.textContent = `${next.id} · ${next.title}`;
       setOpens(link, href);
+      if (link) link.textContent = built ? "Continue" : `${next.id} opens soon`;
       if (link) link.hidden = false;
       if (meta) meta.textContent = `${shift.minutes} minutes · Part ${shift.part}`;
       if (note) note.hidden = built;

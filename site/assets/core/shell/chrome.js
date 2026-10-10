@@ -1,6 +1,7 @@
 // The top bar and page chrome: the module code and title, the Menu sheet (phones), the due count, and the
 // course map's open state (open on desktop, a drawer below 1100 px).
 import { dueCards } from "./pure.js";
+import { plural } from "../../components/lib/format.js";
 
 /**
  * The learner's local calendar date as YYYY-MM-DD. offsetMinutes is the zone's offset east of UTC; by default it is
@@ -62,6 +63,7 @@ export function mountChrome(store, doc = document) {
   const paintDue = () => {
     const due = dueCards(store.state, todayIso());
     for (const el of doc.querySelectorAll("[data-due]")) el.textContent = String(due);
+    for (const el of doc.querySelectorAll("[data-due-text]")) el.textContent = plural(due, "card due", "cards due");
   };
   paintDue();
   store.subscribe(paintDue);

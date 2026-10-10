@@ -25,6 +25,7 @@ const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
 let uidCount = 0;
 const BOARD_KEYS = ["old", "new"];
+const MARK_KEY = [["check", "pass"], ["bang", "false done"], ["noentry", "stopped by a limit"], ["pause", "interrupted"], ["cross", "error"]];
 
 const yieldToLoop = () => new Promise((resolve) => {
   const channel = new MessageChannel();
@@ -120,7 +121,16 @@ function noiseSentence(run) {
       : " The ranges don't overlap, so this difference is unlikely to be noise.");
 }
 
-// Turns per run: one row per board on one shared scale (0 to the tallest bin); old hatched, new solid.
+// A 45-degree hatch pattern (the infeasible zone, the old board).
+function hatch(id, cls) {
+  const pattern = svgNode("pattern", { id, width: 6, height: 6, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" });
+  pattern.append(svgNode("line", { class: cls, x1: 0, y1: 0, x2: 0, y2: 6 }));
+  const defs = svgNode("defs");
+  defs.append(pattern);
+  return defs;
+}
+
+// Turns per run: one row per board, one shared scale; old hatched, new solid.
 function drawTurns(width, uid, oldTrials, newTrials) {
   const W = Math.round(width);
   const plotH = 84;
@@ -137,13 +147,9 @@ function drawTurns(width, uid, oldTrials, newTrials) {
   const lastBase = top + 2 * rowH + gap;
   const svg = svgNode("svg", {
     class: "hist", viewBox: `0 0 ${W} ${lastBase + 30}`, width: W, height: lastBase + 30, role: "img",
-    "aria-label": "Runs by turns for the old board and the new board, on the same axes",
+    "aria-label": "Runs by turns, old and new boards, same axes",
   });
-  const defs = svgNode("defs");
-  const pattern = svgNode("pattern", { id: `${uid}-hatch`, width: 6, height: 6, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" });
-  pattern.append(svgNode("line", { class: "hatch-ink", x1: 0, y1: 0, x2: 0, y2: 6 }));
-  defs.append(pattern);
-  svg.append(defs);
+  svg.append(hatch(`${uid}-hatch`, "hatch-ink"));
   svg.append(svgNode("text", { class: "axis-title", x: x0, y: 16, "font-size": 14, text: "Runs by turns (bins of 5)" }));
   const bw = (x1 - x0) / bins;
   [["Old board", oldCounts, true], ["New board", newCounts, false]].forEach(([label, counts, hatched], r) => {
@@ -172,7 +178,7 @@ function drawTurns(width, uid, oldTrials, newTrials) {
   return svg;
 }
 
-// The solution space: the worst-case cost of every knob value, infeasible values hatched, tried values dotted.
+// Every knob value: worst-case cost; infeasible values hatched, tried values dotted.
 function drawSolution(width, uid, model) {
   const { rows, cfg, tried, current, par, revealed, priced } = model;
   const W = Math.round(width);
@@ -188,13 +194,9 @@ function drawSolution(width, uid, model) {
   const colW = Math.max(2, (x1 - x0) / Math.max(1, rows.length - 1));
   const svg = svgNode("svg", {
     class: "solution", viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img",
-    "aria-label": `Worst-case cost for every ${cfg.label.toLowerCase()} from ${cfg.min} to ${cfg.max}. Shaded values lose a passing run.`,
+    "aria-label": "Worst-case cost for every knob value; shaded values lose a passing run.",
   });
-  const defs = svgNode("defs");
-  const pattern = svgNode("pattern", { id: `${uid}-hatch2`, width: 6, height: 6, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" });
-  pattern.append(svgNode("line", { class: "hatch-rule", x1: 0, y1: 0, x2: 0, y2: 6 }));
-  defs.append(pattern);
-  svg.append(defs);
+  svg.append(hatch(`${uid}-hatch2`, "hatch-rule"));
   for (const r of rows) {
     if (r.feasible) continue;
     svg.append(svgNode("rect", { class: "infeasible", x: xOf(r.value) - colW / 2, y: y0, width: colW, height: y1 - y0, fill: `url(#${uid}-hatch2)` }));
@@ -284,7 +286,6 @@ export class HxBench extends HxElement {
     return Math.min(range.max, Math.max(range.min, onGrid));
   }
 
-  // ---------- values and the gate (COMPONENTS §10) ----------
   values() {
     const r = this.state?.run ?? null;
     return {
@@ -327,8 +328,7 @@ export class HxBench extends HxElement {
     this.emitChange("knob", next);
   }
 
-  // ---------- running ----------
-  // One trial: seed_base + i, through runBench with one seed, so the page can yield between trials.
+  // One trial: seed_base + i via runBench with one seed, so the page can yield.
   trial(board, i) {
     const tape = { ...this.tape, seed_base: this.tape.seed_base + i };
     return runBench(tape, board, 1, { facts: this.facts }).trials[0];
@@ -383,7 +383,7 @@ export class HxBench extends HxElement {
     return true;
   }
 
-  // The par sweep: every knob value, N trials each, on the same seeds as the old board (background, after setup).
+  // Par sweep: every knob value, N trials each, on the old board's seeds.
   async series(board) {
     const trials = [];
     for (let i = 0; i < this.N; i += 1) {
@@ -419,7 +419,6 @@ export class HxBench extends HxElement {
     return { run, stale, current, sweep, triedCount, revealed, atPar };
   }
 
-  // ---------- rendering ----------
   render() {
     if (!this.dom) this.build();
     const d = this.derive();
@@ -441,7 +440,7 @@ export class HxBench extends HxElement {
   build() {
     const N = this.N;
     const cfg = this.knobCfg;
-    const dom = { cells: { old: [], new: [] }, modules: {}, windowValues: {} };
+    const dom = { cells: { old: [], new: [] }, modules: {}, keys: {}, windowValues: {} };
     this.dom = dom;
     const kids = [];
     if (cfg) {
@@ -487,7 +486,6 @@ export class HxBench extends HxElement {
     dom.boardsFigure = el("figure", { class: "plate instrument boards-plate", "aria-labelledby": `${this.uid}-boards` },
       el("div", { class: "plate-head" }, el("span", { class: "fig-label", id: `${this.uid}-boards`, text: "Two boards, the same seeds" })),
       el("div", { class: "racks" }, ...racks),
-      el("p", { class: "pass-legend", text: "Pass: the run ends done and the checks pass." }),
       dom.detail);
     return dom.boardsFigure;
   }
@@ -510,12 +508,14 @@ export class HxBench extends HxElement {
       dom.cells[key].push(cell);
     }
     dom.modules[key] = el("p", { class: "rack-mods" });
+    dom.keys[key] = el("ul", { class: "mark-key", hidden: "" });
     const list = el("ol", { class: "grid", role: "list", "aria-label": `${board.label}: seeds 1 to ${this.N}` },
       ...cells.map((cell) => el("li", {}, cell)));
     return el("section", { class: "rack", "data-board": key },
       el("h3", { class: "rack-title", text: board.label }),
       dom.modules[key],
-      list);
+      list,
+      dom.keys[key]);
   }
 
   buildResults() {
@@ -552,13 +552,13 @@ export class HxBench extends HxElement {
       return { node: el("div", { class: "readout" }, el("p", { class: "readout-label", text: label }), value, note), value, note };
     };
     dom.pPass = win("Passing runs");
-    dom.pWorst = win("Worst run");
+    dom.pWorst = win("Worst case");
     dom.pTried = win("Values tried");
     dom.pPar = win("Par");
     dom.parState = el("p", { class: "par-state" });
     dom.solutionHost = el("div", { class: "solution-host" });
     dom.solutionFigure = el("figure", { class: "plate instrument solution-plate", "aria-labelledby": `${this.uid}-solution` },
-      el("div", { class: "plate-head" }, el("span", { class: "fig-label", id: `${this.uid}-solution`, text: "Solution space" })),
+      el("div", { class: "plate-head" }, el("span", { class: "fig-label", id: `${this.uid}-solution`, text: "Every turn limit" })),
       dom.solutionHost,
       el("p", { class: "chart-summary", text: "Shaded values lose a passing run. Dots are the values you tried." }));
     return el("section", { class: "bench-par" },
@@ -587,7 +587,7 @@ export class HxBench extends HxElement {
     dom.stale.textContent = d.stale ? `Results are for a ${this.knobCfg.label.toLowerCase()} of ${d.run.value}. Run again.` : "";
   }
 
-  // Cells: the same seed on both boards is a twin. Only the cursor cell is in the tab order.
+  // Same seed on both boards is a twin; only the cursor cell is in the tab order.
   refreshGrid(d = this.derive()) {
     const dom = this.dom;
     const run = d.run;
@@ -597,6 +597,15 @@ export class HxBench extends HxElement {
     dom.modules.new.textContent = modulesText(boardNow);
     for (const key of BOARD_KEYS) {
       const trials = run ? (key === "old" ? run.oldTrials : run.newTrials) : null;
+      const present = new Set((trials ?? []).map(markOf));
+      const keyList = dom.keys[key];
+      keyList.hidden = present.size === 0;
+      const sig = [...present].join(",");
+      if (keyList.dataset.sig !== sig) {
+        keyList.dataset.sig = sig;
+        keyList.replaceChildren(...MARK_KEY.filter(([mark]) => present.has(mark))
+          .map(([mark, word]) => el("li", {}, glyph(mark), word)));
+      }
       dom.cells[key].forEach((cell, k) => {
         const trial = trials ? trials[k] : null;
         const isCursor = this.cursor.board === key && this.cursor.k === k;
@@ -699,8 +708,7 @@ export class HxBench extends HxElement {
     const row = sweep ? sweep.rows.find((r) => r.value === this.state.knob) : null;
     dom.pPass.value.textContent = row ? `${row.passed} of ${this.N}` : "…";
     dom.pWorst.value.textContent = row ? money(row.worst_cost, priced) : "…";
-    dom.pTried.value.textContent = `${plural(d.triedCount, "value")} tried`;
-    dom.pTried.note.textContent = d.revealed ? "Par is in the chart." : "";
+    dom.pTried.value.textContent = String(d.triedCount);
     dom.pPar.node.classList.toggle("is-par", d.atPar);
     dom.pPar.node.querySelector(".readout-label").textContent = d.atPar ? "PAR" : "Par";
     dom.pPar.note.textContent = "";
@@ -715,7 +723,7 @@ export class HxBench extends HxElement {
       dom.pPar.value.textContent = "None in range";
       dom.parState.textContent = "No value in this range keeps every passing run.";
     } else {
-      dom.pPar.value.textContent = `${sweep.par.value}`;
+      dom.pPar.value.textContent = plural(sweep.par.value, "turn");
       dom.parState.textContent = d.atPar ? PAR_LINE : "Par is in the chart. Keep looking.";
     }
     dom.solutionFigure.hidden = !sweep;
@@ -741,7 +749,7 @@ export class HxBench extends HxElement {
     return cfg ? Math.floor((cfg.max - cfg.min) / cfg.step) + 1 : 0;
   }
 
-  // ---------- self-test: drives Run, then the knob, through the real controls ----------
+  // Self-test: Run, then the knob, through the real controls.
   async selfTest() {
     if (this.hasAttribute("locked")) return false;
     const job = this.run();

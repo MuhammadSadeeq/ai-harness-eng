@@ -79,7 +79,7 @@ export class HxCheck extends HxElement {
       this.targetEl = target;
       target.addEventListener("hx-result", () => this.onResult());
     }
-    this.state = { choice: null, committed: null, resultSeen: false, evidenced: false };
+    this.state = { choice: null, committed: null, resultSeen: false, evidenced: false, nudge: false };
   }
 
   derive() {
@@ -108,9 +108,12 @@ export class HxCheck extends HxElement {
       why.hidden = !d.revealed;
     });
     dom.commit.setAttribute("aria-disabled", String(s.choice === null || d.committedNow));
-    const lockLine = mode === "predict" && d.committedNow && !d.revealed
-      ? `Locked in: "${item.options[s.committed].text}". Now run it.`
-      : "";
+    // Tapping the key with nothing picked says so in the result line; the key stays focusable.
+    const nudge = s.nudge && s.choice === null && !d.committedNow;
+    const lockLine = nudge ? "Pick an answer first."
+      : mode === "predict" && d.committedNow && !d.revealed
+        ? `Locked in: "${item.options[s.committed].text}". Now run it.`
+        : "";
     dom.line.textContent = lockLine;
     dom.line.hidden = lockLine === "";
     let verdict = "";
@@ -134,7 +137,7 @@ export class HxCheck extends HxElement {
     const name = `${this.uid}-choice`;
     const rows = item.options.map((option, i) => {
       const input = el("input", { type: "radio", name, value: String(i), "data-key": `choice-${i}` });
-      input.addEventListener("change", () => this.setState({ choice: i }));
+      input.addEventListener("change", () => this.setState({ choice: i, nudge: false }));
       const mark = el("span", { class: "choice-mark" });
       const why = el("span", { class: "why", text: option.why });
       dom.inputs.push(input);
@@ -162,7 +165,11 @@ export class HxCheck extends HxElement {
 
   commit() {
     const choice = this.state.choice;
-    if (choice === null || this.state.committed !== null) return;
+    if (this.state.committed !== null) return;
+    if (choice === null) {
+      this.setState({ nudge: true });
+      return;
+    }
     this.setState({ committed: choice });
     if (this.mode === "check") {
       this.evidence("check", { item: this.item.id, choice, correct: choice === this.item.answer });

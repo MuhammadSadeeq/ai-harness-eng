@@ -7,6 +7,8 @@ hx-wire .wire-stepper .key { min-width: 48px; }
 hx-wire .wire-turn { margin: 0; font: 600 var(--fs-ui) var(--font-sans); }
 hx-wire .wire-toggles { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
 hx-wire .wire-toggles .key[aria-pressed="true"] { background: var(--hx-ink); color: var(--hx-paper); border-color: var(--hx-ink); }
+hx-wire .wire-changes { display: inline-flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+hx-wire .wire-changes-label { font: 600 var(--fs-ui) var(--font-sans); }
 hx-wire .wire-total { margin: 0; font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); }
 hx-wire .wire-friendly { display: grid; gap: var(--sp-5); }
 hx-wire .wire-request, hx-wire .wire-response { display: grid; gap: var(--sp-3); }

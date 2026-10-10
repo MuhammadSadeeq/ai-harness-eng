@@ -129,6 +129,7 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
   svg.append(svgEl("circle", { class: "hub", cx: c, cy: c, r: Math.max(7, R * 0.12) }));
   const pos = (deg, r) => [c + r * Math.sin(deg * DEG), c - r * Math.cos(deg * DEG)];
   const groups = {};
+  const codes = [];
 
   for (const wire of wires) {
     const spoke = spokes[wire.id] ?? { tags: [] };
@@ -156,6 +157,7 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
       let along = R * 0.36;
       spoke.tags.slice(0, 2).forEach((tag) => {
         const [tx, ty] = pos(wire.angle, along);
+        codes.push({ code: tag.code, name: tag.name ?? tag.code });
         const height = tagBox(group, tx, ty, { code: tag.code, lines: [tag.code] }, group.querySelector(".tag-group") ? "tag-extra" : "tag-main", Boolean(tag.added), W);
         along += height + 6;
       });
@@ -167,7 +169,9 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
       const room = R - nodeR - hubR - 8;
       const lines = wrapLines(tag.text ?? tag.code, LABEL_CHARS, 2);
       const labelWidth = Math.max(...lines.map((l) => l.length)) * CHAR_TAG + 16;
-      const parts = { code: tag.code, lines: labelWidth <= room ? lines : [tag.code] };
+      const fits = labelWidth <= room;
+      if (!fits) codes.push({ code: tag.code, name: tag.name ?? tag.code });
+      const parts = { code: tag.code, lines: fits ? lines : [tag.code] };
       const [tx, ty] = pos(wire.angle, hubR + 4 + room / 2);
       tagBox(group, tx, ty, parts, "tag-main", Boolean(tag.added), W);
     }
@@ -216,7 +220,7 @@ export function drawFace({ width, wires, spokes, hand = null, label = "Turn Cloc
       svg.append(svgEl("line", { class: "hand", x1: c, y1: c, x2: hx, y2: hy }));
     }
   }
-  return { svg, spokes: groups };
+  return { svg, spokes: groups, codes };
 }
 
 /**

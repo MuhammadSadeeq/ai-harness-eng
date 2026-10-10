@@ -391,3 +391,17 @@ basis for Phase 1, and answered SPEC §14:
   prove the capstone is doable here (cargo is available) and to test the
   runner; whether that reference ships publicly is decided at launch, like
   `source/` (a public solution would undercut the portfolio value).
+
+### D-047 · QA audits the upgraded components, and says how many it tested · *decided*
+- Found by a builder and the director at the same time: once demo pages
+  loaded components through the registry (the real path), QA ran before the
+  loader had defined them, so self-tests were skipped and axe and the
+  screenshots saw the no-JS fallback; the "0 failures" after that switch did
+  not exercise the components.
+- QA now waits (up to 60 s, for Python) until every registered `hx-*`
+  element on the page is defined and settled, fails any that is not ready or
+  fell back (`component not ready`), and prints the number of self-tests per
+  page so a silent zero is visible. Re-run: 32 self-tests across 11 pages, all
+  passing.
+- The base class keeps the no-JS fallback visible while `setup()` loads data
+  and swaps the UI in at once, so learners never see an empty figure.

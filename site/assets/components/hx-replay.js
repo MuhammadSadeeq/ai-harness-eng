@@ -5,7 +5,7 @@ import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFacts } from "./lib/data.js";
 import { runTrial } from "../sim/index.js";
 import { explain, turnSummary } from "./lib/explain.js";
-import { formatCost } from "./lib/format.js";
+import { formatCost, formatMs } from "./lib/format.js";
 import {
   el, glyph, WIRES, visibleIndexes, repeats, transcriptList, laneStrip, setPlayhead, setCurrentRow,
   nearestIndex, sortedJson, ensureSprite, fitAxis,
@@ -364,7 +364,9 @@ export class HxReplay extends HxElement {
     const json = r.detail.querySelector(".wire-json");
     sentence.hidden = s.view !== "friendly";
     json.hidden = s.view !== "wire";
-    sentence.textContent = explain(events[i]).text;
+    // Friendly: the inline callout already has the sentence, so the detail adds the time and the wire.
+    const wireShort = WIRES.find((w) => w.id === events[i].wire)?.short ?? events[i].wire;
+    sentence.textContent = `t = ${formatMs(events[i].t)} · ${wireShort}`;
     json.textContent = sortedJson(events[i]);
 
     if (s.moved) {

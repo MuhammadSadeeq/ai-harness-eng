@@ -9,9 +9,10 @@
 //   customElements.define("hx-thing", HxThing);
 //
 // What the base does for you:
-// - Moves the authored children (the no-JS fallback) into a hidden .hx-fallback and gives you this.ui.
-//   If setup() or the first render() throws, the UI is removed, the fallback shows again,
-//   data-hx-error is set, and nothing is logged.
+// - Moves the authored children (the no-JS fallback) into .hx-fallback, which stays visible while
+//   setup() loads data, and gives you this.ui (hidden until then). After setup the UI is shown and the
+//   fallback hidden. If setup() or the first render() throws, the UI is removed, the fallback shows
+//   again, data-hx-error is set, and nothing is logged.
 // - this.ready resolves to true once the first render succeeds (false on failure).
 // - setState(patch) merges and re-renders. Focus survives re-renders: give focusable elements a
 //   data-key and the element with the same key is focused again after render().
@@ -115,12 +116,14 @@ export class HxElement extends HTMLElement {
   }
 
   async #upgrade() {
+    // The fallback stays visible until the first render succeeds (no empty figure while data loads);
+    // the UI is built hidden and swapped in at once.
     const fallback = document.createElement("div");
     fallback.className = "hx-fallback";
-    fallback.hidden = true;
     fallback.append(...this.childNodes);
     const ui = document.createElement("div");
     ui.className = "hx-ui";
+    ui.hidden = true;
     const liveRegion = document.createElement("p");
     liveRegion.className = "hx-live sr-only";
     liveRegion.setAttribute("aria-live", "polite");
@@ -130,6 +133,8 @@ export class HxElement extends HTMLElement {
     try {
       const styles = this.constructor.styles;
       await Promise.all([styles ? loadStyles(styles) : null, this.setup()]);
+      ui.hidden = false;
+      fallback.hidden = true;
       this.render();
       this.setAttribute("data-hx-ready", "");
       this.#resolveReady(true);

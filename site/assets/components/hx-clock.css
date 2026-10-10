@@ -56,3 +56,5 @@ hx-clock .clock-root .legend { margin-top: var(--sp-2); }
 .clock-changes-list li.is-plugged { border-left-color: var(--hx-pass); }
 .clock-changes-none { margin: 0; font: 400 var(--fs-small) var(--font-sans); color: var(--hx-ink-2); }
 .clock-card-tags { margin: 0 0 var(--sp-2); padding-left: var(--sp-4); }
+hx-clock .clock-key { margin: var(--sp-2) 0 0; font: 600 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }
+hx-clock .clock-note { margin: 0; font: 400 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }

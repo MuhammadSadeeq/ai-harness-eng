@@ -115,14 +115,14 @@ export class HxWire extends HxElement {
     const back = el("button", "key");
     back.type = "button";
     back.dataset.key = "turn-back";
-    back.textContent = "−";
+    back.textContent = "Previous";
     back.setAttribute("aria-label", "Previous turn");
     back.disabled = this.state.turn <= 1;
     back.addEventListener("click", () => this.hxSetValue("turn", this.state.turn - 1));
     const forward = el("button", "key");
     forward.type = "button";
     forward.dataset.key = "turn-forward";
-    forward.textContent = "+";
+    forward.textContent = "Next";
     forward.setAttribute("aria-label", "Next turn");
     forward.disabled = this.state.turn >= this.turns;
     forward.addEventListener("click", () => this.hxSetValue("turn", this.state.turn + 1));
@@ -136,12 +136,20 @@ export class HxWire extends HxElement {
       b.addEventListener("click", () => this.setState({ view }));
       toggles.append(b);
     }
-    const diff = el("button", "key", "Show what changed");
-    diff.type = "button";
-    diff.dataset.key = "diff";
-    diff.setAttribute("aria-pressed", String(this.state.diff));
-    diff.addEventListener("click", () => this.setState({ diff: !this.state.diff }));
-    toggles.append(diff);
+    // Changes: Off | On. The diff attribute is On at load; the segment shows which one is on.
+    const changes = el("div", "wire-changes");
+    changes.setAttribute("role", "group");
+    changes.setAttribute("aria-label", "Changes");
+    changes.append(el("span", "wire-changes-label", "Changes:"));
+    for (const [key, label, on] of [["changes-off", "Off", false], ["changes-on", "On", true]]) {
+      const option = el("button", "key", label);
+      option.type = "button";
+      option.dataset.key = key;
+      option.setAttribute("aria-pressed", String(this.state.diff === on));
+      option.addEventListener("click", () => this.setState({ diff: on }));
+      changes.append(option);
+    }
+    toggles.append(changes);
     row.append(stepper, toggles);
     return row;
   }
@@ -292,7 +300,7 @@ export class HxWire extends HxElement {
     const pre = this.ui?.querySelector(".wire-json-scroll pre");
     if (!pre || JSON.stringify(JSON.parse(pre.textContent)) !== JSON.stringify(request)) return false;
     this.ui?.querySelector('[data-key="view-friendly"]')?.click();
-    this.ui?.querySelector('[data-key="diff"]')?.click();
+    this.ui?.querySelector('[data-key="changes-on"]')?.click();
     const news = this.ui?.querySelectorAll(".wire-message.is-new").length ?? 0;
     const previous = this.wire[2 * (turn - 2)];
     const expected = diffMessages(previous?.messages, request.messages).rows.filter((r) => r.status === "new").length;

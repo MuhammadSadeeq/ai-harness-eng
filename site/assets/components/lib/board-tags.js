@@ -188,3 +188,25 @@ export const SCENARIO_CODE = Object.freeze({
   turn_limit: "TL", token_budget: "TB", loop_detect: "LD", close_books: "CB", output_cap: "OC", retry: "RT",
   breaker: "BR", permissions: "PM", sandbox: "SB", verify_gate: "VG", rules_file: "RF", redact: "RD",
 });
+
+/** The name of each scenario module, for the key that explains a code ("TL turn limit"). */
+export const SCENARIO_NAME = Object.freeze({
+  turn_limit: "turn limit",
+  token_budget: "token budget",
+  loop_detect: "loop guard",
+  close_books: "close the books",
+  output_cap: "output cap",
+  retry: "retry",
+  breaker: "breaker",
+  permissions: "permissions",
+  sandbox: "sandbox",
+  verify_gate: "verify gate",
+  rules_file: "rules file",
+  redact: "redact",
+});
+
+/** The title of the module that comes in on a wire, from course.json ("Permissions" for C9). */
+export function comesInTitle(course, wireId) {
+  const id = comesIn(course, wireId);
+  return course.modules.find((m) => m.id === id)?.title ?? "";
+}

@@ -260,8 +260,9 @@ def comes_in_text(d: Data, wire_id: str) -> str:
 
 
 def module_state(d: Data, wire_id: str) -> str:
-    """A new learner's board is empty, so every spoke says where it comes in."""
-    return f"Empty: {comes_in_text(d, wire_id)}"
+    """A new learner's board is empty: each spoke says where its module comes in, and what it is."""
+    mod = modules_by_id(d)[comes_in(d)[wire_id]]
+    return f"Empty: {comes_in_text(d, wire_id)} · {mod['title']}"
 
 
 def oldest_fact_date(d: Data) -> str:
@@ -288,7 +289,8 @@ def caption_lines(d: Data) -> list[str]:
     del d
     return [
         '<p class="clock-caption">Your board is empty. Each module you finish plugs a tag '
-        "onto its wire.</p>"
+        "onto its wire.</p>",
+        '<p class="clock-note">C9 and the like are modules. The course map lists them all.</p>',
     ]
 
 
@@ -408,7 +410,10 @@ def continue_lines(d: Data) -> list[str]:
         f'<a class="btn btn-primary" data-continue-link '
         f'href="modules/{mod["slug"]}.html">Continue</a>'
         if built
-        else '<a class="btn btn-primary" data-continue-link aria-disabled="true">Continue</a>'
+        else (
+            '<a class="btn btn-primary" data-continue-link aria-disabled="true">'
+            f"{esc(mod['id'])} opens soon</a>"
+        )
     )
     note_hidden = " hidden" if built else ""
     return [
