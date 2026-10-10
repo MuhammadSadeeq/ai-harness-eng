@@ -1,0 +1,12 @@
+{
+  "id": "eng-models-b",
+  "label": "model model-b",
+  "modules": {
+    "model": {
+      "id": "model-b"
+    },
+    "request_params": {
+      "temperature": 1
+    }
+  }
+}

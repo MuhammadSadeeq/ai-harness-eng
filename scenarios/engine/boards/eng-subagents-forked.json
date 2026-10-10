@@ -1,0 +1,11 @@
+{
+  "id": "eng-subagents-forked",
+  "label": "sub-agents, forked, at most 5",
+  "modules": {
+    "subagents": {
+      "context": "forked",
+      "max": 5,
+      "max_turns": 2
+    }
+  }
+}

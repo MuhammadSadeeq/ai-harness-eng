@@ -1,0 +1,13 @@
+{
+  "id": "eng-models-dropped",
+  "label": "model model-a, capability check",
+  "modules": {
+    "model": {
+      "id": "model-a"
+    },
+    "request_params": {
+      "temperature": 1
+    },
+    "capability_check": {}
+  }
+}

@@ -21,7 +21,9 @@ class Recorder:
         self.pending = 0  # events emitted since the last trace_write (not counting it)
         self.redacted = 0  # replacements since the last trace_write
 
-    def emit(self, kind: str, t: int, turn: int, fields: dict[str, Any]) -> dict[str, Any]:
+    def emit(
+        self, kind: str, t: int, turn: int, fields: dict[str, Any], agent: str = "main"
+    ) -> dict[str, Any]:
         payload: dict[str, Any] = {}
         for key, value in fields.items():
             payload[key] = self._redact(value)
@@ -31,7 +33,7 @@ class Recorder:
             "seq": self.seq,
             "t": t,
             "turn": turn,
-            "agent": "main",
+            "agent": agent,  # A14.4 (A15.4): a sub-agent's events carry its name
             "kind": kind,
             "wire": KIND_WIRE[kind],
         }
@@ -41,9 +43,9 @@ class Recorder:
         self.pending += 1
         return event
 
-    def trace_write(self, t: int, turn: int) -> dict[str, Any]:
+    def trace_write(self, t: int, turn: int, agent: str = "main") -> dict[str, Any]:
         event = self.emit(
-            "trace_write", t, turn, {"events": self.pending, "redacted": self.redacted}
+            "trace_write", t, turn, {"events": self.pending, "redacted": self.redacted}, agent
         )
         self.pending = 0
         self.redacted = 0

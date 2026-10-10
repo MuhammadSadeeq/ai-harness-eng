@@ -364,6 +364,94 @@
               }
             }
           }
+        },
+        "subagents": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "context": {
+              "enum": [
+                "isolated",
+                "forked"
+              ]
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_turns": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "context",
+            "max",
+            "max_turns"
+          ]
+        },
+        "progress_file": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "durable_session": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "tool_retry": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_attempts": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "max_attempts"
+          ]
+        },
+        "idempotency": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "request_params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          }
+        },
+        "capability_check": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
         }
       }
     }

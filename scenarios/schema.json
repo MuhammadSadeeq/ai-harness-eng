@@ -202,6 +202,25 @@
               "file",
               "not_contains"
             ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "file": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+              },
+              "lines": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "file",
+              "lines"
+            ]
           }
         ]
       }
@@ -687,6 +706,94 @@
         "pattern": "^[\\x20-\\x7e\\n\\t]*$"
       },
       "description": "A11.3: secret strings the tape plants in workspace or outside."
+    },
+    "sessions": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "script": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/step"
+            }
+          }
+        },
+        "required": [
+          "script"
+        ]
+      }
+    },
+    "agents": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "script": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/step"
+            }
+          },
+          "system": {
+            "type": "string",
+            "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+          }
+        },
+        "required": [
+          "script"
+        ]
+      }
+    },
+    "crash": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "turn": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "turn"
+      ]
+    },
+    "models": {
+      "type": "object",
+      "propertyNames": {
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pricing": {
+            "type": "object"
+          },
+          "rejects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "script": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/step"
+            }
+          }
+        },
+        "required": [
+          "pricing"
+        ]
+      }
     }
   },
   "required": [
@@ -704,7 +811,6 @@
     "custom_tools",
     "checks",
     "test_output",
-    "script",
     "boards",
     "golden_seeds"
   ],
@@ -1002,6 +1108,10 @@
         {
           "type": "string",
           "pattern": "^last_result_contains:.+$"
+        },
+        {
+          "type": "string",
+          "pattern": "^session_gte:(0|[1-9][0-9]*)$"
         }
       ]
     },
@@ -1096,6 +1206,18 @@
               "exfiltration"
             ]
           }
+        },
+        "ledger": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[\\x20-\\x7e]*$"
+        },
+        "lose_reply": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
         }
       },
       "required": [
@@ -1105,5 +1227,17 @@
         "results"
       ]
     }
-  }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "script"
+      ]
+    },
+    {
+      "required": [
+        "sessions"
+      ]
+    }
+  ]
 }

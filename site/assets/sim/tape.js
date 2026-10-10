@@ -107,6 +107,7 @@ export function checkError(step, where) {
 function checkCondition(cond, where) {
   if (CONDITIONS.includes(cond)) return;
   if (typeof cond === "string" && /^turn_gte:\d+$/.test(cond)) return;
+  if (typeof cond === "string" && /^session_gte:\d+$/.test(cond)) return;
   if (typeof cond === "string" && /^history_lt:(0|[1-9][0-9]*)$/.test(cond)) return;
   // A6.1: context_gte:<n>; sent_lacks:<text> where <text> is everything after the first colon.
   if (typeof cond === "string" && /^context_gte:(0|[1-9][0-9]*)$/.test(cond)) return;
@@ -213,11 +214,21 @@ function loadCustomTool(c, i, seen) {
     if (!TRIFECTA.includes(label)) fail(where, `trifecta "${label}" is not one of: ${TRIFECTA.join(", ")}`);
   }
   if (new Set(trifecta).size !== trifecta.length) fail(where, "trifecta must not repeat a label");
+  // A14.4: a ledger is a workspace path each application appends a line to; lose_reply lists application numbers.
+  if (c.ledger !== undefined && c.ledger !== null && (typeof c.ledger !== "string" || c.ledger === "")) {
+    fail(where, "ledger must be a non-empty path");
+  }
+  const loseReply = c.lose_reply ?? [];
+  if (!Array.isArray(loseReply) || loseReply.some((k) => !Number.isInteger(k) || k < 1)) {
+    fail(where, "lose_reply must be a list of application numbers from 1");
+  }
   return {
     name,
     description: c.description,
     input_schema: c.input_schema,
     latency_ms: optInt(c, "latency_ms", where, 100),
+    ledger: c.ledger ?? null,
+    lose_reply: [...loseReply],
     results,
     default: { output: reqStr(dflt, "output", `${where}.default`), ok: dflt.ok ?? false },
     effect: c.effect ?? null,
@@ -347,15 +358,27 @@ export function loadTape(raw) {
   t.checks = (raw.checks ?? []).map((c, i) => {
     const w = `${where}.checks[${i}]`;
     if (typeof c.file !== "string") fail(w, "file must be a string");
-    const kinds = ["contains", "not_contains"].filter((k) => k in c);
-    if (kinds.length !== 1) fail(w, 'give exactly one of "contains" or "not_contains"');
-    reqStr(c, kinds[0], w);
+    // A14.4: "lines" is the exact number of lines in the file.
+    const kinds = ["contains", "not_contains", "lines"].filter((k) => k in c);
+    if (kinds.length !== 1) fail(w, 'give exactly one of "contains", "not_contains" or "lines"');
+    if (kinds[0] === "lines") reqInt(c, "lines", w, 0);
+    else reqStr(c, kinds[0], w);
     return c;
   });
   if (!isObj(raw.test_output)) fail(where, "test_output is required");
   reqStr(raw.test_output, "pass", `${where}.test_output`);
   reqStr(raw.test_output, "fail", `${where}.test_output`);
-  checkSteps(raw.script, `${where}.script`);
+  // A14.2: a tape has a script or sessions, not both.
+  if (raw.sessions !== undefined && raw.sessions !== null) {
+    if (raw.script !== undefined) fail(where, "give script or sessions, not both");
+    t.sessions = loadSessions(raw.sessions, where);
+  } else {
+    checkSteps(raw.script, `${where}.script`);
+    t.sessions = null;
+  }
+  t.agents = loadAgents(raw.agents, where);
+  t.models = loadModels(raw.models, where);
+  t.crash = loadCrash(raw.crash, where);
   t.human = loadHuman(raw.human ?? { default: "deny" }, where);
   t.notes = loadNotes(raw.notes, where);
   t.cache_rules = loadCacheRules(raw.cache_rules, where);
@@ -395,6 +418,65 @@ export function loadTape(raw) {
   t.boards = raw.boards ?? [];
   t.golden_seeds = raw.golden_seeds ?? [];
   return t;
+}
+
+// A14.2: sessions is a list of 2 to 5 sessions, each with its own script.
+function loadSessions(raw, where) {
+  if (!Array.isArray(raw) || raw.length < 2 || raw.length > 5) fail(where, "sessions must be a list of 2 to 5 sessions");
+  return raw.map((x, i) => {
+    const w = `${where}.sessions[${i}]`;
+    if (!isObj(x)) fail(w, "a session is an object with a script");
+    noExtraKeys(x, ["script"], w);
+    checkSteps(x.script, `${w}.script`);
+    return { script: x.script };
+  });
+}
+
+const AGENT_NAME = /^[a-z][a-z0-9-]*$/;
+
+// A14.1: agents maps a name to a script and an optional system prompt. Absent means none.
+function loadAgents(raw, where) {
+  if (raw === undefined || raw === null) return {};
+  if (!isObj(raw)) fail(where, "agents must be an object");
+  const out = {};
+  for (const [name, a] of Object.entries(raw)) {
+    const w = `${where}.agents ${name}`;
+    if (!AGENT_NAME.test(name)) fail(w, "agent names match [a-z][a-z0-9-]*");
+    if (!isObj(a)) fail(w, "an agent is an object with a script");
+    noExtraKeys(a, ["script", "system"], w);
+    checkSteps(a.script, `${w}.script`);
+    if (a.system !== undefined && a.system !== null && typeof a.system !== "string") fail(w, "system must be a string");
+    out[name] = { script: a.script, system: a.system ?? null };
+  }
+  return out;
+}
+
+// A14.5: model profiles, keyed by model id. Absent means none.
+function loadModels(raw, where) {
+  if (raw === undefined || raw === null) return Object.create(null);
+  if (!isObj(raw)) fail(where, "models must be an object");
+  const out = Object.create(null);
+  for (const [id, m] of Object.entries(raw)) {
+    const w = `${where}.models ${id}`;
+    if (!isObj(m)) fail(w, "a model profile is an object");
+    noExtraKeys(m, ["pricing", "rejects", "script"], w);
+    if (!isObj(m.pricing)) fail(w, "pricing is required");
+    const rejects = m.rejects ?? [];
+    if (!Array.isArray(rejects) || rejects.some((n) => typeof n !== "string")) {
+      fail(w, "rejects must be a list of parameter names");
+    }
+    if (m.script !== undefined && m.script !== null) checkSteps(m.script, `${w}.script`);
+    out[id] = { pricing: m.pricing, rejects: [...rejects], script: m.script ?? null };
+  }
+  return out;
+}
+
+// A14.3: crash: {"turn": n}, or absent.
+function loadCrash(raw, where) {
+  if (raw === undefined || raw === null) return null;
+  if (!isObj(raw)) fail(where, "crash is an object with a turn");
+  noExtraKeys(raw, ["turn"], `${where}.crash`);
+  return { turn: reqInt(raw, "turn", `${where}.crash`, 1) };
 }
 
 // A4: the incident block. Shape only; references to course.json and traces are

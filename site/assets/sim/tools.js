@@ -40,9 +40,17 @@ export function countOccurrences(text, needle) {
 }
 
 // One check holds on the workspace. A missing file fails both kinds (A3.5).
+// A14.4: a file's lines: a newline ends each line; text without a final newline has one more line.
+export function countLines(text) {
+  if (text === "") return 0;
+  const newlines = text.split("\n").length - 1;
+  return text.endsWith("\n") ? newlines : newlines + 1;
+}
+
 export function checkHolds(vfs, c) {
   const text = vfs.read(c.file);
   if (text === null) return false;
+  if ("lines" in c) return countLines(text) === c.lines;
   return "contains" in c ? text.includes(c.contains) : !text.includes(c.not_contains);
 }
 
@@ -105,6 +113,22 @@ export const TOOL_SEARCH_DEF = {
 };
 
 export const TOOL_SEARCH_MAX = 5;
+
+// A14.1: the harness's own sub-agent tool, last in the request's tools; its latency is 100 ms before the sub-agent's time.
+export const RUN_AGENT_MS = 100;
+export const RUN_AGENT_DEF = {
+  name: "run_agent",
+  description: "Hand a self-contained task to a sub-agent and get its final answer back.",
+  input_schema: {
+    type: "object",
+    properties: {
+      agent: { type: "string", description: "Which sub-agent to run" },
+      brief: { type: "string", description: "The task, and what to return" },
+    },
+    required: ["agent", "brief"],
+    additionalProperties: false,
+  },
+};
 
 // A9.2 and A10.5: the candidates whose lowercased name + " " + description contains every word of the
 // query (split on whitespace), in the order given. A query with no words matches nothing. The caller

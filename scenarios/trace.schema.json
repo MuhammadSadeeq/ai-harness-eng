@@ -76,6 +76,24 @@
     },
     {
       "$ref": "#/$defs/tool_rejected"
+    },
+    {
+      "$ref": "#/$defs/subagent_start"
+    },
+    {
+      "$ref": "#/$defs/subagent_end"
+    },
+    {
+      "$ref": "#/$defs/session_start"
+    },
+    {
+      "$ref": "#/$defs/crash"
+    },
+    {
+      "$ref": "#/$defs/resume"
+    },
+    {
+      "$ref": "#/$defs/capability"
     }
   ],
   "$defs": {
@@ -103,7 +121,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "run_start"
@@ -167,7 +186,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "prompt_built"
@@ -184,6 +204,7 @@
               "tools",
               "history",
               "clock",
+              "progress",
               "history (not resent)"
             ]
           }
@@ -230,7 +251,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "context_check"
@@ -297,7 +319,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "model_call"
@@ -351,7 +374,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "model_error"
@@ -420,7 +444,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "retry_wait"
@@ -474,7 +499,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "breaker"
@@ -527,7 +553,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "recovery_check"
@@ -583,7 +610,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "model_reply"
@@ -712,7 +740,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "interrupt"
@@ -771,7 +800,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "permission"
@@ -858,7 +888,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "sandbox"
@@ -921,7 +952,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "tool_call"
@@ -953,6 +985,10 @@
         "tool_use_id": {
           "type": "string",
           "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
         }
       },
       "required": [
@@ -997,7 +1033,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "verify"
@@ -1057,7 +1094,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "guard"
@@ -1119,7 +1157,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "trace_write"
@@ -1173,7 +1212,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "run_end"
@@ -1265,7 +1305,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "compaction"
@@ -1332,7 +1373,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "cache"
@@ -1380,7 +1422,7 @@
     },
     "subagent_start": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "v": {
           "const": 1
@@ -1402,22 +1444,32 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "subagent_start"
         },
         "wire": {
+          "const": "loop"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "k": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "context": {
           "enum": [
-            "control",
-            "context",
-            "loop",
-            "errors",
-            "tools",
-            "permissions",
-            "verify",
-            "observe"
+            "isolated",
+            "forked"
           ]
+        },
+        "brief": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
         }
       },
       "required": [
@@ -1426,13 +1478,18 @@
         "seq",
         "t",
         "turn",
+        "agent",
         "kind",
-        "wire"
+        "wire",
+        "name",
+        "k",
+        "context",
+        "brief"
       ]
     },
     "subagent_end": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "v": {
           "const": 1
@@ -1454,22 +1511,56 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "subagent_end"
         },
         "wire": {
-          "enum": [
-            "control",
-            "context",
-            "loop",
-            "errors",
-            "tools",
-            "permissions",
-            "verify",
-            "observe"
+          "const": "loop"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+        },
+        "k": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e]+$"
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tokens": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "input": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "input",
+            "output"
           ]
+        },
+        "cost": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7e\\n\\t]*$"
         }
       },
       "required": [
@@ -1478,8 +1569,16 @@
         "seq",
         "t",
         "turn",
+        "agent",
         "kind",
-        "wire"
+        "wire",
+        "name",
+        "k",
+        "status",
+        "turns",
+        "tokens",
+        "cost",
+        "output"
       ]
     },
     "input_check": {
@@ -1506,7 +1605,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "input_check"
@@ -1569,7 +1669,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "cost"
@@ -1643,7 +1744,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "leak"
@@ -1706,7 +1808,8 @@
           "minimum": 0
         },
         "agent": {
-          "const": "main"
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
         },
         "kind": {
           "const": "tool_rejected"
@@ -1744,6 +1847,204 @@
         "server",
         "version",
         "reason"
+      ]
+    },
+    "session_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
+        },
+        "kind": {
+          "const": "session_start"
+        },
+        "wire": {
+          "const": "context"
+        },
+        "session": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "session"
+      ]
+    },
+    "crash": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "agent": {
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
+        },
+        "kind": {
+          "const": "crash"
+        },
+        "wire": {
+          "const": "loop"
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire"
+      ]
+    },
+    "resume": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
+        },
+        "kind": {
+          "const": "resume"
+        },
+        "wire": {
+          "const": "loop"
+        },
+        "from_turn": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "from_turn"
+      ]
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "run": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[0-9]+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turn": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agent": {
+          "type": "string",
+          "pattern": "^(main|[a-z][a-z0-9-]*#[0-9]+)$"
+        },
+        "kind": {
+          "const": "capability"
+        },
+        "wire": {
+          "const": "control"
+        },
+        "dropped": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[\\x20-\\x7e\\n\\t]*$"
+          }
+        }
+      },
+      "required": [
+        "v",
+        "run",
+        "seq",
+        "t",
+        "turn",
+        "agent",
+        "kind",
+        "wire",
+        "dropped"
       ]
     }
   }

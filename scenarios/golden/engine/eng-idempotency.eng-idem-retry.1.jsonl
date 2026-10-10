@@ -1,0 +1,17 @@
+{"agent":"main","board":"eng-idem-retry","kind":"run_start","model_id":"claude-sonnet-5-5","run":"eng-idempotency:eng-idem-retry:1","seed":1,"seq":0,"t":0,"task":"Pay Sam ten, then say whether the payment went through.","turn":0,"v":1,"wire":"loop"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"eng-idempotency:eng-idem-retry:1","seq":1,"t":0,"tokens":311,"turn":1,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":3,"run":"eng-idempotency:eng-idem-retry:1","seq":2,"t":0,"tokens":311,"turn":1,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"eng-idempotency:eng-idem-retry:1","seq":3,"t":0,"tokens_in":311,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"eng-idempotency:eng-idem-retry:1","seq":4,"t":0,"turn":1,"v":1,"wire":"errors"}
+{"agent":"main","cost":381000,"kind":"model_reply","run":"eng-idempotency:eng-idem-retry:1","seq":5,"stop_reason":"tool_use","t":1300,"text":"I'll pay Sam ten.","tool_uses":[{"id":"toolu_1_1","input":{"amount":10,"to":"sam"},"name":"pay"}],"turn":1,"usage":{"input_tokens":311,"output_tokens":35},"v":1,"wire":"loop"}
+{"agent":"main","decision":"allow","final":"allow","human":null,"kind":"permission","reason":"no permission policy","rule":"none","run":"eng-idempotency:eng-idem-retry:1","seq":6,"t":1300,"tool":"pay","tool_use_id":"toolu_1_1","turn":1,"v":1,"wire":"permissions"}
+{"agent":"main","attempt":1,"input":{"amount":10,"to":"sam"},"kind":"tool_call","ok":false,"output":"Timed out waiting for the reply; the action may have happened.","output_tokens":16,"run":"eng-idempotency:eng-idem-retry:1","seq":7,"t":1500,"tool":"pay","tool_use_id":"toolu_1_1","truncated":false,"turn":1,"v":1,"wire":"tools"}
+{"agent":"main","attempt":2,"input":{"amount":10,"to":"sam"},"kind":"tool_call","ok":true,"output":"Paid.","output_tokens":1,"run":"eng-idempotency:eng-idem-retry:1","seq":8,"t":1700,"tool":"pay","tool_use_id":"toolu_1_1","truncated":false,"turn":1,"v":1,"wire":"tools"}
+{"agent":"main","events":9,"kind":"trace_write","redacted":0,"run":"eng-idempotency:eng-idem-retry:1","seq":9,"t":1700,"turn":1,"v":1,"wire":"observe"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"eng-idempotency:eng-idem-retry:1","seq":10,"t":1700,"tokens":386,"turn":2,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":4,"run":"eng-idempotency:eng-idem-retry:1","seq":11,"t":1700,"tokens":386,"turn":2,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"eng-idempotency:eng-idem-retry:1","seq":12,"t":1700,"tokens_in":386,"turn":2,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"eng-idempotency:eng-idem-retry:1","seq":13,"t":1700,"turn":2,"v":1,"wire":"errors"}
+{"agent":"main","cost":787000,"kind":"model_reply","run":"eng-idempotency:eng-idem-retry:1","seq":14,"stop_reason":"end_turn","t":2500,"text":"Paid. Done.","tool_uses":[],"turn":2,"usage":{"input_tokens":386,"output_tokens":10},"v":1,"wire":"loop"}
+{"agent":"main","events":5,"kind":"trace_write","redacted":0,"run":"eng-idempotency:eng-idem-retry:1","seq":15,"t":2500,"turn":2,"v":1,"wire":"observe"}
+{"agent":"main","cost":787000,"kind":"run_end","passed":false,"run":"eng-idempotency:eng-idem-retry:1","seq":16,"status":"done","t":2500,"tokens":{"input":697,"output":45},"turn":2,"turns":2,"v":1,"wire":"loop"}

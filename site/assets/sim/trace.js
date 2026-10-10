@@ -26,6 +26,13 @@ const WIRE = {
   cost: "observe",
   leak: "permissions",
   tool_rejected: "tools",
+  // A14: sub-agents, sessions, crash and resume, capability.
+  subagent_start: "loop",
+  subagent_end: "loop",
+  session_start: "context",
+  crash: "loop",
+  resume: "loop",
+  capability: "control",
 };
 
 export class Trace {
@@ -38,6 +45,8 @@ export class Trace {
     this.seq = 0;
     this.pending = 0;
     this.redacted = 0;
+    // A14.4: the agent field of every event; a sub-agent's events carry its name, the parent's "main".
+    this.label = "main";
   }
 
   // Replaces every redact pattern in every string of the payload, counting replacements.
@@ -71,7 +80,7 @@ export class Trace {
       seq: this.seq,
       t: this.st.t,
       turn: this.st.turn,
-      agent: "main",
+      agent: this.label,
       kind,
       wire: WIRE[kind],
       ...payload,

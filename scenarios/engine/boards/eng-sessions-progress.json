@@ -1,0 +1,9 @@
+{
+  "id": "eng-sessions-progress",
+  "label": "sessions, progress file",
+  "modules": {
+    "progress_file": {
+      "path": "progress.md"
+    }
+  }
+}

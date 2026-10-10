@@ -30,6 +30,8 @@ export function stringsIn(v, out = []) {
 
 function conditionHolds(cond, snap) {
   if (cond.startsWith("turn_gte:")) return snap.turn >= Number(cond.slice("turn_gte:".length));
+  // A14.2: the session the run is in (1 for the first; always 1 without sessions).
+  if (cond.startsWith("session_gte:")) return snap.session >= Number(cond.slice("session_gte:".length));
   // A5: the request about to be sent has fewer than n messages (snap.sent counts those).
   if (cond.startsWith("history_lt:")) return snap.sent < Number(cond.slice("history_lt:".length));
   // A7.3: the level in force is at least the named level (levels are in order, low to max).
@@ -141,15 +143,16 @@ export class ScriptedModel {
       } else if ("error" in step) {
         return errorOutcome(step.error, step.retry_after_ms ?? 0, step.error_ms ?? DEFAULT_ERROR_MS);
       } else {
-        return replyOutcome(step, snap.turn);
+        return replyOutcome(step, snap.turn, snap.id_tag ?? "");
       }
     }
   }
 }
 
-function replyOutcome(step, turn) {
+// A16.3: the tag is "" for the parent and "a<k>_" for sub-agent k.
+function replyOutcome(step, turn, tag) {
   const tools = step.tools ?? [];
-  const tool_uses = tools.map(([name, input], k) => ({ id: `toolu_${turn}_${k + 1}`, name, input }));
+  const tool_uses = tools.map(([name, input], k) => ({ id: `toolu_${tag}${turn}_${k + 1}`, name, input }));
   const say = "say" in step ? step.say : null;
   const content = [];
   if (say !== null) content.push({ type: "text", text: say });

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from pathlib import Path
 from typing import Any
@@ -9,7 +10,7 @@ from typing import Any
 import pytest
 from support import FACTS_PATH, of_kind
 
-from rein.board import load_board
+from rein.board import board_from_dict, load_board
 from rein.sim import run_trial
 from rein.spec import STATUSES
 from rein.tape import load_tape
@@ -263,3 +264,200 @@ def test_a_top_part_tie_goes_to_the_earlier_part() -> None:
         assert event["call_cost"] == (
             event["input_cost"] + event["output_cost"] + event["cache_cost"]
         )
+
+
+# A14 (BP-3.6, ENGINE A14 and the A15 rulings): the sub-agents, sessions, crash, ledgers and
+# models of the fixtures above.
+
+
+def requests(result: Any) -> list[dict[str, Any]]:
+    return [item for item in result.wire if "system" in item]
+
+
+def test_a_sub_agent_names_its_events_and_the_parent_sees_its_start_and_end() -> None:
+    result = trial("eng-subagents", "eng-subagents-isolated", 0)
+    starts = of_kind(result, "subagent_start")
+    assert [(e["name"], e["k"], e["context"]) for e in starts] == [
+        ("reader", 1, "isolated"),
+        ("stubborn", 2, "isolated"),
+    ]
+    ends = of_kind(result, "subagent_end")
+    assert [(e["status"], e["turns"], e["agent"], e["turn"]) for e in ends] == [
+        ("done", 2, "main", 1),
+        ("max_turns", 2, "main", 2),
+    ]
+    assert {event["agent"] for event in result.events} == {"main", "reader#1", "stubborn#2"}
+    assert any(e["kind"] == "trace_write" and e["agent"] == "reader#1" for e in result.events)
+
+
+def test_the_refusals_and_the_limit_say_what_happened() -> None:
+    isolated = trial("eng-subagents", "eng-subagents-isolated", 0)
+    assert tool_results(isolated, "run_agent") == [
+        ("The note says: Buy milk.", True),
+        ("Sub-agent ended max_turns: Still reading again.", False),
+        ("Unknown agent: ghost", False),
+    ]
+    limited = trial("eng-subagents", "eng-subagents-max", 0)
+    assert tool_results(limited, "run_agent") == [
+        ("The note says: Buy milk.", True),
+        ("Sub-agent limit reached (1)", False),
+        ("Unknown agent: ghost", False),
+    ]
+    assert ended(limited)["passed"] is True
+
+
+def test_a_sub_agent_has_no_run_agent_or_layers_and_a_fork_joins_the_last_user_turn() -> None:
+    result = trial("eng-subagents", "eng-subagents-forked", 0)
+    prompts = [e for e in of_kind(result, "prompt_built") if e["agent"] != "main"]
+    assert prompts and all(e["layers"] == ["system", "tools", "history"] for e in prompts)
+    sub_requests = [
+        item for item in requests(result) if "run_agent" not in [t["name"] for t in item["tools"]]
+    ]
+    replies = [e for e in result.events if e["kind"] == "model_reply" and e["agent"] != "main"]
+    assert len(sub_requests) == len(replies) == 4
+    reader_first, stubborn_first = sub_requests[0]["messages"], sub_requests[2]["messages"]
+    assert len(reader_first) == 1 and reader_first[0]["role"] == "user"
+    assert [b["text"] for b in reader_first[0]["content"]] == [
+        "Ask a reader for the first note and a second agent for the other, then write summary.txt.",
+        "Read notes/a.txt and return the note.",
+    ]
+    assert [m["role"] for m in stubborn_first] == ["user", "assistant", "user"]
+    assert stubborn_first[-1]["content"][-1] == {"type": "text", "text": "Read notes/b.txt twice."}
+
+
+def test_sessions_count_from_one_and_the_progress_note_comes_from_session_two() -> None:
+    progress = trial("eng-sessions", "eng-sessions-progress", 0)
+    assert [e["session"] for e in of_kind(progress, "session_start")] == [1, 2, 3]
+    layers = {e["turn"]: e["layers"] for e in of_kind(progress, "prompt_built")}
+    assert all("progress" not in layers[turn] for turn in (1, 2, 3))
+    assert all("progress" in layers[turn] for turn in (4, 5, 6, 7))
+    assert ended(progress)["turns"] == 7 and ended(progress)["status"] == "done"
+    assert ended(progress)["passed"] is True
+    plain = trial("eng-sessions", "eng-sessions-plain", 0)
+    assert all("progress" not in e["layers"] for e in of_kind(plain, "prompt_built"))
+    assert ended(plain)["passed"] is True
+
+
+def test_a_crash_repeats_the_charge_unless_the_session_is_durable() -> None:
+    plain = trial("eng-crash", "eng-crash-plain", 0)
+    assert len(of_kind(plain, "crash")) == 1 and of_kind(plain, "resume") == []
+    assert len(tool_results(plain, "charge")) == 2  # the restarted script charges again
+    assert ended(plain)["passed"] is False and ended(plain)["turns"] == 5
+    durable = trial("eng-crash", "eng-crash-durable", 0)
+    assert of_kind(durable, "resume")[0]["from_turn"] == 3
+    assert len(tool_results(durable, "charge")) == 1
+    assert ended(durable)["passed"] is True and ended(durable)["turns"] == 3
+
+
+def test_a_crash_after_the_last_turn_never_fires() -> None:
+    tape = dataclasses.replace(load_tape(ENGINE / "eng-crash.json"), crash={"turn": 3})
+    result = run_trial(tape, load_board(ENGINE_BOARDS / "eng-crash-durable.json"), 0, FACTS).result
+    assert of_kind(result, "crash") == [] and of_kind(result, "resume") == []
+
+
+def test_a_lost_reply_is_retried_and_a_key_keeps_the_payment_to_one() -> None:
+    retried = trial("eng-idempotency", "eng-idem-retry", 0)
+    assert [(e["attempt"], e["ok"], e["output"]) for e in of_kind(retried, "tool_call")] == [
+        (1, False, "Timed out waiting for the reply; the action may have happened."),
+        (2, True, "Paid."),
+    ]
+    assert ended(retried)["passed"] is False  # two payments, one ledger check of one line
+    keyed = trial("eng-idempotency", "eng-idem-both", 0)
+    # A16.1: the repeat returns the tool's own first output, Paid., with ok true, and is not retried
+    assert [(e["attempt"], e["ok"], e["output"]) for e in of_kind(keyed, "tool_call")] == [
+        (1, False, "Timed out waiting for the reply; the action may have happened."),
+        (2, True, "Paid."),
+    ]
+    assert texts(keyed)[-1] == "Paid. Done."
+    assert ended(keyed)["passed"] is True
+    for result in (retried, keyed):  # a retry shows no permission, only a tool_call
+        assert len([e for e in of_kind(result, "permission") if e["tool"] == "pay"]) == 1
+
+
+def test_a_profile_rejects_the_param_until_the_capability_check_drops_it() -> None:
+    rejected = trial("eng-models", "eng-models-reject", 0)
+    errors = of_kind(rejected, "model_error")
+    assert errors[0]["message"] == "temperature: this parameter is not supported on model-a"
+    assert ended(rejected)["status"] == "error" and ended(rejected)["turns"] == 1
+    dropped = trial("eng-models", "eng-models-dropped", 0)
+    assert of_kind(dropped, "capability")[0]["dropped"] == ["temperature"]
+    assert all("temperature" not in item for item in requests(dropped))
+    assert ended(dropped)["passed"] is True
+    other = trial("eng-models", "eng-models-b", 0)
+    assert other and all(item["temperature"] == 1 for item in requests(other))
+    assert ended(other)["passed"] is True
+
+
+def board_with(base: str, **extra: Any) -> Any:
+    """An engine board with extra modules added (the fixtures stay as they are)."""
+    raw = json.loads((ENGINE_BOARDS / f"{base}.json").read_text(encoding="utf-8"))
+    raw["modules"] = {**raw["modules"], **extra}
+    return board_from_dict(raw)
+
+
+def test_a_sub_agent_result_is_never_retried_even_when_it_starts_with_timed_out() -> None:
+    # A16.6: tool_retry never retries a run_agent result, whatever its text says.
+    tape = load_tape(ENGINE / "eng-subagents.json")
+    tape = dataclasses.replace(
+        tape,
+        agents={"reader": {"script": [{"say": "Timed out, sorry.", "stop": "end_turn"}]}},
+    )
+    board = board_from_dict(
+        {
+            "id": "retry-agents",
+            "modules": {
+                "subagents": {"context": "isolated", "max": 5, "max_turns": 2},
+                "tool_retry": {"max_attempts": 3},
+            },
+        }
+    )
+    result = run_trial(tape, board, 0, FACTS).result
+    first = [e for e in of_kind(result, "tool_call") if e["tool"] == "run_agent"][0]
+    assert first["output"] == "Timed out, sorry." and first["attempt"] == 1
+
+
+def test_faults_and_outages_reach_a_sub_agents_model_calls() -> None:
+    # A16.6: the tape's outage applies to every model call, the sub-agent's included.
+    tape = dataclasses.replace(
+        load_tape(ENGINE / "eng-subagents.json"),
+        outage={"from_ms": 1700, "to_ms": 1800, "type": "overloaded"},
+    )
+    board = board_with("eng-subagents-isolated")
+    result = run_trial(tape, board, 0, FACTS).result
+    errors = [e for e in of_kind(result, "model_error") if e["agent"] == "reader#1"]
+    assert [e["type"] for e in errors] == ["overloaded"]
+    end = [e for e in of_kind(result, "subagent_end") if e["name"] == "reader"][0]
+    assert end["status"] == "error"
+    assert tool_results(result, "run_agent")[0] == ("Sub-agent ended error: ", False)
+
+
+def test_the_run_start_events_come_in_the_ruled_order() -> None:
+    # A16.6: run_start, the tool_rejected events, capability, then the first session_start.
+    board = board_with("eng-sessions-plain", capability_check={})
+    kinds = [
+        e["kind"]
+        for e in run_trial(load_tape(ENGINE / "eng-sessions.json"), board, 0, FACTS).result.events[
+            :3
+        ]
+    ]
+    assert kinds == ["run_start", "capability", "session_start"]
+    pinned = board_with("eng-pins-pinned", capability_check={})
+    head = run_trial(load_tape(ENGINE / "eng-pins.json"), pinned, 0, FACTS).result.events
+    assert [e["kind"] for e in head[:5]] == [
+        "run_start",
+        "tool_rejected",
+        "tool_rejected",
+        "tool_rejected",
+        "capability",
+    ]
+
+
+def test_sub_agent_ids_are_scoped_by_its_number_and_turn() -> None:
+    # A16.3: toolu_a<k>_<turn>_<j> for tool uses, msg_a<k>_<turn> for replies, in wire order.
+    result = trial("eng-subagents", "eng-subagents-isolated", 0)
+    reader_reply = [e for e in of_kind(result, "model_reply") if e["agent"] == "reader#1"][0]
+    assert reader_reply["tool_uses"][0]["id"] == "toolu_a1_1_1"
+    stubborn_reply = [e for e in of_kind(result, "model_reply") if e["agent"] == "stubborn#2"][1]
+    assert stubborn_reply["tool_uses"][0]["id"] == "toolu_a2_2_1"
+    response_ids = [item["id"] for item in result.wire if item.get("role") == "assistant"]
+    assert "msg_a1_1" in response_ids and "msg_a2_2" in response_ids

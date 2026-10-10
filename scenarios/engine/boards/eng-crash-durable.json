@@ -1,0 +1,7 @@
+{
+  "id": "eng-crash-durable",
+  "label": "durable session",
+  "modules": {
+    "durable_session": {}
+  }
+}

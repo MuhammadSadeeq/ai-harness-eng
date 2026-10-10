@@ -1,0 +1,9 @@
+{
+  "id": "eng-idem-retry",
+  "label": "retry tool calls",
+  "modules": {
+    "tool_retry": {
+      "max_attempts": 3
+    }
+  }
+}

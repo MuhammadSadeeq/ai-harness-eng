@@ -69,6 +69,8 @@ class CallContext:
     window: int = 0  # A6.1: the tape window
     level: str = "high"  # A7.3: the effort level in force
     thinking: int = 0  # A7.3: thinking tokens this reply adds to its output
+    session: int = 1  # A14.2: the session in force, from 1 (1 on a tape without sessions)
+    scope: str = ""  # A14.1: a sub-agent's id scope ("" for the main agent)
 
 
 Entry = tuple[dict[str, Any], str]
@@ -76,14 +78,20 @@ Entry = tuple[dict[str, Any], str]
 
 @dataclass
 class ScriptedModel:
+    """One script's cursor. The tape supplies the outage and the faults for every script; the
+    choices list is shared by the whole run, so each location names where its draw happened."""
+
     tape: Tape
     rng: Mulberry32
-    queue: deque[Entry] = field(init=False)
+    script: list[dict[str, Any]]
+    prefix: str = "/script"  # the script's JSON pointer in the tape (A3.22, A14)
     choices: list[tuple[str, int]] = field(default_factory=list)
+    queue: deque[Entry] = field(init=False)
 
     def __post_init__(self) -> None:
         self.queue = deque(
-            (copy.deepcopy(step), f"/script/{index}") for index, step in enumerate(self.tape.script)
+            (copy.deepcopy(step), f"{self.prefix}/{index}")
+            for index, step in enumerate(self.script)
         )
 
     def call(self, ctx: CallContext) -> Reply | ErrorOutcome:
@@ -174,7 +182,7 @@ class ScriptedModel:
         for index, pair in enumerate(step.get("tools", []), start=1):
             name = str(pair[0])
             tool_input = copy.deepcopy(dict(pair[1]))
-            tool_id = f"toolu_{ctx.turn}_{index}"
+            tool_id = f"toolu_{ctx.scope}{ctx.turn}_{index}"
             tool_uses.append(ToolUse(id=tool_id, name=name, input=tool_input))
             content.append({"type": "tool_use", "id": tool_id, "name": name, "input": tool_input})
         default_stop = "tool_use" if tool_uses else "end_turn"
@@ -220,6 +228,8 @@ def condition_holds(condition: str, ctx: CallContext) -> bool:
         return ctx.last_truncated
     if condition.startswith("turn_gte:"):
         return ctx.turn >= int(condition.split(":", 1)[1])
+    if condition.startswith("session_gte:"):  # A14.2: the session in force, counted from 1
+        return ctx.session >= int(condition.split(":", 1)[1])
     if condition.startswith(
         "history_lt:"
     ):  # A5: the request about to be sent has fewer than n messages

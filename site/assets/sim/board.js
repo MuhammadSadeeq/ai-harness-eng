@@ -26,13 +26,23 @@ const MODULE_PARAMS = {
   effort: ["level"],
   cost_attribution: [],
   tool_pins: ["pins"],
+  // A14: sub-agents, progress file, durable session, tool retry, idempotency, model profile, request params, capability check.
+  subagents: ["context", "max", "max_turns"],
+  progress_file: ["path"],
+  durable_session: [],
+  tool_retry: ["max_attempts"],
+  idempotency: [],
+  model: ["id"],
+  request_params: [],
+  capability_check: [],
 };
 const DECISIONS = ["allow", "ask", "deny"];
 
 function loadModule(name, p, where) {
   if (!isObj(p)) fail(where, "module parameters must be an object");
   if (name === "tool_overrides") return loadToolOverrides(p, where);
-  noExtraKeys(p, MODULE_PARAMS[name], where);
+  // request_params names the request's own fields, so its keys are not a fixed list (A14.5).
+  if (name !== "request_params") noExtraKeys(p, MODULE_PARAMS[name], where);
   switch (name) {
     case "turn_limit":
       return { max_turns: reqInt(p, "max_turns", where) };
@@ -136,6 +146,36 @@ function loadModule(name, p, where) {
       for (const [server, version] of Object.entries(pins)) out[server] = version;
       return { pins: out };
     }
+    case "subagents": {
+      // A14.1: the context a sub-agent starts with, the most it may start in a run, and its own turn limit.
+      if (p.context !== "isolated" && p.context !== "forked") fail(where, 'context must be "isolated" or "forked"');
+      return { context: p.context, max: reqInt(p, "max", where, 1), max_turns: reqInt(p, "max_turns", where, 1) };
+    }
+    case "progress_file": {
+      if (typeof p.path !== "string" || p.path === "") fail(where, "path must be a non-empty string");
+      return { path: p.path };
+    }
+    case "durable_session":
+    case "idempotency":
+    case "capability_check":
+      return {};
+    case "tool_retry":
+      return { max_attempts: reqInt(p, "max_attempts", where, 1) };
+    case "model": {
+      // A14.5: the id names a profile of the tape; checked against the tape in checkBoardForTape.
+      if (typeof p.id !== "string" || p.id === "") fail(where, "id must be a model id");
+      return { id: p.id };
+    }
+    case "request_params": {
+      // A14.5: name to string or integer; each is sent with every request.
+      if (!isObj(p)) fail(where, "request_params maps names to strings or integers");
+      const out = {};
+      for (const [name, v] of Object.entries(p)) {
+        if (typeof v !== "string" && !Number.isInteger(v)) fail(where, `request_params ${name} must be a string or an integer`);
+        out[name] = v;
+      }
+      return out;
+    }
     case "redact": {
       const patterns = p.patterns ?? [];
       if (!Array.isArray(patterns) || patterns.some((s) => typeof s !== "string" || s === "")) {
@@ -185,6 +225,10 @@ export function checkBoardForTape(tape, board) {
   const names = new Set([...tape.tools, ...tape.custom_tools.map((c) => c.name)]);
   for (const name of Object.keys(board.modules.tool_overrides ?? {})) {
     if (!names.has(name)) fail(where, `tool_overrides names unknown tool "${name}"`);
+  }
+  const model = board.modules.model;
+  if (model && !Object.prototype.hasOwnProperty.call(tape.models, model.id)) {
+    fail(where, `model "${model.id}" is not a model profile of the tape`);
   }
   const search = board.modules.tool_search;
   if (search) {

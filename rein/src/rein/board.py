@@ -67,6 +67,8 @@ _INT_PARAMS: dict[str, dict[str, int]] = {
     "retry": {"max_attempts": 1, "base_ms": 0, "cap_ms": 0},
     "breaker": {"threshold": 1},
     "verify_gate": {"max_feedback": 0},
+    "subagents": {"max": 1, "max_turns": 1},  # A14.1
+    "tool_retry": {"max_attempts": 1},  # A14.4
 }
 
 
@@ -95,6 +97,25 @@ def _check_module(name: str, params: dict[str, Any]) -> None:
             raise BoardError("redact.patterns must be a list of non-empty strings")
     if name == "history" and (set(params) != {"resend"} or not isinstance(params["resend"], bool)):
         raise BoardError('history must be {"resend": true} or {"resend": false} (A5)')
+    if name in ("durable_session", "idempotency", "capability_check") and params:
+        raise BoardError(f"{name} takes no parameters (A14)")
+    if name == "subagents":  # A14.1
+        if set(params) != {"context", "max", "max_turns"}:
+            raise BoardError("subagents takes context, max and max_turns (A14.1)")
+        if params["context"] not in ("isolated", "forked"):
+            raise BoardError("subagents.context must be isolated or forked (A14.1)")
+    if name == "progress_file":  # A14.2
+        path = params.get("path")
+        if set(params) != {"path"} or not isinstance(path, str) or not path:
+            raise BoardError('progress_file takes exactly {"path": "<path>"} (A14.2)')
+    if name == "model":  # A14.5: the id must be a profile of the tape (checked by the harness)
+        model_id = params.get("id")
+        if set(params) != {"id"} or not isinstance(model_id, str) or not model_id:
+            raise BoardError('model takes exactly {"id": "<model id>"} (A14.5)')
+    if name == "request_params":  # A14.5: strings or integers, by name
+        for key, value in params.items():
+            if not key or isinstance(value, bool) or not isinstance(value, str | int):
+                raise BoardError(f"request_params.{key} must be a string or an integer (A14.5)")
 
 
 def _check_rule(rule: Any) -> None:

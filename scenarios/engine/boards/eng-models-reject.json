@@ -1,0 +1,12 @@
+{
+  "id": "eng-models-reject",
+  "label": "model model-a, request params",
+  "modules": {
+    "model": {
+      "id": "model-a"
+    },
+    "request_params": {
+      "temperature": 1
+    }
+  }
+}

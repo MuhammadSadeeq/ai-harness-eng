@@ -1,0 +1,10 @@
+{
+  "id": "eng-idem-both",
+  "label": "retry tool calls, idempotency keys",
+  "modules": {
+    "tool_retry": {
+      "max_attempts": 3
+    },
+    "idempotency": {}
+  }
+}

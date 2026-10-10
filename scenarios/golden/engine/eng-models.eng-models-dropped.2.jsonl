@@ -1,0 +1,17 @@
+{"agent":"main","board":"eng-models-dropped","kind":"run_start","model_id":"model-a","run":"eng-models:eng-models-dropped:2","seed":2,"seq":0,"t":0,"task":"Write summary.txt with the model you are given.","turn":0,"v":1,"wire":"loop"}
+{"agent":"main","dropped":["temperature"],"kind":"capability","run":"eng-models:eng-models-dropped:2","seq":1,"t":0,"turn":0,"v":1,"wire":"control"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"eng-models:eng-models-dropped:2","seq":2,"t":0,"tokens":248,"turn":1,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":3,"run":"eng-models:eng-models-dropped:2","seq":3,"t":0,"tokens":248,"turn":1,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"eng-models:eng-models-dropped:2","seq":4,"t":0,"tokens_in":248,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"eng-models:eng-models-dropped:2","seq":5,"t":0,"turn":1,"v":1,"wire":"errors"}
+{"agent":"main","cost":334000,"kind":"model_reply","run":"eng-models:eng-models-dropped:2","seq":6,"stop_reason":"tool_use","t":1460,"text":"Writing the summary.","tool_uses":[{"id":"toolu_1_1","input":{"content":"Model A.\n","path":"summary.txt"},"name":"write_file"}],"turn":1,"usage":{"input_tokens":248,"output_tokens":43},"v":1,"wire":"loop"}
+{"agent":"main","decision":"allow","final":"allow","human":null,"kind":"permission","reason":"no permission policy","rule":"none","run":"eng-models:eng-models-dropped:2","seq":7,"t":1460,"tool":"write_file","tool_use_id":"toolu_1_1","turn":1,"v":1,"wire":"permissions"}
+{"agent":"main","input":{"content":"Model A.\n","path":"summary.txt"},"kind":"tool_call","ok":true,"output":"Wrote summary.txt (9 chars)","output_tokens":7,"run":"eng-models:eng-models-dropped:2","seq":8,"t":1560,"tool":"write_file","tool_use_id":"toolu_1_1","truncated":false,"turn":1,"v":1,"wire":"tools"}
+{"agent":"main","events":9,"kind":"trace_write","redacted":0,"run":"eng-models:eng-models-dropped:2","seq":9,"t":1560,"turn":1,"v":1,"wire":"observe"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"eng-models:eng-models-dropped:2","seq":10,"t":1560,"tokens":336,"turn":2,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":4,"run":"eng-models:eng-models-dropped:2","seq":11,"t":1560,"tokens":336,"turn":2,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"eng-models:eng-models-dropped:2","seq":12,"t":1560,"tokens_in":336,"turn":2,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"eng-models:eng-models-dropped:2","seq":13,"t":1560,"turn":2,"v":1,"wire":"errors"}
+{"agent":"main","cost":686000,"kind":"model_reply","run":"eng-models:eng-models-dropped:2","seq":14,"stop_reason":"end_turn","t":2320,"text":"Done.","tool_uses":[],"turn":2,"usage":{"input_tokens":336,"output_tokens":8},"v":1,"wire":"loop"}
+{"agent":"main","events":5,"kind":"trace_write","redacted":0,"run":"eng-models:eng-models-dropped:2","seq":15,"t":2320,"turn":2,"v":1,"wire":"observe"}
+{"agent":"main","cost":686000,"kind":"run_end","passed":true,"run":"eng-models:eng-models-dropped:2","seq":16,"status":"done","t":2320,"tokens":{"input":584,"output":51},"turn":2,"turns":2,"v":1,"wire":"loop"}

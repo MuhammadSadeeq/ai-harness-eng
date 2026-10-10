@@ -94,6 +94,14 @@ MODULES = (
     "tool_search",
     "cost_attribution",
     "tool_pins",  # A11.5
+    "subagents",  # A14.1
+    "progress_file",  # A14.2
+    "durable_session",  # A14.3
+    "tool_retry",  # A14.4
+    "idempotency",  # A14.4
+    "model",  # A14.5
+    "request_params",  # A14.5
+    "capability_check",  # A14.5
 )
 # Section 9: the wire of every event kind.
 KIND_WIRE = {
@@ -120,6 +128,12 @@ KIND_WIRE = {
     "cost": "observe",
     "leak": "permissions",  # A11.3
     "tool_rejected": "tools",  # A11.5
+    "subagent_start": "loop",  # A14.6
+    "subagent_end": "loop",  # A14.6
+    "session_start": "context",  # A14.6
+    "crash": "loop",  # A14.6
+    "resume": "loop",  # A14.6
+    "capability": "control",  # A14.6
 }
 TRIFECTA = ("private_data", "untrusted_content", "exfiltration")  # A11.4, the labels, in order
 EVAL_KINDS = ("capability", "regression")  # A12.3
@@ -128,3 +142,27 @@ EVAL_MAX_TRIALS = 50
 NAME_PATTERN = re.compile(r"[a-z0-9][a-z0-9-]*")  # A12.3: a task's tape id
 ASCII_PATTERN = re.compile(r"[\x20-\x7e\n\t]*")
 CANONICAL_INDEX = re.compile(r"(0|[1-9][0-9]*)")
+# A14: sub-agents, sessions, crash and resume, ledgers and retries, model profiles.
+RUN_AGENT_NAME = "run_agent"  # A14.1: the harness's own tool, last in the request's tools
+RUN_AGENT_LATENCY_MS = 100
+RUN_AGENT_DEF: dict[str, Any] = {
+    "name": "run_agent",
+    "description": "Hand a self-contained task to a sub-agent and get its final answer back.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "agent": {"type": "string", "description": "Which sub-agent to run"},
+            "brief": {"type": "string", "description": "The task, and what to return"},
+        },
+        "required": ["agent", "brief"],
+        "additionalProperties": False,
+    },
+}
+AGENT_NAME_PATTERN = re.compile(r"[a-z][a-z0-9-]*")  # A14.1: an agent's name in the tape
+SUB_AGENT_CONTEXTS = ("isolated", "forked")
+SESSION_HANDOFF = ("done", "max_turns", "unverified")  # A14.2: a session that hands over
+SESSIONS_MIN = 2
+SESSIONS_MAX = 5
+TIMED_OUT_PREFIX = "Timed out"  # A14.4: a tool result starting with this is retried
+LOST_REPLY_OUTPUT = "Timed out waiting for the reply; the action may have happened."  # A14.4
+MODEL_PROFILE_KEYS = frozenset({"pricing", "rejects", "script"})  # A14.5

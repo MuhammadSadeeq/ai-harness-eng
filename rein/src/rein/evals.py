@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from .board import Board
-from .harness import Harness
+from .harness import Harness, run_pricing
 from .plain import check_plain, loads_strict
 from .pricing import resolve_prices
 from .prng import Mulberry32
@@ -169,7 +169,8 @@ def run_eval(
     for index, task in enumerate(spec.tasks):
         tape = tapes[task.tape]
         for trial in range(1, spec.trials + 1):
-            result = Harness(tape, board, trial, resolve_prices(tape.pricing, facts)).run()
+            prices = resolve_prices(run_pricing(tape, board), facts)
+            result = Harness(tape, board, trial, prices).run()
             code = result.status == "done" and result.passed
             row: dict[str, Any] = {
                 "task": task.id,

@@ -27,7 +27,7 @@ def request_payload(
 
 
 def response_payload(
-    turn: int,
+    tag: str,
     model_id: str,
     content: list[dict[str, Any]],
     stop_reason: str,
@@ -35,7 +35,7 @@ def response_payload(
     output_tokens: int,
 ) -> dict[str, Any]:
     return {
-        "id": f"msg_{turn}",
+        "id": f"msg_{tag}",  # the turn, with a sub-agent's scope in front (A14)
         "type": "message",
         "role": "assistant",
         "model": model_id,

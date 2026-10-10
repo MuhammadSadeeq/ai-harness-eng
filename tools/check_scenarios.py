@@ -372,6 +372,23 @@ def _branch_coverage(
                 )
 
 
+def _all_branch_options(raw: dict[str, Any]) -> list[tuple[str, int]]:
+    """Every (location, option) of every branch in every script of a tape. A14: the sessions,
+    the sub-agents and the model profiles each have a script at its own JSON pointer (A3.22)."""
+    scripts: list[tuple[list[Any], str]] = [(list(raw.get("script", [])), "/script")]
+    for index, session in enumerate(raw.get("sessions", [])):
+        scripts.append((list(session["script"]), f"/sessions/{index}/script"))
+    for name, agent in raw.get("agents", {}).items():
+        scripts.append((list(agent["script"]), f"/agents/{name}/script"))
+    for model_id, profile in raw.get("models", {}).items():
+        if "script" in profile:
+            scripts.append((list(profile["script"]), f"/models/{model_id}/script"))
+    found: list[tuple[str, int]] = []
+    for steps, base in scripts:
+        found.extend(_branch_options(steps, base))
+    return found
+
+
 COURSE_PATH = REPO_ROOT / "course.json"
 
 
@@ -770,7 +787,7 @@ def suggest_seeds(scenarios_dir: Path, n: int, facts_path: Path = DEFAULT_FACTS)
             chosen.append(best)
             remaining -= gain
         chosen.sort()
-        static = set(_branch_options(list(tape.raw.get("script", [])), "/script"))
+        static = set(_all_branch_options(tape.raw))
         covered_count = len(reachable) - len(remaining)
         if not reachable:
             lines.append(f"{_display(tape_path)}: no branch options reached (any golden_seeds)")

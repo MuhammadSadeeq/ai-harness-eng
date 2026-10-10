@@ -12,7 +12,18 @@ from pathlib import Path
 from typing import Any
 
 from .plain import check_plain, loads_strict
-from .spec import BUILTIN_TOOLS, CANONICAL_INDEX, EFFORT_LEVELS, ERROR_TYPES, NOTE_KINDS, TRIFECTA
+from .spec import (
+    AGENT_NAME_PATTERN,
+    BUILTIN_TOOLS,
+    CANONICAL_INDEX,
+    EFFORT_LEVELS,
+    ERROR_TYPES,
+    MODEL_PROFILE_KEYS,
+    NOTE_KINDS,
+    SESSIONS_MAX,
+    SESSIONS_MIN,
+    TRIFECTA,
+)
 from .vfs import is_outside, normalize
 
 REPLY_STOPS = ("end_turn", "tool_use", "max_tokens", "refusal")
@@ -52,6 +63,10 @@ class Tape:
     effort: dict[str, Any] | None = None  # A7.3: default and thinking_tokens, when given
     tests: list[dict[str, Any]] = field(default_factory=list)  # A9.3: the test suite, when given
     canaries: list[str] = field(default_factory=list)  # A11.3: secrets the tape plants
+    sessions: list[list[dict[str, Any]]] = field(default_factory=list)  # A14.2: each one's script
+    agents: dict[str, dict[str, Any]] = field(default_factory=dict)  # A14.1: script, system?
+    crash: dict[str, Any] | None = None  # A14.3: {"turn": n}
+    models: dict[str, dict[str, Any]] = field(default_factory=dict)  # A14.5: the profiles
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -88,6 +103,7 @@ def _build(raw: dict[str, Any]) -> Tape:
         if "latency_ms" in entry:
             _int(entry["latency_ms"], f"custom tool {entry['name']}.latency_ms", minimum=0)
         _check_provenance(entry)
+        _check_ledger(entry)
     _check_roots(raw["workspace"], raw["outside"])
     window = _int(raw["window"], "window", minimum=1)
     # A3.12: the defaults for absent fields.
@@ -99,7 +115,11 @@ def _build(raw: dict[str, Any]) -> Tape:
     interrupt = dict(interrupt_raw) if interrupt_raw is not None else None
     if interrupt is not None:
         _int(interrupt["turn"], "interrupt.turn", minimum=1)
-    _check_steps(list(raw["script"]), "script")
+    # A14.2: a tape has one script or sessions, never both (and never neither).
+    if ("script" in raw) == ("sessions" in raw):
+        raise TapeError("a tape has either a script or sessions (A14.2)")
+    script = list(raw["script"]) if "script" in raw else []
+    _check_steps(script, "script")
     faults = [dict(f) for f in raw.get("faults", [])]
     for fault in faults:
         _int(fault["percent"], "faults.percent", minimum=0)
@@ -121,9 +141,9 @@ def _build(raw: dict[str, Any]) -> Tape:
         outside=dict(raw["outside"]),
         tools=tools,
         custom_tools=custom,
-        checks=[dict(c) for c in raw["checks"]],
+        checks=_check_checks(raw["checks"]),
         test_output={str(k): str(v) for k, v in raw["test_output"].items()},
-        script=list(raw["script"]),
+        script=script,
         human=human,
         interrupt=interrupt,
         boards=[str(b) for b in raw["boards"]],
@@ -137,6 +157,10 @@ def _build(raw: dict[str, Any]) -> Tape:
         effort=_check_effort(raw.get("effort")),
         tests=_check_tests(raw.get("tests", [])),
         canaries=_check_canaries(raw.get("canaries", [])),
+        sessions=_check_sessions(raw.get("sessions", [])) if "sessions" in raw else [],
+        agents=_check_agents(raw.get("agents", {})),
+        crash=_check_crash(raw.get("crash")),
+        models=_check_models(raw.get("models", {})),
         raw=raw,
     )
 
@@ -310,6 +334,8 @@ def _check_condition(condition: str, where: str) -> None:
         raise TapeError(f"{where}: tool_loaded needs a tool name")
     if condition.startswith("last_result_contains:") and argument == "":  # A11.1
         raise TapeError(f"{where}: last_result_contains needs text after the colon")
+    if condition.startswith("session_gte:") and not CANONICAL_INDEX.fullmatch(argument):
+        raise TapeError(f"{where}: session_gte needs a canonical integer, got {condition!r}")
     if condition.startswith("effort_gte:") and argument not in EFFORT_LEVELS:
         raise TapeError(f"{where}: effort_gte needs one of {', '.join(EFFORT_LEVELS)}")
 
@@ -432,3 +458,106 @@ def _check_tests(raw: Any) -> list[dict[str, Any]]:
                 _text(check[key], f"{where}.check.{key}")
         tests.append(dict(test))
     return tests
+
+
+def _check_ledger(entry: dict[str, Any]) -> None:
+    """A14.4: a ledger is a workspace path; lose_reply lists distinct application numbers."""
+    name = entry["name"]
+    if "ledger" in entry:
+        _text(entry["ledger"], f"custom tool {name}.ledger")
+    if "lose_reply" in entry:
+        lost = entry["lose_reply"]
+        if not isinstance(lost, list):
+            raise TapeError(f"custom tool {name}.lose_reply must be a list of integers")
+        for number in lost:
+            _int(number, f"custom tool {name}.lose_reply", minimum=1)
+        if len(set(lost)) != len(lost):
+            raise TapeError(f"custom tool {name}.lose_reply must be distinct")
+
+
+def _check_checks(raw: Any) -> list[dict[str, Any]]:
+    """A3.5 and A14.4: a check is a file with exactly one of contains, not_contains or lines."""
+    if not isinstance(raw, list):
+        raise TapeError("checks must be a list")
+    checks: list[dict[str, Any]] = []
+    for index, check in enumerate(raw):
+        where = f"checks[{index}]"
+        kinds = [key for key in ("contains", "not_contains", "lines") if key in check]
+        if not isinstance(check, dict) or "file" not in check or len(kinds) != 1:
+            raise TapeError(f"{where} needs a file and one of contains, not_contains, lines")
+        if set(check) - {"file", kinds[0]}:
+            raise TapeError(f"{where} has unknown keys {sorted(set(check) - {'file', kinds[0]})}")
+        _text(check["file"], f"{where}.file")
+        if kinds[0] == "lines":
+            _int(check["lines"], f"{where}.lines", minimum=0)
+        elif not isinstance(check[kinds[0]], str):
+            raise TapeError(f"{where}.{kinds[0]} must be a string")
+        checks.append(dict(check))
+    return checks
+
+
+def _check_sessions(raw: Any) -> list[list[dict[str, Any]]]:
+    """A14.2: 2 to 5 sessions, each one a script and nothing else."""
+    if not isinstance(raw, list) or not SESSIONS_MIN <= len(raw) <= SESSIONS_MAX:
+        raise TapeError(f"sessions must be a list of {SESSIONS_MIN} to {SESSIONS_MAX} sessions")
+    scripts: list[list[dict[str, Any]]] = []
+    for index, session in enumerate(raw):
+        where = f"sessions[{index}]"
+        if not isinstance(session, dict) or set(session) != {"script"}:
+            raise TapeError(f"{where} must have exactly a script")
+        _check_steps(list(session["script"]), f"{where}.script")
+        scripts.append([dict(step) for step in session["script"]])
+    return scripts
+
+
+def _check_agents(raw: Any) -> dict[str, dict[str, Any]]:
+    """A14.1: the sub-agents by name: a script, and a system prompt when they have their own."""
+    if not isinstance(raw, dict):
+        raise TapeError("agents must be an object")
+    agents: dict[str, dict[str, Any]] = {}
+    for name, agent in raw.items():
+        where = f"agents.{name}"
+        if not AGENT_NAME_PATTERN.fullmatch(str(name)):
+            raise TapeError(f"{where}: an agent name matches [a-z][a-z0-9-]* (A14.1)")
+        extra = set(agent) - {"script", "system"} if isinstance(agent, dict) else {"?"}
+        if not isinstance(agent, dict) or "script" not in agent or extra:
+            raise TapeError(f"{where} takes a script and an optional system")
+        _check_steps(list(agent["script"]), f"{where}.script")
+        if "system" in agent:
+            _text(agent["system"], f"{where}.system")
+        agents[str(name)] = dict(agent)
+    return agents
+
+
+def _check_crash(raw: Any) -> dict[str, Any] | None:
+    """A14.3: the turn after which the run crashes, once."""
+    if raw is None:
+        return None
+    if not isinstance(raw, dict) or set(raw) != {"turn"}:
+        raise TapeError("crash takes exactly a turn")
+    _int(raw["turn"], "crash.turn", minimum=1)
+    return dict(raw)
+
+
+def _check_models(raw: Any) -> dict[str, dict[str, Any]]:
+    """A14.5: the model profiles: pricing, the params the model rejects, and an optional script."""
+    if not isinstance(raw, dict):
+        raise TapeError("models must be an object")
+    profiles: dict[str, dict[str, Any]] = {}
+    for model_id, profile in raw.items():
+        where = f"models.{model_id}"
+        if not isinstance(profile, dict) or "pricing" not in profile:
+            raise TapeError(f"{where} needs pricing")
+        if set(profile) - MODEL_PROFILE_KEYS:
+            raise TapeError(f"{where} has unknown keys {sorted(set(profile) - MODEL_PROFILE_KEYS)}")
+        if not isinstance(profile["pricing"], dict):
+            raise TapeError(f"{where}.pricing must be an object")
+        rejects = profile.get("rejects", [])
+        if not isinstance(rejects, list) or len(set(rejects)) != len(rejects):
+            raise TapeError(f"{where}.rejects must be a list of distinct names")
+        for name in rejects:
+            _text(name, f"{where}.rejects")
+        if "script" in profile:
+            _check_steps(list(profile["script"]), f"{where}.script")
+        profiles[str(model_id)] = dict(profile)
+    return profiles

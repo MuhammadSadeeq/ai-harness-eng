@@ -4,7 +4,8 @@
 export const WIRE_MAX_TOKENS = 4096;
 
 // outputConfig (A7.3): {effort: L} when the board sets the effort; absent otherwise.
-export function wireRequest(modelId, system, tools, messages, outputConfig = null) {
+// A14.5: extra holds the board's request_params (after capability_check); each one is a top-level field.
+export function wireRequest(modelId, system, tools, messages, outputConfig = null, extra = {}) {
   const req = {
     model: modelId,
     max_tokens: WIRE_MAX_TOKENS,
@@ -13,12 +14,13 @@ export function wireRequest(modelId, system, tools, messages, outputConfig = nul
     messages: structuredClone(messages),
   };
   if (outputConfig) req.output_config = { ...outputConfig };
+  for (const [k, v] of Object.entries(extra)) req[k] = v;
   return req;
 }
 
-export function wireResponse(modelId, turn, content, stopReason, usage) {
+export function wireResponse(modelId, turn, content, stopReason, usage, tag = "") {
   return {
-    id: `msg_${turn}`,
+    id: `msg_${tag}${turn}`,
     type: "message",
     role: "assistant",
     model: modelId,

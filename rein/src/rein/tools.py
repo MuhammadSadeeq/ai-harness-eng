@@ -39,6 +39,12 @@ def cat_path(cmd: str) -> str | None:
     return None
 
 
+def line_count(text: str) -> int:
+    """A14.4: the lines of a file. Each newline ends a line, and a last line with no newline counts,
+    so "" has 0 lines, "a\\n" has 1, and "a" has 1."""
+    return text.count("\n") + (1 if text and not text.endswith("\n") else 0)
+
+
 def _missing(path: str) -> str:
     return f"No file at '{path}'. Call list_files to see what exists."
 
@@ -93,10 +99,17 @@ class Toolbox:
         """Every check holds. A check on a missing file fails, whichever kind it is (A3.5)."""
         return all(self._check_holds(check) for check in self.tape.checks)
 
+    def append_ledger(self, path: str, line: str) -> None:
+        """A14.4: a ledger line goes at the end of its file; a missing file is created by it."""
+        current = self.vfs.read(path).entry or ""
+        self.vfs.write(path, current + line)
+
     def _check_holds(self, check: dict[str, Any]) -> bool:
         text = self.vfs.read(str(check["file"])).entry
         if text is None:
             return False
+        if "lines" in check:
+            return line_count(text) == int(check["lines"])
         if "contains" in check:
             return str(check["contains"]) in text
         return str(check["not_contains"]) not in text

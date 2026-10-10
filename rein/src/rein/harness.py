@@ -28,10 +28,16 @@ from .pyjson import pyjson
 from .spec import (
     DEFAULT_EFFORT,
     ERROR_MESSAGES,
+    LOST_REPLY_OUTPUT,
     MISSING_RESULT_MESSAGE,
     MODEL_ERROR_MS,
     OUTPUT_CAP_MARKER,
+    RUN_AGENT_DEF,
+    RUN_AGENT_LATENCY_MS,
+    RUN_AGENT_NAME,
     SAFETY_TURNS,
+    SESSION_HANDOFF,
+    TIMED_OUT_PREFIX,
     TOOL_SEARCH_DEF,
     TOOL_SEARCH_LATENCY_MS,
     TOOL_SEARCH_MAX,
@@ -78,6 +84,64 @@ def tool_result(tool_use_id: str, content: str, is_error: bool) -> dict[str, Any
     }
 
 
+def model_choice(tape: Tape, board: Board) -> tuple[str, dict[str, Any] | None]:
+    """A14.5: the model id and its profile. Profiles apply only through the model module; without
+    it the tape's own model id and pricing stand, and there is no profile."""
+    if not board.has("model"):
+        return tape.model_id, None
+    model_id = str(board.param("model", "id"))
+    if model_id not in tape.models:
+        raise BoardError(f"model {model_id!r} is not a profile of tape {tape.id!r} (A14.5)")
+    return model_id, tape.models[model_id]
+
+
+def run_pricing(tape: Tape, board: Board) -> dict[str, Any]:
+    """The pricing the run uses: the profile's, when the model module selects one (A14.5)."""
+    _, profile = model_choice(tape, board)
+    return dict(tape.pricing) if profile is None else dict(profile["pricing"])
+
+
+def _reply_text(reply: Reply) -> str:
+    """A14.1: a reply's text blocks joined by a newline (the sub-agent's answer)."""
+    return "\n".join(str(block["text"]) for block in reply.content if block.get("type") == "text")
+
+
+# A14.1: the attributes a sub-agent swaps in for its own run (A15.1 says which modules apply).
+SWAPPED = (
+    "messages",
+    "turn",
+    "turn_base",
+    "model",
+    "consecutive_failures",
+    "feedback_count",
+    "feedback_pending",
+    "last_permission",
+    "last_truncated",
+    "recent_calls",
+    "compacted",
+    "agent",
+    "scope",
+    "system_base",
+    "progress_layer",
+    "last_text",
+    "max_turns",
+    "has_turn_limit",
+    "has_verify",
+    "has_loop",
+    "has_budget",
+    "has_search",
+    "has_subagents",
+    "has_compaction",
+    "has_cache",
+    "has_clock",
+    "has_rules_file",
+    "has_split",
+    "first_block_only",
+    "resend",
+    "has_close_books",
+)
+
+
 class Harness:
     def __init__(self, tape: Tape, board: Board, seed: int, prices: Prices) -> None:
         self.tape = tape
@@ -104,7 +168,57 @@ class Harness:
                 continue
             self.rejected[str(custom["name"])] = (server, version, reason)
         self.toolbox = Toolbox(tape, frozenset(self.rejected))
-        self.model = ScriptedModel(tape, self.rng)
+        self.choices: list[tuple[str, int]] = []  # A3.22: shared by every script of the run
+        self.model_id, profile = model_choice(tape, board)  # A14.5
+        self.rejects: list[str] = [str(n) for n in profile.get("rejects", [])] if profile else []
+        main_script = list(tape.script)
+        if profile is not None and "script" in profile:  # A14.5: the profile's, else the tape's
+            if tape.sessions:
+                raise BoardError("a model profile's script cannot replace sessions (A14.5)")
+            main_script = list(profile["script"])
+        self.request_params: dict[str, Any] = (  # A14.5: added to every request
+            dict(board.modules["request_params"]) if board.has("request_params") else {}
+        )
+        self.has_capability = board.has("capability_check")
+        rejected_params = [name for name in self.request_params if name in self.rejects]
+        self.dropped: list[str] = rejected_params if self.has_capability else []
+        self.blocked: list[str] = [] if self.has_capability else rejected_params
+        self.session_scripts: list[list[dict[str, Any]]] = [list(s) for s in tape.sessions]
+        self.session = 1  # A14.2: from 1; a tape without sessions is session 1 throughout
+        self.session_script: list[dict[str, Any]] = main_script
+        self.session_prefix = "/script"
+        self.model = self._new_model()
+        self.system_base = tape.system  # A14.1: a sub-agent may have its own
+        self.agent = "main"  # A14.4: the events' agent label (a sub-agent's is name#k)
+        self.scope = ""  # A14.1: the id scope of a sub-agent's tool uses and replies
+        self.turn_base = 0  # A14.2: the turn a session started on; turn_limit counts from it
+        self.progress_path: str | None = (  # A14.2
+            str(board.param("progress_file", "path")) if board.has("progress_file") else None
+        )
+        self.progress_layer: str | None = None
+        self.crash_turn: int | None = int(tape.crash["turn"]) if tape.crash is not None else None
+        self.crashed = False  # A14.3: once per run
+        self.has_durable = board.has("durable_session")
+        self.has_subagents = board.has("subagents")  # A14.1
+        self.subagent_context = (
+            str(board.param("subagents", "context")) if self.has_subagents else ""
+        )
+        self.subagent_max = int(board.param("subagents", "max")) if self.has_subagents else 0
+        self.subagent_max_turns = (
+            int(board.param("subagents", "max_turns")) if self.has_subagents else 0
+        )
+        self.started = 0  # the sub-agents started in the run (never reset)
+        self.has_tool_retry = board.has("tool_retry")  # A14.4
+        self.tool_attempts = (
+            int(board.param("tool_retry", "max_attempts")) if self.has_tool_retry else 1
+        )
+        self.has_idempotency = board.has("idempotency")
+        self.keys: dict[str, str] = {}  # the tool's keys: tool_use_id -> the first output
+        self.applied: dict[str, int] = {}  # the tool's real applications, by tool name
+        self.live_custom: dict[str, dict[str, Any]] = {
+            str(c["name"]): c for c in tape.custom_tools if str(c["name"]) not in self.rejected
+        }
+        self.last_text = ""
         self.approver = Approver.from_config(tape.human)
         self.policy: Policy | None = (
             Policy.from_params(board.modules["permissions"]) if board.has("permissions") else None
@@ -208,12 +322,22 @@ class Harness:
             task=self.tape.task,
             board=self.board.id,
             seed=self.seed,
-            model_id=self.tape.model_id,
+            model_id=self.model_id,
         )
         for name, (server, version, reason) in self.rejected.items():  # A11.5: after run_start
             self._emit("tool_rejected", tool=name, server=server, version=version, reason=reason)
-        self.messages = [user_message([text_block(self.tape.task)])]
-        status = self._loop()
+        if self.has_capability:  # A14.5: once per run, after the tool_rejected events (A16.6)
+            self._emit("capability", dropped=list(self.dropped))
+        if self.session_scripts:  # A14.2: the sessions in order, while each hands over
+            status = "error"
+            for number, script in enumerate(self.session_scripts, start=1):
+                self._start_session(number, script)
+                status = self._loop()
+                if status not in SESSION_HANDOFF:
+                    break
+        else:
+            self.messages = [user_message([text_block(self.tape.task)])]
+            status = self._loop()
         passed = self._finish(status)
         return RunResult(
             status=status,
@@ -224,7 +348,7 @@ class Harness:
             cost=self.cost,
             events=list(self.rec.events),
             wire=list(self.wire),
-            choices=list(self.model.choices),
+            choices=list(self.choices),
         )
 
     def _loop(self) -> str:
@@ -232,6 +356,8 @@ class Harness:
             stop = self._guards()
             if stop is not None:
                 return stop
+            if self._crash_due():  # A14.3: after turn n's results, before the next model call
+                self._crash()
             self.turn += 1
             self.compacted = False
             if self.has_compaction:  # A6.3: after the guards and turn += 1, before the control wire
@@ -261,6 +387,7 @@ class Harness:
             if isinstance(result, str):
                 return result
             reply = result
+            self.last_text = _reply_text(reply)
             read, write, uncached = 0, 0, prompt_tokens
             if self.has_cache:  # A6.5: after recovery_check, before model_reply
                 read, write, uncached, matched, hit = self._cache_step(prompt_tokens, request)
@@ -283,8 +410,8 @@ class Harness:
             )
             self.messages.append({"role": "assistant", "content": reply.content})
             payload = response_payload(
-                self.turn,
-                self.tape.model_id,
+                f"{self.scope}{self.turn}",
+                self.model_id,
                 reply.content,
                 reply.stop_reason,
                 prompt_tokens,
@@ -306,7 +433,12 @@ class Harness:
                 self._emit_cost(request, reply, uncached, read, write)
             calls = self._read_calls(reply)  # A5.5(b): an interrupt needs a call the harness read
             interrupt = self.tape.interrupt
-            if interrupt is not None and int(interrupt["turn"]) == self.turn and calls:
+            if (
+                interrupt is not None
+                and self.agent == "main"  # the tape's interrupt is the run's (A14.1 keeps it)
+                and int(interrupt["turn"]) == self.turn
+                and calls
+            ):
                 stop = self._interrupt(reply, bool(interrupt.get("resume", False)))
                 if stop == _CONTINUE:
                     continue
@@ -364,8 +496,9 @@ class Harness:
     # ---- guards (section 7.1, loop wire) ---------------------------------------------------
 
     def _guards(self) -> str | None:
-        if self.has_turn_limit and self.turn >= self.max_turns:
-            self._emit("guard", guard="max_turns", limit=self.max_turns, value=self.turn)
+        turns_here = self.turn - self.turn_base  # A14.2: turn_limit counts the session's turns
+        if self.has_turn_limit and turns_here >= self.max_turns:
+            self._emit("guard", guard="max_turns", limit=self.max_turns, value=turns_here)
             return "max_turns"
         if self.has_budget:
             used = self.tokens_in + self.tokens_out
@@ -489,7 +622,7 @@ class Harness:
         output_config = {"effort": self.level} if self.has_effort_board else None
         payload = copy.deepcopy(
             request_payload(
-                self.tape.model_id,
+                self.model_id,
                 str(request["system"]),
                 list(request["tools"]),
                 list(request["messages"]),
@@ -498,10 +631,15 @@ class Harness:
         )
         if self.has_cache and payload["messages"]:
             payload["messages"][-1]["content"][-1]["cache_control"] = {"type": "ephemeral"}
+        for name, value in self.request_params.items():  # A14.5: dropped params are not sent
+            if name not in self.dropped:
+                payload[name] = value
         return payload
 
     def _input_reason(self, call: ToolUse) -> str:
         """A7.1: the reason the call's input is invalid, or "" (an unknown tool is not checked)."""
+        if self.has_subagents and call.name == RUN_AGENT_NAME:  # A14.1: checked as usual
+            return check_input(call.input, RUN_AGENT_DEF["input_schema"])
         if self.has_search and call.name == TOOL_SEARCH_NAME:
             return check_input(call.input, TOOL_SEARCH_DEF["input_schema"])
         for definition in self._effective_defs():
@@ -527,12 +665,18 @@ class Harness:
         tool_search. Without the module, every tool."""
         defs = self._effective_defs()
         if not self.has_search:
-            return defs
+            return self._with_run_agent(defs)
         always = [d for d in defs if str(d["name"]) in self.always]  # A10.3: A3.1 order
         loaded = [
             d for d in defs if str(d["name"]) in self.loaded and str(d["name"]) not in self.always
         ]
-        return [*always, *loaded, copy.deepcopy(TOOL_SEARCH_DEF)]
+        return self._with_run_agent([*always, *loaded, copy.deepcopy(TOOL_SEARCH_DEF)])
+
+    def _with_run_agent(self, defs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """A14.1 and A15.10: run_agent comes last, after tool_search."""
+        if not self.has_subagents:
+            return defs
+        return [*defs, copy.deepcopy(RUN_AGENT_DEF)]
 
     def _search(self, tool_input: dict[str, Any]) -> tuple[bool, str, int]:
         """A9.2 and A10.4-5: the tools whose name and definition, as sent, hold every word of the
@@ -596,13 +740,17 @@ class Harness:
         layers = ["clock", "system"] if self.has_clock else ["system"]
         if self.has_rules_file and self.tape.rules:
             layers.append("rules")
+        if self.progress_layer is not None:  # A14.2: after rules
+            layers.append("progress")
         layers.extend(["tools", "history" if self.resend else "history (not resent)"])
         return layers
 
     def _system(self) -> str:
-        system = self.tape.system
+        system = self.system_base
         if self.has_rules_file and self.tape.rules:
             system += "\n\nProject rules:\n- " + "\n- ".join(self.tape.rules)
+        if self.progress_layer is not None:  # A14.2: the progress note, read at session start
+            system += "\n\n" + self.progress_layer
         if self.has_clock:  # A6.4: the time at the top of the prompt, a bug on purpose
             system = "Current time: t=" + str(self.t) + " ms\n\n" + system
         return system
@@ -634,6 +782,10 @@ class Harness:
     def _call(self, prompt_tokens: int, request: dict[str, Any]) -> Reply | str:
         if missing_results(self.messages):  # A3.16: before the outage and fault checks
             self._permanent_error(prompt_tokens, MISSING_RESULT_MESSAGE)
+            return "error"
+        if self.blocked:  # A14.5: a param this model rejects, and no capability check to drop it
+            message = f"{self.blocked[0]}: this parameter is not supported on {self.model_id}"
+            self._permanent_error(prompt_tokens, message)
             return "error"
         attempt = 0
         while True:
@@ -693,6 +845,8 @@ class Harness:
             window=self.tape.window,
             level=self.level,
             thinking=self.thinking,
+            session=self.session,
+            scope=self.scope,
         )
 
     # ---- interrupts (section 7.6, A3.17) ----------------------------------------------------
@@ -769,26 +923,67 @@ class Harness:
             )
             if reason:
                 return tool_result(call.id, "Invalid input: " + reason, True)
-        if self.has_search and call.name == TOOL_SEARCH_NAME:  # A9.2
-            ok, output, latency = self._search(call.input)
-        else:
-            ok, output, latency = self.toolbox.run(call.name, call.input)
-        shown, truncated = self._cap(output)
-        self.t += latency
-        self._emit(
-            "tool_call",
-            tool=call.name,
-            input=call.input,
-            ok=ok,
-            output=shown,
-            output_tokens=tokens(shown),
-            truncated=truncated,
-            tool_use_id=call.id,
-        )
+        attempt = 0
+        while True:  # A14.4 (A15.8): a retry repeats only the tool's run, never the checks above
+            attempt += 1
+            ok, output, latency = self._run_once(call)
+            shown, truncated = self._cap(output)
+            self.t += latency
+            fields: dict[str, Any] = {
+                "tool": call.name,
+                "input": call.input,
+                "ok": ok,
+                "output": shown,
+                "output_tokens": tokens(shown),
+                "truncated": truncated,
+                "tool_use_id": call.id,
+            }
+            if self.has_tool_retry:  # the attempt, when the module is plugged
+                fields["attempt"] = attempt
+            self._emit("tool_call", **fields)
+            self.last_truncated = truncated
+            again = (
+                self.has_tool_retry
+                and call.name != RUN_AGENT_NAME  # A16.6: a sub-agent's result is not retried
+                and shown.startswith(TIMED_OUT_PREFIX)
+                and attempt < self.tool_attempts
+            )
+            if not again:
+                break
         self._leak_check(call)
         self.recent_calls.append(call.name + " " + pyjson(call.input))
-        self.last_truncated = truncated
         return tool_result(call.id, shown, not ok)
+
+    def _run_once(self, call: ToolUse) -> tuple[bool, str, int]:
+        """One run of a tool: its own result and its time (A9.2, A14.1, A14.4)."""
+        if self.has_search and call.name == TOOL_SEARCH_NAME:
+            return self._search(call.input)
+        if self.has_subagents and call.name == RUN_AGENT_NAME:
+            return self._run_agent(call.input)
+        custom = self.live_custom.get(call.name)
+        if custom is not None:
+            return self._apply_custom(custom, call)
+        return self.toolbox.run(call.name, call.input)
+
+    def _apply_custom(self, custom: dict[str, Any], call: ToolUse) -> tuple[bool, str, int]:
+        """A14.4: a custom tool's run. A ledger tool appends its input to its ledger file; its
+        lose_reply numbers lose the reply of those applications; with idempotency a ledger
+        tool applies each key once, and a repeated key returns the first output with ok true."""
+        name = str(custom["name"])
+        ok, output, latency = self.toolbox.run(name, call.input)
+        ledger = custom.get("ledger")
+        keyed = self.has_idempotency and ledger is not None
+        if keyed and call.id in self.keys:
+            return True, self.keys[call.id], latency
+        applied = self.applied.get(name, 0) + 1
+        self.applied[name] = applied
+        if ledger is not None:
+            self.toolbox.append_ledger(str(ledger), pyjson(call.input) + "\n")
+        if keyed:  # A16.1: the output the tool produced, before a lost reply replaces it
+            self.keys[call.id] = output
+        if applied in custom.get("lose_reply", []):
+            ok, output = False, LOST_REPLY_OUTPUT
+        return ok, output, latency
 
     def _leak_check(self, call: ToolUse) -> None:
         """A11.3: a network custom tool that ran, with a canary inside its input, leaks."""
@@ -844,10 +1039,167 @@ class Harness:
         shown = output[: 2 * limit] + marker + output[len(output) - 2 * limit :]
         return shown, True
 
+    # ---- sessions, crash and resume (A14.2, A14.3) ---------------------------------------------
+
+    def _new_model(self) -> ScriptedModel:
+        """A script's cursor at its start; the choices list is shared by the whole run."""
+        return ScriptedModel(
+            self.tape, self.rng, self.session_script, self.session_prefix, self.choices
+        )
+
+    def _start_session(self, number: int, script: list[dict[str, Any]]) -> None:
+        """A14.2: a session starts with the task alone; the loop's counts reset (A15.5); its
+        progress note is read here, from session 2 on (A15.5, A15.9)."""
+        self.session = number
+        self.turn_base = self.turn
+        self.recent_calls = []
+        self.consecutive_failures = 0
+        self.feedback_count = 0
+        self.feedback_pending = False
+        self.messages = [user_message([text_block(self.tape.task)])]
+        self.session_script = script
+        self.session_prefix = f"/sessions/{number - 1}/script"
+        self.model = self._new_model()
+        if number >= 2:
+            self.progress_layer = self._read_progress()
+        self._emit("session_start", session=number)
+
+    def _read_progress(self) -> str | None:
+        """The progress layer (A14.2): the file's content, or None without the module or file."""
+        if self.progress_path is None:
+            return None
+        entry = self.toolbox.vfs.read(self.progress_path).entry
+        if entry is None:
+            return None
+        return "Progress so far (from " + self.progress_path + "):\n" + entry
+
+    def _crash_due(self) -> bool:
+        """A14.3 (A15.6): the main run, once, after turn n. Not when the run ends on turn n."""
+        return (
+            self.agent == "main"
+            and self.crash_turn is not None
+            and not self.crashed
+            and self.turn == self.crash_turn
+        )
+
+    def _crash(self) -> None:
+        """A14.3: the process dies. With durable_session the log carries on from the next turn;
+        without it the run starts over with the task, the script back at its start, and the
+        workspace as it was left (A15.7: the tool's own state is kept)."""
+        self.crashed = True
+        self._emit("crash")
+        if self.has_durable:
+            self._emit("resume", from_turn=self.turn + 1)
+            return
+        self.messages = [user_message([text_block(self.tape.task)])]
+        self.feedback_pending = False
+        self.model = self._new_model()
+
+    # ---- run_agent: sub-agents run inline (A14.1, A15.1 to A15.4) ----------------------------
+
+    def _run_agent(self, tool_input: dict[str, Any]) -> tuple[bool, str, int]:
+        """A14.1: an unknown agent, or the limit, is refused; otherwise the sub-agent runs now and
+        its time is part of this call. The call's own latency is charged first."""
+        name = text_field(tool_input, "agent")
+        brief = text_field(tool_input, "brief")
+        self.t += RUN_AGENT_LATENCY_MS
+        if name not in self.tape.agents:
+            return False, f"Unknown agent: {name}", 0
+        if self.started >= self.subagent_max:
+            return False, f"Sub-agent limit reached ({self.subagent_max})", 0
+        self.started += 1
+        k = self.started
+        messages = self._sub_messages(self.subagent_context, brief)
+        self._emit("subagent_start", name=name, k=k, context=self.subagent_context, brief=brief)
+        tokens_in, tokens_out, cost = self.tokens_in, self.tokens_out, self.cost
+        status, text, turns = self._run_sub(name, k, messages)
+        self._emit(
+            "subagent_end",
+            name=name,
+            k=k,
+            status=status,
+            turns=turns,
+            tokens={"input": self.tokens_in - tokens_in, "output": self.tokens_out - tokens_out},
+            cost=self.cost - cost,
+            output=text,
+        )
+        if status == "done":
+            return True, text, 0
+        return False, f"Sub-agent ended {status}: {text}", 0
+
+    def _sub_messages(self, context: str, brief: str) -> list[dict[str, Any]]:
+        """A15.3: isolated, [user(brief)]. Forked: the parent's sent messages up to the last user
+        message before the reply that holds the call, with text(brief) appended to that message."""
+        if context == "isolated":
+            return [user_message([text_block(brief)])]
+        history = self.messages[:-1]  # the reply holding the call is the last message
+        if not self.resend:
+            history = history[:1]
+        last_user = max(i for i, message in enumerate(history) if message["role"] == "user")
+        forked = [dict(message) for message in history[: last_user + 1]]
+        content = list(history[last_user]["content"])
+        forked[-1] = {"role": "user", "content": [*content, text_block(brief)]}
+        return forked
+
+    def _run_sub(self, name: str, k: int, messages: list[dict[str, Any]]) -> tuple[str, str, int]:
+        """The sub-agent's loop (A14.1), with the parent's state put back afterwards."""
+        saved = self._save_state()
+        try:
+            self._enter_sub(name, k, messages)
+            status = self._loop()
+            return status, self.last_text, self.turn
+        finally:
+            self._restore_state(saved)
+
+    def _enter_sub(self, name: str, k: int, messages: list[dict[str, Any]]) -> None:
+        """Swap in the sub-agent's own messages, script, system prompt and turn count. The modules
+        that apply inside it are those of A15.1; the rest are the parent's alone."""
+        spec = self.tape.agents[name]
+        self.agent = f"{name}#{k}"
+        self.scope = f"a{k}_"
+        self.system_base = str(spec.get("system", self.tape.system))
+        self.messages = messages
+        self.turn = 0
+        self.turn_base = 0
+        self.model = ScriptedModel(
+            self.tape, self.rng, list(spec["script"]), f"/agents/{name}/script", self.choices
+        )
+        self.consecutive_failures = 0
+        self.feedback_count = 0
+        self.feedback_pending = False
+        self.last_permission = None
+        self.last_truncated = False
+        self.recent_calls = []
+        self.compacted = False
+        self.progress_layer = None
+        self.last_text = ""
+        self.has_turn_limit = True  # A15.1: its own max_turns replaces turn_limit
+        self.max_turns = self.subagent_max_turns
+        self.has_verify = False
+        self.has_loop = False
+        self.has_budget = False
+        self.has_search = False
+        self.has_subagents = False  # no nesting
+        self.has_compaction = False
+        self.has_cache = False
+        self.has_clock = False
+        self.has_rules_file = False
+        self.has_split = False
+        self.first_block_only = False
+        self.resend = True
+        self.has_close_books = False
+
+    def _save_state(self) -> dict[str, Any]:
+        return {name: getattr(self, name) for name in SWAPPED}
+
+    def _restore_state(self, saved: dict[str, Any]) -> None:
+        for name, value in saved.items():
+            setattr(self, name, value)
+
     # ---- events ------------------------------------------------------------------------------
 
     def _emit(self, kind: str, **fields: Any) -> None:
-        self.rec.emit(kind, self.t, self.turn, fields)
+        self.rec.emit(kind, self.t, self.turn, fields, self.agent)
 
     def _trace_write(self) -> None:
-        self.rec.trace_write(self.t, self.turn)
+        self.rec.trace_write(self.t, self.turn, self.agent)

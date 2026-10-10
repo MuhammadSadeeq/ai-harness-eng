@@ -21,7 +21,7 @@ from typing import Any
 
 from .board import Board, BoardError, load_board
 from .evals import EvalError, load_eval, load_tapes, run_eval
-from .harness import Harness, RunResult
+from .harness import Harness, RunResult, run_pricing
 from .model import ScriptError
 from .pricing import PricingError, resolve_prices
 from .pyjson import trace_line
@@ -37,7 +37,7 @@ class Trial:
 
 
 def run_trial(tape: Tape, board: Board, seed: int, facts: dict[str, Any] | None = None) -> Trial:
-    prices = resolve_prices(tape.pricing, facts)
+    prices = resolve_prices(run_pricing(tape, board), facts)
     result = Harness(tape, board, seed, prices).run()
     return Trial(events=result.events, wire=result.wire, result=result)
 
