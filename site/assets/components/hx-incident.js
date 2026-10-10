@@ -273,7 +273,7 @@ export class HxIncident extends HxElement {
     // The cue sits outside the scroll region, so it stays at the bottom edge while the rows scroll (B-15).
     const more = el("p", { class: "more-cue", "aria-hidden": "true", text: "More below" });
     pieces.push(el("div", { class: "transcript-frame" },
-      el("div", { class: "transcript-wrap", role: "region", "aria-label": "Run transcript" }, list), more));
+      el("div", { class: "transcript-wrap", tabindex: "0", role: "region", "aria-label": "Run transcript" }, list), more));
     if (s.found !== null) {
       pieces.push(el("div", { class: "found-block" },
         el("h4", { class: "found-heading", tabindex: "-1", text: "Found." }),
