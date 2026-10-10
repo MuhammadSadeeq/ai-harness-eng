@@ -8,6 +8,7 @@
 //        [--themes light,dark] [--cvd] [--no-axe]
 // The last stdout line is "qa: <pages> pages, <shots> screenshots, <n> failures".
 
+import { existsSync } from "node:fs";
 import { createServer } from "node:http";
 import { gzipSync } from "node:zlib";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
@@ -330,7 +331,13 @@ async function main() {
   if (opts.only) {
     pages = opts.only.map((p) => p.replace(/^\.\//, "").replace(/\\/g, "/"));
     for (const p of pages) {
-      if (!all.includes(p)) throw new Error(`--only: not a page under site/: ${p}`);
+      // --only may name any existing page under site/, including ones that default
+      // discovery skips (proto/); it must stay inside site/ and end in .html.
+      const abs = path.resolve(SITE, p);
+      const inside = abs.startsWith(path.resolve(SITE) + path.sep);
+      if (!inside || !p.endsWith(".html") || !existsSync(abs)) {
+        throw new Error(`--only: not a page under site/: ${p}`);
+      }
     }
   }
   await mkdir(opts.out, { recursive: true });
