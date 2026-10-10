@@ -662,3 +662,20 @@ legend { padding: 0; }
   .replay-body > .transcript-wrap { order: 5; }
   .replay-body > .transport { order: 9; }
 }
+
+/* Break and Prove: every prose row starts on the same left edge (margin-note rows are a grid, the rest follow suit). */
+hx-proto-break .row, hx-proto-prove .row { margin-left: 0; }
+
+/* Phones: the transcript column is bounded by the plate, so long lines wrap instead of widening the page. */
+@media (max-width: 699px) {
+  .transcript-wrap { grid-template-columns: minmax(0, 1fr); }
+  .transcript-wrap > *, .transcript-col > *, .transcript > li, .ev-main, .ev-body, .ev-line { min-width: 0; max-width: 100%; }
+  .ev-card, .ev-text, .ev-meta { overflow-wrap: anywhere; }
+}
+.fields { table-layout: fixed; }
+.fields td { overflow-wrap: anywhere; }
+@media (max-width: 699px) { .masthead { position: static; } }
+/* The curve scales with its plate: on phones its 640-unit viewBox shrinks to about half, so its text is set larger to stay at 14 px on screen. */
+@media (max-width: 699px) { .curve text { font-size: 26px; } }
+/* Phones: the enlarged curve drops its axis titles and zero tick (the caption and key say what each axis is). */
+@media (max-width: 699px) { .curve .axis-name, .curve .y-zero { display: none; } }

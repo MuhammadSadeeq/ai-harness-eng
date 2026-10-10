@@ -26,6 +26,7 @@ function summarize(trials) {
 const OLD = summarize(BENCH.old);
 const NEW = summarize(BENCH.new);
 const RATIO = Math.round(OLD.worstCost / NEW.worstCost);
+const cost = (c, digits = 2) => `≈ ${c.toFixed(digits)}`;
 
 // The puzzle rule, straight from the fixture: a run passes if it fixes the bug and needs <= limit turns.
 // Otherwise the board stops it at the limit. A run's cost is cost_by_turns[its turns].
@@ -202,6 +203,11 @@ export class ProveElement extends HTMLElement {
         el("p", { class: "plate-state", text: "Old: one exit. New: plus a turn limit and a budget." })),
       el("div", { class: "boards" }, boardFor("old"), boardFor("new")),
       el("div", { class: "run-row" }, this.runBtn, this.progress),
+      el("div", { class: "curve-key board-key" },
+        el("span", {}, glyph("check"), "done"),
+        el("span", {}, glyph("pause"), "a person stopped it"),
+        el("span", {}, glyph("noentry"), "hit the turn limit"),
+        el("span", {}, "number = turns")),
       this.trialDetail,
       el("figcaption", { text: "Try this: press Run ×20, then tap a mark. Hover one mark to light up the same seed on the other board." }));
   }
@@ -277,8 +283,8 @@ export class ProveElement extends HTMLElement {
       el("div", { class: "results" },
         stat("Pass rate", pairText(`${OLD.passes}/${N}`, `${NEW.passes}/${N}`)),
         stat("Worst case, turns", pairText(String(OLD.worstTurns), String(NEW.worstTurns))),
-        stat("Worst case, cost", pairText(fmtCost(OLD.worstCost, 2), fmtCost(NEW.worstCost, 2))),
-        stat("Mean cost", pairText(fmtCost(OLD.meanCost, 2), fmtCost(NEW.meanCost, 2)))),
+        stat("Worst case, cost (units)", pairText(cost(OLD.worstCost), cost(NEW.worstCost))),
+        stat("Mean cost (units)", pairText(cost(OLD.meanCost), cost(NEW.meanCost)))),
       el("div", { class: "sentence-block" },
         el("p", {
           text: OLD.passes === NEW.passes
@@ -369,7 +375,7 @@ export class ProveElement extends HTMLElement {
       el("figcaption", { text: "Try this: drag the limit with the slider or the arrow keys, and watch the dot move along the curve." }));
     this.plugRow = el("section", { class: "row plug-row", "aria-label": "Plug in" },
       el("div", { class: "plug" },
-        el("div", { class: "mini-clock" }, this.miniBoard),
+        el("div", { class: "mini-wrap" }, this.miniBoard),
         el("div", {}, this.plugBtn, this.plugMsg)));
     drawWhenSeen(this.curveWrap);
   }
@@ -389,7 +395,7 @@ export class ProveElement extends HTMLElement {
     svg.append(svgEl("line", { class: "axis", x1: x0, x2: x1, y1, y2: y1 }), svgEl("line", { class: "axis", x1: x0, x2: x0, y1: y0, y2: y1 }));
     for (const v of [0, 0.2, 0.4, 0.6]) {
       if (v > CURVE_MAX) continue;
-      const t = svgEl("text", { x: x0 - 8, y: yOf(v) + 5, "text-anchor": "end" });
+      const t = svgEl("text", { x: x0 - 8, y: yOf(v) + 5, "text-anchor": "end", class: v === 0 ? "y-zero" : "" });
       t.textContent = v.toFixed(1);
       svg.append(t);
     }
@@ -398,10 +404,10 @@ export class ProveElement extends HTMLElement {
       t.textContent = String(L);
       svg.append(t);
     }
-    const axisName = svgEl("text", { x: x1, y: y1 + 44, "text-anchor": "end" });
+    const axisName = svgEl("text", { x: x1, y: y1 + 44, "text-anchor": "end", class: "axis-name" });
     axisName.textContent = "turn limit";
     svg.append(axisName);
-    const yName = svgEl("text", { x: x0, y: y0 - 4, "text-anchor": "start" });
+    const yName = svgEl("text", { x: x0, y: y0 - 4, "text-anchor": "start", class: "axis-name" });
     yName.textContent = "worst-case cost";
     svg.append(yName);
     const d = CURVE.map((c, k) => `${k === 0 ? "M" : "L"}${xOf(c.limit).toFixed(1)} ${yOf(c.worst).toFixed(1)}`).join(" ");
