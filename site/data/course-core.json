@@ -266,6 +266,7 @@
  ],
  "modules": [
   {
+   "built": false,
    "id": "S0",
    "kind": "concept",
    "minutes": 25,
@@ -278,6 +279,7 @@
    ]
   },
   {
+   "built": false,
    "id": "A1",
    "kind": "concept",
    "minutes": 30,
@@ -289,6 +291,7 @@
    ]
   },
   {
+   "built": false,
    "id": "A2",
    "kind": "concept",
    "minutes": 30,
@@ -300,6 +303,7 @@
    ]
   },
   {
+   "built": false,
    "id": "A3",
    "kind": "core",
    "minutes": 40,
@@ -316,6 +320,7 @@
    ]
   },
   {
+   "built": false,
    "id": "A4",
    "kind": "core",
    "minutes": 50,
@@ -332,6 +337,7 @@
    ]
   },
   {
+   "built": false,
    "id": "A5",
    "kind": "core",
    "minutes": 45,
@@ -347,6 +353,7 @@
    ]
   },
   {
+   "built": false,
    "id": "A6",
    "kind": "concept",
    "minutes": 35,
@@ -358,6 +365,7 @@
    ]
   },
   {
+   "built": false,
    "id": "A7",
    "kind": "concept",
    "minutes": 30,
@@ -370,6 +378,7 @@
    ]
   },
   {
+   "built": false,
    "id": "B1",
    "kind": "core",
    "minutes": 50,
@@ -386,6 +395,7 @@
    ]
   },
   {
+   "built": true,
    "id": "B2",
    "kind": "core",
    "minutes": 60,
@@ -401,6 +411,7 @@
    ]
   },
   {
+   "built": false,
    "id": "B3",
    "kind": "concept",
    "minutes": 35,
@@ -419,6 +430,7 @@
    ]
   },
   {
+   "built": false,
    "id": "B4",
    "kind": "concept",
    "minutes": 30,
@@ -437,6 +449,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C1",
    "kind": "core",
    "minutes": 55,
@@ -452,6 +465,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C2",
    "kind": "core",
    "minutes": 50,
@@ -467,6 +481,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C3",
    "kind": "core",
    "minutes": 50,
@@ -482,6 +497,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C4",
    "kind": "core",
    "minutes": 45,
@@ -497,6 +513,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C5",
    "kind": "core",
    "minutes": 55,
@@ -512,6 +529,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C6",
    "kind": "core",
    "minutes": 55,
@@ -527,6 +545,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C7",
    "kind": "core",
    "minutes": 55,
@@ -542,6 +561,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C8",
    "kind": "core",
    "minutes": 50,
@@ -558,6 +578,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C9",
    "kind": "core",
    "minutes": 55,
@@ -573,6 +594,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C10",
    "kind": "core",
    "minutes": 50,
@@ -588,6 +610,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C11",
    "kind": "core",
    "minutes": 55,
@@ -603,6 +626,7 @@
    ]
   },
   {
+   "built": false,
    "id": "C12",
    "kind": "core",
    "minutes": 50,
@@ -618,6 +642,7 @@
    ]
   },
   {
+   "built": false,
    "id": "D1",
    "kind": "core",
    "minutes": 50,
@@ -633,6 +658,7 @@
    ]
   },
   {
+   "built": false,
    "id": "D2",
    "kind": "core",
    "minutes": 55,
@@ -648,6 +674,7 @@
    ]
   },
   {
+   "built": false,
    "id": "D3",
    "kind": "core",
    "minutes": 55,
@@ -664,6 +691,7 @@
    ]
   },
   {
+   "built": false,
    "id": "E1",
    "kind": "core",
    "minutes": 55,
@@ -679,6 +707,7 @@
    ]
   },
   {
+   "built": false,
    "id": "E2",
    "kind": "core",
    "minutes": 50,
@@ -695,6 +724,7 @@
    ]
   },
   {
+   "built": false,
    "id": "F1",
    "kind": "core",
    "minutes": 55,
@@ -712,6 +742,7 @@
    ]
   },
   {
+   "built": false,
    "id": "F2",
    "kind": "core",
    "minutes": 50,
@@ -729,6 +760,7 @@
    ]
   },
   {
+   "built": false,
    "id": "F3",
    "kind": "concept",
    "minutes": 35,
@@ -742,6 +774,7 @@
    ]
   },
   {
+   "built": false,
    "id": "F4",
    "kind": "core",
    "minutes": 50,
@@ -758,6 +791,7 @@
    ]
   },
   {
+   "built": false,
    "id": "F5",
    "kind": "core",
    "minutes": 55,
@@ -775,6 +809,7 @@
    ]
   },
   {
+   "built": false,
    "id": "F6",
    "kind": "core",
    "minutes": 60,
@@ -791,6 +826,7 @@
    ]
   },
   {
+   "built": false,
    "id": "F7",
    "kind": "core",
    "minutes": 50,
@@ -808,6 +844,7 @@
    ]
   },
   {
+   "built": false,
    "id": "G1",
    "kind": "concept",
    "minutes": 40,
@@ -826,6 +863,7 @@
    ]
   },
   {
+   "built": false,
    "id": "G2",
    "kind": "concept",
    "minutes": 40,
@@ -840,6 +878,7 @@
    ]
   },
   {
+   "built": false,
    "id": "G3",
    "kind": "concept",
    "minutes": 60,
@@ -853,6 +892,7 @@
    ]
   },
   {
+   "built": false,
    "id": "G4",
    "kind": "core",
    "minutes": 50,
@@ -870,6 +910,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H0",
    "kind": "guide",
    "minutes": 20,
@@ -881,6 +922,7 @@
    ]
   },
   {
+   "built": true,
    "id": "H1",
    "kind": "build",
    "minutes": 35,
@@ -892,6 +934,7 @@
    ]
   },
   {
+   "built": true,
    "id": "H2",
    "kind": "build",
    "minutes": 40,
@@ -904,6 +947,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H3",
    "kind": "build",
    "minutes": 45,
@@ -916,6 +960,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H4",
    "kind": "build",
    "minutes": 40,
@@ -927,6 +972,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H5",
    "kind": "build",
    "minutes": 35,
@@ -938,6 +984,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H6",
    "kind": "build",
    "minutes": 40,
@@ -949,6 +996,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H7",
    "kind": "build",
    "minutes": 45,
@@ -960,6 +1008,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H8",
    "kind": "build",
    "minutes": 40,
@@ -971,6 +1020,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H9",
    "kind": "build",
    "minutes": 40,
@@ -982,6 +1032,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H10",
    "kind": "build",
    "minutes": 35,
@@ -993,6 +1044,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H11",
    "kind": "build",
    "minutes": 45,
@@ -1005,6 +1057,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H12",
    "kind": "guide",
    "minutes": 90,
@@ -1017,6 +1070,7 @@
    ]
   },
   {
+   "built": false,
    "id": "H13",
    "kind": "guide",
    "minutes": 30,
@@ -1035,6 +1089,7 @@
    ]
   },
   {
+   "built": false,
    "id": "I1",
    "kind": "career",
    "minutes": 30,
@@ -1047,6 +1102,7 @@
    ]
   },
   {
+   "built": false,
    "id": "I2",
    "kind": "career",
    "minutes": 30,
@@ -1065,6 +1121,7 @@
    ]
   },
   {
+   "built": false,
    "id": "I3",
    "kind": "career",
    "minutes": 45,
@@ -1077,6 +1134,7 @@
    ]
   },
   {
+   "built": false,
    "id": "I4",
    "kind": "career",
    "minutes": 60,
@@ -1095,6 +1153,7 @@
    ]
   },
   {
+   "built": false,
    "id": "I5",
    "kind": "career",
    "minutes": 120,
@@ -1113,6 +1172,7 @@
    ]
   },
   {
+   "built": false,
    "id": "I6",
    "kind": "career",
    "minutes": 30,
@@ -1124,6 +1184,7 @@
    ]
   },
   {
+   "built": false,
    "id": "T1",
    "kind": "primer",
    "minutes": 20,
@@ -1133,6 +1194,7 @@
    "wires": []
   },
   {
+   "built": false,
    "id": "T2",
    "kind": "primer",
    "minutes": 25,
@@ -1142,6 +1204,7 @@
    "wires": []
   },
   {
+   "built": false,
    "id": "T3",
    "kind": "primer",
    "minutes": 20,
@@ -1151,6 +1214,7 @@
    "wires": []
   },
   {
+   "built": false,
    "id": "T4",
    "kind": "primer",
    "minutes": 20,
@@ -1160,6 +1224,7 @@
    "wires": []
   },
   {
+   "built": false,
    "id": "T5",
    "kind": "primer",
    "minutes": 20,
@@ -1169,6 +1234,7 @@
    "wires": []
   },
   {
+   "built": false,
    "id": "T6",
    "kind": "primer",
    "minutes": 20,
@@ -1178,6 +1244,7 @@
    "wires": []
   },
   {
+   "built": false,
    "id": "T7",
    "kind": "primer",
    "minutes": 25,
@@ -1187,6 +1254,7 @@
    "wires": []
   },
   {
+   "built": false,
    "id": "T8",
    "kind": "primer",
    "minutes": 20,
@@ -1196,6 +1264,7 @@
    "wires": []
   },
   {
+   "built": false,
    "id": "T9",
    "kind": "primer",
    "minutes": 20,
@@ -1205,6 +1274,7 @@
    "wires": []
   },
   {
+   "built": false,
    "id": "T10",
    "kind": "primer",
    "minutes": 20,

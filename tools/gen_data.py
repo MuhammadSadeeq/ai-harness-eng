@@ -429,11 +429,15 @@ COURSE_CORE_KEYS = ("wires", "failure_families", "parts", "path", "counts")
 COURSE_CORE_MODULE_KEYS = ("id", "slug", "title", "kind", "part", "tag", "minutes", "wires")
 
 
-def _course_core(course: dict[str, Any]) -> dict[str, Any]:
-    """The slim course: the keys components use, and per module only COURSE_CORE_MODULE_KEYS."""
+def _course_core(course: dict[str, Any], root: Path) -> dict[str, Any]:
+    """The slim course: the keys components use, per module only COURSE_CORE_MODULE_KEYS, and
+    `built` (the module has a page under site/modules/, as gen_pages decides)."""
     core: dict[str, Any] = {key: course[key] for key in COURSE_CORE_KEYS if key in course}
     core["modules"] = [
-        {key: module[key] for key in COURSE_CORE_MODULE_KEYS if key in module}
+        {
+            **{key: module[key] for key in COURSE_CORE_MODULE_KEYS if key in module},
+            "built": (root / "site" / "modules" / f"{module.get('slug', '')}.html").is_file(),
+        }
         for module in course.get("modules", [])
         if isinstance(module, dict)
     ]
@@ -450,7 +454,8 @@ def build_plan(root: Path) -> Plan:
         plan.skipped.add("README.md")
     else:
         plan.outputs.append(Output("site/data/course.json", dump_json(course)))
-        plan.outputs.append(Output("site/data/course-core.json", dump_json(_course_core(course))))
+        core = dump_json(_course_core(course, root))
+        plan.outputs.append(Output("site/data/course-core.json", core))
     facts = _facts(root, plan)
     if facts is None:
         plan.skipped.add("site/data/facts.json")
