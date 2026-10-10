@@ -268,7 +268,7 @@ export class HxKata extends HxElement {
   }
 
   totalTests() {
-    this.#testCount ??= [...this.kata.tests.matchAll(/^def (test_\w*)\s*\(/gm)].length;
+    this.#testCount ??= [...this.kata.tests.matchAll(/^(?:async )?def (test_\w*)\s*\(/gm)].length;
     return this.#testCount;
   }
 
