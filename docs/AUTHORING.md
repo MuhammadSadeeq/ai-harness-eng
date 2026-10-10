@@ -60,11 +60,22 @@ Components upgrade it. Copy this skeleton exactly; fill only the marked parts.
          inside it; the checker verifies the h1 matches. -->
   </header>
 
+  <div class="layout">
   <section class="beat" data-beat="break" id="break"> … </section>
   <section class="beat" data-beat="see"   id="see">   … </section>
   <section class="beat" data-beat="fix"   id="fix">   … </section>
   <section class="beat" data-beat="prove" id="prove"> … </section>
   <section class="beat" data-beat="keep"  id="keep">  … </section>
+
+    <aside class="rail" aria-label="Course map" tabindex="0">
+      <details class="course-map" open>
+        <summary>Course map</summary>
+        <div class="map-body">
+          <!-- gen:course-map --><!-- /gen:course-map -->
+        </div>
+      </details>
+    </aside>
+  </div>
 </main>
 </body>
 </html>
