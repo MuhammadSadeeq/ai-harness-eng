@@ -1,0 +1,26 @@
+@import url("./lib/transcript.css");
+/* hx-incident (BP-1.4, DESIGN §7.4): the hunt, the naming and the fix. Tokens only; choices come from hx.css. */
+.incident { display: grid; gap: var(--sp-3); min-width: 0; }
+.incident [hidden] { display: none !important; }
+.incident-title { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); color: var(--hx-ink); }
+.incident .gate { margin: 0; padding: var(--sp-2) var(--sp-3); border: 1px dashed var(--hx-rule-strong); border-radius: var(--r-btn); font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.lanes-area { min-width: 0; }
+.incident .transcript-wrap { max-height: 32rem; }
+.hunt-message { min-height: 1.5em; margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.note-line { margin: 0; padding: var(--sp-2) var(--sp-3); border-left: 3px solid var(--hx-ink); background: var(--hx-panel-2); font: 400 var(--fs-body)/1.45 var(--font-serif); color: var(--hx-ink); }
+.hint { margin: 0; padding: var(--sp-2) var(--sp-3); border-radius: var(--r-btn); border: 1px solid var(--hx-rule-strong); font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.found-block { display: grid; gap: var(--sp-2); padding: var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-plate); background: var(--hx-panel); }
+.found-block .why { margin: 0; font: 400 var(--fs-body)/1.5 var(--font-serif); color: var(--hx-ink); }
+.naming, .fixing { display: grid; gap: var(--sp-3); min-width: 0; }
+.incident fieldset.choices { margin: 0; min-width: 0; }
+.incident fieldset.choices legend { margin-bottom: var(--sp-2); }
+.incident .choice.is-right { border: 2px solid var(--hx-pass); }
+.incident .choice-text .wire-name { display: inline-flex; align-items: center; gap: var(--sp-2); color: var(--w, var(--hx-ink)); }
+.incident .choice-text .wire-name > span { color: var(--hx-ink); }
+.row-commit { display: flex; justify-content: flex-end; }
+.result { display: grid; gap: var(--sp-1); padding: var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-plate); background: var(--hx-panel); font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.result-time { margin: 0; font: 600 var(--fs-readout)/1.2 var(--font-mono); color: var(--hx-ink); }
+.result-taps { margin: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .incident * { transition: none !important; animation: none !important; }
+}

@@ -10,6 +10,7 @@ from typing import Any
 
 import pytest
 
+from tools import gen_pages
 from tools.gen_pages import main
 
 REPO = Path(__file__).resolve().parents[2]
@@ -124,20 +125,31 @@ def test_the_course_map_lists_every_module_once() -> None:
     assert len(rows) == len(set(rows))
 
 
-def test_the_clock_data_island_is_valid_and_complete() -> None:
-    text = (REPO / "site/index.html").read_text(encoding="utf-8")
-    body = region(text, "clock-data")
-    match = re.search(
-        r'<script type="application/json" id="clock-data">\n(.*)\n</script>', body, re.S
+def test_comes_in_is_the_first_tagged_module_on_the_path() -> None:
+    """D-043: the expected comes-in module of each of the eight wires, derived from the tags."""
+    course: dict[str, Any] = json.loads(
+        (REPO / "site/data/course.json").read_text(encoding="utf-8")
     )
-    assert match, "no clock-data island"
-    data: dict[str, Any] = json.loads(match.group(1))
-    assert len(data["wires"]) == 8
-    assert set(data["comesIn"]) == {wire["id"] for wire in data["wires"]}
-    assert set(data["plugged"]) == {"context", "loop"}
-    for wire in data["wires"]:
-        assert wire["glyph"] in data["glyphs"]
-        assert data["glyphs"][wire["glyph"]], f"glyph {wire['glyph']} has no path data"
+    expected = {
+        "control": "C1",
+        "context": "A3",
+        "loop": "A4",
+        "errors": "C6",
+        "tools": "A5",
+        "permissions": "C9",
+        "verify": "C11",
+        "observe": "C12",
+    }
+    assert gen_pages.comes_in(gen_pages.Data(course, {}, {}, frozenset(), frozenset())) == expected
+
+
+def test_the_home_board_is_hx_clock_with_an_empty_fallback() -> None:
+    text = (REPO / "site/index.html").read_text(encoding="utf-8")
+    assert '<hx-clock board="learner">' in text
+    assert "clock-data" not in text
+    assert "Your board is empty." in region(text, "caption")
+    assert "comes in C1" in region(text, "legend")
+    assert "comes in A3" in region(text, "legend")
 
 
 def test_the_footer_date_is_the_oldest_verified_fact() -> None:

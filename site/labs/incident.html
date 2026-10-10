@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Incident · HARNESSED</title>
+<meta name="description" content="The incident room: find the first event where things went wrong, name the failure, and pick the fix.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">import "../assets/components/hx-incident.js";</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · components</p>
+    <h1>The incident room</h1>
+    <p class="lede">The night shift pages you. Find the first event where things went wrong, name the failure, and pick the fix.</p>
+  </header>
+
+  <section aria-labelledby="inc-false-done">
+    <h2 id="inc-false-done">A false done</h2>
+    <hx-incident tape="s0-false-done">
+      <p class="hx-static-summary">The model says the tests pass and the run ends done. The tests fail: a false done.</p>
+    </hx-incident>
+  </section>
+
+  <section aria-labelledby="inc-orphan">
+    <h2 id="inc-orphan">An orphaned tool call</h2>
+    <hx-incident tape="c5-interrupt">
+      <p class="hx-static-summary">After an interrupt, the next request is refused: a tool call was never answered.</p>
+    </hx-incident>
+  </section>
+</main>
+</body>
+</html>

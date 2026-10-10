@@ -1,0 +1,77 @@
+/* hx-bench: the Knob Bench. Tokens only (DESIGN §2); shared keys, readouts and plates come from hx.css. */
+hx-bench { display: block; margin: var(--sp-5) 0; }
+hx-bench .hx-ui { display: grid; gap: var(--sp-5); }
+
+.bench-controls { display: grid; gap: var(--sp-3); }
+.knob { display: grid; gap: var(--sp-2); }
+.knob-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-2) var(--sp-3); }
+.knob-name { margin: 0; font: 600 var(--fs-ui)/1.3 var(--font-sans); }
+.knob-readout { min-width: 6.5rem; }
+.knob-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; gap: var(--sp-2); align-items: center; }
+.knob-row input[type="range"] { min-height: 48px; }
+.knob-row .key:disabled { opacity: .45; }
+.run-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); }
+.run-key { min-width: 10rem; }
+.run-key[aria-disabled="true"] { opacity: .45; cursor: not-allowed; transform: none; }
+.progress { margin: 0; font: 600 var(--fs-ui)/1.3 var(--font-sans); font-variant-numeric: tabular-nums; }
+.lock-line, .stale-line { margin: 0; font: 500 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.lock-line { color: var(--hx-ink-2); }
+
+/* the boards: two racks of step-grid cells, one tab stop (roving focus) */
+.racks { display: grid; gap: var(--sp-4); }
+@media (min-width: 700px) { .racks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.rack { min-width: 0; }
+.rack-title { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+.rack-mods { margin: var(--sp-1) 0 var(--sp-2); font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: var(--sp-1); }
+.grid li { min-width: 0; }
+.cell {
+  width: 100%; min-height: 48px; display: grid; align-content: center; justify-items: center; gap: 0;
+  padding: 2px; border: 1px solid var(--hx-rule-strong); border-radius: 6px; background: var(--hx-panel);
+  color: var(--hx-ink); font: 600 var(--fs-small)/1.1 var(--font-mono); font-variant-numeric: tabular-nums; cursor: pointer;
+}
+.cell:hover { background: var(--hx-panel-2); }
+.cell.is-fail { border-style: dashed; }
+.cell.is-pending { color: var(--hx-ink-2); }
+.cell.is-twin { box-shadow: inset 0 0 0 2px var(--hx-ink); }
+.cell .cell-seed { font-size: var(--fs-small); color: var(--hx-ink-2); }
+.cell .cell-status { display: inline-flex; align-items: center; gap: 2px; font-size: var(--fs-small); }
+.cell .glyph { width: 14px; height: 14px; }
+.trial-detail { margin: var(--sp-3) 0 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink); }
+
+/* readout windows: computed values, one window per measure, old and new on separate lines */
+.readout-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-2); margin: 0; }
+@media (min-width: 700px) { .readout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.readout-line { display: flex; align-items: baseline; gap: var(--sp-2); margin: 0; min-width: 0; }
+.readout-unit { font: 600 var(--fs-small)/1.2 var(--font-sans); letter-spacing: .04em; color: var(--hx-inst-label); min-width: 2.5rem; }
+.readout .readout-value { margin-top: 0; font-size: var(--fs-readout); }
+.readout-note { font-size: var(--fs-small); }
+.is-par .readout-label { color: var(--hx-inst-amber); }
+
+.bench-results { display: grid; gap: var(--sp-3); }
+.honest { margin: var(--sp-3) 0 0; font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }
+.noise { margin: 0; font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); }
+.hist-host, .solution-host { width: 100%; min-width: 0; overflow: hidden; }
+.hist, .solution { display: block; max-width: 100%; }
+.chart-summary { margin: var(--sp-2) 0 0; font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+
+.bench-par { display: grid; gap: var(--sp-3); }
+.goal { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+.par-readouts { margin-top: 0; }
+.par-state { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); }
+.par-readouts .readout { border: 1px solid transparent; }
+.par-readouts .readout.is-par { border-color: var(--hx-pass); }
+
+/* chart ink: every colour from a token; no inline colours (dark theme follows the tokens) */
+.hist text, .solution text { fill: var(--hx-ink-2); font-family: var(--font-sans); font-size: 14px; }
+.hist .series-label, .hist .axis-title, .solution .axis-title { fill: var(--hx-ink); }
+.hist .axis, .solution .axis { stroke: var(--hx-ink-2); stroke-width: 1; }
+.hist .bar-before { stroke: var(--hx-ink); stroke-width: 1; }
+.hist .bar-after { fill: var(--hx-ink); }
+.hatch-ink { stroke: var(--hx-ink); stroke-width: 2; }
+.hatch-rule { stroke: var(--hx-rule-strong); stroke-width: 2; }
+.solution .curve-line { fill: none; stroke: var(--hx-ink); stroke-width: 2; }
+.solution .tried { fill: var(--hx-ink); }
+.solution .your-point { fill: none; stroke: var(--hx-ink); stroke-width: 2; }
+.solution .par-ring { fill: none; stroke: var(--hx-pass); stroke-width: 3; }
+.solution .par-label { fill: var(--hx-pass); font-family: var(--font-mono); font-weight: 600; }

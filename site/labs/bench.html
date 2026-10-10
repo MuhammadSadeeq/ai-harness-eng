@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Knob Bench · HARNESSED</title>
+<meta name="description" content="Run two boards on the same seeds, read the pass rates and the worst case, turn the turn limit and find par.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">
+  import "../assets/components/hx-bench.js";
+  import "../assets/components/hx-num.js";
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · Knob Bench</p>
+    <h1>Run the same seeds on both boards</h1>
+    <p class="lede">Each board runs the same scripted seeds. The numbers are computed from the runs, never typed in.</p>
+  </header>
+
+  <section class="row" aria-labelledby="spiral-h">
+    <h2 id="spiral-h">The almost-done spiral</h2>
+    <p>With a turn limit of <hx-num for="bench1" name="knob" format="int">12</hx-num> turns, <hx-num for="bench1" name="passed.new" format="int">13</hx-num> of <hx-num for="bench1" name="trials" format="int">20</hx-num> runs pass on the new board.</p>
+    <hx-bench id="bench1" tape="b2-spiral" old="b2-old" new="b2-new" knob="turn_limit.max_turns" knob-min="4" knob-max="30" par="cheapest-worst-case">
+      <p>On the same 20 seeds, the new board passes 13 runs and the old board 13. The worst case goes from 60 turns to 12, and from ≈ $0.3988 to ≈ $0.0264.</p>
+      <table>
+        <caption>Results of the last run, with JavaScript off</caption>
+        <thead><tr><th scope="col">Board</th><th scope="col">Pass rate</th><th scope="col">Worst case, turns</th><th scope="col">Worst case, cost</th><th scope="col">Mean cost</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Old board</th><td>13/20 pass</td><td>60 turns</td><td>≈ $0.3988</td><td>≈ $0.1457</td></tr>
+          <tr><th scope="row">New board</th><td>13/20 pass</td><td>12 turns</td><td>≈ $0.0264</td><td>≈ $0.0154</td></tr>
+        </tbody>
+      </table>
+    </hx-bench>
+  </section>
+
+  <section class="row" aria-labelledby="false-h">
+    <h2 id="false-h">The false done</h2>
+    <hx-bench id="bench2" tape="s0-false-done" old="s0-old" new="s0-new">
+      <p>On the same 20 seeds, the new board passes 20 runs and the old board 13. The worst case goes from 3 turns to 6, and from ≈ $0.0038 to ≈ $0.0092.</p>
+      <table>
+        <caption>Results of the last run, with JavaScript off</caption>
+        <thead><tr><th scope="col">Board</th><th scope="col">Pass rate</th><th scope="col">Worst case, turns</th><th scope="col">Worst case, cost</th><th scope="col">Mean cost</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Old board</th><td>13/20 pass</td><td>3 turns</td><td>≈ $0.0038</td><td>≈ $0.0038</td></tr>
+          <tr><th scope="row">New board</th><td>20/20 pass</td><td>6 turns</td><td>≈ $0.0092</td><td>≈ $0.0057</td></tr>
+        </tbody>
+      </table>
+    </hx-bench>
+  </section>
+</main>
+</body>
+</html>

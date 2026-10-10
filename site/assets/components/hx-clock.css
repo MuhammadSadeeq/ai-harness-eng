@@ -1,0 +1,51 @@
+/* hx-clock (BP-1.5 §1): the Turn Clock face, its card, the compare row and the turn controls. Tokens only. */
+hx-clock { display: block; }
+hx-clock .clock-root { display: grid; gap: var(--sp-3); }
+hx-clock .clock-faces { display: grid; gap: var(--sp-4); }
+@media (min-width: 700px) { hx-clock .clock-faces.is-compare { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+hx-clock .clock-face { position: relative; margin: 0; min-width: 0; }
+hx-clock .clock { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+hx-clock .clock text { font-family: var(--font-sans); }
+hx-clock .rim { fill: none; stroke: var(--hx-rule-strong); stroke-width: 1; }
+hx-clock .tick { stroke: var(--hx-rule-strong); stroke-width: 1; }
+hx-clock .hub { fill: var(--hx-ink); }
+hx-clock .hand { stroke: var(--w-loop); stroke-width: 3.5; stroke-linecap: round; }
+hx-clock .pulse { fill: var(--w-loop); }
+hx-clock .spoke-group { cursor: pointer; }
+hx-clock .spoke-group:focus-visible { outline: none; }
+hx-clock .spoke-group:focus-visible .node { stroke: var(--hx-focus); stroke-width: 4; }
+hx-clock .spoke-group .hit { fill: transparent; }
+hx-clock .spoke-group .spoke { fill: none; stroke: var(--w); }
+hx-clock .spoke-group .node { fill: var(--hx-panel); stroke: var(--w); stroke-width: 2.5; }
+hx-clock .spoke-group .gl-use { color: var(--w); }
+hx-clock .spoke-group.is-dim .spoke, hx-clock .spoke-group.is-dim .node, hx-clock .spoke-group.is-dim .gl-wrap { opacity: .55; }
+hx-clock .spoke-group.is-muted .spoke, hx-clock .spoke-group.is-muted .node, hx-clock .spoke-group.is-muted .gl-wrap { opacity: .55; }
+hx-clock .spoke-group.is-lit .spoke { stroke-width: 5; }
+hx-clock .spoke-group.is-ring .node { stroke: var(--hx-ink); stroke-width: 2; }
+hx-clock .spoke-group .label-name { fill: var(--hx-ink); font-weight: 600; }
+hx-clock .spoke-group .label-sub { fill: var(--hx-ink-2); font-weight: 400; }
+hx-clock .spoke-group .badge-box { fill: var(--hx-panel); stroke: var(--hx-ink-2); stroke-width: 1; }
+hx-clock .spoke-group .badge-text { fill: var(--hx-ink); font-weight: 600; }
+hx-clock .spoke-group .tag-box { fill: var(--hx-panel); stroke: var(--w); stroke-width: 1.5; }
+hx-clock .spoke-group .tag-text { fill: var(--hx-ink); font-weight: 600; }
+hx-clock .spoke-group .tag-group[data-added="true"] .tag-box { stroke-width: 2.5; }
+hx-clock .tag-group.plug-in { animation: plug-in var(--dur-base) var(--ease-signal) both; }
+hx-clock .spoke-group:has(> .tag-group[data-added="true"]) .spoke { stroke-width: 5; }
+@keyframes plug-in { from { transform: translate(22px, -16px); opacity: 0; } to { transform: none; opacity: 1; } }
+hx-clock .clock-legend { margin-top: var(--sp-2); }
+@media (min-width: 520px) { hx-clock .clock-legend { display: none; } }
+hx-clock .clock-caption { margin: 0; font: 400 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }
+hx-clock .clock-card { position: absolute; z-index: 2; width: 260px; max-width: calc(100% - 16px); padding: var(--sp-4); border: 1px solid var(--plate-edge); border-radius: var(--r-plate); background: var(--hx-panel); color: var(--hx-ink); font: 400 var(--fs-small)/1.45 var(--font-sans); box-shadow: 0 8px 24px color-mix(in srgb, var(--hx-ink) 18%, transparent); }
+hx-clock .clock-card h3 { margin: 0 0 var(--sp-2); font: 600 var(--fs-ui)/1.3 var(--font-sans); }
+hx-clock .clock-card p { margin: 0 0 var(--sp-2); }
+hx-clock .clock-law { font-style: italic; }
+hx-clock .clock-card-modules { margin: 0 0 var(--sp-2); padding-left: var(--sp-4); }
+hx-clock .clock-level { font-weight: 600; }
+hx-clock .clock-higher { color: var(--hx-ink-2); }
+hx-clock .clock-card .key { min-height: 44px; }
+hx-clock .clock-turn { display: grid; gap: var(--sp-2); }
+hx-clock .clock-turnlabel, hx-clock .clock-counter { margin: 0; font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); }
+hx-clock .clock-step { margin: 0; font: 600 var(--fs-ui)/1.3 var(--font-sans); color: var(--hx-ink); }
+hx-clock .clock-turn .key { min-height: 48px; }
+hx-clock .clock-plug .key { min-height: 48px; }
+hx-clock .clock-root .legend { margin-top: var(--sp-2); }

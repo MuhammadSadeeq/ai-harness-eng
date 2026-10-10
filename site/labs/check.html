@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prediction check · HARNESSED</title>
+<meta name="description" content="Commit to a prediction before the bench runs, then see the outcome and why each option is tempting.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">
+  import "../assets/components/hx-check.js";
+  import "../assets/components/hx-bench.js";
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · prediction check</p>
+    <h1>Predict, then run</h1>
+    <p class="lede">Commit to a prediction. The bench stays locked until you do.</p>
+  </header>
+
+  <section class="row" aria-labelledby="predict-h">
+    <h2 id="predict-h">Predict the spiral</h2>
+    <hx-check id="check1" src="data/checks-demo.json" item="b2-predict-turn-limit" for="bench1">
+      <p>Will a turn limit of 12 change how many runs pass?</p>
+      <ul>
+        <li>Yes. Runs that hit the limit fail, so fewer runs pass.</li>
+        <li>No. The same runs pass, and the runs that loop stop sooner and cost less.</li>
+        <li>Yes, and the new board passes every run, because the model has to finish.</li>
+      </ul>
+    </hx-check>
+    <hx-bench id="bench1" tape="b2-spiral" old="b2-old" new="b2-new" locked>
+      <p>On the same 20 seeds, the new board passes 13 runs and the old board 13. The worst case goes from 60 turns to 12, and from ≈ $0.3988 to ≈ $0.0264.</p>
+      <table>
+        <caption>Results of the last run, with JavaScript off</caption>
+        <thead><tr><th scope="col">Board</th><th scope="col">Pass rate</th><th scope="col">Worst case, turns</th><th scope="col">Worst case, cost</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Old board</th><td>13/20 pass</td><td>60 turns</td><td>≈ $0.3988</td></tr>
+          <tr><th scope="row">New board</th><td>13/20 pass</td><td>12 turns</td><td>≈ $0.0264</td></tr>
+        </tbody>
+      </table>
+    </hx-bench>
+  </section>
+
+  <section class="row" aria-labelledby="wire-h">
+    <h2 id="wire-h">Which wire</h2>
+    <hx-check id="check2" src="data/checks-demo.json" item="b2-check-wire">
+      <p>A turn limit stops a run before the next model call. Which wire is it on?</p>
+      <ul>
+        <li>Control plane: it shapes the prompt the model sees.</li>
+        <li>Loop and state: a guard that runs before each turn.</li>
+        <li>Permissions: it decides which tools may run.</li>
+        <li>Verification: it checks the work when the model says done.</li>
+      </ul>
+    </hx-check>
+  </section>
+</main>
+</body>
+</html>

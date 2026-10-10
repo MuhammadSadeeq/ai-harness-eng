@@ -1,0 +1,15 @@
+/* hx-check: a prediction gate or a check item. Tokens only; the radios and keys come from hx.css. */
+hx-check { display: block; margin: var(--sp-5) 0; }
+hx-check .hx-ui { display: block; }
+.check { display: grid; gap: var(--sp-3); margin: 0; padding: 0; border: 0; min-width: 0; }
+.check-question { padding: 0; margin: 0 0 var(--sp-1); font: 400 var(--fs-body)/1.4 var(--font-serif); }
+.check .choice-text .why { display: block; margin-top: 2px; }
+.check .why[hidden] { display: none; }
+.check-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.check .btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; transform: none; }
+.check-line { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.check .verdict { margin-top: 0; }
+.check-outcome { margin: 0; font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); }
+.choice-mark { display: inline-flex; align-items: center; gap: var(--sp-1); white-space: normal; text-align: right; }
+.choice-mark .glyph { width: 16px; height: 16px; flex: none; }
+.choice:has(input:disabled) .choice-mark { font-weight: 600; }

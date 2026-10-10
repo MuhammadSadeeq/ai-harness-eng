@@ -1,0 +1,15 @@
+/* hx-num: a reactive number inside prose. Tokens only; the figure's own controls are in hx.css. */
+hx-num { display: inline; }
+hx-num > .hx-ui { display: inline; }
+hx-num > .hx-live { display: none; }
+.hx-num-wrap { position: relative; display: inline-block; }
+.hx-num-spin { background: var(--hx-scrub); cursor: ew-resize; touch-action: pan-y; }
+.hx-num-spin:focus-visible { outline: 3px solid var(--hx-focus); outline-offset: 2px; }
+.hx-num-steps {
+  display: none; position: absolute; left: 0; top: 100%; z-index: 5; margin-top: var(--sp-1);
+  gap: var(--sp-2); padding: var(--sp-1); background: var(--hx-panel); border: 1px solid var(--plate-edge);
+  border-radius: var(--r-btn); box-shadow: var(--shadow-pop); white-space: nowrap;
+}
+.hx-num-wrap:hover > .hx-num-steps,
+.hx-num-wrap:focus-within > .hx-num-steps { display: inline-flex; }
+.hx-num-key { min-width: 48px; min-height: 48px; }

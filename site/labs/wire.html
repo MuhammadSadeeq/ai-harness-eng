@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wire View labs · HARNESSED</title>
+<meta name="description" content="The Wire View: one turn of a run as the model saw it, in friendly cards and as exact JSON, with the diff against the turn before.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module" src="components.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · hx-wire</p>
+    <h1>The Wire View</h1>
+    <p class="lede">What the model was sent on each turn, and what changed since the turn before.</p>
+  </header>
+
+  <section class="beat" id="friendly">
+    <h2>Friendly, with the diff</h2>
+    <p>Turn 3 of the spiral run. New messages are marked; unchanged ones collapse.</p>
+    <hx-wire tape="b2-spiral" board="b2-new" turn="3" mode="friendly" diff>
+      <p>The request on turn 3 of the spiral run. The model is sent the whole history again.</p>
+    </hx-wire>
+  </section>
+
+  <section class="beat" id="wire">
+    <h2>The exact JSON</h2>
+    <p>Turn 2 of the flood run, as the wire carries it.</p>
+    <hx-wire tape="c2-flood" board="c2-new" turn="2" mode="wire">
+      <p>The request and response JSON for turn 2 of the flood run.</p>
+    </hx-wire>
+  </section>
+</main>
+</body>
+</html>

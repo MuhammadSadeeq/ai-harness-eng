@@ -1,0 +1,39 @@
+/* hx-wire (BP-1.5 §3): the Wire View's controls, friendly cards, diff marks and JSON regions. Tokens only. */
+hx-wire { display: block; }
+hx-wire .wire-root { display: grid; gap: var(--sp-4); }
+hx-wire .wire-controls { display: grid; gap: var(--sp-3); }
+hx-wire .wire-stepper { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+hx-wire .wire-stepper .key { min-width: 48px; }
+hx-wire .wire-turn { margin: 0; font: 600 var(--fs-ui) var(--font-sans); }
+hx-wire .wire-toggles { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+hx-wire .wire-toggles .key[aria-pressed="true"] { background: var(--hx-ink); color: var(--hx-paper); border-color: var(--hx-ink); }
+hx-wire .wire-total { margin: 0; font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); }
+hx-wire .wire-friendly { display: grid; gap: var(--sp-5); }
+hx-wire .wire-request, hx-wire .wire-response { display: grid; gap: var(--sp-3); }
+hx-wire .wire-request h3, hx-wire .wire-response h3 { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+hx-wire .wire-request h4 { margin: 0 0 var(--sp-1); font: 600 var(--fs-small)/1.3 var(--font-sans); color: var(--hx-ink-2); }
+hx-wire .wire-system, hx-wire .wire-tools, hx-wire .wire-messages { display: grid; gap: var(--sp-2); }
+hx-wire .wire-tool-names { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin: 0; padding: 0; list-style: none; }
+hx-wire .wire-tool-names li { padding: 2px var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-chip); font: 600 var(--fs-small) var(--font-mono); }
+hx-wire .wire-message-list, hx-wire .wire-blocks { display: grid; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; }
+hx-wire .wire-message { display: grid; gap: var(--sp-2); padding: var(--sp-3); border: 1px solid var(--plate-edge); border-radius: var(--r-plate); background: var(--hx-panel); }
+hx-wire .wire-message.is-new { border-left: 4px solid var(--hx-pass); }
+hx-wire .wire-message.is-changed { border-left: 4px solid var(--hx-warn); }
+hx-wire .wire-message-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); margin: 0; font: 600 var(--fs-small) var(--font-sans); }
+hx-wire .wire-status { color: var(--hx-ink); }
+hx-wire .wire-message.is-changed .wire-status { color: var(--hx-warn); }
+hx-wire .wire-message.is-new .wire-status { color: var(--hx-pass); }
+hx-wire .wire-tokens { margin-left: auto; font: 400 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); }
+hx-wire .wire-mark { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+hx-wire .wire-unchanged, hx-wire .wire-removed, hx-wire .wire-first { margin: 0; font: 400 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }
+hx-wire .wire-tool { margin: 0; font: 600 var(--fs-small) var(--font-sans); }
+hx-wire .wire-text { margin: 0; }
+hx-wire .wire-error { display: inline-flex; align-items: center; gap: var(--sp-1); margin: 0; font: 600 var(--fs-small) var(--font-sans); color: var(--hx-fail); }
+hx-wire .wire-code { margin: 0; padding: var(--sp-2) var(--sp-3); border-radius: var(--r-chip); background: var(--hx-code-bg); color: var(--hx-code-ink); font: 400 var(--fs-code)/var(--lh-code) var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+hx-wire .wire-stop, hx-wire .wire-usage { margin: 0; font: 400 var(--fs-small) var(--font-sans); color: var(--hx-ink-2); }
+hx-wire .wire-json { display: grid; gap: var(--sp-5); }
+hx-wire .wire-json-part { display: grid; gap: var(--sp-2); }
+hx-wire .wire-json-part h3 { margin: 0; font: 600 var(--fs-h3)/1.3 var(--font-sans); }
+hx-wire .wire-json-part .key { justify-self: start; }
+hx-wire .wire-json-scroll { max-height: 26rem; overflow: auto; border-radius: var(--r-chip); }
+hx-wire .wire-json-scroll:focus-visible { outline: 3px solid var(--hx-focus); outline-offset: 2px; }

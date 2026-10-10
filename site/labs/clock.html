@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Turn Clock labs · HARNESSED</title>
+<meta name="description" content="The Turn Clock in its modes: the learner's board, a preview, a scenario board, Plug it in, and one turn of a run.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module" src="components.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · hx-clock</p>
+    <h1>The Turn Clock</h1>
+    <p class="lede">One face for the learner's board, a scenario board, two boards compared, and one turn of a run.</p>
+  </header>
+
+  <section class="beat" id="learner">
+    <h2>The learner's board</h2>
+    <p>A fresh browser has an empty board. Each finished module plugs its tag onto its wire.</p>
+    <hx-clock board="learner">
+      <p>Your board is empty. Each module you finish plugs a tag onto its wire.</p>
+      <ol class="legend">
+        <li class="legend-row w-control"><span class="legend-n">1</span><span class="legend-text"><span class="legend-name">Control plane, 12 o'clock</span><span class="legend-state">Empty: comes in C1</span></span></li>
+        <li class="legend-row w-context"><span class="legend-n">2</span><span class="legend-text"><span class="legend-name">Context &amp; memory, 1–2 o'clock</span><span class="legend-state">Empty: comes in A3</span></span></li>
+      </ol>
+    </hx-clock>
+  </section>
+
+  <section class="beat" id="preview">
+    <h2>An example board</h2>
+    <p>Demo only: the board as it looks with A3, A4 and C9 done.</p>
+    <hx-clock board="learner" preview="A3 A4 C9">
+      <p>Example board: A3, A4 and C9 plugged.</p>
+    </hx-clock>
+  </section>
+
+  <section class="beat" id="scenario">
+    <h2>A scenario board</h2>
+    <p>The modules of one board, each on its wire.</p>
+    <hx-clock board="b2-new">
+      <p>New board: 2 modules on this board.</p>
+    </hx-clock>
+  </section>
+
+  <section class="beat" id="compare">
+    <h2>Compare two boards</h2>
+    <p>Plug it in moves the new board's added module onto its spoke.</p>
+    <hx-clock compare="c9-old,c9-new">
+      <p>Old board and new board, side by side.</p>
+    </hx-clock>
+  </section>
+
+  <section class="beat" id="turn">
+    <h2>One turn of a run</h2>
+    <p>The hand points at the wire of each event in the turn.</p>
+    <hx-clock tape="c9-approval" board="c9-new" turn="1">
+      <p>The Turn Clock shows the first turn of the approval run.</p>
+    </hx-clock>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Replay · HARNESSED</title>
+<meta name="description" content="The replay deck: step through a real run, one event at a time, with a plain sentence for each.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module">import "../assets/components/hx-replay.js";</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · components</p>
+    <h1>The replay deck</h1>
+    <p class="lede">A real run, stepped one event at a time. Every event has a plain sentence. Nothing here is typed in: the run is the simulator's output.</p>
+  </header>
+
+  <section aria-labelledby="fig-story">
+    <h2 id="fig-story">The almost-done spiral, story view</h2>
+    <hx-replay tape="b2-spiral" board="b2-old" seed="1" detail="story">
+      <figure class="plate">
+        <figcaption class="caption">The spiral on the old board: the run goes on until turn 60, when someone stops it.</figcaption>
+      </figure>
+      <p class="hx-static-summary">The run ends interrupted after 60 turns. The checks never pass.</p>
+    </hx-replay>
+  </section>
+
+  <section aria-labelledby="fig-full">
+    <h2 id="fig-full">Approval fatigue, every event</h2>
+    <hx-replay tape="c9-approval" board="c9-new" seed="1" detail="full" wire="permissions">
+      <figure class="plate">
+        <figcaption class="caption">Every event of the approval run, with the permission wire showing first.</figcaption>
+      </figure>
+      <p class="hx-static-summary">The run ends done after 13 turns, with the checks passing.</p>
+    </hx-replay>
+  </section>
+
+  <section aria-labelledby="fig-locked">
+    <h2 id="fig-locked">Locked until you predict</h2>
+    <hx-replay tape="b2-spiral" board="b2-new" seed="1" detail="story" locked>
+      <figure class="plate">
+        <figcaption class="caption">The replay stays locked on this page: make a prediction first, then the run opens.</figcaption>
+      </figure>
+      <p class="hx-static-summary">The run ends at the turn limit, after 12 turns.</p>
+    </hx-replay>
+  </section>
+</main>
+</body>
+</html>

@@ -30,19 +30,6 @@ REPO = Path(__file__).resolve().parent.parent
 
 Json = dict[str, Any]
 
-# The comes-in module for each wire and the example plugged modules are set by hand (from the v2
-# prototype). course.json has no field for either, so they are checked against it, not derived.
-COMES_IN: dict[str, str] = {
-    "control": "C1",
-    "context": "C2",
-    "loop": "B2",
-    "errors": "C6",
-    "tools": "C7",
-    "permissions": "C9",
-    "verify": "C11",
-    "observe": "H5",
-}
-EXAMPLE_PLUGGED: dict[str, str] = {"context": "A3", "loop": "A4"}
 EXAMPLE_FACT = "api.effort-five-levels"
 
 LINE_DASH: dict[str, tuple[str, float, bool]] = {
@@ -124,7 +111,7 @@ INDEX_REGIONS: tuple[str, ...] = (
     "shift",
     "page",
     "legend",
-    "clock-data",
+    "caption",
     "path",
     "course-map",
     "facts",
@@ -226,19 +213,32 @@ def part_title(d: Data, part_id: str) -> str:
 
 def check_course_refs(d: Data) -> None:
     mods = modules_by_id(d)
-    for wire, mid in {**COMES_IN, **EXAMPLE_PLUGGED}.items():
-        if mid not in mods:
-            raise GenError(f"module {mid} (for wire {wire}) is not in course.json")
-        if wire not in (mods[mid].get("wires") or []):
-            raise GenError(f"module {mid} does not list wire {wire} in course.json")
-    wire_ids = {w["id"] for w in d.course["wires"]}
-    if wire_ids != set(COMES_IN):
-        raise GenError("COMES_IN must name each of the eight wires once")
+    for mod in d.course["modules"]:
+        tag = mod.get("tag")
+        if tag and tag.get("wire") not in (mod.get("wires") or []):
+            raise GenError(
+                f"module {mod['id']}: its tag wire {tag.get('wire')!r} is not one of its wires"
+            )
+    table = comes_in(d)
     for wire in d.course["wires"]:
+        if wire["id"] not in table:
+            raise GenError(f"no tagged module comes in on wire {wire['id']}")
         if wire["line"] not in LINE_DASH or wire["line"] not in LINE_NAME:
             raise GenError(f"wire {wire['id']} has an unknown line style {wire['line']!r}")
         if wire["glyph"] not in d.glyphs:
             raise GenError(f"wire {wire['id']} uses glyph {wire['glyph']!r}, not in glyphs.svg")
+    del mods
+
+
+def comes_in(d: Data) -> dict[str, str]:
+    """The comes-in module of each wire: the first module on the path with a tag on it (D-043)."""
+    mods = modules_by_id(d)
+    table: dict[str, str] = {}
+    for mid in d.course["path"]:
+        tag = mods.get(mid, {}).get("tag")
+        if tag and tag.get("wire") not in table:
+            table[tag["wire"]] = mid
+    return table
 
 
 def clock_label(clock: str) -> str:
@@ -256,17 +256,11 @@ def wire_meta(wire: Json) -> str:
 
 
 def comes_in_text(d: Data, wire_id: str) -> str:
-    return f"comes in {COMES_IN[wire_id]}"
-
-
-def plugged_title(d: Data, wire_id: str) -> str:
-    mod = modules_by_id(d)[EXAMPLE_PLUGGED[wire_id]]
-    return f"{mod['id']} · {mod['title']} is plugged in"
+    return f"comes in {comes_in(d)[wire_id]}"
 
 
 def module_state(d: Data, wire_id: str) -> str:
-    if wire_id in EXAMPLE_PLUGGED:
-        return plugged_title(d, wire_id)
+    """A new learner's board is empty, so every spoke says where it comes in."""
     return f"Empty: {comes_in_text(d, wire_id)}"
 
 
@@ -289,39 +283,13 @@ def fact_claim(d: Data, fact_id: str) -> tuple[str, str]:
 # ---- JSON islands and small renderers (bodies use relative indentation) -------------------------
 
 
-def clock_json(d: Data) -> str:
-    wires: list[Json] = []
-    for wire in d.course["wires"]:
-        dash, width, rnd = LINE_DASH[wire["line"]]
-        wires.append(
-            {
-                "id": wire["id"],
-                "n": wire["n"],
-                "name": wire["name"],
-                "short": wire["short"],
-                "clock": clock_label(wire["clock"]),
-                "angle": wire["angle"],
-                "glyph": wire["glyph"],
-                "dash": dash,
-                "width": width,
-                "round": rnd,
-            }
-        )
-    mods = modules_by_id(d)
-    glyph_names = sorted({w["glyph"] for w in d.course["wires"]})
-    payload: Json = {
-        "wires": wires,
-        "glyphs": {name: d.glyphs[name] for name in glyph_names},
-        "comesIn": {
-            wire: {"id": mid, "title": mods[mid]["title"]} for wire, mid in COMES_IN.items()
-        },
-        "plugged": {
-            wire: {"id": mid, "title": mods[mid]["title"]} for wire, mid in EXAMPLE_PLUGGED.items()
-        },
-    }
-    text = json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=1)
-    text = text.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
-    return f'<script type="application/json" id="clock-data">\n{text}\n</script>'
+def caption_lines(d: Data) -> list[str]:
+    """The learner's board caption for a new learner (the hx-clock fallback sentence)."""
+    del d
+    return [
+        '<p class="clock-caption">Your board is empty. Each module you finish plugs a tag '
+        "onto its wire.</p>"
+    ]
 
 
 def legend_rows(d: Data) -> list[str]:
@@ -538,7 +506,7 @@ def render_index(d: Data) -> dict[str, list[str]]:
         "shift": shift_lines(d),
         "page": page_lines(d),
         "legend": legend_rows(d),
-        "clock-data": [clock_json(d)],
+        "caption": caption_lines(d),
         "path": path_rows(d),
         "course-map": course_map_lines(d),
         "facts": [facts_line(d)],

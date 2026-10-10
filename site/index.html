@@ -98,199 +98,24 @@
         <h2 id="board-h">The Harness Board</h2>
         <p class="lede">Eight wires, in turn order around the clock. Each wire is a spoke. The tags are the modules you have earned.</p>
         <figure class="plate instrument board-plate">
-          <div class="plate-head"><span class="fig-label">FIG 0 · THE CLOCK</span><span class="plate-state">Example board: A3 and A4 plugged</span></div>
-          <div class="clock-host" data-clock></div>
-          <div class="clock-legend">
+          <div class="plate-head"><span class="fig-label">FIG 0 · THE CLOCK</span><span class="plate-state">Your Harness Board</span></div>
+          <hx-clock board="learner">
             <!-- gen:legend -->
             <ol class="legend" aria-label="Wires in turn order">
               <li class="legend-row w-control"><span class="legend-n">1</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-layers"/></svg><span class="legend-text"><span class="legend-name">Control plane, 12 o&#x27;clock</span><span class="legend-state">Empty: comes in C1</span></span></li>
-              <li class="legend-row w-context"><span class="legend-n">2</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg><span class="legend-text"><span class="legend-name">Context &amp; memory, 1–2 o&#x27;clock</span><span class="legend-state">A3 · The stateless model is plugged in</span></span></li>
-              <li class="legend-row w-loop"><span class="legend-n">3</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg><span class="legend-text"><span class="legend-name">Loop &amp; state, 3 o&#x27;clock</span><span class="legend-state">A4 · The API call on the wire is plugged in</span></span></li>
+              <li class="legend-row w-context"><span class="legend-n">2</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"/></svg><span class="legend-text"><span class="legend-name">Context &amp; memory, 1–2 o&#x27;clock</span><span class="legend-state">Empty: comes in A3</span></span></li>
+              <li class="legend-row w-loop"><span class="legend-n">3</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"/></svg><span class="legend-text"><span class="legend-name">Loop &amp; state, 3 o&#x27;clock</span><span class="legend-state">Empty: comes in A4</span></span></li>
               <li class="legend-row w-errors"><span class="legend-n">4</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"/></svg><span class="legend-text"><span class="legend-name">Errors &amp; recovery, 4–5 o&#x27;clock</span><span class="legend-state">Empty: comes in C6</span></span></li>
-              <li class="legend-row w-tools"><span class="legend-n">5</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg><span class="legend-text"><span class="legend-name">Tools, 6 o&#x27;clock</span><span class="legend-state">Empty: comes in C7</span></span></li>
+              <li class="legend-row w-tools"><span class="legend-n">5</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"/></svg><span class="legend-text"><span class="legend-name">Tools, 6 o&#x27;clock</span><span class="legend-state">Empty: comes in A5</span></span></li>
               <li class="legend-row w-permissions"><span class="legend-n">6</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"/></svg><span class="legend-text"><span class="legend-name">Permissions &amp; sandbox, 7–8 o&#x27;clock</span><span class="legend-state">Empty: comes in C9</span></span></li>
               <li class="legend-row w-verify"><span class="legend-n">7</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"/></svg><span class="legend-text"><span class="legend-name">Verification &amp; evals, 9–10 o&#x27;clock</span><span class="legend-state">Empty: comes in C11</span></span></li>
-              <li class="legend-row w-observe"><span class="legend-n">8</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg><span class="legend-text"><span class="legend-name">Observability, 11 o&#x27;clock (rim)</span><span class="legend-state">Empty: comes in H5</span></span></li>
+              <li class="legend-row w-observe"><span class="legend-n">8</span><svg class="legend-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"/></svg><span class="legend-text"><span class="legend-name">Observability, 11 o&#x27;clock (rim)</span><span class="legend-state">Empty: comes in C12</span></span></li>
             </ol>
             <!-- /gen:legend -->
-          </div>
-          <!-- gen:clock-data -->
-          <script type="application/json" id="clock-data">
-{
- "comesIn": {
-  "context": {
-   "id": "C2",
-   "title": "Context budget"
-  },
-  "control": {
-   "id": "C1",
-   "title": "Control plane: instructions as law"
-  },
-  "errors": {
-   "id": "C6",
-   "title": "Errors are the main path"
-  },
-  "loop": {
-   "id": "B2",
-   "title": "The agent loop"
-  },
-  "observe": {
-   "id": "H5",
-   "title": "Rein 5: a trace"
-  },
-  "permissions": {
-   "id": "C9",
-   "title": "Permissions"
-  },
-  "tools": {
-   "id": "C7",
-   "title": "Tool design is agent UX"
-  },
-  "verify": {
-   "id": "C11",
-   "title": "Verification: done is a claim"
-  }
- },
- "glyphs": {
-  "cycle": [
-   "M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4.5v4.2h-4.2"
-  ],
-  "diamond": [
-   "M12 2.8l9.2 9.2-9.2 9.2L2.8 12z"
-  ],
-  "eye": [
-   "M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z",
-   "M12 9.3a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 1 0 0-5.4"
-  ],
-  "hexagon": [
-   "M12 2.8l8 4.6v9.2l-8 4.6-8-4.6V7.4z",
-   "M12 9.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 1 0 0-5.6"
-  ],
-  "layers": [
-   "M4 6h16M6.5 12h11M9 18h6"
-  ],
-  "shield": [
-   "M12 2.8l7.5 3v5.6c0 4.6-3.1 8.1-7.5 10-4.4-1.9-7.5-5.4-7.5-10V5.8z",
-   "M8.6 12.2l2.4 2.4 4.4-4.8"
-  ],
-  "window": [
-   "M8 4H5v16h3M16 4h3v16h-3M9.5 13h5M9.5 16.5h5"
-  ],
-  "zigzag": [
-   "M2.5 12l3-6 3.6 12 3.8-12 3.6 12 3-6"
-  ]
- },
- "plugged": {
-  "context": {
-   "id": "A3",
-   "title": "The stateless model"
-  },
-  "loop": {
-   "id": "A4",
-   "title": "The API call on the wire"
-  }
- },
- "wires": [
-  {
-   "angle": 0,
-   "clock": "12 o'clock",
-   "dash": "",
-   "glyph": "layers",
-   "id": "control",
-   "n": 1,
-   "name": "Control plane",
-   "round": false,
-   "short": "Control",
-   "width": 2.0
-  },
-  {
-   "angle": 45,
-   "clock": "1–2 o'clock",
-   "dash": "10 4",
-   "glyph": "window",
-   "id": "context",
-   "n": 2,
-   "name": "Context \u0026 memory",
-   "round": false,
-   "short": "Context",
-   "width": 2.0
-  },
-  {
-   "angle": 90,
-   "clock": "3 o'clock",
-   "dash": "",
-   "glyph": "cycle",
-   "id": "loop",
-   "n": 3,
-   "name": "Loop \u0026 state",
-   "round": false,
-   "short": "Loop",
-   "width": 3.5
-  },
-  {
-   "angle": 135,
-   "clock": "4–5 o'clock",
-   "dash": "8 3 2 3",
-   "glyph": "zigzag",
-   "id": "errors",
-   "n": 4,
-   "name": "Errors \u0026 recovery",
-   "round": false,
-   "short": "Errors",
-   "width": 2.0
-  },
-  {
-   "angle": 180,
-   "clock": "6 o'clock",
-   "dash": "4 3",
-   "glyph": "hexagon",
-   "id": "tools",
-   "n": 5,
-   "name": "Tools",
-   "round": false,
-   "short": "Tools",
-   "width": 2.0
-  },
-  {
-   "angle": 225,
-   "clock": "7–8 o'clock",
-   "dash": "8 3 2 3 2 3",
-   "glyph": "diamond",
-   "id": "permissions",
-   "n": 6,
-   "name": "Permissions \u0026 sandbox",
-   "round": false,
-   "short": "Permissions",
-   "width": 2.0
-  },
-  {
-   "angle": 285,
-   "clock": "9–10 o'clock",
-   "dash": "0.1 4",
-   "glyph": "shield",
-   "id": "verify",
-   "n": 7,
-   "name": "Verification \u0026 evals",
-   "round": true,
-   "short": "Verification",
-   "width": 2.5
-  },
-  {
-   "angle": 330,
-   "clock": "11 o'clock (rim)",
-   "dash": "2 2",
-   "glyph": "eye",
-   "id": "observe",
-   "n": 8,
-   "name": "Observability",
-   "round": false,
-   "short": "Observability",
-   "width": 1.5
-  }
- ]
-}
-</script>
-          <!-- /gen:clock-data -->
+            <!-- gen:caption -->
+            <p class="clock-caption">Your board is empty. Each module you finish plugs a tag onto its wire.</p>
+            <!-- /gen:caption -->
+          </hx-clock>
           <figcaption class="caption">Try this: find the 7 o'clock spoke. That is permissions.</figcaption>
         </figure>
       </section>

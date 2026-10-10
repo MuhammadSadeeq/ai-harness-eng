@@ -266,25 +266,6 @@ th { font-weight: 600; background: var(--hx-panel-2); }
 td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
 /* ---------- the Turn Clock board (DESIGN §7.1); the static SVG fallback uses these classes ---------- */
-.clock { display: block; max-width: 100%; height: auto; margin: 0 auto; }
-.clock text { font-family: var(--font-sans); }
-.clock .rim { fill: none; stroke: var(--hx-rule-strong); stroke-width: 1; }
-.clock .tick { stroke: var(--hx-rule-strong); stroke-width: 1; }
-.clock .hub { fill: var(--hx-ink); }
-.clock .hand { stroke: var(--w-loop); stroke-width: 3.5; stroke-linecap: round; }
-.spoke-group .spoke { fill: none; stroke: var(--w); }
-.spoke-group .node { fill: var(--hx-panel); stroke: var(--w); stroke-width: 2.5; }
-.spoke-group .gl { fill: none; stroke: var(--w); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.spoke-group.is-dim .spoke, .spoke-group.is-dim .node, .spoke-group.is-dim .gl { opacity: .55; }
-.spoke-group .label-name { fill: var(--hx-ink); font-weight: 600; }
-.spoke-group .label-sub { fill: var(--hx-ink-2); font-weight: 400; }
-.spoke-group .badge-box { fill: var(--hx-panel); stroke: var(--hx-ink-2); stroke-width: 1; }
-.spoke-group .badge-text { fill: var(--hx-ink); font-weight: 600; }
-.spoke-group .tag-box { fill: var(--hx-panel); stroke: var(--w); stroke-width: 1.5; }
-.spoke-group .tag-text { fill: var(--hx-ink); font-weight: 600; }
-.tag-group[data-plug] { animation: plug-in var(--dur-base) var(--ease-signal) both; }
-.spoke-group:has(> .tag-group[data-plug]) .spoke { stroke-width: 5; }
-@keyframes plug-in { from { transform: translate(22px, -16px); opacity: 0; } to { transform: none; opacity: 1; } }
 .legend { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-1); }
 .legend-row { display: grid; grid-template-columns: 28px 24px minmax(0, 1fr); gap: var(--sp-2); align-items: start; min-height: 44px; padding: var(--sp-2) 0; border-bottom: 1px solid var(--hx-rule); }
 .legend-n { font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink-2); padding-top: 2px; }
@@ -350,10 +331,6 @@ td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-
 
 /* home: the static board fallback and the course map placed in the grid */
 hx-clock { display: block; }
-.clock-legend { margin-top: var(--sp-4); }
-@media (min-width: 700px) { .js .clock-legend { display: none; } }
-.clock-host { display: none; }
-.js .clock-host { display: block; }
 .home-main { min-width: 0; }
 @media (min-width: 1100px) {
   .home-grid > .home-main { grid-column: 1; grid-row: 1; }

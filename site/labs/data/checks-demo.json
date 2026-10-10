@@ -1,0 +1,41 @@
+[
+ {
+  "id": "b2-predict-turn-limit",
+  "objective": "B2.o3",
+  "mode": "predict",
+  "question": "Will a turn limit of 12 change how many runs pass?",
+  "options": [
+   {"text": "Yes. Runs that hit the limit fail, so fewer runs pass.", "why": "Tempting. A limit looks like a failure, but a run that fixed the bug before the limit still passes."},
+   {"text": "No. The same runs pass, and the runs that loop stop sooner and cost less.", "why": "Right. The limit stops the loop, not the fix. Every run that passed before still passes."},
+   {"text": "Yes, and the new board passes every run, because the model has to finish.", "why": "Tempting. A limit does not make the model finish; it only ends the run."}
+  ],
+  "answer": 1,
+  "outcome": "The same runs pass on both boards. The looping runs stop at the limit instead of running on."
+ },
+ {
+  "id": "s0-predict-false-done",
+  "objective": "S0.o2",
+  "mode": "predict",
+  "question": "Which board ends more runs with a false done?",
+  "options": [
+   {"text": "The old board. Its runs say done, nothing checks the claim, and the harness takes the word.", "why": "Right. With no verify gate, a done claim ends the run, even when the checks fail."},
+   {"text": "The new board. The verify gate adds more ways for a run to end wrong.", "why": "Tempting. The gate adds a check, not a new way to fail; it sends the run back when the checks fail."},
+   {"text": "Neither. A false done needs a model that lies.", "why": "Tempting. A false done is a claim the harness did not check. The model does not need to lie for it to happen."}
+  ],
+  "answer": 0,
+  "outcome": "The old board ends runs done with failing checks. The new board sends each run back to fix the work."
+ },
+ {
+  "id": "b2-check-wire",
+  "objective": "B2.o5",
+  "mode": "check",
+  "question": "A turn limit stops a run before the next model call. Which wire is it on?",
+  "options": [
+   {"text": "Control plane: it shapes the prompt the model sees.", "why": "Tempting. The prompt is built on the control wire, but a turn limit does not change it."},
+   {"text": "Loop and state: a guard that runs before each turn.", "why": "Right. The loop wire checks the guards before every new turn, and the turn limit is one of them."},
+   {"text": "Permissions: it decides which tools may run.", "why": "Tempting. Permissions decide each tool call. A turn limit counts turns, not calls."},
+   {"text": "Verification: it checks the work when the model says done.", "why": "Tempting. The verify gate checks done claims. The turn limit does not look at the work."}
+  ],
+  "answer": 1
+ }
+]

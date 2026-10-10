@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Counts labs · HARNESSED</title>
+<meta name="description" content="Counts from the course data, with thousands separators.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module" src="components.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · hx-count</p>
+    <h1>Counts from the course</h1>
+    <p class="lede">Numbers that come from the course data, not from the page.</p>
+  </header>
+  <section class="beat" id="counts">
+    <h2>The course in numbers</h2>
+    <p>The course has <hx-count of="modules">69</hx-count> modules in <hx-count of="parts">11</hx-count> parts, with <hx-count of="objectives">267</hx-count> objectives.</p>
+    <p>Path length: <hx-count of="minutes_path">2730</hx-count> minutes. Wires: <hx-count of="wires">8</hx-count>.</p>
+  </section>
+</main>
+</body>
+</html>
