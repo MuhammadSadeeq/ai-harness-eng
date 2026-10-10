@@ -33,8 +33,9 @@ Areas: `api` (Claude API and SDK behavior), `models` (model IDs, limits,
 prices), `harnesses` (Claude Code, Codex, open harnesses, managed agents),
 `mcp`, `otel`, `owasp`, `skills`, `agentsmd`, `a2a`, `aaif` (standards and
 their stewards), `anthropic` and `openai` (the vendors' engineering and
-research posts), `security`, `evals`, `papers`, `careers`. A new area needs a
-director decision.
+research posts), `security`, `evals`, `papers`, `careers`, `python` (the
+language and its standard library, from docs.python.org; D-052). A new area
+needs a director decision.
 
 ```yaml
 - id: api.parallel-tool-results          # <area>.<kebab-case>, unique, never reused

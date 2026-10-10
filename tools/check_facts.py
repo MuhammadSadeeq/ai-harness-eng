@@ -38,6 +38,7 @@ AREAS = frozenset(
     {
         "api",
         "models",
+        "python",
         "harnesses",
         "mcp",
         "otel",

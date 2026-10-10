@@ -18,6 +18,16 @@
   kind: "paper"
   note: "Re-checked 2026-10-10. WebFetch of the github.com file returned HTTP 503; the same pinned file fetched from raw.githubusercontent.com (source_alt) contains the quoted line. arXiv is unreachable (see papers.react-abstract), so this is verified against the authors' repo BibTeX, not the paper."
 
+- id: "papers.react-iclr"
+  claim: "The ReAct paper's own venue page gives the title 'ReAct: Synergizing Reasoning and Acting in Language Models' and ICLR 2023."
+  source: "https://openreview.net/forum?id=WE_vluYUL-X"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "paper"
+  status: "unverifiable"
+  note: "openreview.net returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved and no mirror was used. The forum id WE_vluYUL-X is not confirmed by any repo file or fetched page (it was not checked), so confirm the id before verifying. B2 keeps the repository README as its source (papers.react-title-id)."
+
 - id: "papers.react-title-id"
   claim: "The ReAct authors' repo cites ReAct as arXiv 2210.03629, titled 'ReAct: Synergizing Reasoning and Acting in Language Models', ICLR 2023."
   source: "https://github.com/ysymyth/ReAct/blob/6bdb3a1fd38b8188fc7ba4102969fe483df8fdc9/README.md"

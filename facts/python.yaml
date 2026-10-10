@@ -1,0 +1,119 @@
+- id: "python.type-hints-not-enforced"
+  claim: "The Python runtime does not enforce function and variable type annotations; they are for tools such as type checkers."
+  source: "https://docs.python.org/3.13/library/typing.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.dataclass-generates-init"
+  claim: "The @dataclass decorator adds generated special methods such as __init__() to the class, from its annotated fields."
+  source: "https://docs.python.org/3.13/library/dataclasses.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.mypy-static-checker"
+  claim: "mypy is a static type checker: it checks a program's types without running it."
+  source: "https://mypy.readthedocs.io/en/stable/index.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "mypy.readthedocs.io returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.asyncio-run"
+  claim: "asyncio.run() runs a coroutine, creating and closing an event loop."
+  source: "https://docs.python.org/3.13/library/asyncio-task.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.await-suspends"
+  claim: "await suspends the coroutine until the awaited thing is done, letting the event loop run other tasks; time.sleep() blocks."
+  source: "https://docs.python.org/3.13/library/asyncio-task.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. Both halves of the claim are unchecked: the await part is on asyncio-task.html and the time.sleep() blocking part would be on time.html, and neither was retrieved. No other route or mirror was used."
+
+- id: "python.gather-order"
+  claim: "asyncio.gather() returns the results in the order of the awaitables passed, when all succeed."
+  source: "https://docs.python.org/3.13/library/asyncio-task.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.wait-for-timeout"
+  claim: "asyncio.wait_for() cancels the task and raises TimeoutError when the timeout expires."
+  source: "https://docs.python.org/3.13/library/asyncio-task.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.subprocess-run-completed"
+  claim: "subprocess.run() waits for the command and returns a CompletedProcess with returncode and, when captured, stdout."
+  source: "https://docs.python.org/3.13/library/subprocess.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.subprocess-timeout"
+  claim: "With timeout, subprocess.run() kills the child and raises TimeoutExpired when the timeout expires."
+  source: "https://docs.python.org/3.13/library/subprocess.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.signal-sigint-keyboardinterrupt"
+  claim: "Python turns SIGINT into a KeyboardInterrupt exception by default."
+  source: "https://docs.python.org/3.13/library/signal.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.signal-sigterm"
+  claim: "The docs describe SIGTERM as a termination request, and a handler can be set with signal.signal()."
+  source: "https://docs.python.org/3.13/library/signal.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."
+
+- id: "python.returncode-negative-signal"
+  claim: "A negative returncode -N means the child was terminated by signal N (POSIX only)."
+  source: "https://docs.python.org/3.13/library/subprocess.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-10
+  volatility: "stable"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.python.org returned 403 from the egress proxy (CONNECT denied) on 2026-10-10. No text was retrieved, no other route or mirror was used, and the claim is unchecked."

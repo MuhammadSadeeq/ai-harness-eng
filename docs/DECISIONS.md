@@ -451,3 +451,18 @@ basis for Phase 1, and answered SPEC §14:
 - The cache model is labelled on screen as the course's model: it leaves out
   the lookback window and the four-breakpoint limit; prices and the minimum
   length come from facts.
+
+### D-052 · Python's own behavior may be shown by a checked snippet; a `python` facts area · *decided*
+- The primers (T1–T10) and build steps teach Python. Where a page says what
+  Python does (a dataclass writes `__init__`, `gather` keeps the argument
+  order, a timeout kills the child), the strongest evidence is running it: a
+  `pre[data-run]` snippet whose output `check_snippets` verifies in CI (and the
+  learner can run with the Run key). Such a statement needs no registry fact
+  **if the prose says no more than the snippet's output shows**.
+- Anything a snippet cannot show (a definition, a guarantee, POSIX signal
+  semantics, what Pyodide can't do) still needs a fact with a verbatim quote.
+  The new area `python` holds them, sourced from docs.python.org.
+- docs.python.org, mypy.readthedocs.io and openreview.net are denied by this
+  environment's network policy (BP-3.1-facts: CONNECT 403). Their facts stay
+  `unverifiable` until the owner allows those hosts; nothing routes around the
+  denial, and pages don't state those claims meanwhile.
