@@ -131,4 +131,9 @@
   <symbol id="g-prog-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="7" fill="currentColor"/>
   </symbol>
+  <!-- Event glyph for a sandbox decision (DESIGN v2 §4 event list). -->
+  <symbol id="g-sandbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.8l9.2 9.2-9.2 9.2L2.8 12z"/>
+    <path d="M7.5 12h9"/>
+  </symbol>
 </svg>
