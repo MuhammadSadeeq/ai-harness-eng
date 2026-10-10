@@ -31,7 +31,7 @@ off; AUTHORING.md is final.
 | 3.3 | C1, C2, C3, C4, C5, C6, T7 | `hx-stack`, `hx-desk`, `hx-cacheline`, `hx-outage` | compaction (C3); prompt-cache prefix and pricing (C4); many clients / shared outage (C6) |
 | 3.4 | C7, C8, C9, C10, C11, C12, T8 | `hx-scheduler`, `hx-gatekeeper`, `hx-bugcatch` | tool-quality knob (C7); tool-definition loading on demand (C8); cost attribution events (C12) |
 | 3.5 | D1, D2, D3, E1, E2, T9 | `hx-evalbench`, `hx-escape` | ENGINE A11: evals over tapes with code and model graders (D1–D3); `last_result_contains`, canaries and `leak` (E1); tool servers, `tool_pins` and `tool_rejected` (E2) |
-| 3.6 | F1–F7, T10 | `hx-topology`, `hx-shift`, `hx-envbuilder` | sub-agents (F1, H11); sessions and resume from a trace (F2, F3); idempotency keys on tool side effects (F5); model swap (F7) |
+| 3.6 | F1–F7, T10 | `hx-topology`, `hx-shift`, `hx-envbuilder` | ENGINE A14: sub-agents (F1, H11); sessions and a progress file (F2); crash and resume from the log (F3, F5); ledgers, tool retries and idempotency keys (F5); model profiles, request params and a capability check (F4, F7) |
 | 3.7 | G1–G4, I1–I3, I6 | none new (`hx-design`, the Design Room, is built early for I5: BP-5.1) | none expected (G3 tours a real repository) |
 
 Each wave: builders write the modules (2–3 each), a fact-checker verifies every

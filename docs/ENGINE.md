@@ -995,3 +995,89 @@ eventually notices; lessons say so).
      outside the workspace reads `path outside the workspace: <path> -> <resolved>`
      (the `<path>` part written as `<path> -> <resolved>`). The two runtimes
      had read A3.8 differently; no golden covered a link escape until C10.
+- **A14 (2026-10-10): sub-agents, sessions, crash and resume, side effects
+  and idempotency, model profiles** (wave 3.6: F1–F7; H11). Absent modules
+  and fields change nothing, so every existing golden stays as it is.
+  1. *Sub-agents.* Tape `agents: {"<name>": {"script": [steps], "system"?: "..."}}`
+     (names match `[a-z][a-z0-9-]*`). Board module
+     `subagents: {"context": "isolated" | "forked", "max": n, "max_turns": m}`
+     (n, m ≥ 1) adds the harness's own tool, last in the request's tools:
+     `{"name": "run_agent", "description": "Hand a self-contained task to a sub-agent and get its final answer back.", "input_schema": {"type": "object", "properties": {"agent": {"type": "string", "description": "Which sub-agent to run"}, "brief": {"type": "string", "description": "The task, and what to return"}}, "required": ["agent", "brief"], "additionalProperties": false}}`
+     (latency 100 ms plus the sub-agent's own time). A `run_agent` call passes
+     permission, sandbox and the input check as usual, then: an unknown
+     `agent` gives `Unknown agent: <name>` (`ok` false); when the run has
+     already started `max` sub-agents, `Sub-agent limit reached (<max>)`
+     (`ok` false). Otherwise the harness runs the sub-agent inline: its events
+     carry `agent: "<name>#<k>"` (k counts sub-agents started in the run, from
+     1) and their own `turn`; first `subagent_start(name, k, context, brief)`,
+     last `subagent_end(name, k, status, turns, tokens, cost, output)` (wire
+     loop; these two carry `agent: "main"` and the parent's turn). The
+     sub-agent loop is §7.1 with the board's modules
+     except `subagents` (no nesting) and with its own turn limit `max_turns`;
+     its own script cursor over the agent's `script` (branch draws use the
+     run's PRNG, in the order they happen); its system prompt is the agent's
+     `system`, else the tape's; its tools are the tape's tools without
+     `run_agent`; its messages start as `[user(brief)]` (isolated) or as the
+     parent's sent messages before the reply holding the call, then
+     `user(brief)` (forked). The tool result is the sub-agent's last reply
+     text (its text blocks joined by `\n`); `ok` is true when it ended `done`,
+     else `ok` false and `Sub-agent ended <status>: <text>`. Its tokens and
+     cost add to the run's totals; `run_end.turns` counts the parent's turns;
+     its time adds to `t` (the course's model runs sub-agents one after
+     another; parallel fan-out is the topology lab's subject). On the board:
+     loop wire, label `sub-agents, <context>, at most <max>`.
+  2. *Sessions.* Tape `sessions: [{"script": [steps]}, …]` (2 to 5) in place
+     of `script` (a tape has one or the other). The run is the sessions in
+     order. Each new session emits `session_start(session)` (wire context;
+     session counts from 1, the first one included) before its first turn,
+     starts with `messages = [user(task)]` (the history is gone), keeps the
+     workspace as the last session left it, and continues the run's turn
+     counter. `turn_limit` applies per session; `token_budget` to the whole
+     run. A session that ends `done`, `max_turns` or `unverified` hands over
+     to the next; any other end status ends the run. Board module
+     `progress_file: {"path": "<path>"}`: from session 2 on, when the file
+     exists, the system prompt gains a layer `progress`
+     (`prompt_built.layers` gains `"progress"` after `"rules"`):
+     `"Progress so far (from <path>):\n" + content`. Scripts react with
+     `sent_lacks:` on what the note says. Condition `session_gte:<n>`. On the
+     board: context wire, label `progress file`.
+  3. *Crash and resume.* Tape `crash: {"turn": n}`: after turn n's tool
+     results are recorded, before the next model call, emit `crash(turn)`
+     (wire loop), once per run. Without the board module `durable_session`,
+     the run starts over: `messages = [user(task)]`, the script cursor back at
+     the start, the workspace as it was left (side effects stay); turns keep
+     counting. With `durable_session: {}`, the harness rebuilds `messages`
+     from its own log and continues where it stopped, the cursor unchanged:
+     emit `resume(from_turn)`. On the board: loop wire, label
+     `durable session`.
+  4. *Side effects and idempotency.* A custom tool may have
+     `"ledger": "<path>"`: each time it is applied, `pyjson(input) + "\n"` is
+     appended to that workspace file (the side effect, such as a charge). It
+     may have `"lose_reply": [k, …]`: on its k-th application (from 1) the
+     effect happens but the result is lost: `ok` false, output
+     `Timed out waiting for the reply; the action may have happened.` Board
+     module `tool_retry: {"max_attempts": n}`: a tool result starting
+     `Timed out` is retried at once, up to n attempts in all, each retry a new
+     `tool_call` with `attempt` and no model call between. Board module
+     `idempotency: {}`: the harness sends each call's `tool_use_id` as its
+     idempotency key (retries reuse it); a ledger tool applies a key once, and
+     a repeated key returns the first application's result with `ok` true
+     and no new ledger line. Check kind `{"file", "lines": n}`: the file has
+     exactly n lines. On the board: errors wire, labels `retry tool calls`
+     and `idempotency keys`.
+  5. *Model profiles.* Tape `models: {"<model id>": {"pricing": {...}, "rejects"?: [names], "script"?: [steps]}}`.
+     Board module `model: {"id": "<model id>"}` (the id must be a key of
+     `models`) sets the request's `model`, the pricing, and the script (the
+     profile's, else the tape's); `run_start.model_id` is that id. Board module
+     `request_params: {"<name>": value}` (strings or integers) adds those
+     fields to every request; when the model's `rejects` names one of them,
+     the call fails `invalid_request` with
+     `<name>: this parameter is not supported on <model id>` (permanent, so
+     the run ends `error`). Board module `capability_check: {}` drops the
+     rejected params before sending and emits `capability(dropped)` once,
+     after `run_start` (wire control). On the board: control wire, labels
+     `model <id>` and `capability check`.
+  6. *Events* joining §9 and `trace.schema.json`: `subagent_start`,
+     `subagent_end` (loop), `session_start` (context), `crash`, `resume`
+     (loop), `capability` (control); `tool_call` gains `attempt` (1 unless
+     retried) only when `tool_retry` is plugged.
