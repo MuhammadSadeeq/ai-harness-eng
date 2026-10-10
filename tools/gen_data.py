@@ -361,8 +361,12 @@ def _scenarios(root: Path, plan: Plan) -> None:
     folder = root / "scenarios"
     sources = [p for p in sorted(folder.glob("*.json")) if not p.name.endswith("schema.json")]
     sources += sorted((folder / "boards").glob("*.json"))
+    # Course evals (A11.7) are served next to the tapes: site/data/evals/<id>.json (hx-evalbench).
+    sources += sorted((folder / "evals").glob("*.json"))
     for path in sources:
         rel = "site/data/" + path.relative_to(root).as_posix()
+        if rel.startswith("site/data/scenarios/evals/"):
+            rel = "site/data/evals/" + path.name
         try:
             plan.outputs.append(Output(rel, path.read_text(encoding="utf-8")))
         except OSError as exc:
