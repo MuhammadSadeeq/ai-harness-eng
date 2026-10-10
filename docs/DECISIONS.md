@@ -211,3 +211,38 @@ The Phase 1 trace schema adds per-turn events so each lane shows the turn:
 `recovery_check` or `model_error` (errors: attempts, breaker state, even when
 nothing failed), and `trace_write` (observe: what was recorded, what was
 redacted). Exact names are fixed in `scenarios/schema.json`.
+
+### D-034 · DESIGN v2: "a field guide with working instruments" · *decided (owner approval at the gate)*
+Evidence: three prototypes of the same screens and data (D1 Patch Bay, D2
+Field Guide, D3 Night Shift; QA 0 failures each) and an independent
+first-time-learner walkthrough with a rubric fixed in advance. Weighted
+totals out of 500: D3 400, D2 370, D1 345 (D1 held back by two implementation
+blockers). Per criterion the leaders differ: learning clarity D2 (5/5);
+fun D1 and D3 (4/5); phone ergonomics D1 and D3; accessibility D3; memory
+D1 and D2 (D2's clock plate judged the best memory aid); credibility and
+buildability D3. Several low scores are implementation defects, not design
+properties.
+Decision: one coherent system that takes each direction's best-supported
+parts: D2's reading-first page, margin notes, transcript replay with inline
+explanations and the clock board; D1's instruments (keys, readout windows,
+seed-aligned step grids, par stepper and solution-space chart); D3's incident
+flow (page, acknowledge, escalating hints, resolved), seed numbers, sticky
+thumb-zone transport, persisted settings and the night console as the dark
+theme (the SPEC already calls the dark theme "night shift"). DESIGN.md §12
+lists the prototype findings that became rules.
+Rejected as the base: D3 alone (dark-first conflicts with the SPEC's
+light-first identity and its board is the least memorable), D1 alone
+(heaviest to build; a linear rack competes with the clock angles), D2 alone
+(least fun; accessibility gaps).
+
+### D-035 · The Harness Board is drawn as the Turn Clock · *decided*
+One diagram instead of two: wires as spokes at their clock angles, modules
+as tags on their spokes, energy as spoke brightness plus a due badge. It
+strengthens the spatial memory the SPEC asks for and removes a second
+metaphor. Components `hx-clock` and `hx-board` share one renderer; the board
+is the clock with the learner's modules.
+
+### D-036 · Prototype v2 before the gate · *decided*
+A unified prototype (`site/proto/v2/`) of the same three screens, built from
+DESIGN v2 by reusing the best prototype code, then reviewed with the same
+walkthrough, so the owner approves something they can click, not a document.

@@ -1,22 +1,27 @@
-/* HARNESSED design tokens. Source of truth: docs/DESIGN.md.
+/* HARNESSED design tokens (DESIGN v2). Source of truth: docs/DESIGN.md.
    tools/qa/check_palette.py parses the wire and surface colors in this file;
    keep one declaration per line in the form `--name: #RRGGBB;`. */
 
 :root {
   color-scheme: light;
   /* surfaces (day) */
-  --hx-paper: #F5F4EE;
-  --hx-grid-minor: rgb(29 78 116 / .055);
+  --hx-paper: #FBFAF7;
+  --hx-grid-minor: rgb(29 78 116 / .06);
   --hx-grid-major: rgb(29 78 116 / .10);
   --hx-panel: #FFFFFF;
-  --hx-panel-2: #ECEBE3;
-  --hx-ink: #13202C;
-  --hx-ink-2: #4D5A66;
-  --hx-rule: #CFD3CC;
+  --hx-panel-2: #F2F0EA;
+  --hx-ink: #1B1F24;
+  --hx-ink-2: #55595F;
+  --hx-rule: #E3E0D8;
   --hx-rule-strong: #7C858C;
   --hx-focus: #1A56DB;
-  --hx-code-bg: #13202C;
+  --hx-code-bg: #1B1F24;
   --hx-code-ink: #E4EAF0;
+  --hx-inst: #1B1F22;
+  --hx-inst-ink: #E9ECEF;
+  --hx-inst-amber: #F2D06B;
+  --hx-inst-label: #AEB6BD;
+  --hx-scrub: #FFF1BF;
   --hx-pass: #1D6B3F;
   --hx-fail: #B3261E;
   --hx-warn: #8A5A00;
@@ -43,7 +48,8 @@
 
   /* type */
   --font-sans: "Harnessed Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-cond: "Harnessed Sans Condensed", "Harnessed Sans", "Arial Narrow", system-ui, sans-serif;
+  --font-serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-cond: "Harnessed Sans Condensed", "Harnessed Sans", "Arial Narrow", system-ui, sans-serif; /* v1 only; removed in Phase 1 */
   --font-mono: "Harnessed Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --fs-small: 0.875rem;
   --fs-ui: 0.9375rem;
@@ -53,6 +59,7 @@
   --fs-h2: 1.5rem;
   --fs-h1: clamp(2rem, 1.3rem + 3.2vw, 3rem);
   --fs-code: 0.875rem;
+  --fs-readout: 1.75rem;
   --lh-body: 1.6;
   --lh-head: 1.12;
   --lh-code: 1.5;
@@ -68,9 +75,10 @@
   --bleed: 60rem;
 
   /* motion */
+  --dur-press: 80ms;
   --dur-fast: 150ms;
   --dur-base: 300ms;
-  --dur-slow: 600ms;
+  --dur-slow: 500ms;
   --ease-signal: cubic-bezier(.2, .7, .2, 1);
   --ease-exit: cubic-bezier(.4, 0, 1, 1);
 }
@@ -82,6 +90,7 @@
     --fs-h3: 1.25rem;
     --fs-h2: 1.75rem;
     --fs-code: 0.9375rem;
+    --fs-readout: 2.25rem;
   }
 }
 
@@ -89,19 +98,23 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --hx-paper: #0F161D;
+    --hx-paper: #0B0F14;
     --hx-grid-minor: rgb(120 180 220 / .045);
     --hx-grid-major: rgb(120 180 220 / .08);
-    --hx-panel: #151F28;
-    --hx-panel-2: #1C2833;
-    --hx-ink: #E4EAF0;
+    --hx-panel: #121821;
+    --hx-panel-2: #18212C;
+    --hx-ink: #E6EBF1;
     --hx-ink-2: #9DABB8;
-    --hx-rule: #2A3946;
+    --hx-rule: #222C38;
     --hx-rule-strong: #6B7A88;
     --hx-focus: #7FB2FF;
     --hx-code-bg: #0A1016;
     --hx-code-ink: #DCE6EE;
-    --hx-pass: #5FD08F;
+    --hx-inst: #0A0E13;
+    --hx-scrub: #3A3218;
+    --hx-inst: #0A0E13;
+  --hx-scrub: #3A3218;
+  --hx-pass: #5FD08F;
     --hx-fail: #FF8A80;
     --hx-warn: #F2C35B;
     --w-control: #C8BEFF;
@@ -119,18 +132,20 @@
 /* night shift: forced by the learner (keep identical to the block above) */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --hx-paper: #0F161D;
+  --hx-paper: #0B0F14;
   --hx-grid-minor: rgb(120 180 220 / .045);
   --hx-grid-major: rgb(120 180 220 / .08);
-  --hx-panel: #151F28;
-  --hx-panel-2: #1C2833;
-  --hx-ink: #E4EAF0;
+  --hx-panel: #121821;
+  --hx-panel-2: #18212C;
+  --hx-ink: #E6EBF1;
   --hx-ink-2: #9DABB8;
-  --hx-rule: #2A3946;
+  --hx-rule: #222C38;
   --hx-rule-strong: #6B7A88;
   --hx-focus: #7FB2FF;
   --hx-code-bg: #0A1016;
   --hx-code-ink: #DCE6EE;
+  --hx-inst: #0A0E13;
+  --hx-scrub: #3A3218;
   --hx-pass: #5FD08F;
   --hx-fail: #FF8A80;
   --hx-warn: #F2C35B;
