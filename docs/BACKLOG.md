@@ -17,5 +17,5 @@ says where it came from.
 | B-10 | Code-generated launch film | SPEC §10 Phase 7 | Optional in Phase 7. |
 | B-11 | Translations | — | After v1 content is stable. |
 | B-12 | ~~Rein in Rust~~ | Owner question, 2026-10-10 | **In scope** as the I4 capstone (D-046). |
-| B-13 | A Run button on `pre[data-run]` snippets (Pyodide in the page) | B2 walkthrough, 2026-10-10 | Today `data-run` is CI-only (`check_snippets`); the page shows the output under the code. |
+| B-13 | ~~A Run button on `pre[data-run]` snippets~~ | B2 walkthrough, 2026-10-10 | **Done** (Phase 2): the shell's Run key on the shared Python worker. |
 | B-14 | Clock face legible below 320 px | Shell round, 2026-10-10 | The face's 300-unit minimum scales codes under 14 px on very narrow screens; QA covers 375 and up. |

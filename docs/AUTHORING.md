@@ -371,9 +371,10 @@ report.
    the prose must type (20 trials) is also set on the component
    (`trials="20"`), so the two can't drift.
 5. **Every figure** has `FIG <ID>.<n> · <what it is>. Try this: <one action>.`
-6. **Code blocks don't promise a Run button.** `data-run` is executed by
-   `check_snippets` in CI; show its output under it with `data-output`
-   (runnable snippets are backlog B-13).
+6. **A `pre[data-run]` snippet gets a Run key** (the shell adds it; Python
+   loads on the first Run). `check_snippets` runs the same snippet in CI, so
+   give it its `data-output` (or `data-raises`): the learner's run is compared
+   with it. Keep snippets short and quick (a run is stopped after 10 s).
 7. **Only success credits an objective** (COMPONENTS §5): a failing kata run
    or a wrong answer is recorded, not credited. Put `data-objective` where
    success proves the objective.
