@@ -1,0 +1,12 @@
+{
+ "id": "b2-new",
+ "label": "New board",
+ "modules": {
+  "turn_limit": {
+   "max_turns": 12
+  },
+  "token_budget": {
+   "max_tokens": 60000
+  }
+ }
+}

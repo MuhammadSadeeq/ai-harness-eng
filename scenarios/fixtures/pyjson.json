@@ -1,0 +1,116 @@
+{
+ "rule": "expected = json.dumps(value) with Python defaults",
+ "cases": [
+  {
+   "value": null,
+   "expected": "null"
+  },
+  {
+   "value": true,
+   "expected": "true"
+  },
+  {
+   "value": false,
+   "expected": "false"
+  },
+  {
+   "value": 0,
+   "expected": "0"
+  },
+  {
+   "value": 7,
+   "expected": "7"
+  },
+  {
+   "value": -3,
+   "expected": "-3"
+  },
+  {
+   "value": 1234567890,
+   "expected": "1234567890"
+  },
+  {
+   "value": "",
+   "expected": "\"\""
+  },
+  {
+   "value": "plain",
+   "expected": "\"plain\""
+  },
+  {
+   "value": "quote \" and backslash \\ end",
+   "expected": "\"quote \\\" and backslash \\\\ end\""
+  },
+  {
+   "value": "line\nbreak\ttab",
+   "expected": "\"line\\nbreak\\ttab\""
+  },
+  {
+   "value": "ctrl \u0001 \u001f",
+   "expected": "\"ctrl \\u0001 \\u001f\""
+  },
+  {
+   "value": "slash / ok",
+   "expected": "\"slash / ok\""
+  },
+  {
+   "value": "del \u007f",
+   "expected": "\"del \\u007f\""
+  },
+  {
+   "value": [],
+   "expected": "[]"
+  },
+  {
+   "value": {},
+   "expected": "{}"
+  },
+  {
+   "value": [
+    1,
+    [
+     2,
+     [
+      3
+     ]
+    ]
+   ],
+   "expected": "[1, [2, [3]]]"
+  },
+  {
+   "value": {
+    "b": 1,
+    "a": [
+     true,
+     null
+    ]
+   },
+   "expected": "{\"b\": 1, \"a\": [true, null]}"
+  },
+  {
+   "value": {
+    "role": "user",
+    "content": [
+     {
+      "type": "text",
+      "text": "Say hello"
+     }
+    ]
+   },
+   "expected": "{\"role\": \"user\", \"content\": [{\"type\": \"text\", \"text\": \"Say hello\"}]}"
+  },
+  {
+   "value": [
+    {
+     "type": "tool_use",
+     "id": "toolu_1_1",
+     "name": "read_file",
+     "input": {
+      "path": "calc.py"
+     }
+    }
+   ],
+   "expected": "[{\"type\": \"tool_use\", \"id\": \"toolu_1_1\", \"name\": \"read_file\", \"input\": {\"path\": \"calc.py\"}}]"
+  }
+ ]
+}

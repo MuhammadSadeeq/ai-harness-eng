@@ -137,7 +137,7 @@ rows show the glyph at full size).
   `model_error` zigzag · `retry_wait` hourglass · `breaker` switch ·
   `tool_call` hexagon (slash when failed) · `permission` diamond
   (allow/ask/deny marks) · `compaction` squeeze · `cache` prefix ·
-  `context_check` window · `verify` shield (pass/fail) · `guard` noentry ·
+  `context_check` window · `sandbox` diamond with a wall bar · `verify` shield (pass/fail) · `guard` noentry ·
   `interrupt` pause · `subagent_start/end` nested · `trace_write` eye.
 - **UI marks**: `check`, `cross`, `bang`, `ext`, `prog-0/1/2`, always paired
   with a word (visible or `aria-label`). Unicode symbols are never used as marks.

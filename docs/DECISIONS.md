@@ -277,3 +277,16 @@ basis for Phase 1, and answered SPEC §14:
 - Prototypes `site/proto/d1`–`d3` are removed at the start of Phase 1 (kept in
   git history at `a68f9b0`); `site/proto/v2` stays as the visual reference
   until the Phase 1 design system replaces it.
+
+### D-039 · Engine contracts (docs/ENGINE.md) · *decided*
+- Token estimate: `floor(len(json.dumps(x)) / 4)`, the book's rule, applied to
+  the whole request (system, tools, messages) so tool definitions count.
+- Everything integer (ms, nano-units, percent, tokens) and tapes ASCII-only,
+  so JS and Python traces can be byte-identical.
+- PRNG: mulberry32, one stream per trial, a fixed draw order.
+- Statuses extend SPEC §7.2 with `loop`, `refused`, `max_tokens_reply` and
+  `error`; `run_end.passed` (ground truth) is separate from `status` (the
+  harness's conclusion), which makes a false done visible in every trace.
+- A safety stop at turn 60 ends runaway runs as an operator interrupt.
+- D-033 as implemented: control, context, loop, errors and observe emit every
+  turn; tools and permissions on tool turns; verify on done claims.

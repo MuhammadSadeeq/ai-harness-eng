@@ -1,0 +1,195 @@
+{
+ "id": "b2-spiral",
+ "schema": 1,
+ "title": "The almost-done spiral",
+ "task": "Fix the failing test in calc.py",
+ "model_id": "claude-sonnet-5-5",
+ "pricing": {
+  "fact": "models.sonnet-5-5-price"
+ },
+ "window": 8000,
+ "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the tests pass.",
+ "rules": [],
+ "workspace": {
+  "calc.py": "def add(a, b):\n    return a - b\n\ndef total(xs):\n    return sum(xs) + 1\n",
+  "test_calc.py": "from calc import add, total\n\ndef test_add():\n    assert add(2, 3) == 5\n\ndef test_total():\n    assert total([1, 2, 3]) == 6\n"
+ },
+ "outside": {},
+ "tools": [
+  "read_file",
+  "edit_file",
+  "run_command"
+ ],
+ "custom_tools": [],
+ "checks": [
+  {
+   "file": "calc.py",
+   "contains": "a + b"
+  },
+  {
+   "file": "calc.py",
+   "not_contains": "+ 1"
+  },
+  {
+   "file": "calc.py",
+   "not_contains": "- 1"
+  }
+ ],
+ "test_output": {
+  "pass": "2 passed",
+  "fail": "1 failed, 1 passed: test_total expected 6"
+ },
+ "script": [
+  {
+   "say": "I'll read the file first.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "The bug is in add(). Fixing it.",
+   "tools": [
+    [
+     "edit_file",
+     {
+      "path": "calc.py",
+      "old_text": "a - b",
+      "new_text": "a + b"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Running the tests.",
+   "tools": [
+    [
+     "run_command",
+     {
+      "cmd": "pytest -q"
+     }
+    ]
+   ]
+  },
+  {
+   "branch": [
+    {
+     "percent": 60,
+     "then": [
+      {
+       "say": "total() adds 1 for no reason. Removing it.",
+       "tools": [
+        [
+         "edit_file",
+         {
+          "path": "calc.py",
+          "old_text": "sum(xs) + 1",
+          "new_text": "sum(xs)"
+         }
+        ]
+       ]
+      },
+      {
+       "say": "Running the tests again.",
+       "tools": [
+        [
+         "run_command",
+         {
+          "cmd": "pytest -q"
+         }
+        ]
+       ]
+      },
+      {
+       "say": "All tests pass. Done."
+      }
+     ]
+    },
+    {
+     "percent": 40,
+     "then": [
+      {
+       "repeat": {
+        "times": "forever",
+        "steps": [
+         {
+          "say": "Almost done: one more fix.",
+          "tools": [
+           [
+            "edit_file",
+            {
+             "path": "calc.py",
+             "old_text": "sum(xs) + 1",
+             "new_text": "sum(xs) - 1"
+            }
+           ]
+          ]
+         },
+         {
+          "say": "Nearly there. Re-running the tests.",
+          "tools": [
+           [
+            "run_command",
+            {
+             "cmd": "pytest -q"
+            }
+           ]
+          ]
+         },
+         {
+          "say": "One last change should do it.",
+          "tools": [
+           [
+            "edit_file",
+            {
+             "path": "calc.py",
+             "old_text": "sum(xs) - 1",
+             "new_text": "sum(xs) + 1"
+            }
+           ]
+          ]
+         },
+         {
+          "say": "Almost done. Re-running the tests.",
+          "tools": [
+           [
+            "run_command",
+            {
+             "cmd": "pytest -q"
+            }
+           ]
+          ]
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "human": {
+  "default": "approve"
+ },
+ "interrupt": null,
+ "boards": [
+  "b2-old",
+  "b2-new"
+ ],
+ "golden_seeds": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "seed_base": 20261010,
+ "incident": {
+  "family": "almost-done-spiral",
+  "wire": "loop"
+ }
+}

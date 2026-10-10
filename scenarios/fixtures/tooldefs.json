@@ -1,0 +1,95 @@
+[
+ {
+  "name": "read_file",
+  "description": "Read a text file from the workspace and return its contents. If you are not sure of the path, call list_files first.",
+  "input_schema": {
+   "type": "object",
+   "properties": {
+    "path": {
+     "type": "string",
+     "description": "Path relative to the workspace root, for example calc.py"
+    }
+   },
+   "required": [
+    "path"
+   ],
+   "additionalProperties": false
+  }
+ },
+ {
+  "name": "write_file",
+  "description": "Create a file or replace a whole file. For a small change to an existing file, use edit_file instead.",
+  "input_schema": {
+   "type": "object",
+   "properties": {
+    "path": {
+     "type": "string",
+     "description": "Path relative to the workspace root"
+    },
+    "content": {
+     "type": "string",
+     "description": "The complete new contents of the file"
+    }
+   },
+   "required": [
+    "path",
+    "content"
+   ],
+   "additionalProperties": false
+  }
+ },
+ {
+  "name": "edit_file",
+  "description": "Replace one exact piece of text in a file. old_text must appear exactly once in the file; include a few surrounding lines to make it unique.",
+  "input_schema": {
+   "type": "object",
+   "properties": {
+    "path": {
+     "type": "string",
+     "description": "Path relative to the workspace root"
+    },
+    "old_text": {
+     "type": "string",
+     "description": "The exact text to replace, copied from the file"
+    },
+    "new_text": {
+     "type": "string",
+     "description": "The text to put in its place"
+    }
+   },
+   "required": [
+    "path",
+    "old_text",
+    "new_text"
+   ],
+   "additionalProperties": false
+  }
+ },
+ {
+  "name": "list_files",
+  "description": "List every file in the workspace, one path per line, sorted.",
+  "input_schema": {
+   "type": "object",
+   "properties": {},
+   "required": [],
+   "additionalProperties": false
+  }
+ },
+ {
+  "name": "run_command",
+  "description": "Run a command in the workspace and return its output. Supported here: pytest, pytest -q, ls, and cat <path>.",
+  "input_schema": {
+   "type": "object",
+   "properties": {
+    "cmd": {
+     "type": "string",
+     "description": "The command line, for example pytest -q"
+    }
+   },
+   "required": [
+    "cmd"
+   ],
+   "additionalProperties": false
+  }
+ }
+]
