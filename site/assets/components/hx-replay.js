@@ -474,9 +474,9 @@ export class HxReplay extends HxElement {
     // stops on the last event of that wire, and the run's result only fires at the true end.
     const wire = this.state.wire;
     this.setWire(null);
-    const start = this.state.index;
     this.state.finished = false;
     this.go(0);
+    const start = this.state.index;
     for (let k = 0; k < 3; k += 1) r.step.click();
     const moved = this.state.index > start;
     const readoutOk = r.readoutValues.turn.textContent.startsWith(`${this.events[this.state.index].turn} /`);

@@ -29,7 +29,11 @@ hx-kata [hidden] { display: none !important; }
 .kata-editor .cm-editor { min-height: 12rem; }
 .kata-editor .cm-scroller { font-family: var(--font-mono); line-height: 1.5; min-height: 12rem; }
 .kata-editor .cm-content { caret-color: var(--hx-ink); padding: var(--sp-2) 0; }
-.kata-editor .cm-gutters { min-height: 12rem; background: var(--hx-panel-2); color: var(--hx-ink-2); border-right: 1px solid var(--hx-rule); }
+.kata-editor .cm-gutters {
+  min-height: 12rem !important; background: var(--hx-panel-2); color: var(--hx-ink-2); border-right: 1px solid var(--hx-rule);
+  font: inherit; line-height: inherit;
+}
+.kata-editor .cm-gutterElement { line-height: inherit; }
 .kata-editor .cm-activeLine { background: color-mix(in srgb, var(--hx-ink) 6%, transparent); }
 .kata-editor .cm-activeLineGutter { background: color-mix(in srgb, var(--hx-ink) 10%, transparent); }
 .kata-editor .cm-selectionBackground, .kata-editor .cm-content ::selection { background: var(--hx-scrub); }
@@ -81,3 +85,8 @@ hx-kata [hidden] { display: none !important; }
 
 /* the blocked-storage line: a warning in words, not colour alone */
 .kata-unsaved { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); }
+
+/* phones: 14 px, so the starter's lines (32 characters or fewer) do not wrap at 375 px */
+@media (max-width: 699px) {
+  .kata-code, .kata-editor .cm-editor, .kata-code-view { font-size: 14px; }
+}
