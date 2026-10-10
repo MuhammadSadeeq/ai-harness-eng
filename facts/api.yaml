@@ -1,3 +1,12 @@
+- id: "api.cache-control-top-level"
+  claim: "A top-level cache_control field on the request turns on automatic caching, which puts the cache breakpoint on the last cacheable block."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "Instead of placing `cache_control` on individual content blocks, add a single `cache_control` field at the top level of your request body. The system automatically applies the cache breakpoint to the last cacheable block."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
 - id: "api.cache-invalidation-effort"
   claim: "Changing output_config.effort always invalidates message blocks."
   source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
@@ -11,7 +20,7 @@
   claim: "Cache order is tools, then system, then messages, and a change at one level invalidates that level and every level after it."
   source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
   source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
-  quote: "Changes at each level invalidate that level and all subsequent levels."
+  quote: "As described in [Structuring your prompt](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#structuring-your-prompt), the cache follows the hierarchy: `tools` → `system` → `messages`. Changes at each level invalidate that level and all subsequent levels."
   verified_on: 2026-10-10
   volatility: "volatile"
   kind: "docs"
@@ -61,11 +70,29 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.cache-read-refreshes-ttl"
+  claim: "The docs say the default cache lifetime is 5 minutes and that the cache is refreshed at no extra cost each time cached content is used."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "By default, the cache has a 5-minute lifetime. The cache is refreshed for no additional cost each time the cached content is used."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
 - id: "api.cache-ttl-default-5m-and-1h"
   claim: "The default cache TTL is 5 minutes, and a 1-hour TTL is available at 2x the base input token price."
   source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
   source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
   quote: "By default, automatic caching uses a 5-minute TTL. You can specify a 1-hour TTL at 2x the base input token price:"
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.cache-usage-fields"
+  claim: "The docs list cache_creation_input_tokens and cache_read_input_tokens as cache fields in a response's usage, and input_tokens counts only the tokens after the last cache breakpoint."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "Monitor cache performance using these API response fields, within `usage` in the response (or `message_start` event if [streaming](https://platform.claude.com/docs/en/build-with-claude/streaming)):\n* `cache_creation_input_tokens`: Number of tokens written to the cache when creating a new entry.\n* `cache_read_input_tokens`: Number of tokens retrieved from the cache for this request.\n* `input_tokens`: Number of input tokens which were not read from or used to create a cache (that is, tokens after the last cache breakpoint)."
   verified_on: 2026-10-10
   volatility: "volatile"
   kind: "docs"
@@ -114,6 +141,16 @@
   verified_on: 2026-10-10
   volatility: "volatile"
   kind: "docs"
+
+- id: "api.consecutive-turns-combined"
+  claim: "The Messages API combines consecutive user or assistant turns in a request into a single turn."
+  source: "https://platform.claude.com/docs/en/api/messages"
+  source_alt: "https://platform.claude.com/docs/en/api/messages.md"
+  quote: "Consecutive `user` or `assistant` turns in your request will be combined into a single turn."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  note: "Quote checked on source_alt (the .md rendering of this URL). The HTML reference renders its descriptions client-side, so the sentence is absent from the HTML fetch."
 
 - id: "api.content-multiple-blocks"
   claim: "A response's content is an array of content blocks, each with a type that determines its shape."
@@ -400,6 +437,15 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.split-results-teach-serial"
+  claim: "The parallel tool use docs say that formatting tool results incorrectly in the conversation history 'teaches' Claude to avoid parallel calls."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md"
+  quote: "The most common issue is formatting tool results incorrectly in the conversation history. This \"teaches\" Claude to avoid parallel calls."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
 - id: "api.stop-reason-end-turn"
   claim: "end_turn is the stop reason when Claude finished its response naturally."
   source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
@@ -526,6 +572,16 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.system-prompt-role"
+  claim: "The docs say a system prompt is a way of providing context and instructions to Claude, such as specifying a particular goal or role."
+  source: "https://platform.claude.com/docs/en/api/messages"
+  source_alt: "https://platform.claude.com/docs/en/api/messages.md"
+  quote: "A system prompt is a way of providing context and instructions to Claude, such as specifying a particular goal or role."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+  note: "Quote checked on source_alt (the .md rendering of this URL). The HTML reference renders its descriptions client-side, so the sentence is absent from the HTML fetch."
+
 - id: "api.temperature-range"
   claim: "The temperature parameter defaults to 1.0 and ranges from 0.0 to 1.0."
   source: "https://platform.claude.com/docs/en/api/messages/create"
@@ -551,6 +607,15 @@
   source: "https://platform.claude.com/docs/en/build-with-claude/extended-thinking"
   source_alt: "https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md"
   quote: "Where both modes are available, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) instead."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.thinking-billed-as-output"
+  claim: "The docs say the tokens Claude uses while thinking are billed as output tokens."
+  source: "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost.md"
+  quote: "Tokens Claude uses while thinking (billed as output tokens)"
   verified_on: 2026-10-10
   volatility: "volatile"
   kind: "docs"
@@ -677,6 +742,15 @@
   source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use"
   source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md"
   quote: "still return a `tool_result` for it with `is_error: true` and a brief explanation."
+  verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.tool-results-are-data"
+  claim: "The docs say Claude treats tool-result content as untrusted data, so instructions placed in tool results may be ignored or flagged as a potential injection."
+  source: "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
+  source_alt: "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks.md"
+  quote: "Because Claude treats tool-result content as untrusted data, instructions you place there may be ignored or flagged as a potential injection."
   verified_on: 2026-10-10
   volatility: "volatile"
   kind: "docs"

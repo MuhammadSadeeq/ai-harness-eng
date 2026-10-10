@@ -795,3 +795,20 @@ eventually notices; lessons say so).
      `"output_config": {"effort": L}` (fact `api.effort-location`). On the
      board: control wire, label `effort <L>`.
   4. *Order within a tool call:* permission, sandbox, input check, run, cap.
+- **A8 (2026-10-10): rulings from building A6 and A7 in both runtimes.**
+  1. With `history` resend false, `compaction` is inert: it never runs,
+     whatever its threshold (the sent request is the task alone).
+  2. Below `cache_rules.min_tokens` the `cache` event has `read` 0, `write`
+     0, `uncached` = the prompt, `matched` `"none"`, `hit_percent` 0, and the
+     map is not touched.
+  3. `effort.thinking_tokens` may list any of the five levels; a level it
+     leaves out adds 0. `default` is optional (A7.3's fallback is `high`).
+  4. The wire response's `usage` has exactly the fields of `model_reply.usage`,
+     `output_tokens_details` included when the tape has an `effort` block.
+  5. A board with `cache` on a tape without `cache_rules` or cache prices is
+     refused when the run starts, before any event, as a loader error (exit
+     code 2 on both CLIs, no output).
+  6. Engine tapes: features that no incident tape uses yet are covered by
+     small tapes in `scenarios/engine/` (not copied to the site), with goldens
+     and parity like any tape, so every amendment is proven in both runtimes
+     before a module relies on it.

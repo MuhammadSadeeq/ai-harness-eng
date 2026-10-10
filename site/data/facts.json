@@ -191,6 +191,14 @@
   "verified_on": "2026-10-10",
   "volatility": "stable"
  },
+ "api.cache-control-top-level": {
+  "claim": "A top-level cache_control field on the request turns on automatic caching, which puts the cache breakpoint on the last cacheable block.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
  "api.cache-invalidation-effort": {
   "claim": "Changing output_config.effort always invalidates message blocks.",
   "kind": "docs",
@@ -247,8 +255,24 @@
   "verified_on": "2026-10-10",
   "volatility": "volatile"
  },
+ "api.cache-read-refreshes-ttl": {
+  "claim": "The docs say the default cache lifetime is 5 minutes and that the cache is refreshed at no extra cost each time cached content is used.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
  "api.cache-ttl-default-5m-and-1h": {
   "claim": "The default cache TTL is 5 minutes, and a 1-hour TTL is available at 2x the base input token price.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.cache-usage-fields": {
+  "claim": "The docs list cache_creation_input_tokens and cache_read_input_tokens as cache fields in a response's usage, and input_tokens counts only the tokens after the last cache breakpoint.",
   "kind": "docs",
   "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
   "status": "verified",
@@ -291,6 +315,14 @@
   "claim": "Threshold compaction is enabled by adding a compact_20260112 strategy to context_management.edits.",
   "kind": "docs",
   "source": "https://platform.claude.com/docs/en/build-with-claude/compaction-threshold",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.consecutive-turns-combined": {
+  "claim": "The Messages API combines consecutive user or assistant turns in a request into a single turn.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/messages",
   "status": "verified",
   "verified_on": "2026-10-10",
   "volatility": "volatile"
@@ -527,6 +559,14 @@
   "verified_on": "2026-10-10",
   "volatility": "volatile"
  },
+ "api.split-results-teach-serial": {
+  "claim": "The parallel tool use docs say that formatting tool results incorrectly in the conversation history 'teaches' Claude to avoid parallel calls.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
  "api.stop-reason-end-turn": {
   "claim": "end_turn is the stop reason when Claude finished its response naturally.",
   "kind": "docs",
@@ -639,6 +679,14 @@
   "verified_on": "2026-10-10",
   "volatility": "volatile"
  },
+ "api.system-prompt-role": {
+  "claim": "The docs say a system prompt is a way of providing context and instructions to Claude, such as specifying a particular goal or role.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/messages",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
  "api.temperature-deprecated-after-opus-4-6": {
   "claim": "On models released after Claude Opus 4.6, temperature is deprecated: 1.0 is accepted for backwards compatibility and any other value is rejected with a 400 error.",
   "kind": "docs",
@@ -659,6 +707,14 @@
   "claim": "Anthropic says to use adaptive thinking wherever both thinking modes are available.",
   "kind": "docs",
   "source": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.thinking-billed-as-output": {
+  "claim": "The docs say the tokens Claude uses while thinking are billed as output tokens.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost",
   "status": "verified",
   "verified_on": "2026-10-10",
   "volatility": "volatile"
@@ -771,6 +827,14 @@
   "claim": "A tool_use block that is not run still needs a tool_result with is_error true and a brief explanation.",
   "kind": "docs",
   "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.tool-results-are-data": {
+  "claim": "The docs say Claude treats tool-result content as untrusted data, so instructions placed in tool results may be ignored or flagged as a potential injection.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
   "status": "verified",
   "verified_on": "2026-10-10",
   "volatility": "volatile"
@@ -1174,6 +1238,7 @@
   "status": "verified",
   "value": {
    "cache_hit_usd_per_mtok": 0.25,
+   "cache_write_usd_per_mtok": 12.5,
    "input_usd_per_mtok": 10,
    "output_usd_per_mtok": 50
   },
@@ -1187,6 +1252,7 @@
   "status": "verified",
   "value": {
    "cache_hit_usd_per_mtok": 0.05,
+   "cache_write_usd_per_mtok": 0.625,
    "input_usd_per_mtok": 0.5,
    "output_usd_per_mtok": 2.5,
    "over_prompt_tokens": 100000
@@ -1201,6 +1267,7 @@
   "status": "verified",
   "value": {
    "cache_hit_usd_per_mtok": 0.01,
+   "cache_write_usd_per_mtok": 0.125,
    "input_usd_per_mtok": 0.1,
    "max_prompt_tokens": 100000,
    "output_usd_per_mtok": 0.5
@@ -1231,6 +1298,7 @@
   "status": "verified",
   "value": {
    "cache_hit_usd_per_mtok": 0.2,
+   "cache_write_usd_per_mtok": 5,
    "input_usd_per_mtok": 4,
    "output_usd_per_mtok": 20
   },
@@ -1244,6 +1312,7 @@
   "status": "verified",
   "value": {
    "cache_hit_usd_per_mtok": 0.1,
+   "cache_write_usd_per_mtok": 2.5,
    "input_usd_per_mtok": 2,
    "output_usd_per_mtok": 10
   },
