@@ -33,6 +33,6 @@ step "palette";         $PY tools/qa/check_palette.py | tail -1
 step "rein";            (cd rein && PYTHONPATH=src ../$PY -m pytest -q 2>&1 | tail -1 && ../$RUFF check . && ../$MYPY | tail -1)
 if [ "${1:-}" = "--qa" ]; then
   [ -d site/vendor/pyodide ] || node tools/vendor/copy_pyodide.mjs
-  step "browser qa";    PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-/opt/pw-browsers}" node tools/qa/run.mjs --cvd | tail -1
+  step "browser qa";    PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-/opt/pw-browsers}" node tools/qa/run.mjs --cvd | grep -E "^(fail|qa):"
 fi
 printf '\nci_local: all checks passed\n'
