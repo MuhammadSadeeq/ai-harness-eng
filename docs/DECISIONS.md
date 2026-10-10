@@ -357,3 +357,17 @@ basis for Phase 1, and answered SPEC §14:
   registry (only accepted components load on real pages). Builders keep
   checking their own pages with `--only`. The Phase 1 gate requires every demo
   page to be accepted, so nothing can hide there.
+
+### D-045 · A "pass" is a true done · *decided*
+- Wherever the course counts passing runs (the bench, pass rates, par, evals
+  later), a pass is a run the harness ended `done` **and** whose checks hold.
+  A false done is not a pass; neither is a run a guard stopped while the files
+  happened to be right (the harness never confirmed it, and the person reading
+  the result wouldn't know).
+- Found in review: with "checks hold" alone, a turn limit of 4 cut the b2 run
+  off after the fix but before the model said done, so 4 counted as feasible
+  and par sat on the edge of the range. With true dones the par moves inside
+  the range.
+- One wording module (`lib/format.js`) for costs (rounded half up to four
+  decimals), counts, durations, plurals and status words, used by every
+  component.
