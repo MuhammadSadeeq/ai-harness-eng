@@ -143,3 +143,17 @@ Weighted total: 4×20 + 4×20 + 4×15 + 4×15 + 4×10 + 4×10 + 4×5 + 4×5 = **
 Findings: 0 blockers and 0 open items from the first pass; the 5 retested items (major 1 and minors 2 to 5) are FIXED.
 Most important: the Wire view finds each tool_use_id in one press, and the prediction verdict arrives when the hunt starts.
 Score: 400 / 500 (first pass 370), against the reference 470; what is not re-audited is target sizes, focus, and the kata's first-run struggle.
+
+## Path to 5 (HEAD 6a18fd7)
+Every criterion scored 4 in the re-score. One change per criterion, with the evidence already in bp26/ (logs and shots); no new full pass.
+
+| Criterion (scored 4) | The one change that makes it a 5 | File:line | Evidence it is missing |
+|---|---|---|---|
+| Learning clarity | Give the See code a Run button that runs the snippet in the page (backlog B-13). | site/modules/the-agent-loop.html:78 (pre data-run, no control); docs/BACKLOG.md:20 | log-m375.jsonl, t2 code-run-control: no run button in See; the "done" output is static. |
+| Intuitive | After each beat, name the next beat under the progress line, for example "2 of 5 objectives done. Next: See the loop." | site/assets/core/shell/module.js:45 | log-m375.jsonl, t1 "2 of 5 objectives done" with no next step; Sam finds the next beat only from the strip. |
+| Fun | Show the passed moment in practice mode too: "9 of 9 tests pass. Next: the bench." (memory mode already says "Passed from memory in ...") | site/assets/components/hx-kata.js:510 | log-m375.jsonl, t3 after-typing: count "9 of 9 tests pass", message "". |
+| Phone ergonomics | Drop the 416 px inner scroll on phones, so the Wire JSON scrolls with the page. | site/assets/components/hx-wire.js:268 (div.wire-json-scroll) | probeWireNow at 375: box 416 px tall, content 1,822 px tall, scrolled inside the box. |
+| Accessibility | Give term popovers a 44 px tap area; the term is 19 px tall today. | site/assets/core/hx.css:141 (dfn[data-term] underline; no min size) | probeTargets at 375: turn 34×19, ReAct 45×19, exit 28×19, done claim 82×19, turn limit 74×19, token budget 95×19 (the skip link is 133×39). |
+| Identity and memory | Make term cards recall-first: no "Show answer" until a typed or chosen answer. | site/assets/components/hx-cards.js:279 ("Show answer" is the primary button) | log-m375.jsonl, t5 card-step: every card shown then "Got it"; 9 of 9 right, 0 again. The self-grade passes without recall. |
+| Credibility | Cite the ReAct paper (arXiv 2210.03629; ICLR 2023 proceedings) as the source, with the GitHub README as the alt. | facts/papers.yaml:23 (source is the repo README that cites the paper) | log-m375.jsonl, t2 fact-chip href: the github.com ReAct README at a commit. |
+| Consistency | Rename the hunt's time "Par is 60 s" so "par" means one thing: the turn-limit par on the bench. | site/assets/components/hx-incident.js:354 | log-m375.jsonl, t1 reveal: "Found in 2 s. Par is 60 s." beside the bench's par state. |
