@@ -1,6 +1,6 @@
 # Phase 2 gate: the exemplar
 
-**Status:** draft (director). SPEC §10 sets two gate conditions for Phase 2:
+**Status:** passed on 2026-10-10 (director's sign-off, below). SPEC §10 sets two gate conditions for Phase 2:
 **the director signs B2 off as "the bar"; AUTHORING.md is final.** Phase 2 also
 delivers the Rein steps H1–H2 and the platform every module page uses. Each
 part is below, with its evidence.
@@ -62,6 +62,31 @@ Ahead of Phase 3 (platform before content, PLAN.md): the labs of waves
 3.1–3.3 (11 labs, all QA-gated) and ENGINE amendments A5–A8 in both runtimes
 with parity (15 tapes, 90 runs; 8 engine tapes cover every new feature).
 
+## 5. After the re-score: the path to 5
+
+The reviewer named one change per criterion that would lift B2 from 4 to 5
+(`docs/gate/phase2-walkthrough-B2.md`, "Path to 5"). Taken before sign-off,
+because each one lifts every later module, not only B2:
+
+| Criterion | Change | Where |
+|---|---|---|
+| Learning clarity | A Run key on every `pre[data-run]` snippet, checked against its expected output | shell (`run.js`), B-13 done |
+| Intuitive | The next beat named under the progress line | shell (`module.js`) |
+| Fun | A passing kata points to what comes next | `hx-kata` |
+| Phone | No nested scroll box in Wire view below 700 px | `hx-wire` |
+| Accessibility | 44 px tap areas on term triggers | `hx.css` |
+| Identity and memory | Cards: front first; Space or Enter reveals | `hx-cards` |
+| Consistency | "par" means the cheapest turn limit only; the hunt says "a good time" | `hx-incident` |
+| Credibility | Cite the ReAct paper itself, not its repository | open: the fact-checker tries the ICLR proceedings (arXiv is blocked); wave 3.1's facts brief |
+
+Page weight: B2's first load went from 302 KB (over budget) to 280 KB (facts
+and terms fetched once; a 26 KB course-core file for components).
+
 ## Sign-off
 
-_Pending the "Path to 5" items the director takes before signing._
+B2 "The agent loop" is signed off as **the bar** for core modules, and H1–H2
+for build modules. AUTHORING.md v1 is final. Every finding of the learner
+walkthroughs is closed, and the path-to-5 changes are in, except the ReAct
+citation, which waits on a reachable primary source. Phase 3 starts: wave 3.1
+content (`docs/blueprints/BP-3.1-content.md`) with three builders, while
+wave 3.4's platform (labs and ENGINE A9–A10) finishes in parallel.
