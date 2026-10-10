@@ -561,7 +561,7 @@ class HxProtoBreak extends HTMLElement {
 
     // Readouts
     this.querySelector("[data-turn]").textContent = String(ev.turn);
-    this.querySelector("[data-turn-sub]").textContent = `of ${TURNS} · t ${ev.t.toFixed(1)}\u00a0s`;
+    this.querySelector("[data-turn-sub]").textContent = `of ${TURNS} · t\u00a0${ev.t.toFixed(1)}\u00a0s`;
     const pctContext = contextPct(current);
     this.querySelector("[data-context]").textContent = `${pctContext}%`;
     this.querySelector("[data-context-sub]").textContent = `${fmt(meta.tokens)} of 8,000 tokens`;
@@ -617,7 +617,7 @@ class HxProtoBreak extends HTMLElement {
     } else {
       note.textContent = "Showing: all 8 wires";
     }
-    this.querySelector("[data-readout-line]").innerHTML = `<span>Event <strong>${current + 1}</strong> of ${EVENTS.length}</span><span>turn <strong>${ev.turn}</strong></span><span>t <strong>${ev.t.toFixed(1)}\u00a0s</strong></span>`;
+    this.querySelector("[data-readout-line]").innerHTML = `<span>Event <strong>${current + 1}</strong> of ${EVENTS.length}</span><span>turn <strong>${ev.turn}</strong></span><span>t\u00a0<strong>${ev.t.toFixed(1)}\u00a0s</strong></span>`;
     this.querySelector("[data-strip-readout]").textContent = `Event ${current + 1} of ${EVENTS.length} · turn ${ev.turn}`;
     const strip = this.querySelector("[data-strip-lanes]");
     strip.setAttribute("aria-valuenow", String(current));
