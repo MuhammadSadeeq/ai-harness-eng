@@ -38,7 +38,9 @@ export async function mountEditor(host, { doc, label, onChange }) {
       cm.syntaxHighlighting(cm.classHighlighter),
       cm.python(),
       cm.keymap.of([...cm.defaultKeymap, ...cm.historyKeymap]),
-      cm.EditorView.contentAttributes.of({ "aria-label": label }),
+      // tabindex 0 on the editable content (already in the tab order) tells axe the sideways-scrolling region
+      // holds a focusable control, so keyboard users can reach and scroll it (scrollable-region-focusable).
+      cm.EditorView.contentAttributes.of({ "aria-label": label, tabindex: "0" }),
       cm.EditorView.updateListener.of((update) => {
         if (!update.docChanged) return;
         const typed = update.transactions.some((tr) => tr.isUserEvent("input") || tr.isUserEvent("delete"));

@@ -185,26 +185,7 @@ async function checkPageLoad(page, url, width, screenshotPath) {
   try {
     await page.goto(url, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
-    // Audit the upgraded UI, not the loading state: wait until every hx-* element has settled
-    // (ready or failed; a failure is reported by its self-test), at most 60 s (Python in a kata).
-    await page.evaluate(async () => {
-      const { REGISTRY } = await import("/assets/components/registry.js");
-      // Components below the fold load as their element nears the viewport (shell/loader.js): visit each one,
-      // then return to the top, so every registered element can settle.
-      for (const el of [...document.querySelectorAll("*")].filter((e) => Object.hasOwn(REGISTRY, e.localName))) {
-        el.scrollIntoView({ block: "center" });
-        await new Promise((resolve) => setTimeout(resolve, 150));
-      }
-      window.scrollTo(0, 0);
-      const settle = async () => {
-        const tags = new Set([...document.querySelectorAll("*")].map((el) => el.localName)
-          .filter((tag) => Object.hasOwn(REGISTRY, tag)));
-        await Promise.all([...tags].map((tag) => customElements.whenDefined(tag)));
-        await Promise.all([...document.querySelectorAll([...tags].join(",") || "hx-none")]
-          .map((el) => el.ready));
-      };
-      await Promise.race([settle(), new Promise((resolve) => setTimeout(resolve, 60000))]);
-    });
+    await settlePage(page);
     // A registered component that never upgraded, or that fell back to its no-JS content, fails.
     const unready = await page.evaluate(async () => {
       const { REGISTRY } = await import("/assets/components/registry.js");
@@ -259,6 +240,30 @@ async function checkPageLoad(page, url, width, screenshotPath) {
   return { failures, shot };
 }
 
+// Audit the upgraded UI, not the loading state: wait until every hx-* element has settled
+// (ready or failed; a failure is reported by its self-test), at most 60 s (Python in a kata).
+// Both passes (screenshots and axe) settle the same way before they look at the page.
+async function settlePage(page) {
+  await page.evaluate(async () => {
+    const { REGISTRY } = await import("/assets/components/registry.js");
+    // Components below the fold load as their element nears the viewport (shell/loader.js): visit each one,
+    // then return to the top, so every registered element can settle.
+    for (const el of [...document.querySelectorAll("*")].filter((e) => Object.hasOwn(REGISTRY, e.localName))) {
+      el.scrollIntoView({ block: "center" });
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    }
+    window.scrollTo(0, 0);
+    const settle = async () => {
+      const tags = new Set([...document.querySelectorAll("*")].map((el) => el.localName)
+        .filter((tag) => Object.hasOwn(REGISTRY, tag)));
+      await Promise.all([...tags].map((tag) => customElements.whenDefined(tag)));
+      await Promise.all([...document.querySelectorAll([...tags].join(",") || "hx-none")]
+        .map((el) => el.ready));
+    };
+    await Promise.race([settle(), new Promise((resolve) => setTimeout(resolve, 60000))]);
+  });
+}
+
 // Runs every hx-* element's __test.run() (it drives the real UI). Returns the
 // number of hooks run and any failures.
 async function runHooks(page) {
@@ -270,7 +275,9 @@ async function runHooks(page) {
       if (!name.startsWith("hx-") || !el.__test || typeof el.__test.run !== "function") continue;
       count += 1;
       try {
-        const ok = await el.__test.run();
+        // A self-test that never settles fails instead of hanging the run (30 s each).
+        const limit = new Promise((_, reject) => setTimeout(() => reject(new Error("timed out after 30 s")), 30000));
+        const ok = await Promise.race([el.__test.run(), limit]);
         if (ok === false) failures.push(`${name}: self-test returned false`);
       } catch (error) {
         failures.push(`${name}: self-test threw ${error.message}`);
@@ -458,6 +465,7 @@ async function main() {
             const page = await context.newPage();
             await page.goto(url, { waitUntil: "load" });
             await page.evaluate(() => document.fonts.ready);
+            await settlePage(page);
             const where = `${width}/${theme}`;
             const axe = await checkAxe(page);
             report.axe[pagePath][where] = { violations: axe.violations, failures: axe.failures, warnings: axe.warnings };
