@@ -43,6 +43,7 @@ Components upgrade it. Copy this skeleton exactly; fill only the marked parts.
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The agent loop · HARNESSED</title>
 <meta name="description" content="ONE SENTENCE: what the learner can do after this module.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
 <link rel="stylesheet" href="../assets/core/hx.css">
 <script type="module" src="../assets/core/app.js"></script>
 </head>
@@ -53,8 +54,10 @@ Components upgrade it. Copy this skeleton exactly; fill only the marked parts.
     <p class="plate-label">B2 · Part B · From chatbot to agent</p>
     <h1>The agent loop</h1>
     <p class="lede">ONE OR TWO SENTENCES.</p>
-    <!-- wires, objectives, prerequisites and the beat strip are rendered by
-         app.js from course.json; the checker verifies the h1 matches. -->
+    <!-- gen:module-meta --><!-- /gen:module-meta -->
+    <!-- tools/gen_pages.py fills this region from course.json: wire chips,
+         minutes, objectives, prerequisites and the beat strip. Never edit
+         inside it; the checker verifies the h1 matches. -->
   </header>
 
   <section class="beat" data-beat="break" id="break"> … </section>
@@ -299,8 +302,10 @@ and `bug_path`; `order-turn` adds `items` (correct order); `name-family` adds
 ```
 
 `content/<ID>/checks.yaml`: `id`, `objective`, `mode` (predict | check),
-`question`, `options` (2–5, each `{text, why}`: `why` says why it's right, or
-why it's tempting and wrong; **every** option has one), and `answer` (index). A predict item also
+`question`, `options` (2–5, each `{text, why, fact?}`: `why` says why it's
+right, or why it's tempting and wrong; **every** option has one; `fact` names
+the verified fact a `why` relies on, and the `why` then says no more than that
+fact's claim), and `answer` (index). A predict item also
 has `outcome`: the one line the reveal states after the run (DESIGN §7.3).
 
 ## 11. Proving your work
