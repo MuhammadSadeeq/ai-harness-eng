@@ -976,3 +976,17 @@ eventually notices; lessons say so).
   9. *Events:* `leak` (permissions: `tool`, `canaries`, `tool_use_id`) and
      `tool_rejected` (tools: `tool`, `server`, `version`, `reason`) join §9's
      table and `trace.schema.json`.
+- **A12 (2026-10-10): rulings from building A11.** Binding for both runtimes.
+  1. *A rejected tool is an unknown tool* at every step after its rejection:
+     permission rules match it by name like any call; the sandbox treats it as
+     an unknown tool (the harness no longer knows its `effect`, so no egress
+     check); `validate_inputs` does not check it (A7.1: an unknown tool is not
+     checked); it runs as `Unknown tool: <name>`, so it never leaks.
+  2. `eval --board` need not be one of the eval's `boards` (that list says
+     which boards the goldens cover).
+  3. *Eval loader:* `kind` is `capability` or `regression`; `seed_base` an
+     integer ≥ 0; `boards` a non-empty list of distinct strings;
+     `model_grader` absent or an object (`null` is refused); a task's `tape`
+     matches `[a-z0-9][a-z0-9-]*`, else it is refused.
+  4. The board label `pinned tool servers` lives with the other board labels
+     (`site/assets/components/lib/board-tags.js`), not in the simulator.
