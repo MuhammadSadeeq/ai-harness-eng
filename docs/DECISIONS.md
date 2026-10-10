@@ -9,7 +9,7 @@ answers), or **decided**.
 
 ## Phase 0 — 2026-10-10
 
-### D-001 · SPEC §14 open decisions use their defaults · *default*
+### D-001 · SPEC §14 open decisions · *decided by the owner at the Phase 0 gate (D-038)*
 Product name **HARNESSED**; build project **Rein**; primary language
 **Python** (TypeScript track in backlog); hosting **GitHub Pages**; licenses
 **MIT** for code and **CC BY-NC-SA 4.0** for content; `source/` stays in the
@@ -256,3 +256,24 @@ the UI. Verified: the new runner flags the bug on the committed pre-fix
 version (`aria-required-attr`, critical, "375/light after interaction"). The
 first run also caught a real issue on the D0 specimen (scrollable tables not
 keyboard-reachable at 375 px), fixed with `tabindex`, `role="region"` and labels.
+
+### D-038 · Phase 0 gate passed; SPEC §14 answered by the owner · *decided (owner)*
+On 2026-10-10 the owner approved **DESIGN v2** and the **CURRICULUM** as the
+basis for Phase 1, and answered SPEC §14:
+- Names and language: **HARNESSED**, **Rein**, **Python** (defaults kept).
+- Licenses: code **MIT**, content **CC BY-NC-SA 4.0**.
+- Hosting and the book: **decide at launch**; build privately; `source/` stays
+  in the private repository and is never deployed.
+- Real-model budget: **no real-model spend.** Consequences: the director
+  records no real-model numbers; Rein's real-model adapter is tested against a
+  local mock of the Messages API (recorded request/response fixtures validated
+  by `check_wire.py`), never the live API; H12 and the eval runner teach
+  learners to record their own numbers with their own key, and the course shows
+  scripted results labeled as scripted. SPEC §10 Phase 4's gate item "the eval
+  runner works … with a real model" becomes "works against the mock API, and
+  the real-model path is exercised by the learner"; SPEC §12's "eval runner with
+  recorded real numbers" becomes "with a documented procedure and a results
+  template the learner fills". The owner can lift this at any phase gate.
+- Prototypes `site/proto/d1`–`d3` are removed at the start of Phase 1 (kept in
+  git history at `a68f9b0`); `site/proto/v2` stays as the visual reference
+  until the Phase 1 design system replaces it.

@@ -1,4 +1,12 @@
-# Phase 0 gate: what you're approving
+# Phase 0 gate: passed (2026-10-10)
+
+**Outcome:** the owner approved DESIGN v2 and the CURRICULUM and answered
+SPEC §14 (DECISIONS D-038): defaults for names, language and licenses;
+hosting decided at launch; **no real-model spend**.
+
+---
+
+## What was approved
 
 Snapshot of 2026-10-10. The SPEC's exit gate for Phase 0 is: **the owner
 approves DESIGN and CURRICULUM, and CI is green on the skeleton.** CI is green
