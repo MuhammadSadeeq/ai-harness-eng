@@ -628,6 +628,17 @@ eventually notices; lessons say so).
   4. Both modules map to the loop wire on the board (`hx-clock`) with the tag
      labels `history not resent` and `reads the first block only`, drawn with
      the warning mark: they are bugs, not features.
+  5. *Rulings (from building it):* (a) The missing-result check runs before
+     **every** model call, not only after a resume: after the context check,
+     if any `tool_use` in the harness's own history has no `tool_result` with
+     its id in the user message right after its assistant message, the call
+     fails as A3.16 (§7.6's resume case is one instance). No existing tape
+     reaches it otherwise, so their traces do not change. (b) With
+     `first_block_only`, "the reply asked for tools" (§7.6) means the harness
+     read a call: the interrupt's `pending` lists the calls it read, and when
+     it read none the interrupt does not fire that turn. (c) `history` accepts
+     `{"resend": false}` and `{"resend": true}` (the same as absent); any other
+     shape is refused.
 - **A6 (2026-10-10): compaction, prompt caching, and two prompt-aware
   conditions** (wave 3.3: C2, C3, C4; DECISIONS D-051). Absent modules and
   fields change nothing, so every existing golden trace stays as it is.
@@ -722,3 +733,54 @@ eventually notices; lessons say so).
   6. *Order within a turn*, all modules plugged: guards, `turn += 1`,
      compaction, control wire (clock, rules layer, `prompt_built`), context
      check, the call with recovery, `cache`, `model_reply`, as in §7.1.
+- **A7 (2026-10-10): input checks, split results and effort** (wave 3.2: A5,
+  A6, B1). Absent modules and fields change nothing.
+  1. *`validate_inputs: {}`*: the harness checks each call's input against the
+     tool's `input_schema` before running it. The check runs for every call
+     that passes permissions and the sandbox, and emits
+     `input_check(tool, valid, reason, tool_use_id)` (wire `tools`; `reason`
+     `""` when valid). A tool with no definition (unknown) is not checked
+     (`valid` true). The course's subset of JSON Schema, first failure wins:
+     the input is not an object: `input must be an object`; then each name in
+     `required`, in schema order: `missing required field: <name>`; then each
+     input field, in input order: not in `properties` with
+     `additionalProperties: false`: `unknown field: <name>`; a declared `type`
+     (`string`, `integer`, `number`, `boolean`, `array`, `object`; `number`
+     accepts integers; JSON booleans are not integers) that does not match:
+     `field <name> must be <type>`; an `enum` that does not contain the value
+     (compared by `pyjson`): `field <name> must be one of: <pyjson values joined by ", ">`.
+     An invalid call is not run: no `tool_call` event, no tool latency, not
+     added to `recent_calls`; its result is
+     `tool_result(id, "Invalid input: " + reason, is_error=true)`. Without the
+     module, inputs run as given (A3.4 reads a non-string as `""`, so a wrong
+     shape can wipe a file: the schema-drift lesson). On the board it maps to
+     the tools wire, label `schema checks`.
+  2. *`split_results: {}`*, a harness bug on purpose (D-049): instead of one
+     user message with every result, the harness appends one user message per
+     result, in call order. A5.5(a)'s missing-result check reads "the user
+     message right after" as the run of consecutive user messages right after
+     the assistant message (the API combines consecutive turns of one role:
+     fact `api.consecutive-turns-combined`, pending verification), so split
+     results are not an error. The cost is behavioral (fact
+     `api.split-results-teach-serial`, pending): condition `results_split` is
+     true when the request about to be sent holds two user messages in a row,
+     and a tape uses it to make the scripted model stop asking for tools in
+     parallel. On the board: tools wire, label `results split across messages`,
+     warning mark.
+  3. *`effort: {"level": L}`* with `L` one of `low`, `medium`, `high`,
+     `xhigh`, `max` (that order). The tape may give
+     `effort: {"default": L, "thinking_tokens": {"low": a, "medium": b, "high": c, "xhigh": d, "max": e}}`
+     (the course's illustration, integers ≥ 0; `default` is the model's
+     default level, cited from a fact on the page). The level in force is the
+     board's, else the tape's `default`, else `high`. Each reply adds
+     `thinking = thinking_tokens[level]` (0 when the tape gives none) to its
+     output: `output_tokens = tokens(content) + thinking`, so latency (§4) and
+     cost grow with it. The thinking itself is not in `content` and never
+     enters the history (the course's model: thinking is billed as output; the
+     blocks are left out). `model_reply.usage` gains
+     `"output_tokens_details": {"thinking_tokens": thinking}` when the tape has
+     an `effort` block. Condition `effort_gte:<level>` compares the level in
+     force. When the board sets `effort`, the wire request carries
+     `"output_config": {"effort": L}` (fact `api.effort-location`). On the
+     board: control wire, label `effort <L>`.
+  4. *Order within a tool call:* permission, sandbox, input check, run, cap.
