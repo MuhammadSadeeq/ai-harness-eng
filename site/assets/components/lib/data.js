@@ -29,9 +29,22 @@ export const getBoard = async (id) => parseStrictJson(await fetchText(`scenarios
 export const getFacts = async () => JSON.parse(await fetchText("facts.json"));
 export const getCourse = async () => JSON.parse(await fetchText("course.json"));
 export const getTerms = async () => JSON.parse(await fetchText("terms.json"));
-/** kind is "cards", "say" or "checks"; id is a module id such as "B2". */
-export async function getContent(kind, id) {
+/**
+ * kind is "cards", "say" or "checks". src is a module id such as "B2" (site/data/<kind>/B2.json) or, on
+ * demo pages, a path ending in .json relative to the page (COMPONENTS.md §11).
+ */
+export async function getContent(kind, src) {
   if (!["cards", "say", "checks"].includes(kind)) throw new Error(`bad content kind: ${kind}`);
-  if (typeof id !== "string" || !/^[A-Z][0-9]{1,2}$/.test(id)) throw new Error(`bad module id: ${String(id)}`);
-  return JSON.parse(await fetchText(`${kind}/${id}.json`));
+  if (typeof src === "string" && src.endsWith(".json") && !src.includes("//")) {
+    const url = new URL(src, document.baseURI).href;
+    if (!cache.has(url)) {
+      cache.set(url, fetch(url).then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status} for ${src}`);
+        return response.text();
+      }));
+    }
+    return JSON.parse(await cache.get(url));
+  }
+  if (typeof src !== "string" || !/^[A-Z][0-9]{1,2}$/.test(src)) throw new Error(`bad module id: ${String(src)}`);
+  return JSON.parse(await fetchText(`${kind}/${src}.json`));
 }

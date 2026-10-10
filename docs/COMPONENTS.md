@@ -80,3 +80,37 @@ skeleton without beats) that shows it in its main configurations at 375 and
 ## 9. Size
 A component module plus its CSS stays under 40 KB uncompressed; shared code
 goes in `lib/`. Pages still meet the 300 KB budget with all their components.
+
+## 10. Components talking to each other
+Components link by id: `for="<id>"` names another element in the same page.
+Three small protocols, nothing else:
+
+- **Gate.** Runnable components (`hx-replay`, `hx-bench`, `hx-incident`)
+  accept a boolean `locked` attribute. While it is present their run controls
+  are disabled (not hidden) and one line says
+  "Make your prediction above to unlock the run." Removing it unlocks them.
+  `hx-check mode="predict" for="<id>"` removes it when the learner commits.
+- **Results.** When a runnable component finishes, it dispatches a bubbling
+  `hx-result` CustomEvent, once per finish:
+  - `hx-replay`: the playhead reaches the last event for the first time:
+    `{source: "replay", status, passed, turns, cost}`.
+  - `hx-bench`: a Run ×N completes:
+    `{source: "bench", old: Stats, new: Stats}` with
+    `Stats = {n, passed, worst_turns, worst_cost, mean_cost}` (integers;
+    `mean_cost` floored).
+  - `hx-incident`: the hunt is solved and the fix chosen:
+    `{source: "incident", wrong_taps, seconds, fix_ok}`.
+  A predict check with `for` listens for its target's `hx-result` and then
+  reveals.
+- **Values.** A component with numbers others can read or drive implements
+  `hxValue(name) -> integer | null`, `hxSetValue(name, integer)` (ignored when
+  the value is read-only) and `hxRange(name) -> {min, max, step} | null`
+  (null for read-only), and dispatches a bubbling `hx-change`
+  `{name, value}` whenever a value changes. `hx-num for="<id>" name="<value>"`
+  binds to it (DESIGN §7.7). Each component's blueprint lists its value names.
+
+## 11. Content sources in demo pages
+`src` on `hx-cards`, `hx-check` and `hx-say` is a module id (`B2`, read from
+`site/data/<kind>/B2.json`) or, on demo pages only, a path ending in `.json`
+relative to the page (`site/labs/data/…`). Demo content is still reviewed
+content: correct, in the course voice, and short.
