@@ -32,7 +32,7 @@ def fake_js(argv: list[str]) -> str:
         spec = evals.load_eval(Path(argv[argv.index("--eval") + 1]))
         board = load_board(Path(argv[argv.index("--board") + 1]))
         tapes = evals.load_tapes(spec, Path(argv[argv.index("--scenarios") + 1]))
-        return trace_line(evals.run_eval(spec, tapes, board, facts)) + "\n"
+        return str(trace_line(evals.run_eval(spec, tapes, board, facts))) + "\n"
     tape = load_tape(Path(argv[argv.index("--tape") + 1]))
     board = load_board(Path(argv[argv.index("--board") + 1]))
     trial = run_trial(tape, board, int(argv[argv.index("--seed") + 1]), facts)
