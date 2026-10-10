@@ -6,6 +6,7 @@ import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFacts, getCourse } from "./lib/data.js";
 import { runTrial, createPrng } from "../sim/index.js";
 import { el, glyph, WIRES, repeats, transcriptList, laneStrip, ensureSprite } from "./lib/transcript.js";
+import { formatMs, plural } from "./lib/format.js";
 
 /** The three families for the naming step: the right one, then two others, all shuffled by the same PRNG. */
 export function familyOptions(tapeId, correctId, families) {
@@ -269,10 +270,10 @@ export class HxIncident extends HxElement {
   resultBlock() {
     const s = this.state;
     const { inc } = this.model;
-    const taps = s.wrongTaps === 1 ? "1 wrong tap" : `${s.wrongTaps} wrong taps`;
+    const taps = plural(s.wrongTaps, "wrong tap", "wrong taps");
     const fixOk = s.fixPick === inc.correct_fix;
     return el("div", { class: "result", role: "status" },
-      el("p", { class: "result-time", text: `Found in ${this.seconds()} s. Par is ${inc.par_s} s.` }),
+      el("p", { class: "result-time", text: `Found in ${formatMs(this.seconds() * 1000)}. Par is ${formatMs(inc.par_s * 1000)}.` }),
       el("p", { class: "result-taps", text: s.wrongTaps === 0 ? "No wrong taps." : `${taps}.` }),
       el("p", { class: `verdict ${fixOk ? "is-pass" : "is-fail"}`, text: fixOk ? "Your fix is the one that works." : "That fix does not stop it. The one that works is marked." }));
   }
@@ -314,10 +315,10 @@ export class HxIncident extends HxElement {
     return null;
   }
 
-  /** The viewport check the self-test relies on: the element's box lies inside the window. */
+  /** The viewport check the self-test relies on: the element's box lies inside the window (2 px of rounding). */
   inWindow(node) {
     const r = node?.getBoundingClientRect();
-    return Boolean(r && r.height > 0 && r.top >= 0 && r.bottom <= globalThis.innerHeight);
+    return Boolean(r && r.height > 0 && r.top >= -2 && r.bottom <= globalThis.innerHeight + 2);
   }
 
   /** The tapped row (its button) is on screen, and so is the top of its answer. */
@@ -326,7 +327,7 @@ export class HxIncident extends HxElement {
     const answer = li?.querySelector(".hunt-feedback");
     if (!row || !answer) return false;
     const top = answer.getBoundingClientRect().top;
-    return this.inWindow(row) && top >= 0 && top < globalThis.innerHeight;
+    return this.inWindow(row) && top >= -2 && top < globalThis.innerHeight;
   }
 
   async selfTest() {

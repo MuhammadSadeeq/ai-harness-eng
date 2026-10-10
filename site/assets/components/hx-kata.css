@@ -26,9 +26,10 @@ hx-kata [hidden] { display: none !important; }
   font: 400 15px/1.5 var(--font-mono);
 }
 .kata-editor .cm-editor.cm-focused { outline: 3px solid var(--hx-focus); outline-offset: 2px; }
-.kata-editor .cm-scroller { font-family: var(--font-mono); line-height: 1.5; }
+.kata-editor .cm-editor { min-height: 12rem; }
+.kata-editor .cm-scroller { font-family: var(--font-mono); line-height: 1.5; min-height: 12rem; }
 .kata-editor .cm-content { caret-color: var(--hx-ink); padding: var(--sp-2) 0; }
-.kata-editor .cm-gutters { background: var(--hx-panel-2); color: var(--hx-ink-2); border-right: 1px solid var(--hx-rule); }
+.kata-editor .cm-gutters { min-height: 12rem; background: var(--hx-panel-2); color: var(--hx-ink-2); border-right: 1px solid var(--hx-rule); }
 .kata-editor .cm-activeLine { background: color-mix(in srgb, var(--hx-ink) 6%, transparent); }
 .kata-editor .cm-activeLineGutter { background: color-mix(in srgb, var(--hx-ink) 10%, transparent); }
 .kata-editor .cm-selectionBackground, .kata-editor .cm-content ::selection { background: var(--hx-scrub); }

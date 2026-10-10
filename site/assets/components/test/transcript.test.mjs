@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { runTrial, parseStrictJson } from "../../sim/index.js";
-import { rows, visibleIndexes, repeats, eventGlyph, frac, turnStarts, sortedJson, cardLines, WIRES } from "../lib/transcript.js";
+import { rows, visibleIndexes, repeats, eventGlyph, frac, turnStarts, sortedJson, cardLines, WIRES, axisTurns } from "../lib/transcript.js";
 
 const ROOT = new URL("../../../../", import.meta.url);
 const load = (rel) => parseStrictJson(readFileSync(fileURLToPath(new URL(rel, ROOT)), "utf8"));
@@ -85,4 +85,15 @@ test("cardLines keeps six lines and reports whether there is more", () => {
   const seven = Array.from({ length: 7 }, (_, i) => `l${i}`).join("\n");
   assert.deepEqual(cardLines(seven), { shown: "l0\nl1\nl2\nl3\nl4\nl5", more: true, total: 7 });
   assert.equal(cardLines("a\nb").more, false);
+});
+
+// The turn labels of the lane axis (BP-1.4 notes, item 4): from turn 1 (turn 0 is the run start), thinned.
+test("axisTurns labels from turn 1, never turn 0, and thins past eight turns", () => {
+  const turnEvents = (turns) => turns.flatMap((turn) => [{ turn, kind: "model_reply" }, { turn, kind: "tool_call" }]);
+  const short = axisTurns([{ turn: 0, kind: "run_start" }, ...turnEvents([1, 2, 3])]);
+  assert.deepEqual(short.map((t) => t.turn), [1, 2, 3]);
+  const long = axisTurns([{ turn: 0, kind: "run_start" }, ...turnEvents(Array.from({ length: 20 }, (_, i) => i + 1))]);
+  assert.equal(long[0].turn, 1);
+  assert.ok(long.every((t) => t.turn === 1 || t.turn % 3 === 0), "every third turn once there are more than eight");
+  assert.ok(long.length <= 9);
 });

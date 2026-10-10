@@ -10,6 +10,7 @@ hx-cards [hidden] { display: none !important; }
 
 .card { display: grid; gap: var(--sp-3); min-width: 0; }
 .card-front { margin: 0; padding: 0; font: 400 var(--fs-h3)/1.35 var(--font-serif); color: var(--hx-ink); }
+legend.card-front { margin: 0 0 var(--sp-3); }
 .card-back { margin: 0; font: 400 var(--fs-body)/var(--lh-body) var(--font-serif); color: var(--hx-ink-2); }
 .card-keys { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
 .card-hint { margin: 0; font: 500 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }
@@ -26,11 +27,11 @@ hx-cards [hidden] { display: none !important; }
   display: grid; gap: 2px; margin: 0; padding: var(--sp-2); min-width: 0; overflow-x: auto;
   border-radius: 6px; background: var(--hx-code-bg); color: var(--hx-code-ink); font: 400 15px/1.3 var(--font-mono);
 }
-.json-line { min-height: 0; padding: 0 var(--sp-2); white-space: pre; }
+.json-line { min-height: 0; padding: 0 var(--sp-2); white-space: pre-wrap; overflow-wrap: anywhere; }
 .json-row {
   display: flex; align-items: center; gap: var(--sp-2); width: 100%; min-height: 44px; box-sizing: border-box;
   padding: 0 var(--sp-2); border: 1px solid transparent; border-radius: 6px; background: transparent;
-  color: inherit; font: inherit; text-align: left; cursor: pointer; white-space: pre;
+  color: inherit; font: inherit; text-align: left; cursor: pointer; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .json-row:hover { background: var(--hx-panel-2); color: var(--hx-ink); }
 .json-row[aria-checked="true"] { border-color: var(--hx-ink); background: var(--hx-panel); color: var(--hx-ink); }
