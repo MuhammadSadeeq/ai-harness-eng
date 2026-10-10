@@ -246,3 +246,13 @@ is the clock with the learner's modules.
 A unified prototype (`site/proto/v2/`) of the same three screens, built from
 DESIGN v2 by reusing the best prototype code, then reviewed with the same
 walkthrough, so the owner approves something they can click, not a document.
+
+### D-037 · Accessibility audits run at phone width and after interaction · *decided*
+The v2 re-walkthrough found a critical axe error (a phone-only `role="slider"`
+without `aria-valuenow`) that CI's QA never saw, because axe ran once per page
+at 1280 px on the page as loaded. `tools/qa/run.mjs` now runs axe at 375 and
+1280 px in every theme, and again after the page's `__test` hooks have driven
+the UI. Verified: the new runner flags the bug on the committed pre-fix
+version (`aria-required-attr`, critical, "375/light after interaction"). The
+first run also caught a real issue on the D0 specimen (scrollable tables not
+keyboard-reachable at 375 px), fixed with `tabindex`, `role="region"` and labels.

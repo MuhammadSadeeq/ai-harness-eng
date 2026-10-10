@@ -2,7 +2,8 @@
 // HARNESSED browser QA (BP-0.5A section 7). Serves site/ on 127.0.0.1, then per page:
 //   width x theme: console errors, page errors, failed requests, HTTP >= 400, horizontal
 //   scroll, (375 px) text under 14 px, hx-* self-tests, full-page screenshot;
-//   1280 light: axe (serious/critical fail, moderate warn), page weight, CVD screenshots;
+//   375 and 1280, every theme: axe (serious/critical fail, moderate warn);
+//   1280 light: page weight, CVD screenshots;
 //   reduced motion: no running animation longer than 150 ms.
 // Usage: node tools/qa/run.mjs [--only <path>...] [--out <dir>] [--widths 375,768,1280]
 //        [--themes light,dark] [--cvd] [--no-axe]
@@ -186,21 +187,8 @@ async function checkPageLoad(page, url, width, screenshotPath) {
       const small = await page.evaluate(SMALL_TEXT_JS);
       for (const item of small) failures.push(`text under ${MIN_FONT_PX}px at 375: ${item}`);
     }
-    const tests = await page.evaluate(async () => {
-      const out = [];
-      for (const el of document.querySelectorAll("*")) {
-        const name = el.tagName.toLowerCase();
-        if (!name.startsWith("hx-") || !el.__test || typeof el.__test.run !== "function") continue;
-        try {
-          const ok = await el.__test.run();
-          if (ok === false) out.push(`${name}: self-test returned false`);
-        } catch (error) {
-          out.push(`${name}: self-test threw ${error.message}`);
-        }
-      }
-      return out;
-    });
-    for (const item of tests) failures.push(item);
+    const tests = await runHooks(page);
+    for (const item of tests.failures) failures.push(item);
     await page.screenshot({ path: screenshotPath, fullPage: true, animations: "disabled", caret: "hide" });
     shot = true;
   } catch (error) {
@@ -212,6 +200,27 @@ async function checkPageLoad(page, url, width, screenshotPath) {
     page.off("response", onResponse);
   }
   return { failures, shot };
+}
+
+// Runs every hx-* element's __test.run() (it drives the real UI). Returns the
+// number of hooks run and any failures.
+async function runHooks(page) {
+  return page.evaluate(async () => {
+    const failures = [];
+    let count = 0;
+    for (const el of document.querySelectorAll("*")) {
+      const name = el.tagName.toLowerCase();
+      if (!name.startsWith("hx-") || !el.__test || typeof el.__test.run !== "function") continue;
+      count += 1;
+      try {
+        const ok = await el.__test.run();
+        if (ok === false) failures.push(`${name}: self-test returned false`);
+      } catch (error) {
+        failures.push(`${name}: self-test threw ${error.message}`);
+      }
+    }
+    return { count, failures };
+  });
 }
 
 async function checkAxe(page) {
@@ -373,20 +382,40 @@ async function main() {
       }
 
       if (opts.axe) {
-        const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, colorScheme: "light" });
-        const page = await context.newPage();
-        await page.goto(url, { waitUntil: "load" });
-        await page.evaluate(() => document.fonts.ready);
-        const axe = await checkAxe(page);
-        report.axe[pagePath] = { violations: axe.violations, failures: axe.failures, warnings: axe.warnings };
-        for (const f of axe.failures) pageFailures.push(`1280/light: ${f}`);
-        for (const w of axe.warnings) pageWarnings.push(`1280/light: ${w}`);
-        if (opts.cvd) {
-          const cvdFailures = await runCvd(page, slug, opts.out, shots);
-          for (const f of cvdFailures) pageFailures.push(`1280/light: ${f}`);
-          report.cvd.push({ page: pagePath, types: CVD_TYPES });
+        // axe runs at phone and desktop width in every theme: phone layouts swap in
+        // different controls (a V2-01 slider error was invisible at 1280 only).
+        const axeWidths = [375, 1280].filter((w) => opts.widths.includes(w));
+        if (axeWidths.length === 0) axeWidths.push(opts.widths[0]);
+        report.axe[pagePath] = {};
+        for (const width of axeWidths) {
+          for (const theme of opts.themes) {
+            const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme });
+            const page = await context.newPage();
+            await page.goto(url, { waitUntil: "load" });
+            await page.evaluate(() => document.fonts.ready);
+            const where = `${width}/${theme}`;
+            const axe = await checkAxe(page);
+            report.axe[pagePath][where] = { violations: axe.violations, failures: axe.failures, warnings: axe.warnings };
+            for (const f of axe.failures) pageFailures.push(`${where}: ${f}`);
+            for (const w of axe.warnings) pageWarnings.push(`${where}: ${w}`);
+            // Audit again after the hooks drove the UI: controls that only appear after
+            // interaction (an unlocked replay, results, par states) must pass too.
+            const hooks = await runHooks(page);
+            if (hooks.count > 0) {
+              const after = await checkAxe(page);
+              const whereAfter = `${where} after interaction`;
+              report.axe[pagePath][whereAfter] = { violations: after.violations, failures: after.failures, warnings: after.warnings };
+              for (const f of after.failures) pageFailures.push(`${whereAfter}: ${f}`);
+              for (const w of after.warnings) pageWarnings.push(`${whereAfter}: ${w}`);
+            }
+            if (opts.cvd && width === 1280 && theme === "light") {
+              const cvdFailures = await runCvd(page, slug, opts.out, shots);
+              for (const f of cvdFailures) pageFailures.push(`${where}: ${f}`);
+              report.cvd.push({ page: pagePath, types: CVD_TYPES });
+            }
+            await context.close();
+          }
         }
-        await context.close();
       }
 
       const bytes = await checkWeight(browser, url);
