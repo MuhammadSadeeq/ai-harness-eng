@@ -192,7 +192,9 @@ export class HxReadiness extends HxElement {
     let intro = null;
     if (empty) {
       const doc = { modules: this.store?.state?.modules ?? {} };
-      const next = continueTarget(this.course, doc);
+      // Only a built module has a page to link to: start at the first built path module not yet done.
+      const built = new Set((this.core?.modules ?? []).filter((m) => m.built).map((m) => m.id));
+      const next = continueTarget({ ...this.course, path: (this.course.path ?? []).filter((id) => built.has(id)) }, doc);
       intro = el("p", { class: "readiness-empty" },
         "Nothing is recorded yet, so every wire is at not started. ",
         next ? el("a", { href: next.href, text: `Start with ${next.id} · ${next.title}` }) : "The path is done.");
