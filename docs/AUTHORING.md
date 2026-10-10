@@ -292,7 +292,9 @@ option (why it's right, or why it's tempting and wrong).
 
 ## 11. Proving your work
 
-Before reporting, run (one heavy check at a time) and quote the final lines:
+Before reporting, run `tools/ci_local.sh` (the CI checkers job, locally; it
+must end `ci_local: all checks passed`), then the checks for your files (one
+heavy check at a time) and quote the final lines:
 
 ```text
 python tools/check_content.py site/modules/<slug>.html
