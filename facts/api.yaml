@@ -70,6 +70,24 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.cache-output-unchanged"
+  claim: "The docs say prompt caching has no effect on output token generation, and the response is identical to the one you would get without caching."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "Prompt caching has no effect on output token generation. The response you receive is identical to what you would get if prompt caching were not used."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.cache-prefix-whole-match"
+  claim: "A cache hit requires 100% identical prompt segments, including all text and images up to and including the block marked with cache control."
+  source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md"
+  quote: "Cache hits require 100% identical prompt segments, including all text and images up to and including the block marked with cache control."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
 - id: "api.cache-read-refreshes-ttl"
   claim: "The docs say the default cache lifetime is 5 minutes and that the cache is refreshed at no extra cost each time cached content is used."
   source: "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
@@ -507,6 +525,15 @@
   source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
   quote: "Claude finished its response naturally."
   verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.stop-reason-field"
+  claim: "Every Messages API response includes a stop_reason field that tells why Claude stopped generating."
+  source: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
+  quote: "Every Messages API response includes a `stop_reason` field that tells you why Claude stopped generating."
+  verified_on: 2026-10-11
   volatility: "volatile"
   kind: "docs"
 

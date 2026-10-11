@@ -227,6 +227,18 @@
   "status": "verified",
   "verified_on": "2026-10-10"
  },
+ "api.cache-output-unchanged": {
+  "id": "api.cache-output-unchanged",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "api.cache-prefix-whole-match": {
+  "id": "api.cache-prefix-whole-match",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
  "api.cache-read-refreshes-ttl": {
   "id": "api.cache-read-refreshes-ttl",
   "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
@@ -502,6 +514,12 @@
   "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
   "status": "verified",
   "verified_on": "2026-10-10"
+ },
+ "api.stop-reason-field": {
+  "id": "api.stop-reason-field",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-11"
  },
  "api.stop-reason-max-tokens": {
   "id": "api.stop-reason-max-tokens",

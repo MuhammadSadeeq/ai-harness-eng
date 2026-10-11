@@ -303,6 +303,22 @@
   "verified_on": "2026-10-10",
   "volatility": "volatile"
  },
+ "api.cache-output-unchanged": {
+  "claim": "The docs say prompt caching has no effect on output token generation, and the response is identical to the one you would get without caching.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "api.cache-prefix-whole-match": {
+  "claim": "A cache hit requires 100% identical prompt segments, including all text and images up to and including the block marked with cache control.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
  "api.cache-read-refreshes-ttl": {
   "claim": "The docs say the default cache lifetime is 5 minutes and that the cache is refreshed at no extra cost each time cached content is used.",
   "kind": "docs",
@@ -669,6 +685,14 @@
   "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
   "status": "verified",
   "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.stop-reason-field": {
+  "claim": "Every Messages API response includes a stop_reason field that tells why Claude stopped generating.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+  "status": "verified",
+  "verified_on": "2026-10-11",
   "volatility": "volatile"
  },
  "api.stop-reason-max-tokens": {
