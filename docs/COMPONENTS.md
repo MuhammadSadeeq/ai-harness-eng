@@ -69,8 +69,19 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
   `objectives` list (`this.evidence(kind, detail, [])`), so it never moves the
   progress line. A prediction is recorded with no objectives, right or wrong:
   it shows the learner committed, not that they know, so a page never puts
-  `data-objective` on `mode="predict"` (check_content B4). Bench runs and card
-  reviews credit as they are.
+  `data-objective` on `mode="predict"` (check_content B4). Per component
+  (D-061):
+  - `hx-incident`: credits only a correct hunt: the right family, the right
+    wire and the right fix. Any other finish is recorded with `[]`.
+  - `hx-cards`: each card answered "Got it" credits that card's own
+    `objective` from `cards.yaml`; "Again" credits nothing.
+  - `hx-replay`: watching to the end proves nothing, so it credits nothing,
+    like a prediction. An objective needs a check, hunt, kata, step or
+    bench to credit it (check_content B4 counts only those).
+  - `hx-bench`: a completed run credits as it is.
+  - The on-call shift's drill and the Interview Room's memory station are
+    practice of a pattern: a passing memory kata there credits I5.o2
+    ("solve timed coding katas from memory"), and nothing else.
 
 ## 6. Accessibility and motion (binding)
 - DESIGN §9 in full: keyboard operable, visible focus, targets ≥ 44 px,

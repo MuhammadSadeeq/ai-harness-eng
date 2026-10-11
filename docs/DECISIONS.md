@@ -582,3 +582,30 @@ basis for Phase 1, and answered SPEC §14:
 - **Also:** Rein's loop guard warns the model once before it ends the run
   with `loop`; the C5 simulator stops at the first repeat. H8 says so.
 
+## D-061 What credits an objective, component by component
+
+- **Context:** the Phase 6 pedagogy audit found that an incident credited
+  its objective on any committed fix, right or wrong; that a card review
+  credited nothing (cards.yaml's objectives were never read); that a replay
+  credited on every finish; and that I5.o2 had no path at all, so I5 and
+  Part I could never be done.
+- **Decision:** COMPONENTS §5 lists the rule per component. A hunt credits
+  only when family, wire and fix are all right; a card credits its own
+  objective on "Got it"; a replay credits nothing; a passing memory kata in
+  the Interview Room or the shift credits I5.o2. check_content B4 counts an
+  objective as covered only by a component that credits on success.
+
+
+## D-062 The shift, the board and the bank draw from what the learner has seen, mixed
+
+- **Context:** the audit replayed the real shift picker: a new learner got
+  incidents from modules not reached yet, a learner with S0 done got the same
+  S0 incident seven days running, and fresh cards and say prompts came in
+  course order (S0 ×8, A1 ×8 ...). CURRICULUM §3 asks for an incident from
+  any family seen so far, and due cards across wires.
+- **Decision:** the pool is the modules the learner has started or finished
+  (a visit or any evidence); with none, the first path module that has an
+  incident. The shift picks an incident not yet hunted when one exists, and
+  among those the wire drilled least recently, ties broken by the day's
+  seed. Fresh cards and new say prompts come only from that pool,
+  round-robin by wire, in a seeded order per day.
