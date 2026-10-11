@@ -49,6 +49,10 @@ Components upgrade it. Copy this skeleton exactly; fill only the marked parts.
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<!-- gen:topbar --><!-- /gen:topbar -->
+<!-- tools/gen_pages.py fills the top bar (wordmark, module code and title,
+     Course, Glossary, Readiness, the Board) and the Menu sheet (with the
+     theme). -->
 <main id="main" class="module">
   <header class="module-head">
     <p class="plate-label">B2 · Part B · From chatbot to agent</p>
@@ -77,6 +81,10 @@ Components upgrade it. Copy this skeleton exactly; fill only the marked parts.
     </aside>
   </div>
 </main>
+<!-- gen:footer --><!-- /gen:footer -->
+<!-- tools/gen_pages.py fills the footer (export, import and reset of
+     progress, the design system link, the font licences, the facts date).
+     Never edit inside a gen: region. -->
 </body>
 </html>
 ```

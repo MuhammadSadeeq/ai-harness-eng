@@ -114,7 +114,6 @@ INDEX_REGIONS: tuple[str, ...] = (
     "caption",
     "path",
     "course-map",
-    "facts",
 )
 DESIGN_REGIONS: tuple[str, ...] = (
     "wires",
@@ -123,10 +122,24 @@ DESIGN_REGIONS: tuple[str, ...] = (
     "glyph-marks",
     "swatches",
     "fact",
-    "facts",
 )
-PAGES: dict[str, tuple[str, ...]] = {"index.html": INDEX_REGIONS, "design.html": DESIGN_REGIONS}
-MODULE_REGIONS: tuple[str, ...] = ("module-meta", "course-map")
+# The top bar (with its Menu sheet) and the footer (with the facts line): every shell page (BP-5.3).
+CHROME_REGIONS: tuple[str, ...] = ("topbar", "footer")
+PAGES: dict[str, tuple[str, ...]] = {
+    "index.html": INDEX_REGIONS + CHROME_REGIONS,
+    "design.html": DESIGN_REGIONS + CHROME_REGIONS,
+    "glossary.html": CHROME_REGIONS,
+    "readiness.html": CHROME_REGIONS,
+}
+# The top-level pages, in the order they are written.
+TOP_PAGES: tuple[str, ...] = ("index.html", "design.html", "glossary.html", "readiness.html")
+# Regions another generator owns on a page this module also writes: gen_glossary fills the list on
+# glossary.html.
+FOREIGN_REGIONS: dict[str, tuple[str, ...]] = {"glossary.html": ("glossary",)}
+# Regions a migration retires. The home and design pages' facts region sat inside their footer;
+# the footer region carries the facts line now, so the migration removes the old region with it.
+RETIRED_REGIONS: dict[str, tuple[str, ...]] = {"index.html": ("facts",), "design.html": ("facts",)}
+MODULE_REGIONS: tuple[str, ...] = ("module-meta", "course-map") + CHROME_REGIONS
 BEAT_LABEL: dict[str, str] = {
     "break": "Break",
     "see": "See",
@@ -482,10 +495,12 @@ def module_meta_lines(d: Data, mod: Json) -> list[str]:
 
 def render_module(d: Data, slug: str) -> dict[str, list[str]]:
     mod = module_by_slug(d, slug)
-    return {
+    regions = {
         "module-meta": module_meta_lines(d, mod),
         "course-map": course_map_lines(d, prefix="", current=slug),
     }
+    regions.update(render_chrome(d, f"modules/{slug}.html"))
+    return regions
 
 
 def facts_line(d: Data) -> str:
@@ -613,7 +628,7 @@ def render_index(d: Data) -> dict[str, list[str]]:
         "caption": caption_lines(d),
         "path": path_rows(d),
         "course-map": course_map_lines(d),
-        "facts": [facts_line(d)],
+        **render_chrome(d, "index.html"),
     }
 
 
@@ -627,8 +642,134 @@ def render_design(d: Data) -> dict[str, list[str]]:
         "glyph-marks": glyph_grid(d, [(name, label, "") for name, label in MARK_GLYPHS]),
         "swatches": swatch_lines(d),
         "fact": [fact_line(d)],
-        "facts": [facts_line(d)],
+        **render_chrome(d, "design.html"),
     }
+
+
+# ---- the chrome: the top bar with its Menu sheet, and the footer (BP-5.3) -----------------------
+
+NAV: tuple[tuple[str, str, str], ...] = (
+    ("course", "Course", "index.html"),
+    ("glossary", "Glossary", "glossary.html"),
+    ("readiness", "Readiness", "readiness.html"),
+)
+# The page-nav entry that is current on each top-level page. Module pages are part of the course.
+CURRENT_NAV: dict[str, str | None] = {
+    "index.html": "course",
+    "glossary.html": "glossary",
+    "readiness.html": "readiness",
+    "design.html": None,
+}
+TOPBAR_BLOCK = re.compile(
+    r'[ \t]*<header class="topbar"[^>]*>.*?</header>\n'
+    r'(?:[ \t]*<dialog class="menu-sheet"[^>]*>.*?</dialog>\n)?',
+    re.S,
+)
+FOOTER_BLOCK = re.compile(r'[ \t]*<footer class="footer"[^>]*>.*?</footer>\n', re.S)
+SKIP_LINK = re.compile(r'^[ \t]*<a class="skip"[^\n]*</a>\n', re.M)
+
+
+def chrome_prefix(page: str) -> str:
+    """Links from a module page climb one folder to the site root."""
+    return "../" if page.startswith("modules/") else ""
+
+
+def module_slug(page: str) -> str:
+    return page[len("modules/") : -len(".html")]
+
+
+def nav_lines(prefix: str, current: str | None, indent: str) -> list[str]:
+    lines: list[str] = []
+    for key, label, target in NAV:
+        aria = ' aria-current="page"' if key == current else ""
+        lines.append(f'{indent}<li><a href="{prefix}{target}"{aria}>{label}</a></li>')
+    return lines
+
+
+def topbar_lines(d: Data, page: str) -> list[str]:
+    prefix = chrome_prefix(page)
+    current = "course" if page.startswith("modules/") else CURRENT_NAV.get(page)
+    lines = [
+        '<header class="topbar" data-topbar>',
+        f'  <a class="wordmark" href="{prefix}index.html" aria-label="HARNESSED, course home">',
+        '    <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+        '<circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>',
+        "    <span>HARNESSED</span>",
+        "  </a>",
+    ]
+    if page.startswith("modules/"):
+        mod = module_by_slug(d, module_slug(page))
+        lines.append(
+            f'  <p class="module-id"><span class="mod-code">{esc(str(mod["id"]))}</span>'
+            f'<span class="mod-title">{esc(str(mod["title"]))}</span></p>'
+        )
+    lines += [
+        '  <nav class="top-nav" aria-label="Pages">',
+        "    <ol>",
+        *nav_lines(prefix, current, "      "),
+        "    </ol>",
+        "  </nav>",
+        f'  <a class="board-btn" href="{prefix}index.html#board" '
+        'aria-label="Board, 0 cards due" data-due-label>',
+        '    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+        '<circle cx="12" cy="12" r="9" '
+        'fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12V6" fill="none" '
+        'stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+        '    <span><span class="board-word">Board · </span>'
+        '<span data-due-num>0</span>'
+        '<span class="board-due" data-due-words> cards due</span></span>',
+        "  </a>",
+        '  <div class="settings">',
+        "    <div data-theme-slot></div>",
+        "    <div data-motion-slot></div>",
+        "  </div>",
+        '  <button class="menu-btn" type="button" data-menu-btn aria-haspopup="dialog" '
+        'aria-expanded="false" aria-controls="menu-sheet" hidden>Menu</button>',
+        "</header>",
+        '<dialog class="menu-sheet" id="menu-sheet" data-menu-sheet aria-label="Menu">',
+        '  <p class="menu-title">Menu</p>',
+        '  <nav aria-label="Pages in the menu">',
+        '    <ol class="menu-pages">',
+        *nav_lines(prefix, current, "      "),
+        "    </ol>",
+        "  </nav>",
+        '  <div class="menu-settings">',
+        '    <p class="menu-label">Theme</p>',
+        "    <div data-theme-slot></div>",
+        "    <div data-motion-slot></div>",
+        "  </div>",
+        '  <button class="key menu-close" type="button" data-close>Close menu</button>',
+        "</dialog>",
+    ]
+    return lines
+
+
+def footer_lines(d: Data, page: str) -> list[str]:
+    prefix = chrome_prefix(page)
+    return [
+        '<footer class="footer">',
+        '  <div class="footer-grid">',
+        '    <p class="live-status" data-store-status></p>',
+        '    <div class="footer-actions">',
+        '      <button class="btn" type="button" data-export>Export progress</button>',
+        '      <label class="btn">Import progress<input class="sr-only" type="file" '
+        'accept="application/json,.json" data-import></label>',
+        '      <button class="btn btn-quiet" type="button" data-reset>'
+        'Reset progress (keeps settings)</button>',
+        "    </div>",
+        f'    <p><a href="{prefix}design.html">Design system</a></p>',
+        f"    <p>Fonts: Newsreader (SIL OFL 1.1). Harnessed Sans and Harnessed Mono (SIL OFL 1.1; "
+        f'renamed IBM Plex subsets). Licences in '
+        f'<a href="{prefix}assets/fonts/LICENSE-OFL.txt">LICENSE-OFL.txt</a> and '
+        f'<a href="{prefix}assets/fonts/LICENSE-newsreader.txt">LICENSE-newsreader.txt</a>.</p>',
+        f"    {facts_line(d)}",
+        "  </div>",
+        "</footer>",
+    ]
+
+
+def render_chrome(d: Data, page: str) -> dict[str, list[str]]:
+    return {"topbar": topbar_lines(d, page), "footer": footer_lines(d, page)}
 
 
 # ---- splicing -----------------------------------------------------------------------------------
@@ -661,6 +802,38 @@ def splice(text: str, page: str, region: str, lines: list[str]) -> str:
     )
 
 
+def marker_pair(region: str) -> str:
+    return f"<!-- gen:{region} -->\n<!-- /gen:{region} -->\n"
+
+
+def place_markers(text: str, page: str, region: str, block: re.Pattern[str],
+                  anchor: re.Pattern[str] | None, fallback: str) -> str:
+    """A hand-written block is replaced by the region's markers. Without one, the markers go after
+    the anchor, or before the fallback text."""
+    found = block.search(text)
+    if found:
+        return text[: found.start()] + marker_pair(region) + text[found.end() :]
+    if anchor is not None:
+        found_anchor = anchor.search(text)
+        if found_anchor:
+            return text[: found_anchor.end()] + marker_pair(region) + text[found_anchor.end() :]
+    at = text.find(fallback)
+    if at < 0:
+        raise GenError(f"{page}: no place for the {region} region (no {fallback!r})")
+    return text[:at] + marker_pair(region) + text[at:]
+
+
+def migrate_chrome(text: str, page: str) -> str:
+    """Adds the chrome markers to a page that lacks them. A page with a hand-written top bar (and
+    its Menu sheet) or footer has that block replaced by the markers, and the generator fills them.
+    Idempotent: a page with the markers is left alone, so the migration can run on every page."""
+    if "<!-- gen:topbar -->" not in text:
+        text = place_markers(text, page, "topbar", TOPBAR_BLOCK, SKIP_LINK, "<main")
+    if "<!-- gen:footer -->" not in text:
+        text = place_markers(text, page, "footer", FOOTER_BLOCK, None, "</body>")
+    return text
+
+
 def page_text(root: Path, page: str, regions: dict[str, list[str]]) -> tuple[str, str]:
     path = root / "site" / page
     if not path.is_file():
@@ -668,10 +841,11 @@ def page_text(root: Path, page: str, regions: dict[str, list[str]]) -> tuple[str
     text = path.read_text(encoding="utf-8")
     markers = set(re.findall(r"<!-- gen:([a-z-]+) -->", text))
     expected = regions_for(page)
-    unknown = markers - set(expected)
+    known = set(expected) | set(FOREIGN_REGIONS.get(page, ())) | set(RETIRED_REGIONS.get(page, ()))
+    unknown = markers - known
     if unknown:
         raise GenError(f"{page}: unknown generated region(s) {sorted(unknown)}")
-    new = text
+    new = migrate_chrome(text, page)
     for region in expected:
         new = splice(new, page, region, regions[region])
     return text, new
@@ -681,7 +855,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Generate the static regions of the HARNESSED pages."
     )
-    parser.add_argument("--check", action="store_true", help="report stale pages; write nothing")
+    parser.add_argument(
+        "--check", action="store_true",
+        help="report stale pages (including pages whose markers are missing); write nothing",
+    )
     parser.add_argument(
         "--root", type=Path, default=REPO, help="repository root (tests use a copy)"
     )
@@ -690,9 +867,14 @@ def main(argv: list[str] | None = None) -> int:
     try:
         data = load(root)
         check_course_refs(data)
-        rendered = {"index.html": render_index(data), "design.html": render_design(data)}
+        rendered: dict[str, dict[str, list[str]]] = {
+            "index.html": render_index(data),
+            "design.html": render_design(data),
+            "glossary.html": render_chrome(data, "glossary.html"),
+            "readiness.html": render_chrome(data, "readiness.html"),
+        }
         results: list[tuple[str, str, str]] = []
-        for page in PAGES:
+        for page in TOP_PAGES:
             old, new = page_text(root, page, rendered[page])
             results.append((page, old, new))
         for slug in module_pages(root):

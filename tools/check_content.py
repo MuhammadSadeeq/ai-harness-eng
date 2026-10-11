@@ -50,10 +50,12 @@ PROSE_TAGS = frozenset({"p", "li", "h2", "h3", "figcaption", "td", "th", "dt", "
 SKIP_TAGS = frozenset({"pre", "code", "script", "style", "svg"})
 # Regions the generator fills (tools/gen_pages.py). Their text is generated, so the prose rules
 # skip it; their markup must be one of GEN_TAGS (B9).
-GENERATED_REGIONS = frozenset({"module-meta", "course-map"})
+GENERATED_REGIONS = frozenset({"module-meta", "course-map", "topbar", "footer"})
 GEN_TAGS = frozenset({
     "nav", "ol", "ul", "li", "a", "span", "p", "div", "svg", "use", "path", "circle",
     "line", "rect", "g", "title", "strong", "em", "section", "h3",
+    # the top bar and the Menu sheet, and the footer (BP-5.3)
+    "header", "dialog", "button", "label", "input", "footer",
 })
 HEADINGS = frozenset({"h1", "h2", "h3", "h4", "h5", "h6"})
 VOID_TAGS = frozenset({

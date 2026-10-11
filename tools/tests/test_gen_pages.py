@@ -21,6 +21,8 @@ INPUTS = (
     "site/assets/core/tokens.css",
     "site/index.html",
     "site/design.html",
+    "site/glossary.html",
+    "site/readiness.html",
 )
 
 
@@ -231,3 +233,74 @@ def test_a_module_page_for_no_course_module_is_an_error(
     root = _module_root(tmp_path, slug="no-such-module")
     assert main(["--root", str(root)]) == 2
     assert "no-such-module" in capsys.readouterr().err
+
+
+TOP_PAGES = ("index.html", "design.html", "glossary.html", "readiness.html")
+
+
+def test_the_chrome_is_added_once_and_a_second_run_changes_nothing(tmp_path: Path) -> None:
+    root = copy_root(tmp_path)
+    assert main(["--root", str(root)]) == 0
+    first = {page: (root / "site" / page).read_text(encoding="utf-8") for page in TOP_PAGES}
+    assert main(["--root", str(root)]) == 0
+    for page in TOP_PAGES:
+        assert (root / "site" / page).read_text(encoding="utf-8") == first[page], page
+    assert main(["--check", "--root", str(root)]) == 0
+
+
+def test_a_hand_written_top_bar_and_footer_are_replaced_by_their_regions(tmp_path: Path) -> None:
+    root = copy_root(tmp_path)
+    assert main(["--root", str(root)]) == 0
+    text = (root / "site" / "index.html").read_text(encoding="utf-8")
+    assert text.count('class="topbar"') == 1
+    assert text.count('class="menu-sheet"') == 1
+    assert text.count("<footer") == 1
+    assert "gen:facts" not in text, "the footer region carries the facts line now"
+    assert text.count("data-facts-line") == 1
+    assert 'href="glossary.html"' in region(text, "topbar")
+    assert 'href="readiness.html"' in region(text, "topbar")
+
+
+def test_chrome_markers_go_after_the_skip_link_on_a_page_without_a_top_bar(tmp_path: Path) -> None:
+    skip = '<a class="skip" href="#main">Skip to content</a>\n'
+    text = MODULE_PAGE.replace("<body>\n", "<body>\n" + skip, 1)
+    root = _module_root(tmp_path, text=text)
+    assert main(["--root", str(root)]) == 0
+    page = (root / "site" / "modules" / "the-agent-loop.html").read_text(encoding="utf-8")
+    assert page.index('class="skip"') < page.index("<!-- gen:topbar -->") < page.index("<main")
+    assert page.index("<!-- gen:footer -->") < page.index("</body>")
+
+
+def test_the_module_top_bar_names_its_module_and_the_top_pages_do_not(tmp_path: Path) -> None:
+    root = _module_root(tmp_path)
+    assert main(["--root", str(root)]) == 0
+    module_bar = region(
+        (root / "site" / "modules" / "the-agent-loop.html").read_text(encoding="utf-8"), "topbar"
+    )
+    assert '<span class="mod-code">B2</span>' in module_bar
+    assert 'href="../index.html"' in module_bar
+    assert 'href="../glossary.html"' in module_bar
+    index_bar = region((root / "site" / "index.html").read_text(encoding="utf-8"), "topbar")
+    assert "module-id" not in index_bar
+    assert 'aria-current="page">Course' in index_bar
+
+
+def test_check_reports_a_top_page_whose_chrome_markers_are_missing(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = copy_root(tmp_path)
+    assert main(["--root", str(root)]) == 0
+    path = root / "site" / "glossary.html"
+    current = path.read_text(encoding="utf-8")
+    text = re.sub(r"<!-- gen:topbar -->.*?<!-- /gen:topbar -->\n", "", current, flags=re.S)
+    path.write_text(text, encoding="utf-8")
+    assert main(["--check", "--root", str(root)]) == 1
+    assert "stale: site/glossary.html" in capsys.readouterr().err
+
+
+def test_the_glossary_region_is_left_to_its_own_generator(tmp_path: Path) -> None:
+    root = copy_root(tmp_path)
+    before = region((root / "site" / "glossary.html").read_text(encoding="utf-8"), "glossary")
+    assert main(["--root", str(root)]) == 0
+    after = region((root / "site" / "glossary.html").read_text(encoding="utf-8"), "glossary")
+    assert after == before

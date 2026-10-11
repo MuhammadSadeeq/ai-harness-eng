@@ -11,6 +11,47 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<!-- gen:topbar -->
+<header class="topbar" data-topbar>
+  <a class="wordmark" href="../index.html" aria-label="HARNESSED, course home">
+    <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>
+    <span>HARNESSED</span>
+  </a>
+  <p class="module-id"><span class="mod-code">B3</span><span class="mod-title">What a harness is</span></p>
+  <nav class="top-nav" aria-label="Pages">
+    <ol>
+      <li><a href="../index.html" aria-current="page">Course</a></li>
+      <li><a href="../glossary.html">Glossary</a></li>
+      <li><a href="../readiness.html">Readiness</a></li>
+    </ol>
+  </nav>
+  <a class="board-btn" href="../index.html#board" aria-label="Board, 0 cards due" data-due-label>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12V6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span><span class="board-word">Board · </span><span data-due-num>0</span><span class="board-due" data-due-words> cards due</span></span>
+  </a>
+  <div class="settings">
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="menu-btn" type="button" data-menu-btn aria-haspopup="dialog" aria-expanded="false" aria-controls="menu-sheet" hidden>Menu</button>
+</header>
+<dialog class="menu-sheet" id="menu-sheet" data-menu-sheet aria-label="Menu">
+  <p class="menu-title">Menu</p>
+  <nav aria-label="Pages in the menu">
+    <ol class="menu-pages">
+      <li><a href="../index.html" aria-current="page">Course</a></li>
+      <li><a href="../glossary.html">Glossary</a></li>
+      <li><a href="../readiness.html">Readiness</a></li>
+    </ol>
+  </nav>
+  <div class="menu-settings">
+    <p class="menu-label">Theme</p>
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="key menu-close" type="button" data-close>Close menu</button>
+</dialog>
+<!-- /gen:topbar -->
 <main id="main" class="module">
   <header class="module-head">
     <p class="plate-label">B3 · Part B · From chatbot to agent</p>
@@ -333,5 +374,20 @@
     </aside>
   </div>
 </main>
+<!-- gen:footer -->
+<footer class="footer">
+  <div class="footer-grid">
+    <p class="live-status" data-store-status></p>
+    <div class="footer-actions">
+      <button class="btn" type="button" data-export>Export progress</button>
+      <label class="btn">Import progress<input class="sr-only" type="file" accept="application/json,.json" data-import></label>
+      <button class="btn btn-quiet" type="button" data-reset>Reset progress (keeps settings)</button>
+    </div>
+    <p><a href="../design.html">Design system</a></p>
+    <p>Fonts: Newsreader (SIL OFL 1.1). Harnessed Sans and Harnessed Mono (SIL OFL 1.1; renamed IBM Plex subsets). Licences in <a href="../assets/fonts/LICENSE-OFL.txt">LICENSE-OFL.txt</a> and <a href="../assets/fonts/LICENSE-newsreader.txt">LICENSE-newsreader.txt</a>.</p>
+    <p data-facts-line>Facts verified as of <span data-facts-oldest data-facts-oldest-iso="2026-10-10">2026-10-10</span>.</p>
+  </div>
+</footer>
+<!-- /gen:footer -->
 </body>
 </html>

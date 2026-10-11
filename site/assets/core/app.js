@@ -38,9 +38,8 @@ if (document.querySelector("[data-fact]:not([data-verified])")) {
 } else {
   mountFacts(null);
 }
-if (document.querySelector("[data-term]")) {
-  getTerms().then((terms) => mountTerms(terms)).catch(() => mountTerms([]));
-}
+// Terms are marked now and defined on the first open (the glossary loads then, once per page; see shell/terms.js).
+if (document.querySelector("[data-term]")) mountTerms(getTerms);
 // Components read the store and the announcer through hxContext(); evidence they report is written here.
 setContext({ store, announce });
 mountEvidence(store);

@@ -66,8 +66,12 @@ kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--hx-rule-s
 }
 .wordmark { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 44px; color: var(--hx-ink); text-decoration: none; font: 600 var(--fs-ui)/1 var(--font-sans); letter-spacing: .04em; }
 .connector { width: 22px; height: 22px; fill: none; stroke: var(--hx-ink); stroke-width: 2; stroke-linecap: round; }
-.module-id { margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink-2); }
-.module-id .mod-code { margin-right: var(--sp-1); font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink); }
+.module-id { margin: 0; display: flex; align-items: baseline; white-space: nowrap; font: 400 var(--fs-small)/1.2 var(--font-sans); color: var(--hx-ink-2); }
+@media (min-width: 700px) { .module-id { min-width: 0; } }
+.module-id .mod-code { flex: none; margin-right: var(--sp-1); font: 600 var(--fs-small) var(--font-mono); color: var(--hx-ink); }
+.module-id .mod-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* From 700 px the title gives up width when the bar is full, and the other items keep theirs: the bar stays one row. */
+@media (min-width: 700px) { .topbar > * { flex-shrink: 0; } .topbar > .module-id { flex-shrink: 1; } }
 .top-nav ol { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--sp-1); }
 .top-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--sp-2); border-radius: var(--r-btn); font: 600 var(--fs-ui) var(--font-sans); color: var(--hx-ink); text-decoration: none; }
 .top-nav a[aria-current="page"] { box-shadow: inset 0 -3px 0 var(--hx-ink); }
@@ -76,6 +80,7 @@ kbd { display: inline-block; padding: 1px 6px; border: 1px solid var(--hx-rule-s
 .board-btn svg { width: 22px; height: 22px; }
 .board-btn { white-space: nowrap; }
 @media (max-width: 699px) { .board-word { display: none; } }
+@media (max-width: 359px) { .board-due { display: none; } }
 .menu-btn { display: none; min-width: 44px; min-height: 44px; margin-left: auto; padding: 0 var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 600 var(--fs-ui)/1 var(--font-sans); cursor: pointer; }
 @media (max-width: 1099px) {
   .settings { display: none; }

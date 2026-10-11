@@ -1,7 +1,7 @@
 // The top bar and page chrome: the module code and title, the Menu sheet (phones), the due count, and the
 // course map's open state (open on desktop, a drawer below 1100 px).
 import { dueCards } from "./pure.js";
-import { plural } from "../../components/lib/format.js";
+import { formatInt } from "../../components/lib/format.js";
 
 /**
  * The learner's local calendar date as YYYY-MM-DD. offsetMinutes is the zone's offset east of UTC; by default it is
@@ -60,10 +60,16 @@ export function mountChrome(store, doc = document) {
     if (typeof ResizeObserver === "function") new ResizeObserver(mark).observe(rail);
   }
 
+  // The Board button shows the count and, from 360 px, the words; below 360 px only the count shows (CSS), and the
+  // link's aria-label keeps the full name ("Board, 0 cards due") at every width.
   const paintDue = () => {
     const due = dueCards(store.state, todayIso());
+    const count = formatInt(due);
+    const words = due === 1 ? "card due" : "cards due";
     for (const el of doc.querySelectorAll("[data-due]")) el.textContent = String(due);
-    for (const el of doc.querySelectorAll("[data-due-text]")) el.textContent = plural(due, "card due", "cards due");
+    for (const el of doc.querySelectorAll("[data-due-num]")) el.textContent = count;
+    for (const el of doc.querySelectorAll("[data-due-words]")) el.textContent = ` ${words}`;
+    for (const el of doc.querySelectorAll("[data-due-label]")) el.setAttribute("aria-label", `Board, ${count} ${words}`);
   };
   paintDue();
   store.subscribe(paintDue);
