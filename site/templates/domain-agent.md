@@ -2,6 +2,30 @@
 
 Project four of the I3 set. You build an agent for one job and write up its risks and the one leg you removed.
 
+## README
+
+Name: `<project name>`.
+
+What was built: an agent for one job that stays safe when its inputs are hostile, with its three legs written down.
+
+How to run. From the repo root, after installing rein once with `python -m pip install -e ./rein`:
+
+    python -m rein eval --eval <eval file> --board <board file> --out results.json
+    python -m rein results results.json --markdown
+
+Seed: `<seed_base, and trials 1 to N>`.
+
+Results (the columns `rein results --markdown` prints):
+
+| Task | Passed of trials | Wilson 95% interval | Tokens | Cost | Scripted |
+|---|---|---|---|---|---|
+| `<task id>` | `<passed>` of `<trials>` | `<low>` to `<high>` % | `<tokens>` | `<cost>` | `<yes or no>` |
+
+Claimed: `<the result for the hostile-input tasks, with its interval>`.
+Not claimed: `<what the run does not show, such as a leg you did not test or a model you did not run>`.
+
+Licence: `<licence name, for example MIT>`.
+
 ## Question
 
 Question: `<the job, and whether the agent stays safe when its inputs are hostile>`.

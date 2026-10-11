@@ -2,6 +2,32 @@
 
 Project one of the I3 set. You start from the course's own harness, Rein, and add one extension, then measure it.
 
+## README
+
+Name: `<project name>`.
+
+What was built: one extension to Rein, measured before and after on the same board and seeds.
+
+How to run. From the repo root, after installing rein once with `python -m pip install -e ./rein`: Apply your extension's patch first (the H13 example in `rein/examples/h13-process-check/` shows the pattern).
+
+    python -m rein eval --eval scenarios/evals/d1-suite.json --board scenarios/boards/d1-old.json --out baseline.json
+    git apply <your extension patch>
+    python -m rein eval --eval scenarios/evals/d1-suite.json --board scenarios/boards/d1-old.json --out extension.json
+    python -m rein results extension.json --markdown
+
+Seed: the suite's seed_base, with trials 1 to 10 for each task.
+
+Results (the columns `rein results --markdown` prints):
+
+| Task | Passed of trials | Wilson 95% interval | Tokens | Cost | Scripted |
+|---|---|---|---|---|---|
+| `<task id>` | `<passed>` of `<trials>` | `<low>` to `<high>` % | `<tokens>` | `<cost>` | `<yes or no>` |
+
+Claimed: `<the change in pass count on the suite, with its interval>`.
+Not claimed: `<what the suite cannot show, such as a real model's numbers, which vary>`.
+
+Licence: `<licence name, for example MIT>`.
+
 ## Question
 
 Question: `<what the extension changes, and for which tasks>`.

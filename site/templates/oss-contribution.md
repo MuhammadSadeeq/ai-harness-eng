@@ -2,6 +2,34 @@
 
 Project two of the I3 set. You make one small, reviewed change to a real harness and record what you did.
 
+## README
+
+Name: `<owner/name of the harness, and your branch>`.
+
+What was built: one small, reviewed change to a real harness, with the reproduction that failed before it.
+
+How to run, from the repo root, in the harness's own setup:
+
+    <the command that fails before your change>
+    <the same command after your change, which passes>
+
+If your change is measured with rein, also:
+
+    python -m rein results results.json --markdown
+
+Seed: `<the seed or input the reproduction uses>`.
+
+Results (the columns `rein results --markdown` prints, if you measured with rein):
+
+| Task | Passed of trials | Wilson 95% interval | Tokens | Cost | Scripted |
+|---|---|---|---|---|---|
+| `<task id>` | `<passed>` of `<trials>` | `<low>` to `<high>` % | `<tokens>` | `<cost>` | `<yes or no>` |
+
+Claimed: `<the one behaviour your change fixes, and the test that shows it>`.
+Not claimed: `<what the change does not fix, and whether it was merged>`.
+
+Licence: `<licence name, for example MIT>`.
+
 ## Question
 
 Question: `<which failing test or doc gap you reproduced, and what your change fixes>`.

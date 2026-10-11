@@ -2,6 +2,30 @@
 
 Project three of the I3 set. You answer one harness question with an eval, a cost figure and a discussion of the noise.
 
+## README
+
+Name: `<project name>`.
+
+What was built: an eval that answers one harness question, with a cost figure and an account of the noise.
+
+How to run. From the repo root, after installing rein once with `python -m pip install -e ./rein`:
+
+    python -m rein eval --eval <eval file> --board <board file> --out results.json
+    python -m rein results results.json --markdown
+
+Seed: `<seed_base, and trials 1 to N>`.
+
+Results (the columns `rein results --markdown` prints):
+
+| Task | Passed of trials | Wilson 95% interval | Tokens | Cost | Scripted |
+|---|---|---|---|---|---|
+| `<task id>` | `<passed>` of `<trials>` | `<low>` to `<high>` % | `<tokens>` | `<cost>` | `<yes or no>` |
+
+Claimed: `<the one harness question, with the interval that answers it>`.
+Not claimed: `<what the eval does not show, such as a difference inside the noise or a model you did not run>`.
+
+Licence: `<licence name, for example MIT>`.
+
 ## Question
 
 Question: `<one harness question, such as whether an independent reviewer helps on small bug fixes>`.

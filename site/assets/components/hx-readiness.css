@@ -81,9 +81,15 @@ hx-readiness [hidden] { display: none !important; }
 .sheet-list { margin: 0; padding-left: var(--sp-4); display: grid; gap: var(--sp-1); }
 .sheet-table { min-width: 0; overflow-x: auto; }
 .sheet-levels { width: 100%; border-collapse: collapse; font: 400 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink); }
-.sheet-levels th, .sheet-levels td { padding: var(--sp-1) var(--sp-2); text-align: left; vertical-align: top; border-bottom: 1px solid var(--hx-rule); overflow-wrap: anywhere; }
+.sheet-levels th, .sheet-levels td { padding: var(--sp-1) var(--sp-2); text-align: left; vertical-align: top; border-bottom: 1px solid var(--hx-rule); overflow-wrap: normal; }
 .sheet-levels thead th { font-weight: 600; color: var(--hx-ink-2); }
 .sheet-levels tbody th { font-weight: 600; color: var(--hx-ink); }
+@media (max-width: 699px) {
+  /* A word is never split (overflow-wrap is normal above): the wire names stay on one line, the headings wrap at
+     their spaces, and the cells take less side padding so the four columns fit the phone sheet without scrolling. */
+  .sheet-levels tbody th { white-space: nowrap; }
+  .sheet-levels th, .sheet-levels td { padding-left: var(--sp-1); padding-right: var(--sp-1); }
+}
 @media print {
   /* One page, black on white, no chrome: the tokens take print values, and only the sheet and its ancestors keep their
      boxes. Everything that does not contain the sheet is removed from the flow, so the sheet is the only page. */
