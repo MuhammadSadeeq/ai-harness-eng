@@ -375,3 +375,35 @@ def test_the_browser_runner_is_the_same_text_as_the_checker_runner() -> None:
     end = source.index("`;", start)
     page_copy = source[start:end].replace("\\`", "`").replace("\\$", "$")
     assert page_copy.strip() == checker.RUNNER.strip()
+
+
+def _line_of(text: str, needle: str, after: str = "") -> int:
+    """The 1-based line of the first line with needle, after the first line with after."""
+    lines = text.splitlines()
+    start = next(i for i, line in enumerate(lines) if after in line) if after else 0
+    return next(i + 1 for i in range(start, len(lines)) if needle in lines[i])
+
+
+def test_a_checkpoint_mismatch_is_reported_at_the_expected_line(tmp_path: Path) -> None:
+    t1 = t1_step()
+    t1["checkpoint"]["expected"] = "hi\n"
+    steps, course = build(tmp_path, t1=t1)
+    problems, *_ = checker.run(steps, course)
+    text = (steps / "T1" / "step.yaml").read_text(encoding="utf-8")
+    line = _line_of(text, "expected:", after="checkpoint:")
+    found = [p for p in problems if "checkpoint output differs" in p.message]
+    assert len(found) == 1 and found[0].line == line, [(p.line, p.message) for p in problems]
+    assert text.splitlines()[line - 1].lstrip().startswith("expected:")
+
+
+def test_a_break_mismatch_is_reported_at_its_expected_line(tmp_path: Path) -> None:
+    t1 = t1_step()
+    t1["breaks"][0]["change"] = {"patch": {"diff": ' print("hello")\n'}}
+    t1["breaks"][0]["expected"] = "bye\n"
+    steps, course = build(tmp_path, t1=t1)
+    problems, *_ = checker.run(steps, course)
+    text = (steps / "T1" / "step.yaml").read_text(encoding="utf-8")
+    line = _line_of(text, "expected:", after="breaks:")
+    found = [p for p in problems if p.message.startswith("break ")]
+    assert len(found) == 2, [(p.line, p.message) for p in problems]
+    assert all(p.line == line for p in found), [(p.line, p.message) for p in problems]

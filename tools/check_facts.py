@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import html
 import re
 import urllib.error
 import urllib.request
@@ -62,6 +63,20 @@ AREAS = frozenset(
 )
 ID_PATTERN = re.compile(r"^[a-z0-9]+(\.[a-z0-9-]+)+$")
 DATA_FACT_PATTERN = re.compile(r"""data-fact\s*=\s*(?:"([^"]*)"|'([^']*)')""")
+VOID_TAGS = frozenset(
+    {
+        "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source",
+        "track", "wbr",
+    }
+)
+TAG_NAME = re.compile(r"<([A-Za-z][A-Za-z0-9-]*)")
+CODE_ELEMENT = re.compile(r"<code\b[^>]*>(.*?)</code>", re.IGNORECASE | re.DOTALL)
+TAG = re.compile(r"<[^>]+>")
+QUOTED = re.compile(r'"([^"\n]+)"|\u201c([^\u201d\n]+)\u201d')
+NUMBER = re.compile(r"\d+(?:[.,]\d+)*")
+WORD = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.\-]*")
+THOUSANDS = re.compile(r"(?<=\d),(?=\d{3}(?!\d))")
+NUMBER_TOKEN = re.compile(r"\d+(?:[.,]\d+)*")
 
 Fetch = Callable[[str, str], int]
 
@@ -88,6 +103,8 @@ class Fact:
     verified_on: dt.date | None
     source: str | None
     source_alt: str | None
+    claim: str = ""
+    quote: str = ""
 
     def age_days(self, today: dt.date) -> int | None:
         if self.verified_on is None:
@@ -138,7 +155,7 @@ def run(
             report.counts[fact.status] += 1
     index = {fact.id: fact for fact in facts}
     used: set[str] = set()
-    for page, line, fact_id in scan_pages(site_dir):
+    for page, line, fact_id, inner in scan_pages(site_dir):
         report.references += 1
         shown = _display(page)
         referenced = index.get(fact_id)
@@ -146,6 +163,7 @@ def run(
             report.error(shown, line, f"unknown fact id '{fact_id}'")
             continue
         used.add(fact_id)
+        _check_span_tokens(referenced, inner, shown, line, report)
         if referenced.status != "verified":
             report.error(
                 shown,
@@ -291,7 +309,13 @@ def _validate_entry(
         verified_on=verified_on,
         source=source,
         source_alt=source_alt,
+        claim=_text(data.get("claim")),
+        quote=_text(data.get("quote")),
     )
+
+
+def _text(value: object) -> str:
+    return value if isinstance(value, str) else ""
 
 
 def _https_url(
@@ -323,9 +347,12 @@ def _as_date(value: object) -> dt.date | None:
     return None
 
 
-def scan_pages(site_dir: Path) -> list[tuple[Path, int, str]]:
-    """Return ``(page, line, fact_id)`` for every ``data-fact`` attribute in the site."""
-    references: list[tuple[Path, int, str]] = []
+def scan_pages(site_dir: Path) -> list[tuple[Path, int, str, str]]:
+    """Return ``(page, line, fact_id, inner_html)`` for every ``data-fact`` attribute in the site.
+
+    inner_html is what the element holds: the span's text, with any <code> inside it.
+    """
+    references: list[tuple[Path, int, str, str]] = []
     if not site_dir.is_dir():
         return references
     for page in sorted(site_dir.rglob("*.html")):
@@ -335,8 +362,125 @@ def scan_pages(site_dir: Path) -> list[tuple[Path, int, str]]:
         text = page.read_text(encoding="utf-8", errors="replace")
         for match in DATA_FACT_PATTERN.finditer(text):
             fact_id = match.group(1) if match.group(1) is not None else match.group(2)
-            references.append((page, text.count("\n", 0, match.start()) + 1, fact_id))
+            inner = element_inner_html(text, match.start())
+            references.append((page, text.count("\n", 0, match.start()) + 1, fact_id, inner))
     return references
+
+
+def element_inner_html(text: str, attribute_at: int) -> str:
+    """The HTML an element holds, from the attribute at attribute_at to its closing tag.
+
+    An empty string when there is no closing tag.
+    """
+    start = text.rfind("<", 0, attribute_at)
+    name = TAG_NAME.match(text, start) if start >= 0 else None
+    if name is None:
+        return ""
+    tag = name.group(1).lower()
+    if tag in VOID_TAGS:
+        return ""
+    open_end = text.find(">", attribute_at)
+    if open_end < 0:
+        return ""
+    open_end += 1
+    depth = 1
+    for tag_match in re.finditer(rf"<(/?){re.escape(tag)}\b[^>]*>", text[open_end:], re.IGNORECASE):
+        if tag_match.group(1):
+            depth -= 1
+            if depth == 0:
+                return text[open_end:open_end + tag_match.start()]
+        elif not tag_match.group(0).endswith("/>"):
+            depth += 1
+    return text[open_end:]
+
+
+def _plain(markup: str) -> str:
+    """The text of some HTML: tags dropped, entities decoded, white space made single spaces."""
+    return " ".join(html.unescape(TAG.sub(" ", markup)).split())
+
+
+def _thousands(text: str) -> str:
+    """Drops the comma of a thousands group, so 1,000 and 1000 are the same number."""
+    return THOUSANDS.sub("", text)
+
+
+def _identifier_like(word: str) -> bool:
+    """An identifier-like word: it has _, a hyphen, a dot between letters, a digit, or CamelCase."""
+    return bool(
+        "_" in word
+        or "-" in word
+        or re.search(r"[A-Za-z]\.[A-Za-z]", word)
+        or re.search(r"\d", word)
+        or re.search(r"[a-z][A-Z]", word)
+    )
+
+
+def hard_tokens(markup: str) -> list[str]:
+    """The tokens a span may not state without its fact.
+
+    Numbers, <code>, quoted strings and identifiers. Compared case-insensitively with the claim and
+    quote (see _check_span_tokens).
+    """
+    tokens: list[str] = []
+    for code in CODE_ELEMENT.findall(markup):
+        tokens.append(_plain(code))
+    text = _plain(markup)
+    for match in QUOTED.finditer(text):
+        tokens.append(match.group(1) or match.group(2))
+    plain = _thousands(text)
+    tokens.extend(NUMBER.findall(plain))
+    for word in WORD.findall(plain):
+        word = word.rstrip(".-")
+        if _identifier_like(word):
+            tokens.append(word)
+    seen: set[str] = set()
+    unique: list[str] = []
+    for token in tokens:
+        key = _thousands(token).lower()
+        if token and key not in seen:
+            seen.add(key)
+            unique.append(token)
+    return unique
+
+
+def _token_in(token: str, haystack: str) -> bool:
+    """Whether a token occurs in haystack, as the kind of token it is (see hard_tokens).
+
+    A number may be followed by a unit letter (1.25x, 1M), but not by another digit or a decimal.
+    An identifier is a whole word; a hyphen in it matches a space too (supply-chain, supply chain).
+    Anything else must start and end on a word boundary where it starts or ends with a letter.
+    """
+    text = _thousands(token).lower()
+    if NUMBER_TOKEN.fullmatch(text):
+        pattern = r"(?<![0-9.])" + re.escape(text) + r"(?![0-9]|\.[0-9])"
+    elif _identifier_like(token):
+        body = r"[-\s]".join(re.escape(part) for part in text.split("-"))
+        pattern = r"(?<![a-z0-9_])" + body + r"(?![a-z0-9_])"
+    else:
+        pattern = re.escape(text)
+        if text[0].isalnum() or text[0] == "_":
+            pattern = r"(?<![a-z0-9_])" + pattern
+        if text[-1].isalnum() or text[-1] == "_":
+            pattern += r"(?![a-z0-9_])"
+    return re.search(pattern, _thousands(haystack).lower()) is not None
+
+
+def _check_span_tokens(fact: Fact, markup: str, shown: str, line: int, report: Report) -> None:
+    """A hard token the span states must appear in the fact's claim or quote (FACTS §6)."""
+    if not markup.strip():
+        return
+    haystack = _thousands(f"{fact.claim} {fact.quote}").lower()
+    snippet = _plain(markup)
+    if len(snippet) > 80:
+        snippet = snippet[:77] + "..."
+    for token in hard_tokens(markup):
+        if not _token_in(token, haystack):
+            report.error(
+                shown,
+                line,
+                f"span for '{fact.id}' says '{token}', in neither its claim nor its quote: "
+                f"\"{snippet}\"",
+            )
 
 
 def _freshness_warnings(

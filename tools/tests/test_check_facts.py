@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 import importlib.util
+import json
 import sys
 from collections.abc import Callable
 from pathlib import Path
@@ -186,3 +187,123 @@ def test_missing_registry_has_zero_facts(tmp_path: Path) -> None:
         "check_facts: 0 facts OK (0 verified, 0 unverifiable, 0 contradicted), "
         "0 page references"
     )
+
+
+# The span text rule (FACTS §6, the ruling): a span's hard tokens (numbers, <code>, quoted strings,
+# identifier-like words) must appear in its fact's claim or quote, compared case-insensitively.
+
+
+def _span_case(tmp_path: Path, claim: str, quote: str, span: str) -> Any:
+    """A one-fact registry and one page whose span is ``span``, run through the checker."""
+    facts = tmp_path / "facts"
+    site = tmp_path / "site"
+    facts.mkdir()
+    site.mkdir()
+    entry = (
+        f'- id: harnesses.example\n  claim: {json.dumps(claim)}\n'
+        f"  source: https://example.com/doc\n  quote: {json.dumps(quote)}\n"
+        "  verified_on: 2026-10-01\n  volatility: stable\n"
+    )
+    (facts / "harnesses.yaml").write_text(entry, encoding="utf-8")
+    (site / "index.html").write_text(
+        f'<p>{span}</p>\n<span class="fact" data-fact="harnesses.example">{span}</span>\n',
+        encoding="utf-8",
+    )
+    return checker.run(facts, site, TODAY)
+
+
+SANDBOX_CLAIM = (
+    "Codex's sandbox modes, by the repository's serde names, are read-only (the default), "
+    "workspace-write and danger-full-access."
+)
+SANDBOX_QUOTE = (
+    '#[serde(rename = "read-only")] #[default] ReadOnly, '
+    '#[serde(rename = "workspace-write")] WorkspaceWrite'
+)
+
+
+def test_a_span_that_adds_a_hard_token_fails_with_its_token_and_fact_id(tmp_path: Path) -> None:
+    span = (
+        "Codex's sandbox modes are read-only, workspace-write and danger-full-access, "
+        "and danger-full-access-by-default is set."
+    )
+    report = _span_case(tmp_path, SANDBOX_CLAIM, SANDBOX_QUOTE, span)
+    errors = _errors(report)
+    assert len(errors) == 1
+    assert "harnesses.example" in errors[0]
+    assert "danger-full-access-by-default" in errors[0]
+    assert report.problems[0].line == 2
+
+
+def test_a_span_that_only_paraphrases_its_claim_passes(tmp_path: Path) -> None:
+    span = (
+        "Codex has three sandbox modes: read-only (the default), workspace-write, "
+        "and danger-full-access."
+    )
+    assert _errors(_span_case(tmp_path, SANDBOX_CLAIM, SANDBOX_QUOTE, span)) == []
+
+
+def test_reordering_the_default_keeps_every_hard_token_so_the_token_rule_passes_it(
+    tmp_path: Path,
+) -> None:
+    # Known limit of the ruling: the audit's default swap ("workspace-write (the default)") uses
+    # only tokens the claim already has, and "default" is not a hard token, so the rule misses it.
+    span = (
+        "Codex's sandbox modes are workspace-write (the default), read-only and danger-full-access."
+    )
+    assert _errors(_span_case(tmp_path, SANDBOX_CLAIM, SANDBOX_QUOTE, span)) == []
+
+
+def test_a_number_that_differs_from_the_claim_fails(tmp_path: Path) -> None:
+    claim = "Cache reads cost 0.1x base input, 0.025x on one model."
+    report = _span_case(tmp_path, claim, claim, "Cache reads cost 0.05x base input.")
+    errors = _errors(report)
+    assert any("'0.05'" in error for error in errors), errors
+
+
+def test_numbers_match_with_units_and_thousands_separators(tmp_path: Path) -> None:
+    claim = "A 1M-token context window, and prompts up to 100,000 tokens cost $0.10."
+    span = "A 1M tokens context window, and prompts up to 100000 tokens cost $0.10."
+    assert _errors(_span_case(tmp_path, claim, claim, span)) == []
+
+
+def test_a_number_inside_a_longer_number_does_not_match(tmp_path: Path) -> None:
+    claim = "The window is 4000 tokens."
+    report = _span_case(tmp_path, claim, claim, "The window is 400 tokens.")
+    assert len(_errors(report)) == 1 and "'400'" in _errors(report)[0]
+
+
+def test_code_and_quoted_strings_are_hard_tokens(tmp_path: Path) -> None:
+    claim = "The request carries a limit on its output."
+    report = _span_case(
+        tmp_path, claim, claim, "The request sets <code>max_tokens</code> and \"stop reason\"."
+    )
+    tokens = " ".join(p.message for p in report.problems)
+    assert "'max_tokens'" in tokens and "'stop reason'" in tokens
+
+
+def test_a_hyphen_in_an_identifier_matches_a_space_and_case_is_ignored(tmp_path: Path) -> None:
+    claim = "The advisory names Supply Chain Vulnerabilities, and READ ONLY is the default."
+    span = "The advisory names supply-chain vulnerabilities; read-only is the default."
+    assert _errors(_span_case(tmp_path, claim, claim, span)) == []
+
+
+def test_an_identifier_must_be_a_whole_word(tmp_path: Path) -> None:
+    claim = "The tool is tool_use_block in the reply."
+    report = _span_case(tmp_path, claim, claim, "The tool is tool_use in the reply.")
+    assert len(_errors(report)) == 1 and "'tool_use'" in _errors(report)[0]
+
+
+def test_a_span_with_no_hard_tokens_passes_whatever_it_says(tmp_path: Path) -> None:
+    assert _errors(_span_case(tmp_path, "A claim.", "A quote.", "Something plain.")) == []
+
+
+def test_element_inner_html_reads_the_span_including_nested_code(tmp_path: Path) -> None:
+    text = (
+        '<p>x <span class="fact" data-fact="a.b">one <code>two</code> '
+        "<span>three</span></span> y</p>"
+    )
+    at = text.index("data-fact")
+    inner = checker.element_inner_html(text, at)
+    assert inner == 'one <code>two</code> <span>three</span>'
+    assert checker.hard_tokens(inner) == ["two"], "the code is hard; the plain words are not"

@@ -181,6 +181,7 @@ class Break:
     explain: str = ""
     stdin: list[str] = field(default_factory=list)
     local: bool = False
+    expected_line: int = 0
 
 
 @dataclass
@@ -196,6 +197,7 @@ class Step:
     breaks: list[Break]
     runs_in_browser: bool
     path: Path
+    expected_line: int = 0
     scenarios: dict[str, str] = field(default_factory=dict)
     stdin: list[str] = field(default_factory=list)
     local: bool = False
@@ -278,11 +280,50 @@ def build(previous: str, chunks: list[Chunk]) -> str:
     return text
 
 
+def _key_line(mapping: yaml.MappingNode, key: str) -> int:
+    """The line of a mapping's key (1-based), or 0 when the mapping has no such key."""
+    for key_node, _ in mapping.value:
+        if isinstance(key_node, yaml.ScalarNode) and key_node.value == key:
+            return int(key_node.start_mark.line) + 1
+    return 0
+
+
+def expected_lines(text: str) -> tuple[int, dict[str, int]]:
+    """The line of the checkpoint's expected key, and of each break's expected key, in step.yaml."""
+    root = yaml.compose(text, Loader=yaml.SafeLoader)
+    if not isinstance(root, yaml.MappingNode):
+        return 0, {}
+    checkpoint = next(
+        (value for key, value in root.value
+         if isinstance(key, yaml.ScalarNode) and key.value == "checkpoint"
+         and isinstance(value, yaml.MappingNode)),
+        None,
+    )
+    checkpoint_line = _key_line(checkpoint, "expected") if checkpoint is not None else 0
+    breaks: dict[str, int] = {}
+    listing = next(
+        (value for key, value in root.value
+         if isinstance(key, yaml.ScalarNode) and key.value == "breaks"
+         and isinstance(value, yaml.SequenceNode)),
+        None,
+    )
+    for item in listing.value if listing is not None else []:
+        if not isinstance(item, yaml.MappingNode):
+            continue
+        ident = next((v.value for k, v in item.value
+                      if isinstance(k, yaml.ScalarNode) and k.value == "id"
+                      and isinstance(v, yaml.ScalarNode)), None)
+        if ident is not None:
+            breaks[ident] = _key_line(item, "expected")
+    return checkpoint_line, breaks
+
+
 def load_step(folder: Path, problems: list[Problem]) -> Step | None:
     path = folder / "step.yaml"
     shown = display(path)
     try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        text = path.read_text(encoding="utf-8")
+        data = yaml.safe_load(text)
     except OSError as exc:
         problems.append(Problem(shown, 0, f"cannot read: {exc.strerror}"))
         return None
@@ -290,10 +331,15 @@ def load_step(folder: Path, problems: list[Problem]) -> Step | None:
         problems.append(Problem(shown, 0, f"invalid YAML: {exc}"))
         return None
     try:
-        return parse_step(data, folder)
+        step = parse_step(data, folder)
     except (StepError, KeyError, TypeError, ValueError) as exc:
         problems.append(Problem(shown, 0, str(exc)))
         return None
+    # Where each expected block is, so a mismatch names the line the author edits (not line 0).
+    step.expected_line, break_lines = expected_lines(text)
+    for brk in step.breaks:
+        brk.expected_line = break_lines.get(brk.id, 0)
+    return step
 
 
 def parse_step(data: Any, folder: Path) -> Step:
@@ -624,7 +670,7 @@ def run(
             problems.append(
                 Problem(
                     step.shown,
-                    0,
+                    step.expected_line,
                     f"checkpoint output differs: {describe(check_outcome, step.expected)}",
                 )
             )
@@ -641,13 +687,17 @@ def run(
                 problems.append(
                     Problem(
                         step.shown,
-                        0,
+                        brk.expected_line,
                         f"break {brk.id} output differs: {describe(outcome, brk.expected)}",
                     )
                 )
             if outcome.stdout == check_outcome.stdout and outcome.error == check_outcome.error:
                 problems.append(
-                    Problem(step.shown, 0, f"break {brk.id} gives the checkpoint's output")
+                    Problem(
+                        step.shown,
+                        brk.expected_line,
+                        f"break {brk.id} gives the checkpoint's output",
+                    )
                 )
         if len(problems) == before:
             good.append(step)

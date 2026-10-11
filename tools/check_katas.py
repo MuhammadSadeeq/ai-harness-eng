@@ -121,6 +121,7 @@ class Candidate:
     tests: str
     where: str
     outcomes: Outcomes | None = None
+    line: int = 0  # where the candidate is written: its def line, or its name in meta.yaml
 
 
 def run(
@@ -147,7 +148,7 @@ def run(
         if candidate.outcomes is None:
             continue
         before = len(report.problems)
-        _expect(candidate.label, candidate.outcomes, candidate.where, report)
+        _expect(candidate.label, candidate.outcomes, candidate.where, candidate.line, report)
         if len(report.problems) > before:
             failed.add(candidate.kata)
     report.katas = len(selected) - len(failed)
@@ -229,16 +230,32 @@ def _check_kata(
     ):
         for message in _import_problems(text, allowed):
             report.error(_display(folder / name), 0, message)
+    wrong_lines = _wrong_solution_lines(folder / "meta.yaml")
     for name, code in wrong:
         for message in _import_problems(code, frozenset()):
-            report.error(_display(folder / "meta.yaml"), 0, f"wrong solution '{name}': {message}")
+            report.error(
+                _display(folder / "meta.yaml"),
+                wrong_lines.get(name, 0),
+                f"wrong solution '{name}': {message}",
+            )
+    starter_path = folder / "starter.py"
+    solution_path = folder / "solution.py"
     candidates: list[Candidate] = [
-        Candidate(folder.name, "starter", starter, tests, _display(folder / "starter.py")),
-        Candidate(folder.name, "solution", solution, tests, _display(folder / "solution.py")),
+        Candidate(
+            folder.name, "starter", starter, tests, _display(starter_path),
+            line=_def_line(starter_path),
+        ),
+        Candidate(
+            folder.name, "solution", solution, tests, _display(solution_path),
+            line=_def_line(solution_path),
+        ),
     ]
     where = _display(folder / "meta.yaml")
     candidates.extend(
-        Candidate(folder.name, f"wrong solution '{name}'", code, tests, where)
+        Candidate(
+            folder.name, f"wrong solution '{name}'", code, tests, where,
+            line=wrong_lines.get(name, 0),
+        )
         for name, code in wrong
     )
     if meta.get("from_memory") is True:
@@ -246,9 +263,12 @@ def _check_kata(
         try:
             blank = memory_blank(solution, tests, folder.name)
         except (BlankError, SyntaxError) as exc:
-            report.error(_display(folder / "solution.py"), 0, f"memory blank: {exc}")
+            report.error(_display(solution_path), _def_line(solution_path), f"memory blank: {exc}")
         else:
-            candidates.append(Candidate(folder.name, "memory blank", blank, tests, where))
+            candidates.append(
+                Candidate(folder.name, "memory blank", blank, tests, where,
+                          line=_def_line(solution_path))
+            )
     for candidate in candidates:
         if _import_problems(candidate.code, frozenset()):
             continue
@@ -256,22 +276,58 @@ def _check_kata(
     return candidates
 
 
-def _expect(label: str, outcomes: Outcomes, where: str, report: Report) -> None:
+def _def_line(path: Path) -> int:
+    """The line of a candidate file's first def (1-based), or 1 when there is none."""
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return 1
+    for number, line in enumerate(lines, start=1):
+        if line.lstrip().startswith("def "):
+            return number
+    return 1
+
+
+def _wrong_solution_lines(meta_path: Path) -> dict[str, int]:
+    """The line of each wrong solution's name in meta.yaml, by name."""
+    try:
+        root = yaml.compose(meta_path.read_text(encoding="utf-8"), Loader=yaml.SafeLoader)
+    except (OSError, yaml.YAMLError):
+        return {}
+    if not isinstance(root, yaml.MappingNode):
+        return {}
+    lines: dict[str, int] = {}
+    for key, value in root.value:
+        if not (isinstance(key, yaml.ScalarNode) and key.value == "wrong_solutions"):
+            continue
+        if not isinstance(value, yaml.SequenceNode):
+            continue
+        for entry in value.value:
+            if not isinstance(entry, yaml.MappingNode):
+                continue
+            for entry_key, entry_value in entry.value:
+                if (isinstance(entry_key, yaml.ScalarNode) and entry_key.value == "name"
+                        and isinstance(entry_value, yaml.ScalarNode)):
+                    lines[entry_value.value] = int(entry_key.start_mark.line) + 1
+    return lines
+
+
+def _expect(label: str, outcomes: Outcomes, where: str, line: int, report: Report) -> None:
     if label == "starter":
         if all(outcomes.values()):
-            report.error(where, 0, "starter passes every test; it must fail at least one")
+            report.error(where, line, "starter passes every test; it must fail at least one")
     elif label == "solution":
         failing = sorted(name for name, passed in outcomes.items() if not passed)
         if failing:
-            report.error(where, 0, f"solution fails: {', '.join(failing)}")
+            report.error(where, line, f"solution fails: {', '.join(failing)}")
     elif label == "memory blank":
         # The blank is what the learner starts from, not a solution: it must import and fail a test.
         if COLLECTION in outcomes:
-            report.error(where, 0, "memory blank does not import cleanly")
+            report.error(where, line, "memory blank does not import cleanly")
         elif all(outcomes.values()):
-            report.error(where, 0, "memory blank passes every test; it must fail at least one")
+            report.error(where, line, "memory blank passes every test; it must fail at least one")
     elif all(outcomes.values()):
-        report.error(where, 0, f"{label} passes every test; it must fail at least one")
+        report.error(where, line, f"{label} passes every test; it must fail at least one")
 
 
 def _evaluate(code: str, tests: str, where: str, report: Report) -> Outcomes | None:

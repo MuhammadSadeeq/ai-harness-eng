@@ -116,6 +116,14 @@ the RFCs and the WHATWG HTML standard), `pytest` (docs.pytest.org),
 `· company report`. `site/data/facts.json` is generated from `facts/*.yaml` by
 `tools/gen_data.py`, so pages never contain dates or URLs typed by hand.
 
+`check_facts` also checks each span's hard tokens: every number, `code`
+token, quoted string and identifier-like word (a hyphen, an underscore, a
+digit, a dot between letters, or CamelCase) must appear in the fact's claim
+or quote. A span that keeps the claim's tokens but changes their meaning
+(which value is the default, say) passes the checker; the audit's span pass
+and review catch that. A term's or a card's `fact:` is checked for its id and
+status (check_content B10), not yet for its tokens.
+
 ## 7. Workflow
 
 1. A builder needs a claim → lists it under "Missing facts" in the report.

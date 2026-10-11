@@ -6,6 +6,7 @@ These run the real pytest and hxtest on the fixture candidates (about 9 s in tot
 from __future__ import annotations
 
 import importlib.util
+import shutil
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -156,3 +157,46 @@ def test_zero_katas_passes_even_with_pyodide(tmp_path: Path) -> None:
 def test_zero_katas_summary_for_an_empty_folder(tmp_path: Path) -> None:
     report = checker.run([], tmp_path, COURSE)
     assert report.last_line() == "check_katas: 0 katas OK (0 candidates, runners agree)"
+
+
+def _lines(report: Any) -> list[tuple[int, str]]:
+    return [(p.line, p.message) for p in report.problems]
+
+
+def _line_containing(path: Path, needle: str) -> int:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    return next(i + 1 for i, line in enumerate(lines) if needle in line)
+
+
+def test_a_wrong_solution_that_passes_is_reported_at_its_name_in_meta() -> None:
+    report = _run("wrong-passes")
+    found = [p for p in report.problems if "swapped-args" in p.message]
+    expected = _line_containing(FIXTURES / "wrong-passes" / "meta.yaml", "name: swapped-args")
+    assert len(found) == 1 and found[0].line == expected, _lines(report)
+    assert found[0].path.endswith("wrong-passes/meta.yaml")
+
+
+def test_a_starter_that_passes_is_reported_at_its_def_line() -> None:
+    report = _run("starter-passes")
+    expected = _line_containing(FIXTURES / "starter-passes" / "starter.py", "def ")
+    found = [p for p in report.problems if "starter passes" in p.message]
+    assert len(found) == 1 and found[0].line == expected, _lines(report)
+
+
+def test_a_memory_blank_that_passes_is_reported_at_the_solution_def_line(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    kata = tmp_path / "katas" / "good-add"
+    kata.parent.mkdir()
+    shutil.copytree(FIXTURES / "good-add", kata)
+    meta = kata / "meta.yaml"
+    text = meta.read_text(encoding="utf-8")
+    text = text.replace("from_memory: false", "from_memory: true")
+    if "from_memory: true" not in text:
+        text += "from_memory: true\n"
+    meta.write_text(text, encoding="utf-8")
+    monkeypatch.setattr(checker, "memory_blank", lambda solution, tests, name: solution)
+    report = checker.run(["good-add"], tmp_path / "katas", COURSE)
+    found = [p for p in report.problems if "memory blank passes" in p.message]
+    expected = _line_containing(kata / "solution.py", "def ")
+    assert len(found) == 1 and found[0].line == expected, _lines(report)
