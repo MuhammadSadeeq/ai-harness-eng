@@ -25,7 +25,11 @@ ROOT = Path(__file__).resolve().parents[2]
 
 SCHEMA = json.loads((ROOT / "scenarios" / "trace.schema.json").read_text(encoding="utf-8"))
 VALIDATOR = jsonschema.Draft202012Validator(SCHEMA)
-PRINTED_TO_SCHEMA = {"done": "done", "stopped": "max_turns"}
+PRINTED_TO_SCHEMA = {
+    status: status
+    for status in ("done", "max_turns", "budget", "loop", "interrupted", "circuit_open", "max_time",
+                   "unverified")
+}
 TIMEOUT = 60.0
 
 
@@ -76,7 +80,7 @@ def run_checkpoint(step: cs.Step, shared: dict[str, str]) -> tuple[str, str]:
 
 
 def printed_status(stdout: str) -> str:
-    """The status word the checkpoint prints: its last line that starts with done or stopped."""
+    """The status word the checkpoint prints: its last line that starts with a status word."""
     words = [line.split()[0] for line in stdout.split("\n") if line.split()]
     return [w for w in words if w in PRINTED_TO_SCHEMA][-1]
 

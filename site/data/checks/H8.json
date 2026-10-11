@@ -1,0 +1,86 @@
+[
+ {
+  "answer": 1,
+  "id": "H8-p1",
+  "mode": "predict",
+  "options": [
+   {
+    "text": "Only the messages so far, so the edit can be retried next time.",
+    "why": "Tempting. The pending edit is a request with no answer; the history still carries it."
+   },
+   {
+    "text": "A result for the pending edit, saying it was interrupted, so the history stays valid.",
+    "why": "Right. Every tool request needs a result right after it, or the request fails."
+   },
+   {
+    "text": "Nothing: an interrupted run sends no next request.",
+    "why": "Tempting. A resumed run sends the history again, and the gap is still in it."
+   }
+  ],
+  "outcome": "The edit had a tool request and no result. The next request carried the gap, and the API rejects a request with a tool request that has no result right after it.",
+  "question": "The user presses Ctrl+C while the model's edit is pending. What must the next request contain?"
+ },
+ {
+  "answer": 0,
+  "id": "H8-c1",
+  "mode": "check",
+  "objective": "H8.o1",
+  "options": [
+   {
+    "text": "A guard line with its limit and value, then run_end with the guard's status.",
+    "why": "Right. The guard is traced first, so the run can be read after it ends."
+   },
+   {
+    "text": "Only run_end: the guard is not traced.",
+    "why": "Tempting and wrong. Each guard writes its guard line before the run ends."
+   },
+   {
+    "text": "A model_error line, because the model ran out of room.",
+    "why": "Tempting and wrong. model_error is for failed calls; a guard is not a failure of the model."
+   }
+  ],
+  "question": "The turn limit and the token budget both stop a run. What does each write before the run ends?"
+ },
+ {
+  "answer": 0,
+  "id": "H8-c2",
+  "mode": "check",
+  "objective": "H8.o1",
+  "options": [
+   {
+    "text": "It answers with an error and does not run the call.",
+    "why": "Right. The redirect tells the model to try something else; the call is not run."
+   },
+   {
+    "text": "It runs the call and ends the run with loop.",
+    "why": "Tempting and wrong. The loop guard ends the run only after a call repeated past the redirect."
+   },
+   {
+    "text": "It removes the call from the history.",
+    "why": "Tempting and wrong. The history keeps every request; each one still needs its result."
+   }
+  ],
+  "question": "The model makes the same tool call with the same arguments for the third time in a row. What does Rein do?"
+ },
+ {
+  "answer": 0,
+  "id": "H8-c3",
+  "mode": "check",
+  "objective": "H8.o2",
+  "options": [
+   {
+    "text": "Every tool request has a result, so the history is valid.",
+    "why": "Right. close_open_calls() answers each pending request before the run ends."
+   },
+   {
+    "text": "The pending tool request has no result, and the next call is rejected.",
+    "why": "Tempting and wrong. That is the failure the interrupt repair prevents."
+   },
+   {
+    "text": "Rein deletes the messages after the last answer.",
+    "why": "Tempting and wrong. Rein keeps the history and adds the missing results."
+   }
+  ],
+  "question": "The user presses Ctrl+C during a tool run. What does the history look like after the run stops?"
+ }
+]

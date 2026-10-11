@@ -1,0 +1,70 @@
+{
+ "replies": [
+  {
+   "say": "Reading calc.py again.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Reading calc.py again.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Reading calc.py again.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Reading calc.py again.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Reading calc.py again.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Reading calc.py again.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+[
+ {
+  "id": "H8-s1",
+  "model_answer": "A run ends done when the model answers without a tool call. The turn limit ends it with max_turns, the token budget with budget, and a repeated call that ignores the redirect with loop. Ctrl+C ends it with interrupted, after closing the books. A breaker that stays open ends it with circuit_open. Each guard writes a guard line, then the run_end line with its status.",
+  "objectives": [
+   "H8.o1",
+   "H8.o2"
+  ],
+  "prompt": "Name every way a run in your Rein can end, and the status each one writes.",
+  "rubric": [
+   "Names done for a reply with no tool call",
+   "Names max_turns, budget, loop and interrupted, each with its guard",
+   "Says the guard line is written before run_end",
+   "Says the run ends with its own status and a valid history"
+  ]
+ },
+ {
+  "id": "H8-s2",
+  "model_answer": "A turn limit does not stop a model that repeats one call, or a run that spends its tokens in a few long replies, and an interrupt leaves a tool request with no result. I show the loop run, where the model ignores the redirect, and the budget run stopping at 701 of 700, and the interrupt tape, where the next request is rejected without the result.",
+  "objectives": [
+   "H8.o1",
+   "H8.o3"
+  ],
+  "prompt": "A colleague says a turn limit is all a harness needs. What do you show them?",
+  "rubric": [
+   "Says a turn limit does not stop a repeated call",
+   "Says a token budget stops a run that spends its tokens early",
+   "Says an interrupt must leave every tool request with a result",
+   "Says the guard line and the run_end status tell a reader which guard fired"
+  ]
+ }
+]

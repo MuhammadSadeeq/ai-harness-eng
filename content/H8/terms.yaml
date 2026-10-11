@@ -1,0 +1,9 @@
+- id: guard
+  term: guard
+  aliases:
+  - guard
+  - guards
+  strict: false
+  wire: loop
+  definition: 'A check that ends a run for a reason the harness can name: the turn limit, the token budget, or a
+    call repeated after it was redirected. Each guard writes a guard line, then ends the run with its own status.'

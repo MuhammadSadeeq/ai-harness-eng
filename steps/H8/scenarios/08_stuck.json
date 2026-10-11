@@ -1,0 +1,68 @@
+{
+ "replies": [
+  {
+   "say": "Let me read the code.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Let me read it again, to be sure.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "One more time.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "You are right, I am going in circles. The bug is that add() subtra",
+   "stop": "max_tokens"
+  },
+  {
+   "say": "cts instead of adding. Fixing it now.",
+   "tools": [
+    [
+     "edit_file",
+     {
+      "path": "calc.py",
+      "old_text": "return a - b",
+      "new_text": "return a + b"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Running the test.",
+   "tools": [
+    [
+     "run_command",
+     {
+      "command": "python test_calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Fixed add() in calc.py. The test passes."
+  }
+ ]
+}

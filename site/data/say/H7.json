@@ -1,0 +1,31 @@
+[
+ {
+  "id": "H7-s1",
+  "model_answer": "A transient error is retried after a wait that grows: half a second, then one, then two, never above the cap. Each wait is a random share of that, so clients do not retry together. Each wait is a retry_wait line, and a failed call is a model_error line. After three failed calls in a row the breaker opens, the trace gets a breaker line, and the run ends with circuit_open instead of retrying forever.",
+  "objectives": [
+   "H7.o1",
+   "H7.o2"
+  ],
+  "prompt": "Walk me through one failing call in your Rein: the waits, the trace lines, and how the run ends if the provider stays down.",
+  "rubric": [
+   "Says the wait grows after each failed try and is capped",
+   "Says the jitter is a random share, so clients do not retry together",
+   "Names the retry_wait, model_error and breaker lines in the trace",
+   "Says the run ends with circuit_open after the breaker opens"
+  ]
+ },
+ {
+  "id": "H7-s2",
+  "model_answer": "A real-time test waits for every backoff, so an eight-second wait costs eight seconds, and a suite of retry tests becomes slow enough that people stop running it. On a virtual clock sleep() only moves time forward, so the test runs at once. The seeded random source makes the waits repeat exactly, so the test checks the same numbers on every run.",
+  "objectives": [
+   "H7.o1"
+  ],
+  "prompt": "Why should a test of retries run on a virtual clock, and what would a real-time test cost?",
+  "rubric": [
+   "Says a real-time test waits for every wait it tests",
+   "Says the virtual clock moves forward without waiting",
+   "Says the seeded random source makes the waits repeat",
+   "Says the test asserts the waits themselves, not the time they take"
+  ]
+ }
+]

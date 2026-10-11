@@ -1,0 +1,31 @@
+[
+ {
+  "id": "H6-s1",
+  "model_answer": "It caps the result with truncate(), keeping the head and the tail and marking the cut. Then it estimates the size of the messages with estimate_tokens(). If the estimate is over the limit, it compacts the older history with compact(), keeping the newest messages word for word, and records a compaction event in the trace. The estimate is rough, so the limit leaves room for it.",
+  "objectives": [
+   "H6.o1",
+   "H6.o2"
+  ],
+  "prompt": "The window is 8,000 tokens and a tool result is 40,000 characters. What does your harness do before the next call?",
+  "rubric": [
+   "Caps the result before it enters the context, keeping the head and the tail",
+   "Estimates the size before the call, from the messages",
+   "Compacts old history and keeps the newest messages",
+   "Records what was dropped in the trace"
+  ]
+ },
+ {
+  "id": "H6-s2",
+  "model_answer": "A tool result has to answer a request with the same id (tool_use_id). If the request is cut away and its result stays, the next request has a result with nothing to answer, and the request fails with the standard error about tool_use ids found without tool_result blocks. So compact() moves the cut back until it lands on one of the model's messages, and the request and its result stay together.",
+  "objectives": [
+   "H6.o2"
+  ],
+  "prompt": "Why must compaction never cut between a tool request and its result?",
+  "rubric": [
+   "Says a result must answer a request with the same id",
+   "Says a result with no request fails the next call",
+   "Says the cut lands on one of the model's messages",
+   "Names the standard error for a request sent without its result"
+  ]
+ }
+]

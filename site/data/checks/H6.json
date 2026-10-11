@@ -1,0 +1,87 @@
+[
+ {
+  "answer": 1,
+  "id": "H6-p1",
+  "mode": "predict",
+  "objective": "H6.o3",
+  "options": [
+   {
+    "text": "Rein cuts the log to fit the window, and the run carries on.",
+    "why": "Tempting. Nothing in this board cuts the result; the harness has no step that does."
+   },
+   {
+    "text": "The next prompt is too big to send, and the run fails with an error. The error is the symptom.",
+    "why": "Right. The prompt grows past the window, and no budget stops it before the call."
+   },
+   {
+    "text": "The model reads the log and works inside the window anyway.",
+    "why": "Tempting. The model cannot read what the request does not carry; the request is the problem."
+   }
+  ],
+  "outcome": "The log came back whole, 10,991 tokens into an 8,000-token window. Nothing cut it, so the next prompt was too big to send. The prompt had grown without a budget long before the error.",
+  "question": "The window is 8,000 tokens. A tool returns a log of about 11,000 tokens, and nothing trims it. What happens on the next call?"
+ },
+ {
+  "answer": 1,
+  "id": "H6-c1",
+  "mode": "check",
+  "objective": "H6.o1",
+  "options": [
+   {
+    "text": "It asks the provider for the exact count before each call.",
+    "why": "Tempting and wrong. The estimate is local and rough; it costs no call."
+   },
+   {
+    "text": "It measures the characters of the messages as JSON and divides by four.",
+    "why": "Right. About four characters per token: rough, but good enough to decide when to act."
+   },
+   {
+    "text": "It counts the words in the last message only.",
+    "why": "Tempting. The whole conversation is measured, not only the newest message."
+   }
+  ],
+  "question": "How does estimate_tokens() count the tokens in a request?"
+ },
+ {
+  "answer": 1,
+  "id": "H6-c2",
+  "mode": "check",
+  "objective": "H6.o2",
+  "options": [
+   {
+    "text": "compact(), which replaces the old history with a summary.",
+    "why": "Tempting. compact() works on the history; the result is capped by truncate() before it is added."
+   },
+   {
+    "text": "truncate(), which keeps the head and the tail and says how much it cut.",
+    "why": "Right. Every result is capped as it is returned, so one result cannot grow without limit. The cap keeps the head and the tail and says how much it cut."
+   },
+   {
+    "text": "estimate_tokens(), which shortens the result when it is big.",
+    "why": "Tempting and wrong. estimate_tokens() only measures."
+   }
+  ],
+  "question": "A tool result is 40,000 characters and the window is small. Which step caps it before it enters the context?"
+ },
+ {
+  "answer": 1,
+  "id": "H6-c3",
+  "mode": "check",
+  "objective": "H6.o2",
+  "options": [
+   {
+    "text": "It cuts there anyway, because the newest messages are kept.",
+    "why": "Tempting. The request would then lose its answer, and the request fails with the standard tool_use-without-result error."
+   },
+   {
+    "text": "It moves the cut back, to one of the model's messages, so a request keeps its result.",
+    "why": "Right. The loop in compact() steps back until the cut lands on the model's message."
+   },
+   {
+    "text": "It returns the messages unchanged and stops the run.",
+    "why": "Tempting. compact() returns None when nothing is old enough, and the run carries on."
+   }
+  ],
+  "question": "compact() finds that its cut would land right after a tool request. What does it do?"
+ }
+]

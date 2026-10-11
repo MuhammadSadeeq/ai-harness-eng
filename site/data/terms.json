@@ -1313,6 +1313,18 @@
   "term": "ground truth",
   "wire": "verify"
  },
+ "guard": {
+  "aliases": [
+   "guard",
+   "guards"
+  ],
+  "definition": "A check that ends a run for a reason the harness can name: the turn limit, the token budget, or a call repeated after it was redirected. Each guard writes a guard line, then ends the run with its own status.",
+  "id": "guard",
+  "module": "H8",
+  "strict": false,
+  "term": "guard",
+  "wire": "loop"
+ },
  "guide": {
   "aliases": [
    "guide",
@@ -3285,6 +3297,18 @@
   "term": "token budget",
   "wire": "loop"
  },
+ "token-estimate": {
+  "aliases": [
+   "token estimate",
+   "token estimates"
+  ],
+  "definition": "A rough count of a request's size, at about four characters per token, used to decide when to act. It is an estimate, not the provider's count.",
+  "id": "token-estimate",
+  "module": "H6",
+  "strict": true,
+  "term": "token estimate",
+  "wire": "context"
+ },
  "tokenizer": {
   "aliases": [
    "tokenizer",
@@ -3584,6 +3608,17 @@
   "term": "untrusted content",
   "wire": "permissions"
  },
+ "unverified": {
+  "aliases": [
+   "unverified"
+  ],
+  "definition": "A run status. The model said done, but the check still failed after the last fix round. The run ends as unverified, never as done.",
+  "id": "unverified",
+  "module": "H9",
+  "strict": true,
+  "term": "unverified",
+  "wire": "verify"
+ },
  "usage": {
   "aliases": [
    "usage"
@@ -3640,6 +3675,18 @@
   "strict": true,
   "term": "verification gate",
   "wire": "verify"
+ },
+ "virtual-clock": {
+  "aliases": [
+   "virtual clock",
+   "virtual clocks"
+  ],
+  "definition": "A clock that moves forward by the waits it is asked to sleep, without waiting in real time. A retry costs no time, so a test of backoff runs at once and repeats exactly.",
+  "id": "virtual-clock",
+  "module": "H7",
+  "strict": true,
+  "term": "virtual clock",
+  "wire": "errors"
  },
  "virtual-machine": {
   "aliases": [

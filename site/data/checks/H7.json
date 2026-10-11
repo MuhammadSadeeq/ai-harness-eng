@@ -1,0 +1,86 @@
+[
+ {
+  "answer": 1,
+  "id": "H7-p1",
+  "mode": "predict",
+  "options": [
+   {
+    "text": "Calls that spread out, one at a time, so it recovers sooner.",
+    "why": "Tempting. Fixed waits do not spread the calls; every client sends on the same beat."
+   },
+   {
+    "text": "Calls that arrive together, at one fixed rhythm, from every client.",
+    "why": "Right. The wait never grows and carries no jitter, so the clients stay in step and the outage lasts."
+   },
+   {
+    "text": "Nothing: a fixed wait is the safest retry.",
+    "why": "Tempting. A fixed wait is the storm itself; it never backs off."
+   }
+  ],
+  "outcome": "The second wait is the first moment the wait should have grown, and it did not. The run makes 30 calls into the outage and ends as an error.",
+  "question": "Every retry waits the same 200 ms, from every client, and the provider is down for twenty seconds. What does the provider see?"
+ },
+ {
+  "answer": 1,
+  "id": "H7-c1",
+  "mode": "check",
+  "objective": "H7.o1",
+  "options": [
+   {
+    "text": "It waits eight seconds in real time.",
+    "why": "Tempting and wrong. That is RealClock; the virtual clock never waits."
+   },
+   {
+    "text": "It moves the clock forward by eight seconds, at once, and returns.",
+    "why": "Right. The test runs at once, and the trace time moves by the same eight seconds."
+   },
+   {
+    "text": "It skips the call and returns an error.",
+    "why": "Tempting and wrong. sleep() does not touch the call; it only moves the clock."
+   }
+  ],
+  "question": "A test asks for an eight-second backoff. What does VirtualClock.sleep(8) do?"
+ },
+ {
+  "answer": 0,
+  "id": "H7-c2",
+  "mode": "check",
+  "objective": "H7.o2",
+  "options": [
+   {
+    "text": "It opens, and the run ends with the status circuit_open.",
+    "why": "Right. The breaker is open at three; the run stops and says why."
+   },
+   {
+    "text": "It waits one more turn, then tries again, forever.",
+    "why": "Tempting and wrong. An open breaker is the stop; the run does not go on."
+   },
+   {
+    "text": "It resets, because every turn starts with a fresh count.",
+    "why": "Tempting and wrong. The count carries across turns; only a success resets it."
+   }
+  ],
+  "question": "The breaker has counted three failed calls in a row. What happens next?"
+ },
+ {
+  "answer": 0,
+  "id": "H7-c3",
+  "mode": "check",
+  "objective": "H7.o2",
+  "options": [
+   {
+    "text": "A breaker line with state open and the failure count, then run_end with circuit_open.",
+    "why": "Right. The breaker line and the run_end line together say how the run ended."
+   },
+   {
+    "text": "A run_end with status stopped.",
+    "why": "Tempting and wrong. stopped is the turn limit; the breaker ends with circuit_open."
+   },
+   {
+    "text": "Nothing: the breaker is not traced.",
+    "why": "Tempting and wrong. The breaker is traced, so the run can be read after it ends."
+   }
+  ],
+  "question": "What does the trace record when the breaker opens?"
+ }
+]

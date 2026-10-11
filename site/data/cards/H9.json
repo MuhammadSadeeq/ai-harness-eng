@@ -1,0 +1,51 @@
+[
+ {
+  "back": "The check command, through run_command's own path, in the project folder. It is the harness's command, not the model's.",
+  "front": "What does verify() run?",
+  "id": "H9-k1",
+  "objective": "H9.o1",
+  "type": "term"
+ },
+ {
+  "back": "The return code. 0 passes; anything else fails.",
+  "front": "What decides whether a check passed?",
+  "id": "H9-k2",
+  "objective": "H9.o1",
+  "type": "term"
+ },
+ {
+  "back": "When a reply has no tool calls: the model is claiming it is done.",
+  "front": "When does the gate run?",
+  "id": "H9-k3",
+  "objective": "H9.o1",
+  "type": "term"
+ },
+ {
+  "back": "The failure output, as the next message, with an instruction to fix the problem and check it yourself.",
+  "front": "What does the gate send back on a failure?",
+  "id": "H9-k4",
+  "objective": "H9.o2",
+  "type": "term"
+ },
+ {
+  "back": "As unverified. Never as done.",
+  "front": "How does a run end when the check still fails after the last fix round?",
+  "id": "H9-k5",
+  "objective": "H9.o2",
+  "type": "term"
+ },
+ {
+  "back": "Two, in max_fix_rounds. After the last one, a failing check ends the run as unverified.",
+  "front": "How many fix rounds does the gate allow by default?",
+  "id": "H9-k6",
+  "objective": "H9.o2",
+  "type": "term"
+ },
+ {
+  "back": "A model says the tests pass without running them. The gate runs the check, catches the claim, and sends the failure back.",
+  "front": "What does the false-done tape show?",
+  "id": "H9-k7",
+  "objective": "H9.o3",
+  "type": "term"
+ }
+]

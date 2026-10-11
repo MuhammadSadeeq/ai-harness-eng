@@ -1,0 +1,44 @@
+[
+ {
+  "back": "It measures the characters of the messages as JSON and divides by four. A rough guess, good enough to decide when to act.",
+  "front": "How does estimate_tokens() count a request?",
+  "id": "H6-k1",
+  "objective": "H6.o1",
+  "type": "term"
+ },
+ {
+  "back": "Because a request that is too big fails only when it is sent, and by then the harness has already built it. The harness decides first, from its own count.",
+  "front": "Why estimate before the call rather than after?",
+  "id": "H6-k2",
+  "objective": "H6.o1",
+  "type": "term"
+ },
+ {
+  "back": "The head and the tail of a result, and a line that says how many characters it cut.",
+  "front": "What does truncate() keep, and what does it say?",
+  "id": "H6-k3",
+  "objective": "H6.o2",
+  "type": "term"
+ },
+ {
+  "back": "The newest messages. The older history is swapped for a short summary of the task and the tools used.",
+  "front": "What does compact() keep word for word?",
+  "id": "H6-k4",
+  "objective": "H6.o2",
+  "type": "term"
+ },
+ {
+  "back": "Never between a tool request and its result: the cut lands on one of the model's messages.",
+  "front": "Where does compact() never cut?",
+  "id": "H6-k5",
+  "objective": "H6.o2",
+  "type": "term"
+ },
+ {
+  "back": "A compaction event: the tokens before and after, how many messages were dropped, and the notes that were kept.",
+  "front": "What does the trace record when old history is summarized?",
+  "id": "H6-k6",
+  "objective": "H6.o2",
+  "type": "term"
+ }
+]

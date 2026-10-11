@@ -1,0 +1,51 @@
+[
+ {
+  "back": "It moves the clock forward by the wait and returns at once. Nothing waits in real time.",
+  "front": "What does sleep() do on the virtual clock?",
+  "id": "H7-k1",
+  "objective": "H7.o1",
+  "type": "term"
+ },
+ {
+  "back": "Jitter spreads the retries of clients that failed together. Under --fake the random source is seeded, so the same waits come out on every run.",
+  "front": "What is jitter for, and why is it seeded under --fake?",
+  "id": "H7-k2",
+  "objective": "H7.o1",
+  "type": "term"
+ },
+ {
+  "back": "About half a second, scaled by a random share between half and all of it. Then one second, then two, never above the cap.",
+  "front": "What does with_retries() wait after the first failure?",
+  "id": "H7-k3",
+  "objective": "H7.o1",
+  "type": "term"
+ },
+ {
+  "back": "Failed calls in a row. A successful call resets the count to zero.",
+  "front": "What does CircuitBreaker count?",
+  "id": "H7-k4",
+  "objective": "H7.o2",
+  "type": "term"
+ },
+ {
+  "back": "After three failed calls in a row. The run ends with the status circuit_open.",
+  "front": "When does the breaker open, and how does the run end?",
+  "id": "H7-k5",
+  "objective": "H7.o2",
+  "type": "term"
+ },
+ {
+  "back": "A model_error line for each failed call, a retry_wait line for each wait, and a breaker line when the breaker opens.",
+  "front": "What does the trace record for an outage?",
+  "id": "H7-k6",
+  "objective": "H7.o2",
+  "type": "term"
+ },
+ {
+  "back": "Calls arrive together every time, and the outage lasts longer. Backoff with jitter and a breaker stop sending the calls into it.",
+  "front": "What does the outage tape show about fixed waits?",
+  "id": "H7-k7",
+  "objective": "H7.o3",
+  "type": "term"
+ }
+]

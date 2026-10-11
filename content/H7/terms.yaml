@@ -1,0 +1,9 @@
+- id: virtual-clock
+  term: virtual clock
+  aliases:
+  - virtual clock
+  - virtual clocks
+  strict: true
+  wire: errors
+  definition: A clock that moves forward by the waits it is asked to sleep, without waiting in real time. A retry
+    costs no time, so a test of backoff runs at once and repeats exactly.

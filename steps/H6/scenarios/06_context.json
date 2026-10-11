@@ -1,0 +1,9 @@
+{
+ "replies": [
+  {"say": "The log is long. I will read the first page.", "tools": [["read_file", {"path": "app.log"}]]},
+  {"say": "The middle was cut. Errors are usually near the end.", "tools": [["read_file", {"path": "app.log", "start_line": 201}]]},
+  {"say": "Line 397 has the error. Let me look at the code it names.", "tools": [["read_file", {"path": "calc.py"}]]},
+  {"say": "And the test.", "tools": [["read_file", {"path": "test_calc.py"}]]},
+  {"say": "Found it: add(2, 3) returned -1 because add() subtracts. That is the bug to fix."}
+ ]
+}

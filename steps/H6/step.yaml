@@ -1,0 +1,188 @@
+module: H6
+number: 6
+title: A budget for the context
+goal: Cap every tool result, and summarize old history when the conversation grows past a limit.
+requires_python: '3.11'
+theory: 'Chapter 13: the context budget and chapter 14: compaction'
+lines_after: 444
+size: rein.py grows to 444 lines
+chunks:
+- id: 6a
+  title: Estimate and compact
+  explain: estimate_tokens() guesses the size of the conversation at about four characters per token. It is rough,
+    but good enough to decide when to act. compact() swaps old history for a short summary and keeps the newest
+    messages word for word. The cut always lands on one of the model's messages, so a tool request is never separated
+    from its result. If there is nothing old enough to summarize yet, it returns None. truncate() already lives
+    in step 3, where every result is capped.
+  hunks:
+  - where: new code, above THE LOOP
+    diff: |
+      +# ============ CONTEXT: keep the desk clear ============
+      +
+      +def estimate_tokens(messages):
+      +    """About 4 characters per token. Rough, but good enough to decide when to compact."""
+      +    return len(json.dumps(messages)) // 4
+      +
+      +def compact(messages, task, keep_last=4):
+      +    """Swap old history for a short summary. Keep the newest messages word for word."""
+      +    cut = len(messages) - keep_last
+      +    while cut > 1 and messages[cut]["role"] != "assistant":  # never split a tool call from its result
+      +        cut -= 1
+      +    if cut <= 1:
+      +        return None  # nothing old enough to summarize yet
+      +    used = [b["name"] for m in messages[:cut] if isinstance(m["content"], list)
+      +            for b in m["content"] if b.get("type") == "tool_use"]
+      +    summary = ("[The harness summarized earlier work to save space.]\n"
+      +               f"Original task: {task}\n"
+      +               f"Tools used so far: {', '.join(used) or 'none'}\n"
+      +               "Re-read any file before you edit it. Then continue the task.")
+      +    return [{"role": "user", "content": summary}] + messages[cut:]
+      +
+      +
+       # ============ THE LOOP ============
+- id: 6b
+  title: A budget in Config
+  explain: context_limit is the estimated size, in tokens, above which old history is compacted. The default is
+    20,000.
+  hunks:
+  - where: in class Config
+    diff: |2
+           trace_file: str = "trace.jsonl"  # every event of the run is recorded here
+      +    context_limit: int = 20000       # estimated tokens before old history is compacted
+- id: 6c
+  title: Compact before each model call
+  explain: 'Before each model call, the loop estimates the size of the conversation and compacts it if it is over
+    the limit. messages[:] = smaller replaces what is inside the list instead of making a new list, so anything
+    else holding the same list sees the change. Step 8 depends on that. The compaction is recorded in the trace
+    with what it replaced: the tokens before and after, the number of messages dropped, and the task it kept.'
+  hunks:
+  - where: 'in Agent.run(): before each model call'
+    diff: |2
+                   self.trace.turn = turn
+      +            size = estimate_tokens(messages)
+      +            smaller = compact(messages, task) if size > self.cfg.context_limit else None
+      +            if smaller:
+      +                dropped = len(messages) - len(smaller) + 1  # the summary replaces the messages it covers
+      +                messages[:] = smaller  # change the list in place, so every holder sees it
+      +                after = estimate_tokens(messages)
+      +                self.say("compact", f"~{size} tokens is over the limit ({self.cfg.context_limit}); now ~{after}")
+      +                self.trace.event("compaction", "context", tokens_before=size, tokens_after=after,
+      +                                 dropped_messages=dropped, kept_notes=[task])
+- id: 6d
+  title: Say when a result is cut
+  explain: A result that is longer than tool_output_chars prints a cut line, so you can see the cap working.
+  hunks:
+  - where: 'in Agent.run_tool(): before the result is returned'
+    diff: |
+      +        if len(output) > self.cfg.tool_output_chars:
+      +            self.say("", f"cut    {len(output)} characters down to {self.cfg.tool_output_chars}")
+               return truncate(output, self.cfg.tool_output_chars), is_error, len(output) > self.cfg.tool_output_chars
+- id: 6e
+  title: The --context-limit flag
+  explain: --context-limit lets you set the limit from the command line.
+  hunks:
+  - where: 'in main(): the --context-limit argument'
+    diff: |2
+           p.add_argument("--mode", default="ask", choices=["ask", "auto"], help="auto: allow edits without asking")
+      +    p.add_argument("--context-limit", type=int, default=20000, help="compact above this many tokens")
+  - where: 'in main(): the agent''s config'
+    diff: |2
+               mode=args.mode,
+      +        context_limit=args.context_limit,
+checkpoint:
+  setup:
+  - reset_demo
+  argv:
+  - Find the error in app.log
+  - --fake
+  - scenarios/06_context.json
+  - --context-limit
+  - '1200'
+  expected: |
+    task     Find the error in app.log
+    turn 1   model: The log is long. I will read the first page.
+             tool   read_file {"path": "app.log"}
+             allow  read-only tool
+             cut    11293 characters down to 2000
+             result 1| 2026-09-26 10:00:01 INFO request 1 served in 6 ms | 2| 2026-09-26 10:00:02 INFO r
+    turn 2   model: The middle was cut. Errors are usually near the end.
+             tool   read_file {"path": "app.log", "start_line": 201}
+             allow  read-only tool
+             cut    11464 characters down to 2000
+             result 201| 2026-09-26 10:03:21 INFO request 201 served in 10 ms | 202| 2026-09-26 10:03:22
+    turn 3   model: Line 397 has the error. Let me look at the code it names.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    compact  ~1310 tokens is over the limit (1200); now ~751
+    turn 4   model: And the test.
+             tool   read_file {"path": "test_calc.py"}
+             allow  read-only tool
+             result 1| from calc import add | 2| | 3| | 4| def test_add(): | 5|     result = add(2, 3) |
+    turn 5   model: Found it: add(2, 3) returned -1 because add() subtracts. That is the bug to fix.
+    done     after 5 model calls
+    trace    5 model_call, 4 permission, 4 tool_call, 1 compaction, 3709 tokens (details in trace.jsonl)
+  explain: 'The first page of the log was 11,293 characters, and the model got 2,000 of them: the head and the tail,
+    with a note in the middle saying what was cut. The model saw the cut and asked for page 2, where the tail showed
+    the error at line 397. Before turn 3 the conversation was just over the limit, but nothing was old enough to
+    summarize. Before turn 4 it was about 1,310 tokens, so Rein compacted it to about 751. The limit of 1,200 tokens
+    is tiny on purpose, so you can watch compaction happen.'
+breaks:
+- id: tight
+  title: A tight limit
+  explain: Run the checkpoint with --context-limit 100. Rein now compacts before every turn where there is something
+    old enough to summarize, twice in this run. What does the model lose each time?
+  change:
+    argv:
+    - Find the error in app.log
+    - --fake
+    - scenarios/06_context.json
+    - --context-limit
+    - '100'
+  expected: |
+    task     Find the error in app.log
+    turn 1   model: The log is long. I will read the first page.
+             tool   read_file {"path": "app.log"}
+             allow  read-only tool
+             cut    11293 characters down to 2000
+             result 1| 2026-09-26 10:00:01 INFO request 1 served in 6 ms | 2| 2026-09-26 10:00:02 INFO r
+    turn 2   model: The middle was cut. Errors are usually near the end.
+             tool   read_file {"path": "app.log", "start_line": 201}
+             allow  read-only tool
+             cut    11464 characters down to 2000
+             result 201| 2026-09-26 10:03:21 INFO request 201 served in 10 ms | 202| 2026-09-26 10:03:22
+    turn 3   model: Line 397 has the error. Let me look at the code it names.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    compact  ~1310 tokens is over the limit (100); now ~751
+    turn 4   model: And the test.
+             tool   read_file {"path": "test_calc.py"}
+             allow  read-only tool
+             result 1| from calc import add | 2| | 3| | 4| def test_add(): | 5|     result = add(2, 3) |
+    compact  ~920 tokens is over the limit (100); now ~315
+    turn 5   model: Found it: add(2, 3) returned -1 because add() subtracts. That is the bug to fix.
+    done     after 5 model calls
+    trace    5 model_call, 4 permission, 4 tool_call, 2 compaction, 3104 tokens (details in trace.jsonl)
+- id: small-cap
+  title: A smaller cap
+  explain: Set tool_output_chars to 60 in Config. Every long result is cut to 60 characters, and each cut line says
+    how many characters went. The first page of the log is now a few lines, and the model has to ask again for more.
+  change:
+    patch:
+      diff: |
+        -    tool_output_chars: int = 2000  # cap on each tool result that enters the context
+        +    tool_output_chars: int = 60  # cap on each tool result that enters the context
+  expected: "task     Find the error in app.log\nturn 1   model: The log is long. I will read the first page.\n\
+    \         tool   read_file {\"path\": \"app.log\"}\n         allow  read-only tool\n         cut    11293 characters\
+    \ down to 60\n         result 1| 2026-09-26 10:00:01 INFO re | [... 11233 characters cut by the harness ...]\
+    \ | ll \nturn 2   model: The middle was cut. Errors are usually near the end.\n         tool   read_file {\"\
+    path\": \"app.log\", \"start_line\": 201}\n         allow  read-only tool\n         cut    11464 characters\
+    \ down to 60\n         result 201| 2026-09-26 10:03:21 INFO | [... 11404 characters cut by the harness ...]\
+    \ | NFO \nturn 3   model: Line 397 has the error. Let me look at the code it names.\n         tool   read_file\
+    \ {\"path\": \"calc.py\"}\n         allow  read-only tool\n         result 1| def add(a, b): | 2|     return\
+    \ a - b\nturn 4   model: And the test.\n         tool   read_file {\"path\": \"test_calc.py\"}\n         allow\
+    \  read-only tool\n         cut    366 characters down to 60\n         result 1| from calc import add | 2| |\
+    \ 3| | [... 306 characters cut by the harness ...] | 5|\nturn 5   model: Found it: add(2, 3) returned -1 because\
+    \ add() subtracts. That is the bug to fix.\ndone     after 5 model calls\ntrace    5 model_call, 4 permission,\
+    \ 4 tool_call, 1305 tokens (details in trace.jsonl)\n"

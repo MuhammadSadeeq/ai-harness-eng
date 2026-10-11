@@ -4,8 +4,8 @@ title: A trace of everything
 goal: Record every model call, verdict and tool call in a file as it happens, and print a summary at the end.
 requires_python: '3.11'
 theory: 'Chapter 18: observability'
-lines_after: 409
-size: rein.py grows to 409 lines
+lines_after: 408
+size: rein.py grows to 408 lines
 chunks:
 - id: 5a
   title: A clock
@@ -203,7 +203,6 @@ chunks:
       +        self.trace.event("permission", "permissions", tool=call.name, decision=decided.decision,
       +                         rule=decided.rule, reason=decided.reason, human=human, final=verdict.decision,
       +                         tool_use_id=call.id)
-      +        return verdict
   - where: 'in main(): the tracer'
     diff: |
       -    Agent(model, cfg).run(args.task)

@@ -375,7 +375,6 @@ class Agent:
                          rule=decided.rule, reason=decided.reason, human=human, final=verdict.decision,
                          tool_use_id=call.id)
         return verdict
-        return verdict
 
 
 # ============ COMMAND LINE ============

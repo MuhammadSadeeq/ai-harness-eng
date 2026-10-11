@@ -1,0 +1,181 @@
+module: H9
+number: 9
+title: The verification gate
+goal: When the model says it is done, run the check. If it fails, send the failure back; if it cannot pass, end
+  as unverified.
+requires_python: '3.11'
+theory: 'Chapter 16: verification, done is a claim'
+lines_after: 664
+size: rein.py grows to 664 lines
+chunks:
+- id: 9a
+  title: Two settings for the gate
+  explain: 'Two settings: check is the command that proves the work, like python test_calc.py, and max_fix_rounds
+    is how many times the gate may send the work back. The loop counts the fix rounds it has used.'
+  hunks:
+  - where: in class Config
+    diff: |2
+           max_seconds: int | None = None   # the time limit for one run, in seconds on the clock; None is off
+      +    check: str = ""                  # a command that proves the work, like "python test_calc.py"
+      +    max_fix_rounds: int = 2          # how many times the gate may send work back
+  - where: 'in Agent.loop(): before the turn loop'
+    diff: |
+      +        fix_rounds = 0  # how many times the gate has sent the work back
+               for turn in range(1, self.cfg.max_turns + 1):
+- id: 9b
+  title: The gate in the loop
+  explain: When a reply has no tool calls, the model claims it is done. Instead of believing it, the loop calls
+    verify(). A pass ends the run as done. A failure goes back to the model as the next message, and the loop carries
+    on. After the last fix round, the run ends as unverified, never as done.
+  hunks:
+  - where: 'in Agent.loop(): the done claim'
+    diff: |
+      -            if not reply.tool_calls:
+      -                return self.finish("done", f"after {turn} model calls", reply.text)
+      +            if not reply.tool_calls:  # the model says it is done. That is a claim: check it.
+      +                passed, report = self.verify()
+      +                if passed:
+      +                    return self.finish("done", f"after {turn} model calls", reply.text)
+      +                if fix_rounds == self.cfg.max_fix_rounds:
+      +                    return self.finish("unverified", f"still failing after {fix_rounds} fix rounds", reply.text)
+      +                fix_rounds += 1
+      +                self.say("check", f"not done: {one_line(report)}")
+      +                messages.append({"role": "user", "content": "The harness checked your work and it is not done "
+      +                                 f"yet:\n{report}\nFix the problem, and check it yourself before you finish."})
+      +                continue
+- id: 9c
+  title: The check itself
+  explain: 'verify() runs the check through run_command''s own path, so the check is the same command a tool would
+    run. The exit code decides: 0 passes, anything else fails. Each check is recorded as a verify line in the trace,
+    with its output, which is printable ASCII.'
+  hunks:
+  - where: new method in class Agent
+    diff: |
+      +    def verify(self):
+      +        """'Done' is a claim. Run the check through run_command's own path and see for ourselves."""
+      +        if not self.cfg.check:
+      +            return True, "ok"
+      +        try:
+      +            output = self.tools["run_command"].run(command=self.cfg.check)
+      +        except ToolError as e:
+      +            output = str(e)
+      +        passed = output.startswith("exit code 0")  # the exit code decides: 0 passes, anything else fails
+      +        self.trace.event("verify", "verify", check="tests", passed=passed, output=ascii_only(output))
+      +        if not passed:
+      +            return False, output
+      +        self.say("check", f"passed: {self.cfg.check}")
+      +        return True, "ok"
+      +
+           def check_permission(self, tool, call):
+- id: 9d
+  title: The check on the command line
+  explain: --check sets the check on the command line.
+  hunks:
+  - where: 'in main(): the --check argument'
+    diff: |2
+           p.add_argument("--max-seconds", type=int, default=None, help="stop when the run has taken this many seconds; off by default")
+      +    p.add_argument("--check", default="", help='a command that proves the work, e.g. "python test_calc.py"')
+  - where: 'in main(): the agent''s config'
+    diff: |2
+               max_seconds=args.max_seconds,
+      +        check=args.check,
+checkpoint:
+  setup:
+  - reset_demo
+  argv:
+  - Fix the failing test in calc.py
+  - --fake
+  - scenarios/09_verify.json
+  - --mode
+  - auto
+  - --check
+  - python test_calc.py
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: It should multiply, I think.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a * b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 3   model: Done! add() is fixed.
+    check    not done: exit code 1 | test_add failed: add(2, 3) returned 6, expected 5
+    turn 4   model: The check says add(2, 3) returned 6. It must add, not multiply.
+             tool   edit_file {"path": "calc.py", "old_text": "return a * b", "new_text": "return a + b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 5   model: Running the test myself this time.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 6   model: Fixed add() in calc.py. I ran the test and it passes.
+    check    passed: python test_calc.py
+    done     after 6 model calls
+    trace    6 model_call, 4 permission, 4 tool_call, 2 verify, 1603 tokens (details in trace.jsonl)
+  explain: The scripted model makes a wrong fix and claims it is done without testing it. The gate runs python test_calc.py,
+    which fails, and sends the failure back. The model fixes add() and runs the test itself, and claims done again.
+    The gate checks again and passes, so the run ends as done. The gate ran twice, and the model's words did not
+    decide either time.
+breaks:
+- id: no-check
+  title: No check at all
+  explain: Run the checkpoint without --check. With no check to run, the first claim of done is accepted, and the
+    run ends at turn 3 with the wrong fix reported as done. Run python demo/test_calc.py yourself to see the failure
+    the gate would have caught.
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/09_verify.json
+    - --mode
+    - auto
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: It should multiply, I think.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a * b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 3   model: Done! add() is fixed.
+    done     after 3 model calls
+    trace    3 model_call, 2 permission, 2 tool_call, 401 tokens (details in trace.jsonl)
+- id: never-passes
+  title: A check that never passes
+  explain: 'Make the gate''s verdict fail whatever the check prints: the patch sets passed to False. The gate sends
+    the failure back at each claim, and after two fix rounds the run ends as unverified, never as done. The script
+    runs out on the way, and the gate still holds.'
+  change:
+    patch:
+      diff: |
+        -        passed = output.startswith("exit code 0")  # the exit code decides: 0 passes, anything else fails
+        +        passed = False  # a check that never passes
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: It should multiply, I think.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a * b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 3   model: Done! add() is fixed.
+    check    not done: exit code 1 | test_add failed: add(2, 3) returned 6, expected 5
+    turn 4   model: The check says add(2, 3) returned 6. It must add, not multiply.
+             tool   edit_file {"path": "calc.py", "old_text": "return a * b", "new_text": "return a + b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 5   model: Running the test myself this time.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 6   model: Fixed add() in calc.py. I ran the test and it passes.
+    check    not done: exit code 0 | 1 test passed
+    turn 7   model: (the script has run out)
+    unverified still failing after 2 fix rounds
+    trace    7 model_call, 4 permission, 4 tool_call, 3 verify, 2141 tokens (details in trace.jsonl)

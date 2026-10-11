@@ -1,0 +1,8 @@
+- id: unverified
+  term: unverified
+  aliases:
+  - unverified
+  strict: true
+  wire: verify
+  definition: A run status. The model said done, but the check still failed after the last fix round. The run ends
+    as unverified, never as done.

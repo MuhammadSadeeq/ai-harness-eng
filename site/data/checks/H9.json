@@ -1,0 +1,86 @@
+[
+ {
+  "answer": 1,
+  "id": "H9-p1",
+  "mode": "predict",
+  "options": [
+   {
+    "text": "The model's words: it said the tests pass.",
+    "why": "Tempting. The words are the claim the gate exists to test, not the result."
+   },
+   {
+    "text": "The check: the harness runs the command, and only a pass ends the run as done.",
+    "why": "Right. A done claim is checked before the run can end."
+   },
+   {
+    "text": "Nothing: a done claim is final.",
+    "why": "Tempting. Rein does not accept a done claim without the check."
+   }
+  ],
+  "outcome": "The run ends done while the checks fail: that is a false done. With the gate, the claim is checked first, and a failure goes back to the model.",
+  "question": "The model says the tests pass, but it never ran them. What decides whether the run is done?"
+ },
+ {
+  "answer": 0,
+  "id": "H9-c1",
+  "mode": "check",
+  "objective": "H9.o1",
+  "options": [
+   {
+    "text": "The return code: 0 passes, anything else fails.",
+    "why": "Right. A computational check: a program decides, not a model."
+   },
+   {
+    "text": "Whether the output contains the word passed.",
+    "why": "Tempting and wrong. A word in the output can be printed by a failing run."
+   },
+   {
+    "text": "The model's statement that the check passed.",
+    "why": "Tempting and wrong. The claim is what the gate tests."
+   }
+  ],
+  "question": "What decides whether a check passed?"
+ },
+ {
+  "answer": 0,
+  "id": "H9-c2",
+  "mode": "check",
+  "objective": "H9.o2",
+  "options": [
+   {
+    "text": "The failure output, as the next message, and an instruction to fix the problem.",
+    "why": "Right. The failure goes back with the real output, not a summary."
+   },
+   {
+    "text": "Nothing: the run ends as unverified at once.",
+    "why": "Tempting and wrong. The first failure goes back to the model; unverified comes after the last fix round."
+   },
+   {
+    "text": "The test result is dropped, and the model is asked again.",
+    "why": "Tempting and wrong. The output is what the model needs to fix the work."
+   }
+  ],
+  "question": "The first claim of done fails the check. What does the model see next?"
+ },
+ {
+  "answer": 0,
+  "id": "H9-c3",
+  "mode": "check",
+  "objective": "H9.o2",
+  "options": [
+   {
+    "text": "As unverified, never as done.",
+    "why": "Right. The gate ends the run with that status, and the run is not success."
+   },
+   {
+    "text": "As done, because the model claimed it was done.",
+    "why": "Tempting and wrong. A claim is not a pass."
+   },
+   {
+    "text": "As max_turns, because the work ran out of turns.",
+    "why": "Tempting and wrong. The gate ends the run itself, with its own status."
+   }
+  ],
+  "question": "The check still fails after the last fix round. How does the run end?"
+ }
+]

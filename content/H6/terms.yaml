@@ -1,0 +1,9 @@
+- id: token-estimate
+  term: token estimate
+  aliases:
+  - token estimate
+  - token estimates
+  strict: true
+  wire: context
+  definition: A rough count of a request's size, at about four characters per token, used to decide when to act.
+    It is an estimate, not the provider's count.

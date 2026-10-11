@@ -1,0 +1,73 @@
+{
+ "replies": [
+  {
+   "error": "overloaded"
+  },
+  {
+   "error": "overloaded"
+  },
+  {
+   "say": "Let me look around first.",
+   "tools": [
+    [
+     "list_files",
+     {}
+    ]
+   ]
+  },
+  {
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "../rein.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "That file is outside the project. Reading the code instead.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "calc.py"
+     }
+    ],
+    [
+     "read_file",
+     {
+      "path": "test_calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "add() subtracts. Fixing it.",
+   "tools": [
+    [
+     "edit_file",
+     {
+      "path": "calc.py",
+      "old_text": "return a - b",
+      "new_text": "return a + b"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Now I will run the test.",
+   "tools": [
+    [
+     "run_command",
+     {
+      "command": "python test_calc.py"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "Fixed add() in calc.py. The test passes."
+  }
+ ]
+}

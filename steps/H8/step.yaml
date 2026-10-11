@@ -1,0 +1,377 @@
+module: H8
+number: 8
+title: Guards that stop the run well
+goal: Give each guard its own final status, and close the books when a run is interrupted.
+requires_python: '3.11'
+theory: 'Chapter 10: loop state and stopping well'
+lines_after: 635
+size: rein.py grows to 635 lines
+chunks:
+- id: 8a
+  title: 'Two helpers: the loop detector and the closing of open calls'
+  explain: LoopDetector counts the same call in a row. close_open_calls() answers every pending tool request after
+    an interrupt, so the history stays valid when the run stops.
+  hunks:
+  - where: above THE LOOP
+    diff: |
+      +# ============ GUARDS: a run ends for a reason ============
+      +
+      +class LoopDetector:
+      +    """Notices the exact same tool call, made several times in a row."""
+      +
+      +    def __init__(self, limit=3):
+      +        self.limit, self.last, self.count = limit, None, 0
+      +
+      +    def repeated(self, call):
+      +        key = call.name + json.dumps(call.input, sort_keys=True)
+      +        self.count = self.count + 1 if key == self.last else 1
+      +        self.last = key
+      +        return self.count >= self.limit
+      +
+      +
+      +def close_open_calls(messages):
+      +    """After an interrupt, every tool request still needs a result, or the history is broken."""
+      +    last = messages[-1]
+      +    if last["role"] == "assistant":
+      +        ids = [b["id"] for b in last["content"] if b.get("type") == "tool_use"]
+      +        if ids:
+      +            messages.append({"role": "user", "content": [
+      +                {"type": "tool_result", "tool_use_id": i, "content": "Interrupted before it ran.",
+      +                 "is_error": True} for i in ids]})
+      +
+      +
+       # ============ THE LOOP ============
+- id: 8b
+  title: Settings for the guards
+  explain: 'The settings: token_budget is the most tokens one run may spend, the agent gets a loop detector, and
+    --budget sets the budget on the command line.'
+  hunks:
+  - where: 'in class Agent: __init__'
+    diff: |2
+               self.breaker = CircuitBreaker()
+               self.attempt = 1
+      +        self.loops = LoopDetector()  # counts the same call in a row
+  - where: in class Config
+    diff: |2
+           context_limit: int = 20000       # estimated tokens before old history is compacted
+      +    token_budget: int = 200000       # hard stop: the most tokens one run may spend
+  - where: 'in main(): the --budget argument'
+    diff: |2
+           p.add_argument("--context-limit", type=int, default=20000, help="compact above this many tokens")
+      +    p.add_argument("--budget", type=int, default=200000, help="stop after spending this many tokens")
+  - where: 'in main(): the agent''s config'
+    diff: |2
+               context_limit=args.context_limit,
+      +        token_budget=args.budget,
+- id: 8c
+  title: One status per ending
+  explain: Every ending names its schema status. The turn limit ends with max_turns, and the token budget ends with
+    budget. A guard writes its guard line first, with its limit and value. The breaker from step 7 still ends with
+    circuit_open.
+  hunks:
+  - where: in Agent.finish()
+    diff: |
+      -        ended = {"done": "done", "stopped": "max_turns", "circuit_open": "circuit_open"}[status]  # the schema's names
+      +        ended = status  # every ending now names its schema status
+  - where: new method in class Agent
+    diff: |
+      +    def guard_stop(self, guard, limit, value, note):
+      +        """A guard ends the run: it records which guard fired, and the run ends with that guard's own status."""
+      +        self.trace.event("guard", "loop", guard=guard, limit=limit, value=value)
+      +        return self.finish(guard, note)
+      +
+           def on_retry(self, attempt, delay, wait, error):
+  - where: 'in Agent.run(): the token budget'
+    diff: |2
+                   self.trace.turn = turn
+      +            spent = self.tokens_in + self.tokens_out
+      +            if spent >= self.cfg.token_budget:
+      +                return self.guard_stop("budget", self.cfg.token_budget, spent,
+      +                                       f"token budget spent ({spent} of {self.cfg.token_budget})")
+  - where: 'in Agent.run(): the turn limit'
+    diff: |
+      -        return self.finish("stopped", f"turn limit reached ({self.cfg.max_turns} model calls)")
+      +        return self.guard_stop("max_turns", self.cfg.max_turns, self.cfg.max_turns,
+      +                               f"turn limit reached ({self.cfg.max_turns} model calls)")
+- id: 8d
+  title: The loop detector and the loop guard
+  explain: 'A repeated call is answered, not run: the model is told to try something else. If it repeats the same
+    call after that answer, the loop guard ends the run with status loop, as ENGINE section 9 says.'
+  hunks:
+  - where: 'in Agent.run_tool(): the loop detector'
+    diff: |
+      +        elif self.loops.repeated(call):  # the same call again and again: answer it, do not run it
+      +            output, is_error = f"You made this exact call {self.loops.limit} times in a row. It is not helping. Try something else.", True
+               else:
+                   verdict = self.check_permission(tool, call)
+  - where: 'in Agent.run(): after the tool results'
+    diff: |2
+                   messages.append({"role": "user", "content": results})
+      +            if self.loops.count > self.loops.limit:  # the model repeated the call after the redirect
+      +                return self.guard_stop("loop", self.loops.limit, self.loops.count,
+      +                                       f"the model repeated the same call {self.loops.count} times; the run is stuck")
+- id: 8e
+  title: Closing the books on Ctrl+C
+  explain: Ctrl+C closes the books. run() now wraps loop(). On KeyboardInterrupt it records an interrupt line with
+    the pending tool calls, answers each of them with an interrupted result, and ends with status interrupted, so
+    the history stays valid.
+  hunks:
+  - where: 'in Agent.run(): the Ctrl+C handler'
+    diff: |2
+           def run(self, task):
+               messages = [{"role": "user", "content": task}]
+      +        try:
+      +            return self.loop(task, messages)
+      +        except KeyboardInterrupt:  # Ctrl+C: stop cleanly and leave a valid history behind
+      +            pending = [b["id"] for b in messages[-1]["content"] if b.get("type") == "tool_use"] \
+      +                if messages[-1]["role"] == "assistant" else []
+      +            self.trace.event("interrupt", "loop", by="human", pending=pending)
+      +            close_open_calls(messages)
+      +            return self.finish("interrupted", f"interrupted; history left valid ({len(messages)} messages)")
+      +
+      +    def loop(self, task, messages):
+               self.say("task", task)
+- id: 8f
+  title: Cut-off replies
+  explain: A reply cut off at max_tokens with no tool call is kept, and the model is asked to continue exactly where
+    it stopped. Continuing is cheaper and more faithful than asking for a summary.
+  hunks:
+  - where: 'in Agent.run(): a reply cut off'
+    diff: |
+      +            if reply.stop_reason == "max_tokens" and not reply.tool_calls:
+      +                self.say("cut", "the reply was cut off; asking the model to continue")
+      +                messages.append({"role": "user", "content": "You were cut off. Continue exactly where you stopped."})
+      +                continue
+                   if not reply.tool_calls:
+                       return self.finish("done", f"after {turn} model calls", reply.text)
+- id: 8g
+  title: A time limit on the clock
+  explain: --max-seconds sets a time limit for the run, counted on the clock Rein already uses. Before each model
+    call, Rein checks the time; once the limit is reached it writes a guard line and ends with max_time. Under --fake
+    the clock moves only by the waits, so the limit measures the waits the run would have made.
+  hunks:
+  - where: in class Config
+    diff: |2
+           token_budget: int = 200000       # hard stop: the most tokens one run may spend
+      +    max_seconds: int | None = None   # the time limit for one run, in seconds on the clock; None is off
+  - where: 'in Agent.loop(): the start'
+    diff: |2
+           def loop(self, task, messages):
+      +        self.started = self.clock.now()  # the time guard counts from here
+               self.say("task", task)
+  - where: 'in Agent.loop(): before each model call'
+    diff: |2
+                                              f"token budget spent ({spent} of {self.cfg.token_budget})")
+      +            elapsed = self.clock.now() - self.started
+      +            if self.cfg.max_seconds is not None and elapsed >= self.cfg.max_seconds:
+      +                return self.guard_stop("max_time", self.cfg.max_seconds, int(elapsed),
+      +                                       f"time limit reached: {elapsed:.1f} seconds spent, the limit is {self.cfg.max_seconds}")
+  - where: 'in main(): the --max-seconds argument'
+    diff: |2
+           p.add_argument("--budget", type=int, default=200000, help="stop after spending this many tokens")
+      +    p.add_argument("--max-seconds", type=int, default=None, help="stop when the run has taken this many seconds; off by default")
+  - where: 'in main(): the agent''s config'
+    diff: |2
+               token_budget=args.budget,
+      +        max_seconds=args.max_seconds,
+checkpoint:
+  setup:
+  - reset_demo
+  argv:
+  - Fix the failing test in calc.py
+  - --fake
+  - scenarios/08_stuck.json
+  - --mode
+  - auto
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: Let me read it again, to be sure.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: One more time.
+             tool   read_file {"path": "calc.py"}
+             error  You made this exact call 3 times in a row. It is not helping. Try something else.
+    turn 4   model: You are right, I am going in circles. The bug is that add() subtra
+    cut      the reply was cut off; asking the model to continue
+    turn 5   model: cts instead of adding. Fixing it now.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 6   model: Running the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 7   model: Fixed add() in calc.py. The test passes.
+    done     after 7 model calls
+    trace    7 model_call, 4 permission, 5 tool_call, 2067 tokens (details in trace.jsonl)
+  explain: The scripted model reads the same file three times, then gets cut off mid-word. The loop detector answers
+    the third identical read with an error instead of running it, Rein asks for the rest of the cut-off reply, and
+    the run ends done after seven calls.
+breaks:
+- id: no-continue
+  title: No continuation for a cut-off reply
+  explain: Delete the four lines that ask the model to continue a reply cut off at max_tokens, and run the checkpoint.
+    The run now ends at turn 4 with half a sentence reported as done. The harness mistook ran out of room for finished.
+    Put the lines back.
+  change:
+    patch:
+      diff: |
+        -            if reply.stop_reason == "max_tokens" and not reply.tool_calls:
+        -                self.say("cut", "the reply was cut off; asking the model to continue")
+        -                messages.append({"role": "user", "content": "You were cut off. Continue exactly where you stopped."})
+        -                continue
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: Let me read it again, to be sure.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: One more time.
+             tool   read_file {"path": "calc.py"}
+             error  You made this exact call 3 times in a row. It is not helping. Try something else.
+    turn 4   model: You are right, I am going in circles. The bug is that add() subtra
+    done     after 4 model calls
+    trace    4 model_call, 2 permission, 3 tool_call, 701 tokens (details in trace.jsonl)
+- id: limit-2
+  title: A loop limit of two
+  explain: Set the LoopDetector limit to 2. The second identical read is redirected, and the third is a call the
+    model made after the redirect, so the loop guard ends the run at turn 3 with status loop. Would 2 be too strict
+    for real work? Think of a model that reads a file again after editing it.
+  change:
+    patch:
+      diff: |
+        -        self.limit, self.last, self.count = limit, None, 0
+        +        self.limit, self.last, self.count = 2, None, 0
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: Let me read it again, to be sure.
+             tool   read_file {"path": "calc.py"}
+             error  You made this exact call 2 times in a row. It is not helping. Try something else.
+    turn 3   model: One more time.
+             tool   read_file {"path": "calc.py"}
+             error  You made this exact call 2 times in a row. It is not helping. Try something else.
+    loop     the model repeated the same call 3 times; the run is stuck
+    trace    3 model_call, 1 permission, 3 tool_call, 1 guard, 414 tokens (details in trace.jsonl)
+- id: budget
+  title: A budget of 700 tokens
+  explain: Run the checkpoint with --budget 700. After turn 4 Rein has spent 701 tokens, so it stops before making
+    another call. The status is budget, and a guard line says why.
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/08_stuck.json
+    - --mode
+    - auto
+    - --budget
+    - '700'
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: Let me read it again, to be sure.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: One more time.
+             tool   read_file {"path": "calc.py"}
+             error  You made this exact call 3 times in a row. It is not helping. Try something else.
+    turn 4   model: You are right, I am going in circles. The bug is that add() subtra
+    cut      the reply was cut off; asking the model to continue
+    budget   token budget spent (701 of 700)
+    trace    4 model_call, 2 permission, 3 tool_call, 1 guard, 701 tokens (details in trace.jsonl)
+- id: loop-ignored
+  title: A call repeated after the redirect
+  explain: Run the loop script, where the model reads calc.py six times in a row and ignores the redirect. The third
+    call is redirected; the fourth is the first call made after the redirect, so the run ends with status loop.
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/08_loop.json
+    - --mode
+    - auto
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Reading calc.py again.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: Reading calc.py again.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: Reading calc.py again.
+             tool   read_file {"path": "calc.py"}
+             error  You made this exact call 3 times in a row. It is not helping. Try something else.
+    turn 4   model: Reading calc.py again.
+             tool   read_file {"path": "calc.py"}
+             error  You made this exact call 3 times in a row. It is not helping. Try something else.
+    loop     the model repeated the same call 4 times; the run is stuck
+    trace    4 model_call, 2 permission, 4 tool_call, 1 guard, 709 tokens (details in trace.jsonl)
+- id: max-seconds
+  title: A one-second limit on the outage
+  explain: 'Run the outage script with --max-seconds 1. On the virtual clock the first turn waits 0.46 and 0.88
+    seconds for its two retries, 1.34 seconds in all. The second turn would start past the one-second limit, so
+    the run ends with max_time after one failed call. The breaker needs three, so it never opens: the time guard,
+    not the breaker, ends this run.'
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/07_outage.json
+    - --mode
+    - auto
+    - --max-seconds
+    - '1'
+  expected: |
+    task     Fix the failing test in calc.py
+    retry    attempt 1 failed (overloaded); waiting up to 0.5s
+    retry    attempt 2 failed (overloaded); waiting up to 1.0s
+    error    model call failed (overloaded); breaker at 1 of 3
+    max_time time limit reached: 1.3 seconds spent, the limit is 1
+    trace    2 retry_wait, 1 model_error, 1 guard, 0 tokens (details in trace.jsonl)
+- id: ctrl-c
+  title: Ctrl+C while the edit runs
+  explain: 'Simulate Ctrl+C while the edit runs: run_tool raises KeyboardInterrupt before the edit. The run stops
+    with status interrupted, the pending edit gets an interrupted result, and the history stays valid. Without close_open_calls()
+    the next call would be rejected.'
+  change:
+    patch:
+      diff: |2
+                 """Run one tool call. Any error becomes a message for the model, never a crash."""
+        +        if call.name == "edit_file": raise KeyboardInterrupt  # simulated Ctrl+C during the edit
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: Let me read it again, to be sure.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: One more time.
+             tool   read_file {"path": "calc.py"}
+             error  You made this exact call 3 times in a row. It is not helping. Try something else.
+    turn 4   model: You are right, I am going in circles. The bug is that add() subtra
+    cut      the reply was cut off; asking the model to continue
+    turn 5   model: cts instead of adding. Fixing it now.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+    interrupted interrupted; history left valid (11 messages)
+    trace    5 model_call, 2 permission, 3 tool_call, 1 interrupt, 1083 tokens (details in trace.jsonl)

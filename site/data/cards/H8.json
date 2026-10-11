@@ -1,0 +1,58 @@
+[
+ {
+  "back": "The max_turns status. It writes a guard line with the limit and the turn count first.",
+  "front": "What does the turn guard end the run with, and what does it record?",
+  "id": "H8-k1",
+  "objective": "H8.o1",
+  "type": "term"
+ },
+ {
+  "back": "The input and output tokens spent so far against the budget, before each new call.",
+  "front": "What does the token budget guard compare, and when?",
+  "id": "H8-k2",
+  "objective": "H8.o1",
+  "type": "term"
+ },
+ {
+  "back": "It answers with an error and does not run the call, so the model is told to try something else.",
+  "front": "What does the loop detector do on the third identical call?",
+  "id": "H8-k3",
+  "objective": "H8.o1",
+  "type": "term"
+ },
+ {
+  "back": "When the model repeats the same call after the redirect. The run ends with the loop status.",
+  "front": "When does the loop guard end the run?",
+  "id": "H8-k4",
+  "objective": "H8.o1",
+  "type": "term"
+ },
+ {
+  "back": "A tool result for every pending tool request, saying it was interrupted before it ran.",
+  "front": "What does close_open_calls() add after an interrupt?",
+  "id": "H8-k5",
+  "objective": "H8.o2",
+  "type": "term"
+ },
+ {
+  "back": "A request with no result right after it fails with the standard tool_use error, so the run cannot resume.",
+  "front": "Why must every tool request get a result?",
+  "id": "H8-k6",
+  "objective": "H8.o2",
+  "type": "term"
+ },
+ {
+  "back": "An interrupt after an edit leaves a tool request with no result, and the next prompt is rejected.",
+  "front": "What does the interrupt tape show?",
+  "id": "H8-k7",
+  "objective": "H8.o3",
+  "type": "term"
+ },
+ {
+  "back": "The clock's time since the run began, against --max-seconds, before each model call. Under --fake the clock moves only by the waits.",
+  "front": "What does the time guard compare, and on which clock?",
+  "id": "H8-k8",
+  "objective": "H8.o1",
+  "type": "term"
+ }
+]

@@ -1,0 +1,32 @@
+[
+ {
+  "id": "H9-s1",
+  "model_answer": "The loop sees a reply with no tool calls and treats it as a claim. It runs the check through run_command's path, and the return code decides. A failure goes back as the next message with its output, and the loop carries on. The model fixes the work and claims done again, and the gate checks again. After the last fix round a failing check ends the run as unverified, never as done.",
+  "objectives": [
+   "H9.o1",
+   "H9.o2"
+  ],
+  "prompt": "Walk me through what happens when your model says done and the check fails.",
+  "rubric": [
+   "Says the done reply is treated as a claim, not a result",
+   "Says the harness runs the check and the return code decides",
+   "Says the failure output goes back as the next message",
+   "Says a run that still fails ends as unverified, never done"
+  ]
+ },
+ {
+  "id": "H9-s2",
+  "model_answer": "The model's run of the tests is itself a claim: it can run the wrong command, edit the test, or report a pass it did not see. The gate runs the command the harness chose, records a verify line for each claim, and only a pass ends the run as done. On the false-done tape the model says the tests pass without running them, and the gate catches that claim.",
+  "objectives": [
+   "H9.o2",
+   "H9.o3"
+  ],
+  "prompt": "A teammate says the model ran the tests itself, so the gate is redundant. What do you say?",
+  "rubric": [
+   "Says the model's own test run is a claim the harness should check",
+   "Says the gate runs a command the harness chose",
+   "Says each claim gets a verify line in the trace",
+   "Names the false-done tape as the case the gate catches"
+  ]
+ }
+]

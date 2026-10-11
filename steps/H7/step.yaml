@@ -1,0 +1,362 @@
+module: H7
+number: 7
+title: Retries and a breaker
+goal: Wait and try again when a failure is transient, and stop with a clear status when the breaker opens.
+requires_python: '3.11'
+theory: 'Chapter 15: errors are the main path'
+lines_after: 568
+size: rein.py grows to 568 lines
+chunks:
+- id: 7a
+  title: A clock you can skip
+  explain: 'A Clock has now() and sleep(). Under --fake the clock is virtual: sleep() only moves it forward, so
+    a retry that would wait eight seconds costs no time, and the run repeats exactly. With a real model, RealClock
+    really waits.'
+  hunks:
+  - where: at the imports
+    diff: |2
+       import os
+      +import random
+       import re
+  - where: above the MODEL section
+    diff: |
+      +# ============ CLOCK: time you can skip ============
+      +
+      +class RealClock:
+      +    """Real time: a retry really waits. Used when Rein talks to a real model."""
+      +
+      +    def __init__(self):
+      +        self.start = time.monotonic()
+      +
+      +    def now(self):
+      +        return time.monotonic() - self.start
+      +
+      +    def sleep(self, seconds):
+      +        time.sleep(seconds)
+      +
+      +
+      +class VirtualClock:
+      +    """Virtual time: sleep() only moves the clock forward, so a retry costs no waiting. Used under --fake."""
+      +
+      +    def __init__(self):
+      +        self.t = 0.0
+      +
+      +    def now(self):
+      +        return self.t
+      +
+      +    def sleep(self, seconds):
+      +        self.t += seconds
+      +
+      +
+       # ============ MODEL: one interface, two models ============
+- id: 7b
+  title: Teach the model to fail, and the real model to retry
+  explain: 'TransientError names a failure worth retrying, and the kind the trace records it as. The FakeModel learns
+    to fail: a script step with "error" raises one, and "forever": true keeps the outage going. The real model turns
+    off the SDK''s own retries (max_retries=0), so the harness owns the one retry policy, and every SDK error worth
+    retrying becomes a TransientError. A scripted error can carry retry_after_ms; the live path reads the retry-after
+    header in seconds, and a missing or non-numeric value counts as 0.'
+  hunks:
+  - where: 'in the MODEL section: TransientError'
+    diff: " # ============ MODEL: one interface, two models ============\n+\n+class TransientError(Exception):\n\
+      +    \"\"\"A failure worth retrying. kind is one of the model_error types the trace records.\"\"\"\n+\n+ \
+      \   def __init__(self, kind, message=\"\", retry_after_ms=0):\n+        super().__init__(message or kind)\n\
+      +        self.kind = kind\n+        self.retry_after_ms = retry_after_ms  # the provider's retry-after in\
+      \ ms; 0 when none was sent\n+\n \n @dataclass\n class ToolCall:\n"
+  - where: in FakeModel.call()
+    diff: |2
+               step = self.replies.pop(0) if self.replies else {"say": "(the script has run out)"}
+      +        if "error" in step:  # a script can pretend the API failed
+      +            if step.get("forever"):  # an outage that never ends
+      +                self.replies.insert(0, step)
+      +            raise TransientError(step["error"], retry_after_ms=step.get("retry_after_ms", 0))
+  - where: above class ClaudeModel
+    diff: |
+      +# SDK errors worth another try, and the trace type each one is recorded as.
+      +RETRYABLE = {"RateLimitError": "rate_limit", "APIConnectionError": "api_error",
+      +             "InternalServerError": "api_error", "OverloadedError": "overloaded"}
+      +
+      +
+      +def read_retry_after(error):
+      +    """The retry-after header of the error's response, in milliseconds. A missing or non-numeric value is 0."""
+      +    response = getattr(error, "response", None)
+      +    headers = getattr(response, "headers", None)
+      +    try:
+      +        return max(0, int(float(headers.get("retry-after", 0)) * 1000))
+      +    except (AttributeError, TypeError, ValueError, OverflowError):
+      +        return 0
+      +
+      +
+       class ClaudeModel:
+  - where: in ClaudeModel.__init__()
+    diff: |
+      -        self.client = anthropic.Anthropic()  # reads your ANTHROPIC_API_KEY
+      +        self.client = anthropic.Anthropic(max_retries=0)  # reads your ANTHROPIC_API_KEY; the harness owns retries
+  - where: in ClaudeModel.call()
+    diff: |
+      -        r = self.client.messages.create(model=self.model, max_tokens=4096,
+      -                                        system=system, messages=messages, **extra)
+      +        try:
+      +            r = self.client.messages.create(model=self.model, max_tokens=4096,
+      +                                            system=system, messages=messages, **extra)
+      +        except Exception as e:
+      +            if type(e).__name__ not in RETRYABLE:
+      +                raise  # a bug or a bad request: waiting will not help
+      +            raise TransientError(RETRYABLE[type(e).__name__], str(e), read_retry_after(e)) from e
+- id: 7c
+  title: Retries and a breaker
+  explain: with_retries() tries again after a TransientError, waiting half a second, then one, then two, never more
+    than the cap. The wait is a random share of that, so clients that failed together do not retry together. The
+    wait is never shorter than the retry-after the provider sent. CircuitBreaker counts failed calls in a row; after
+    three, it is open.
+  hunks:
+  - where: above THE LOOP
+    diff: |
+      +# ============ RECOVERY: counted, limited, able to give up ============
+      +
+      +def with_retries(call, clock, rng, on_retry, attempts=3, base=0.5, cap=8.0):
+      +    """Try again after a transient failure, waiting longer each time, with jitter."""
+      +    for attempt in range(1, attempts + 1):
+      +        try:
+      +            return call()
+      +        except TransientError as e:
+      +            if attempt == attempts:
+      +                raise  # out of attempts: the caller decides
+      +            delay = min(cap, base * 2 ** (attempt - 1))  # 0.5s, 1s, 2s, 4s... never above cap
+      +            wait = delay * rng.uniform(0.5, 1.0)  # jitter: clients that failed together do not retry together
+      +            wait = max(wait, e.retry_after_ms / 1000)  # never sooner than the provider asks (retry-after)
+      +            on_retry(attempt, delay, wait, e)
+      +            clock.sleep(wait)
+      +
+      +
+      +class CircuitBreaker:
+      +    """After `threshold` failed calls in a row, stop trying and say so clearly."""
+      +
+      +    def __init__(self, threshold=3):
+      +        self.threshold, self.failures = threshold, 0
+      +
+      +    def record(self, ok):
+      +        self.failures = 0 if ok else self.failures + 1
+      +
+      +    @property
+      +    def is_open(self):
+      +        return self.failures >= self.threshold
+      +
+      +
+       # ============ THE LOOP ============
+- id: 7d
+  title: The clock in the trace and in main()
+  explain: 'The Tracer reads t from the clock, so under --fake t counts the waits the run would have made, without
+    making them. main() chooses the clock and the random source: virtual and seeded under --fake, real otherwise.'
+  hunks:
+  - where: in class Tracer
+    diff: |
+      -    def __init__(self, path, run):
+      -        self.path, self.run = path, run
+      -        self.start = time.monotonic()
+      +    def __init__(self, path, run, clock):
+      +        self.path, self.run, self.clock = path, run, clock
+  - where: in the trace event
+    diff: |
+      -        record = {"v": 1, "run": self.run, "seq": self.seq, "t": int((time.monotonic() - self.start) * 1000),
+      +        record = {"v": 1, "run": self.run, "seq": self.seq, "t": int(self.clock.now() * 1000),
+  - where: above the dollars helper
+    diff: |
+      +def ascii_only(error):
+      +    """The trace stores messages as printable ASCII, so a stray character from an SDK error cannot break it."""
+      +    return "".join(ch if " " <= ch <= "~" else "?" for ch in str(error))
+      +
+       # Dollars per million tokens (facts: models.sonnet-5-5-price). A model without an entry costs 0.
+  - where: 'in main(): the clock'
+    diff: |2
+           if args.fake:
+               with open(args.fake) as f:
+                   scenario = json.load(f)
+               model = FakeModel(scenario["replies"])
+      +        clock, rng = VirtualClock(), random.Random(0)  # no waiting, and the same jitter every run
+           else:
+               model = ClaudeModel()
+      +        clock, rng = RealClock(), random.Random()
+  - where: 'in main(): the tracer and the agent'
+    diff: |
+      -    trace = Tracer(cfg.trace_file, run=f"rein:{cfg.mode}:0")
+      -    agent = Agent(model, cfg, trace)
+      +    trace = Tracer(cfg.trace_file, run=f"rein:{cfg.mode}:0", clock=clock)
+      +    agent = Agent(model, cfg, trace, clock, rng)
+- id: 7e
+  title: Wire it in
+  explain: A failed call is recorded as model_error, with the retry-after value it read; each wait is a retry_wait
+    line, and the breaker's opening is a breaker line. When the breaker opens, the run ends with the status circuit_open.
+    A successful call resets it.
+  hunks:
+  - where: in class Agent
+    diff: |2
+       class Agent:
+      -    def __init__(self, model, cfg, trace):
+      +    def __init__(self, model, cfg, trace, clock, rng):
+               self.model, self.cfg, self.trace = model, cfg, trace
+      +        self.clock, self.rng = clock, rng  # virtual under --fake: a retry costs no real time
+      +        self.breaker = CircuitBreaker()
+      +        self.attempt = 1
+  - where: in Agent.finish()
+    diff: |
+      -        ended = {"done": "done", "stopped": "max_turns"}[status]  # the schema's status names
+      +        ended = {"done": "done", "stopped": "max_turns", "circuit_open": "circuit_open"}[status]  # the schema's names
+  - where: new method in class Agent
+    diff: |
+      +    def on_retry(self, attempt, delay, wait, error):
+      +        self.attempt = attempt + 1  # the next try is the one after this
+      +        if error.retry_after_ms > 0 and error.retry_after_ms / 1000 >= wait:  # retry-after set the wait
+      +            text = f"attempt {attempt} failed ({error}); retry-after asks for {error.retry_after_ms / 1000:.1f}s, waiting that long"
+      +        else:
+      +            text = f"attempt {attempt} failed ({error}); waiting up to {delay:.1f}s"
+      +        self.say("retry", text)
+      +        self.trace.event("retry_wait", "errors", attempt=attempt, wait_ms=int(wait * 1000))
+      +
+           def run(self, task):
+  - where: 'in Agent.run(): the model call'
+    diff: |
+      -            reply = self.model.call(SYSTEM_PROMPT, messages, self.specs)
+      +            self.attempt = 1  # the first try; on_retry counts the ones after it
+      +            try:
+      +                reply = with_retries(lambda: self.model.call(SYSTEM_PROMPT, messages, self.specs),
+      +                                     self.clock, self.rng, on_retry=self.on_retry)
+      +            except TransientError as e:
+      +                self.breaker.record(ok=False)
+      +                self.say("error", f"model call failed ({e}); breaker at "
+      +                                  f"{self.breaker.failures} of {self.breaker.threshold}")
+      +                self.trace.event("model_error", "errors", type=e.kind, attempt=self.attempt,
+      +                                 retry_after_ms=e.retry_after_ms, message=ascii_only(e))
+      +                if self.breaker.is_open:
+      +                    self.trace.event("breaker", "errors", state="open", failures=self.breaker.failures)
+      +                    return self.finish("circuit_open", "the model API keeps failing; the circuit breaker is open")
+      +                continue
+      +            self.breaker.record(ok=True)
+  - where: 'in Agent.run(): model_call'
+    diff: |
+      -            self.trace.event("model_call", "loop", attempt=1, tokens_in=reply.usage["input_tokens"])
+      +            self.trace.event("model_call", "loop", attempt=self.attempt, tokens_in=reply.usage["input_tokens"])
+checkpoint:
+  setup:
+  - reset_demo
+  argv:
+  - Fix the failing test in calc.py
+  - --fake
+  - scenarios/07_outage.json
+  - --mode
+  - auto
+  expected: |
+    task     Fix the failing test in calc.py
+    retry    attempt 1 failed (overloaded); waiting up to 0.5s
+    retry    attempt 2 failed (overloaded); waiting up to 1.0s
+    error    model call failed (overloaded); breaker at 1 of 3
+    retry    attempt 1 failed (overloaded); waiting up to 0.5s
+    retry    attempt 2 failed (overloaded); waiting up to 1.0s
+    error    model call failed (overloaded); breaker at 2 of 3
+    retry    attempt 1 failed (overloaded); waiting up to 0.5s
+    retry    attempt 2 failed (overloaded); waiting up to 1.0s
+    error    model call failed (overloaded); breaker at 3 of 3
+    circuit_open the model API keeps failing; the circuit breaker is open
+    trace    6 retry_wait, 3 model_error, 1 breaker, 0 tokens (details in trace.jsonl)
+  explain: 'The outage script never stops failing. Each call makes three attempts with growing waits. The breaker
+    opens after the third failed call, so the run ends with circuit_open instead of retrying forever. No real seconds
+    pass: the waits are on the virtual clock.'
+breaks:
+- id: one-try
+  title: One attempt, no retries
+  explain: 'Set attempts to 1 in with_retries(). There are no retries now: every failure goes straight to the breaker.
+    Three failed calls open it, and the run ends with three model_error lines and no retry_wait.'
+  change:
+    patch:
+      diff: |
+        -def with_retries(call, clock, rng, on_retry, attempts=3, base=0.5, cap=8.0):
+        +def with_retries(call, clock, rng, on_retry, attempts=1, base=0.5, cap=8.0):
+  expected: |
+    task     Fix the failing test in calc.py
+    error    model call failed (overloaded); breaker at 1 of 3
+    error    model call failed (overloaded); breaker at 2 of 3
+    error    model call failed (overloaded); breaker at 3 of 3
+    circuit_open the model API keeps failing; the circuit breaker is open
+    trace    3 model_error, 1 breaker, 0 tokens (details in trace.jsonl)
+- id: rate-limit
+  title: A rate limit with retry-after
+  explain: The first reply is a rate limit that carries retry_after_ms 2000. Rein waits the two seconds the provider
+    asked for, which is longer than its own backoff of half a second. The wait is on the virtual clock, so the run
+    takes no real time.
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/07_limit.json
+    - --mode
+    - auto
+  expected: |
+    task     Fix the failing test in calc.py
+    retry    attempt 1 failed (rate_limit); retry-after asks for 2.0s, waiting that long
+    turn 1   model: Let me look around first.
+             tool   list_files {}
+             allow  read-only tool
+             result AGENTS.md | app.log | calc.py | test_calc.py
+    turn 2   model asks for tools
+             tool   read_file {"path": "../rein.py"}
+             allow  read-only tool
+             error  '../rein.py' is outside the project. Use a path inside it.
+    turn 3   model: That file is outside the project. Reading the code instead.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+             tool   read_file {"path": "test_calc.py"}
+             allow  read-only tool
+             result 1| from calc import add | 2| | 3| | 4| def test_add(): | 5|     result = add(2, 3) |
+    turn 4   model: add() subtracts. Fixing it.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 5   model: Now I will run the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 6   model: Fixed add() in calc.py. The test passes.
+    done     after 6 model calls
+    trace    1 retry_wait, 6 model_call, 6 permission, 6 tool_call, 1993 tokens (details in trace.jsonl)
+- id: hiccup
+  title: A hiccup, then the work
+  explain: 'Run the hiccup script instead: two failures, then the work gets done. The retries show up as retry_wait
+    lines, and the breaker never opens.'
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/07_retry.json
+    - --mode
+    - auto
+  expected: |
+    task     Fix the failing test in calc.py
+    retry    attempt 1 failed (overloaded); waiting up to 0.5s
+    retry    attempt 2 failed (overloaded); waiting up to 1.0s
+    turn 1   model: Let me look around first.
+             tool   list_files {}
+             allow  read-only tool
+             result AGENTS.md | app.log | calc.py | test_calc.py
+    turn 2   model asks for tools
+             tool   read_file {"path": "../rein.py"}
+             allow  read-only tool
+             error  '../rein.py' is outside the project. Use a path inside it.
+    turn 3   model: That file is outside the project. Reading the code instead.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+             tool   read_file {"path": "test_calc.py"}
+             allow  read-only tool
+             result 1| from calc import add | 2| | 3| | 4| def test_add(): | 5|     result = add(2, 3) |
+    turn 4   model: add() subtracts. Fixing it.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 5   model: Now I will run the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 6   model: Fixed add() in calc.py. The test passes.
+    done     after 6 model calls
+    trace    2 retry_wait, 6 model_call, 6 permission, 6 tool_call, 1993 tokens (details in trace.jsonl)

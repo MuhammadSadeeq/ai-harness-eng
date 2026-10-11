@@ -1087,6 +1087,15 @@
           <span class="taught">Taught in <a href="modules/why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></span>
         </p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-guard">
+        <h3 class="term-name"><dfn id="term-guard">guard</dfn></h3>
+        <p class="term-def">A check that ends a run for a reason the harness can name: the turn limit, the token budget, or a call repeated after it was redirected. Each guard writes a guard line, then ends the run with its own status.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/rein-8-guards.html">H8 · Rein 8: guards that stop the run well</a></span>
+        </p>
+        <p class="term-alias">Also written: guards</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-guide">
         <h3 class="term-name"><dfn id="term-guide">guide</dfn></h3>
         <p class="term-def">A control that steers the model before the work, such as a rule in the prompt or a template.</p>
@@ -2586,6 +2595,15 @@
         </p>
         <p class="term-alias">Also written: token budgets</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-token-estimate">
+        <h3 class="term-name"><dfn id="term-token-estimate">token estimate</dfn></h3>
+        <p class="term-def">A rough count of a request&#x27;s size, at about four characters per token, used to decide when to act. It is an estimate, not the provider&#x27;s count.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/rein-6-a-context-budget.html">H6 · Rein 6: a context budget</a></span>
+        </p>
+        <p class="term-alias">Also written: token estimates</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-tokenizer">
         <h3 class="term-name"><dfn id="term-tokenizer">tokenizer</dfn></h3>
         <p class="term-def">The part that cuts text into tokens. Real tokenizers differ, so a count from the course is an estimate.</p>
@@ -2812,6 +2830,14 @@
         </p>
         <p class="term-alias">Also written: untrusted</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-unverified">
+        <h3 class="term-name"><dfn id="term-unverified">unverified</dfn></h3>
+        <p class="term-def">A run status. The model said done, but the check still failed after the last fix round. The run ends as unverified, never as done.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/rein-9-the-verification-gate.html">H9 · Rein 9: the verification gate</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-usage">
         <h3 class="term-name"><dfn id="term-usage">usage</dfn></h3>
         <p class="term-def">The counts in a response: how many input and output tokens the call used. The cost of a call comes from them.</p>
@@ -2856,6 +2882,15 @@
           <span class="taught">Taught in <a href="modules/verification.html">C11 · Verification: done is a claim</a></span>
         </p>
         <p class="term-alias">Also written: verification gates</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-virtual-clock">
+        <h3 class="term-name"><dfn id="term-virtual-clock">virtual clock</dfn></h3>
+        <p class="term-def">A clock that moves forward by the waits it is asked to sleep, without waiting in real time. A retry costs no time, so a test of backoff runs at once and repeats exactly.</p>
+        <p class="term-meta">
+          <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
+          <span class="taught">Taught in <a href="modules/rein-7-retries-and-a-breaker.html">H7 · Rein 7: retries and a breaker</a></span>
+        </p>
+        <p class="term-alias">Also written: virtual clocks</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-virtual-machine">
         <h3 class="term-name"><dfn id="term-virtual-machine">virtual machine</dfn></h3>
@@ -2924,7 +2959,7 @@
       </div>
     </section>
     </div>
-    <p class="glossary-count" data-glossary-count>316 terms</p>
+    <p class="glossary-count" data-glossary-count>320 terms</p>
     <!-- /gen:glossary -->
   </section>
 </main>
