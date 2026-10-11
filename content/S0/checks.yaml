@@ -1,7 +1,7 @@
 - id: S0-p1
   objective: S0.o2
   mode: predict
-  question: "The model says the tests pass, and the run ends as done. What does the harness do next?"
+  question: "The model says the tests pass. What does the harness do next?"
   options:
     - text: "It runs the checks before it accepts the claim."
       why: "Tempting. Many harnesses do this. This board has no check, so nothing runs the tests."

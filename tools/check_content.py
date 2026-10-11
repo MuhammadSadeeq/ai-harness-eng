@@ -51,6 +51,8 @@ SKIP_TAGS = frozenset({"pre", "code", "script", "style", "svg"})
 # Regions the generator fills (tools/gen_pages.py). Their text is generated, so the prose rules
 # skip it; their markup must be one of GEN_TAGS (B9).
 GENERATED_REGIONS = frozenset({"module-meta", "course-map", "topbar", "footer"})
+# The Next link (BP-7.2 B1): required on a module on the course path, and on no other page.
+PATH_REGION = "next"
 GEN_TAGS = frozenset({
     "nav", "ol", "ul", "li", "a", "span", "p", "div", "svg", "use", "path", "circle",
     "line", "rect", "g", "title", "strong", "em", "section", "h3",
@@ -688,16 +690,19 @@ def check_page(path: Path, ctx: Context, report: Report) -> bool:
     _check_typed_counts(main, shown, report)
     _check_terms(page, module, ctx, shown, report)
     _check_hygiene(page, shown, report)
-    _check_generated(page, shown, report)
+    _check_generated(page, shown, report, on_path=module_id in ctx.course["path"])
     return len(report.problems) == before
 
 
-def _check_generated(page: Page, shown: str, report: Report) -> None:
+def _check_generated(page: Page, shown: str, report: Report, *, on_path: bool) -> None:
     """[B9] The generated regions exist, and their markup is one the generator writes."""
     regions = [e for e in descendants(page.root) if e.tag == "#gen"]
     names = {e.attrs.get("name", "") for e in regions}
-    for name in sorted(GENERATED_REGIONS - names):
+    required = GENERATED_REGIONS | ({PATH_REGION} if on_path else set())
+    for name in sorted(required - names):
         report.problem(shown, 0, f"[B9] the page needs a generated region gen:{name}")
+    if not on_path and PATH_REGION in names:
+        report.problem(shown, 0, f"[B9] gen:{PATH_REGION} is only for a module on the path")
     for region in regions:
         name = region.attrs.get("name", "")
         for element in descendants(region):

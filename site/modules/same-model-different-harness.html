@@ -57,6 +57,7 @@
     <p class="plate-label">S0 · Part S · Start here</p>
     <h1>Same model, different harness</h1>
     <p class="lede">The same model gives different results in different harnesses. This module shows you the harness, and how to check one.</p>
+    <p class="meta">Built agents before? <a href="#placement">Take the placement</a> at the end of this module to see where to start.</p>
     <!-- gen:module-meta -->
     <div class="module-meta" data-module-id="S0" data-glyph="shield">
       <ul class="wire-chips">
@@ -89,10 +90,10 @@
   <div class="layout">
   <section class="beat" data-beat="break" id="break">
     <h2>A run that says it is done</h2>
-    <p>This run edits a file, runs the tests and says it is done. Predict what the harness does next.</p>
+    <p>This run edits a file and says it is done. Predict what the harness does next. After the replay you hunt for the moment it went wrong, and the hunt ends by asking which wire to fix: a wire is one part of a harness, and See names all eight.</p>
 
     <hx-check mode="predict" src="S0" item="S0-p1" for="break-run">
-      <p>Without JavaScript, the question is: the model says the tests pass, and the run ends as done. What does the harness do next?</p>
+      <p>Without JavaScript, the question is: the model says the tests pass. What does the harness do next?</p>
       <ol>
         <li>It runs the checks before it accepts the claim.</li>
         <li>It sends the model a message and asks it to run the tests.</li>
@@ -132,10 +133,10 @@
     <p>The new board has a verify gate. When the model says done, the harness runs the checks. If they fail, the model gets the failure and another try. The number of tries is the verify retries setting.</p>
     <p>Each <dfn data-term="trial">trial</dfn> is one run with one seed. The <dfn data-term="pass-rate">pass rate</dfn> is the share of trials that pass. Move the retries and watch it change.</p>
     <p>A bench runs the same setup over many seeds. Each seed gives one scripted run, so the two boards meet the same runs. Change one setting at a time. If two settings change together, you cannot tell which one moved the result.</p>
-    <p>The knob sets the verify retries on the new board. The old board has no verify gate, so the knob does not touch it. The bench marks par: the setting with the lowest worst-case cost that still passes at least as many runs as the old board.</p>
+    <p>The knob sets the verify retries on the new board. The old board has no verify gate, so the knob does not touch it. The bench marks par: the cheapest setting that passes the most runs.</p>
 
     <figure>
-      <hx-bench id="retries" tape="s0-false-done" old="s0-old" new="s0-new" knob="verify_gate.max_feedback" knob-min="0" knob-max="4" trials="20" par="cheapest-worst-case" data-objective="S0.o3">
+      <hx-bench id="retries" tape="s0-false-done" old="s0-old" new="s0-new" knob="verify_gate.max_feedback" knob-min="0" knob-max="4" trials="20" par="most-passes" data-objective="S0.o3">
         <p>Without JavaScript, the bench runs the old board and the new board on the same seeds, with the verify retries set by you.</p>
       </hx-bench>
       <figcaption>FIG S0.2 · The verify retries bench. Try this: set the retries to 0, then to 1, and read the pass rate.</figcaption>
@@ -146,7 +147,7 @@
 
   <section class="beat" data-beat="check" id="check">
     <h2>Check your reading</h2>
-    <p>A pass rate is a number about a setup, not about a model. When you report one, name the setup: the board, the setting and the seeds. Answer each question. The reason for each answer shows after you choose.</p>
+    <p>A pass rate is a number about a setup, not about a model. When you report one, name the setup: the board, the setting and the seeds. Answer each question. The reason for each answer shows after you check it.</p>
 
     <hx-check mode="check" src="S0" item="S0-c1" data-objective="S0.o1">
       <p>Without JavaScript, the question is: in a replay, what is one step?</p>
@@ -215,7 +216,7 @@
       <figcaption>FIG S0.3 · Your Harness Board. Try this: tap a spoke and read its card.</figcaption>
     </figure>
     <p>Export your progress from the footer, which saves a file you can import on another device. Then answer the placement questions to see where to start. The answers only suggest a start. Every module stays open.</p>
-    <hx-placement src="S0" data-objective="S0.o5">
+    <hx-placement id="placement" src="S0" data-objective="S0.o5">
       <p>Without JavaScript, the placement asks fifteen questions about the course and suggests where to start. It is not a test, and every module stays open.</p>
     </hx-placement>
 
@@ -228,6 +229,9 @@
     </aside>
   </section>
 
+    <!-- gen:next -->
+    <nav class="module-next" aria-label="Next on the path"><a class="btn" href="what-a-model-does.html">Next: A1 · What a model does</a></nav>
+    <!-- /gen:next -->
     <aside class="rail" aria-label="Course map" tabindex="0">
       <details class="course-map" open>
         <summary>Course map</summary>

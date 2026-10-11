@@ -3,7 +3,8 @@
   prompt: "Change one harness setting and tell me what it did to the pass rate, with your numbers."
   model_answer: >-
     I changed the verify retries and ran the bench on the same seeds. With no retries, the new board
-    passed fewer trials, because a false done was accepted. With one retry, every trial passed. The
+    passed 13 of 20, the same as the old board: the gate stopped each false done as unverified, but
+    nothing sent the model back to fix it. With one retry, all 20 passed. The
     model was the same in both runs, so the change came from the harness. That is the course thesis:
     same model, different harness, different results. I would report the pass rate with its trial count.
   rubric:

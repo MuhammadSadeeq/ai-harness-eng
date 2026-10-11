@@ -367,6 +367,10 @@ basis for Phase 1, and answered SPEC §14:
   pages but vendor/, proto/ and labs not in accepted-labs.txt) in chunks
   that together list it exactly. Every part must exit 0; the gate record
   is the parts' logs.
+- Amended by the owner, 2026-10-11 (Phase 7): for the remaining launch
+  fixes, test only what a fix touches (its checkers and tests, and QA on the
+  pages it changes) and push; no full gate. GitHub's CI runs every check on
+  each push, and the director reads it.
 - Default QA (and CI) checks `site/labs/` pages only once the director accepts
   them (`tools/qa/accepted-labs.txt`, director-owned), matching the component
   registry (only accepted components load on real pages). Builders keep

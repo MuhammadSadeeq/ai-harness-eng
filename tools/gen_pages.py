@@ -143,6 +143,9 @@ FOREIGN_REGIONS: dict[str, tuple[str, ...]] = {"glossary.html": ("glossary",)}
 # the footer region carries the facts line now, so the migration removes the old region with it.
 RETIRED_REGIONS: dict[str, tuple[str, ...]] = {"index.html": ("facts",), "design.html": ("facts",)}
 MODULE_REGIONS: tuple[str, ...] = ("module-meta", "course-map") + CHROME_REGIONS
+# The Next link at the end of a module on the course path (BP-7.2 B1). Off the path, no region.
+NEXT_REGION = "next"
+RAIL_TAG = '<aside class="rail"'
 BEAT_LABEL: dict[str, str] = {
     "break": "Break",
     "see": "See",
@@ -496,12 +499,37 @@ def module_meta_lines(d: Data, mod: Json) -> list[str]:
     return lines
 
 
+def next_lines(d: Data, mod: Json) -> list[str] | None:
+    """The Next link at the end of a module on the path: the next module's page, or on the last
+    module a link back to the course map. None for a module off the path."""
+    path: list[str] = d.course["path"]
+    if mod["id"] not in path:
+        return None
+    index = path.index(mod["id"])
+    if index == len(path) - 1:
+        link = '<a class="btn" href="../index.html">Back to the course map</a>'
+    else:
+        nxt = modules_by_id(d)[path[index + 1]]
+        label = esc(f"Next: {nxt['id']} · {nxt['title']}")
+        if nxt["slug"] in d.built:
+            link = f'<a class="btn" href="{nxt["slug"]}.html">{label}</a>'
+        else:
+            link = (
+                f'<span class="btn" aria-disabled="true">{label} '
+                '<span class="soon">soon</span></span>'
+            )
+    return [f'<nav class="module-next" aria-label="Next on the path">{link}</nav>']
+
+
 def render_module(d: Data, slug: str) -> dict[str, list[str]]:
     mod = module_by_slug(d, slug)
     regions = {
         "module-meta": module_meta_lines(d, mod),
         "course-map": course_map_lines(d, prefix="", current=slug),
     }
+    nxt = next_lines(d, mod)
+    if nxt is not None:
+        regions[NEXT_REGION] = nxt
     regions.update(render_chrome(d, f"modules/{slug}.html"))
     return regions
 
@@ -806,6 +834,23 @@ def marker_pair(region: str) -> str:
     return f"<!-- gen:{region} -->\n<!-- /gen:{region} -->\n"
 
 
+def migrate_next(text: str, page: str) -> str:
+    """Adds the Next region's markers on a module page on the path, before the course rail (the
+    region follows the last beat). Idempotent: a page with the markers is left alone."""
+    if f"<!-- gen:{NEXT_REGION} -->" in text:
+        return text
+    at = text.find(RAIL_TAG)
+    if at < 0:
+        raise GenError(f"{page}: no place for the {NEXT_REGION} region (no {RAIL_TAG!r})")
+    start = text.rfind("\n", 0, at) + 1
+    lead = re.fullmatch(r"[ \t]*", text[start:at])
+    if lead is None:
+        raise GenError(f"{page}: the course rail does not start its line")
+    indent = lead.group(0)
+    markers = f"{indent}<!-- gen:{NEXT_REGION} -->\n{indent}<!-- /gen:{NEXT_REGION} -->\n"
+    return text[:start] + markers + text[start:]
+
+
 def place_markers(text: str, page: str, region: str, block: re.Pattern[str],
                   anchor: re.Pattern[str] | None, fallback: str) -> str:
     """A hand-written block is replaced by the region's markers. Without one, the markers go after
@@ -840,12 +885,15 @@ def page_text(root: Path, page: str, regions: dict[str, list[str]]) -> tuple[str
         raise GenError(f"missing page {path}")
     text = path.read_text(encoding="utf-8")
     markers = set(re.findall(r"<!-- gen:([a-z-]+) -->", text))
-    expected = regions_for(page)
+    # A module page's regions depend on its place on the path, so its render says which it has.
+    expected = tuple(regions) if page.startswith("modules/") else regions_for(page)
     known = set(expected) | set(FOREIGN_REGIONS.get(page, ())) | set(RETIRED_REGIONS.get(page, ()))
     unknown = markers - known
     if unknown:
         raise GenError(f"{page}: unknown generated region(s) {sorted(unknown)}")
     new = migrate_chrome(text, page)
+    if NEXT_REGION in expected:
+        new = migrate_next(new, page)
     for region in expected:
         new = splice(new, page, region, regions[region])
     return text, new

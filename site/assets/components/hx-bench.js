@@ -4,11 +4,11 @@
 import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runBench } from "../sim/index.js";
-import { summarize, wilson, percent, histogram, TURN_EDGES, sweepPar } from "./lib/stats.js";
+import { summarize, wilson, percent, histogram, TURN_EDGES, sweepPar, sweepMostPasses } from "./lib/stats.js";
 import { historyWords } from "./lib/board-tags.js";
 import { formatCost, formatInt, formatMs, plural, pricingIsUsd, statusWords, isPass } from "./lib/format.js";
 
-const KNOB_LABELS = {
+export const KNOB_LABELS = {
   "turn_limit.max_turns": "Turn limit",
   "token_budget.max_tokens": "Token budget",
   "loop_detect.window": "Loop window",
@@ -18,16 +18,65 @@ const KNOB_LABELS = {
   "breaker.threshold": "Breaker threshold",
   "verify_gate.max_feedback": "Verify retries",
 };
-const PAR_MODE = "cheapest-worst-case";
+// The unit each knob's value is counted in, for the par readout (singular, plural): "PAR 1 retry", "PAR 0 turns".
+export const KNOB_UNITS = {
+  "turn_limit.max_turns": ["turn", "turns"],
+  "token_budget.max_tokens": ["token", "tokens"],
+  "loop_detect.window": ["tool call", "tool calls"],
+  "output_cap.max_tokens": ["token", "tokens"],
+  "retry.max_attempts": ["attempt", "attempts"],
+  "retry.base_ms": ["ms", "ms"],
+  "breaker.threshold": ["failed call", "failed calls"],
+  "verify_gate.max_feedback": ["retry", "retries"],
+};
+const PAR_MODES = ["cheapest-worst-case", "most-passes"];
 const REVEAL_AFTER = 3;
-const GUARD_STATUSES = new Set(["max_turns", "budget", "loop", "circuit_open"]);
-const GOAL_LINE = "Find the cheapest worst case without losing a passing run.";
-const PAR_LINE = "Par: the cheapest worst case that keeps every passing run.";
+// Each par mode has its own goal line, par line and chart caption (BP-7.2 A2).
+export const GOAL_LINE = {
+  "cheapest-worst-case": "Find the cheapest worst case without losing a passing run.",
+  "most-passes": "Find the setting that passes the most runs.",
+};
+export const PAR_LINE = {
+  "cheapest-worst-case": "Par: the cheapest worst case that passes at least as many runs as the old board.",
+  "most-passes": "Par: the cheapest setting that passes the most runs.",
+};
+export const SHADE_LINE = {
+  "cheapest-worst-case": "Shaded values lose a passing run. Dots are the values you tried.",
+  "most-passes": "Shaded values pass fewer runs than the best. Dots are the values you tried.",
+};
+const SHADE_ARIA = {
+  "cheapest-worst-case": "shaded values lose a passing run",
+  "most-passes": "shaded values pass fewer runs than the best",
+};
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
 let uidCount = 0;
 const BOARD_KEYS = ["old", "new"];
-const MARK_KEY = [["check", "pass"], ["bang", "false done"], ["noentry", "stopped by a limit"], ["pause", "interrupted"], ["cross", "error"]];
+// The key lines, in the order they show. A mark's name is its glyph's name in glyphs.svg.
+export const MARK_KEY = [
+  ["check", "pass"],
+  ["bang", "false done"],
+  ["shield-fail", "unverified: the checks still fail"],
+  ["noentry", "stopped by a limit"],
+  ["pause", "interrupted"],
+  ["permission-deny", "the model declined"],
+  ["cross", "error"],
+];
+// Every status the engine can end a run with (ENGINE.md §7 and Rein's max_time). A status not listed here gets the
+// error mark, never the pause mark: "interrupted" is only for the status that means it.
+const STATUS_MARK = {
+  unverified: "shield-fail",
+  refused: "permission-deny",
+  max_turns: "noentry",
+  budget: "noentry",
+  loop: "noentry",
+  circuit_open: "noentry",
+  max_tokens_reply: "noentry",
+  max_time: "noentry",
+  interrupted: "pause",
+  error: "cross",
+};
+
 
 const yieldToLoop = () => new Promise((resolve) => {
   const channel = new MessageChannel();
@@ -128,12 +177,15 @@ export function modulesText(board) {
 }
 
 /** The mark for a trial (the words come from statusWords). */
-function markOf(trial) {
+export function markOf(trial) {
   if (isPass(trial.status, trial.passed)) return "check";
   if (trial.status === "done") return "bang";
-  if (trial.status === "error") return "cross";
-  if (GUARD_STATUSES.has(trial.status)) return "noentry";
-  return "pause";
+  return STATUS_MARK[trial.status] ?? "cross";
+}
+
+/** The par readout's words for a value of the knob: "1 retry", "0 turns". */
+export function unitWords(unit, value) {
+  return plural(value, unit[0], unit[1]);
 }
 
 const sameStats = (a, b) => ["n", "passed", "worst_turns", "worst_cost", "mean_cost", "worst_ms", "mean_ms"]
@@ -228,7 +280,7 @@ function drawTurns(width, uid, oldTrials, newTrials) {
 
 // Every knob value: worst-case cost; infeasible values hatched, tried values dotted.
 function drawSolution(width, uid, model) {
-  const { rows, cfg, tried, current, par, revealed, priced } = model;
+  const { rows, cfg, tried, current, par, revealed, priced, shadeAria } = model;
   const W = Math.round(width);
   const H = 252;
   const x0 = 88;
@@ -242,7 +294,7 @@ function drawSolution(width, uid, model) {
   const colW = Math.max(2, (x1 - x0) / Math.max(1, rows.length - 1));
   const svg = svgNode("svg", {
     class: "solution", viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img",
-    "aria-label": "Worst-case cost for every knob value; shaded values lose a passing run.",
+    "aria-label": `Worst-case cost for every knob value; ${shadeAria}.`,
   });
   svg.append(hatch(`${uid}-hatch2`, "hatch-rule"));
   for (const r of rows) {
@@ -299,7 +351,10 @@ export class HxBench extends HxElement {
     this.priced = this.pricedOld && this.pricedNew;
     this.knobCfg = this.parseKnob();
     const par = this.getAttribute("par");
-    if (par !== null && (par !== PAR_MODE || !this.knobCfg)) throw new Error("hx-bench: par needs knob and cheapest-worst-case");
+    if (par !== null && (!PAR_MODES.includes(par) || !this.knobCfg)) {
+      throw new Error("hx-bench: par needs knob and cheapest-worst-case or most-passes");
+    }
+    this.parMode = par;
     this.parOn = par !== null;
     this.cursor = { board: "old", k: 0 };
     this.selected = null;
@@ -327,7 +382,7 @@ export class HxBench extends HxElement {
     if (min > max || step < 1) throw new Error("hx-bench: bad knob range");
     const [module, param] = name.split(".");
     const current = this.newBoard.modules?.[module]?.[param];
-    const cfg = { name, module, param, label, min, max, step };
+    const cfg = { name, module, param, label, min, max, step, unit: KNOB_UNITS[name] };
     return { ...cfg, start: this.snap(Number.isInteger(current) ? current : min, cfg) };
   }
 
@@ -459,14 +514,15 @@ export class HxBench extends HxElement {
     const cfg = this.knobCfg;
     const values = [];
     for (let v = cfg.min; v <= cfg.max; v += cfg.step) values.push(v);
-    const oldPassed = summarize(await this.series(this.oldBoard)).passed;
+    const oldPassed = this.parMode === "cheapest-worst-case" ? summarize(await this.series(this.oldBoard)).passed : null;
     const rows = [];
     for (const value of values) {
       const s = summarize(await this.series(this.boardAt(value)));
       rows.push({ value, passed: s.passed, worst_cost: s.worst_cost });
       this.setState({ sweepProgress: rows.length });
     }
-    this.setState({ sweep: { ...sweepPar(rows, oldPassed), total: values.length } });
+    const sweep = this.parMode === "most-passes" ? sweepMostPasses(rows) : sweepPar(rows, oldPassed);
+    this.setState({ sweep: { ...sweep, total: values.length } });
   }
 
   derive() {
@@ -495,7 +551,7 @@ export class HxBench extends HxElement {
   liveText(d, staleLine) {
     if (this.state.running) return "Running…";
     if (staleLine) return staleLine;
-    if (d.run) return honestSentence(d.run, this.N, this.priced) + (d.atPar ? ` ${PAR_LINE}` : "");
+    if (d.run) return honestSentence(d.run, this.N, this.priced) + (d.atPar ? ` ${PAR_LINE[this.parMode]}` : "");
     return "";
   }
 
@@ -610,7 +666,7 @@ export class HxBench extends HxElement {
 
   buildPar() {
     const dom = this.dom;
-    dom.goal = el("p", { class: "goal", text: GOAL_LINE });
+    dom.goal = el("p", { class: "goal", text: GOAL_LINE[this.parMode] });
     const win = (label) => {
       const value = el("p", { class: "readout-value" });
       const note = el("p", { class: "readout-note" });
@@ -623,9 +679,9 @@ export class HxBench extends HxElement {
     dom.parState = el("p", { class: "par-state" });
     dom.solutionHost = el("div", { class: "solution-host" });
     dom.solutionFigure = el("figure", { class: "plate instrument solution-plate", "aria-labelledby": `${this.uid}-solution` },
-      el("div", { class: "plate-head" }, el("span", { class: "fig-label", id: `${this.uid}-solution`, text: "Every turn limit" })),
+      el("div", { class: "plate-head" }, el("span", { class: "fig-label", id: `${this.uid}-solution`, text: `Every value of ${this.knobCfg.label.toLowerCase()}` })),
       dom.solutionHost,
-      el("p", { class: "chart-summary", text: "Shaded values lose a passing run. Dots are the values you tried." }));
+      el("p", { class: "chart-summary", text: SHADE_LINE[this.parMode] }));
     return el("section", { class: "bench-par" },
       dom.goal,
       el("div", { class: "instrument readout-grid par-readouts" }, dom.pPass.node, dom.pWorst.node, dom.pTried.node, dom.pPar.node),
@@ -792,8 +848,8 @@ export class HxBench extends HxElement {
       dom.pPar.value.textContent = "None in range";
       dom.parState.textContent = "No value in this range keeps every passing run.";
     } else {
-      dom.pPar.value.textContent = plural(sweep.par.value, "turn");
-      dom.parState.textContent = d.atPar ? PAR_LINE : "Par is in the chart. Keep looking.";
+      dom.pPar.value.textContent = unitWords(cfg.unit, sweep.par.value);
+      dom.parState.textContent = d.atPar ? PAR_LINE[this.parMode] : "Par is in the chart. Keep looking.";
     }
     dom.solutionFigure.hidden = !sweep;
     const solutionWidth = sweep ? Math.floor(dom.solutionHost.getBoundingClientRect().width) : 0;
@@ -810,6 +866,7 @@ export class HxBench extends HxElement {
       par: sweep.par,
       revealed: d.revealed,
       priced,
+      shadeAria: SHADE_ARIA[this.parMode],
     }));
   }
 

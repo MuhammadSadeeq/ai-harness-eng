@@ -80,11 +80,30 @@ export function sweepPar(rows, oldPassed) {
   const scored = [...rows]
     .sort((a, b) => a.value - b.value)
     .map((r) => ({ value: r.value, passed: r.passed, worst_cost: r.worst_cost, feasible: r.passed >= oldPassed }));
+  return { rows: scored, par: cheapestFeasible(scored) };
+}
+
+/** The cheapest feasible row (the lowest worst_cost; scored is in ascending value, so a tie keeps the smallest). */
+function cheapestFeasible(scored) {
   let par = null;
   for (const r of scored) {
     if (r.feasible && (par === null || r.worst_cost < par.worst_cost)) par = r;
   }
-  return { rows: scored, par: par === null ? null : { value: par.value, passed: par.passed, worst_cost: par.worst_cost } };
+  return par === null ? null : { value: par.value, passed: par.passed, worst_cost: par.worst_cost };
+}
+
+/**
+ * The most-passes par sweep (the goal is passing more runs, not keeping the old board's passes). rows as in sweepPar.
+ * A value is feasible when it passes the most runs of any value in the sweep. Par is the feasible value with the
+ * lowest worst_cost; on a tie, the smallest value. par is null when there are no rows.
+ */
+export function sweepMostPasses(rows) {
+  const scored = [...rows].sort((a, b) => a.value - b.value);
+  const best = scored.reduce((max, r) => Math.max(max, r.passed), -Infinity);
+  const marked = scored.map((r) => ({
+    value: r.value, passed: r.passed, worst_cost: r.worst_cost, feasible: r.passed === best,
+  }));
+  return { rows: marked, par: cheapestFeasible(marked) };
 }
 
 /** Text for a value in the reading format of hx-num: int, usd (no "≈" mark: the prose adds it) or percent. */

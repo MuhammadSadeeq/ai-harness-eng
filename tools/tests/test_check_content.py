@@ -506,3 +506,34 @@ def test_a_card_fact_must_be_a_verified_registry_entry(
     report = _with_card_fact(copy_fixture(tmp_path), fact, registry)
     assert [p.message for p in report.problems if "[B10]" in p.message] == [expected]
 
+
+
+def _without_next_region(text: str) -> str:
+    start = text.index("<!-- gen:next -->")
+    end = text.index("<!-- /gen:next -->") + len("<!-- /gen:next -->\n")
+    return text[:start] + text[end:]
+
+
+def test_a_module_on_the_path_without_the_next_region_fails_b9(tmp_path: Path) -> None:
+    page = _good_page_copy(tmp_path)
+    page.write_text(_without_next_region(page.read_text(encoding="utf-8")), encoding="utf-8")
+    report, _ = run_on(page.parents[2], [page])
+    assert [p.message for p in report.problems] == [
+        "[B9] the page needs a generated region gen:next"
+    ]
+
+
+def test_a_module_off_the_path_with_the_next_region_fails_b9(tmp_path: Path) -> None:
+    # python-dataclasses is a primer, and the fixture path has only S0 and A1.
+    root = copy_fixture(tmp_path)
+    page = root / "site" / "modules" / "python-dataclasses.html"
+    text = page.read_text(encoding="utf-8")
+    block = (
+        '<!-- gen:next -->\n<nav class="module-next" aria-label="Next on the path">'
+        '<a class="btn" href="index.html">Back to the course map</a></nav>\n<!-- /gen:next -->\n'
+    )
+    page.write_text(text.replace("</main>", block + "</main>", 1), encoding="utf-8")
+    report, _ = run_on(root, [page])
+    assert [p.message for p in report.problems] == [
+        "[B9] gen:next is only for a module on the path"
+    ]

@@ -8,7 +8,7 @@ import { plural } from "./lib/format.js";
 import { localToday } from "./lib/leitner.js";
 import { tally, suggestStart, skippable } from "./lib/placement.js";
 
-const NOT_A_TEST = "This is not a test you can fail. It only suggests where to start, and every module stays open.";
+const NOT_A_TEST = "Nothing here is graded. It only suggests where to start, and every module stays open.";
 const DONT_KNOW = "dk";
 
 function el(tag, attrs = {}, ...children) {

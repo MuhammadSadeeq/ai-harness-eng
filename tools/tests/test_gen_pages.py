@@ -305,3 +305,56 @@ def test_the_glossary_region_is_left_to_its_own_generator(tmp_path: Path) -> Non
     assert main(["--root", str(root)]) == 0
     after = region((root / "site" / "glossary.html").read_text(encoding="utf-8"), "glossary")
     assert after == before
+
+
+def _next_region(text: str) -> str:
+    return region(text, "next")
+
+
+def test_a_module_on_the_path_links_to_the_next_module_before_the_rail(tmp_path: Path) -> None:
+    # B2 (the-agent-loop) is followed on the path by H0 (rein-setup), whose page is built here.
+    root = _module_root(tmp_path)
+    (root / "site" / "modules" / "rein-setup.html").write_text(MODULE_PAGE, encoding="utf-8")
+    assert main(["--root", str(root)]) == 0
+    text = (root / "site" / "modules" / "the-agent-loop.html").read_text(encoding="utf-8")
+    link = _next_region(text)
+    assert 'class="btn" href="rein-setup.html">Next: H0 · Rein setup</a>' in link
+    assert 'aria-label="Next on the path"' in link
+    assert text.index("<!-- gen:next -->") < text.index('<aside class="rail"')
+    assert main(["--check", "--root", str(root)]) == 0
+
+
+def test_the_last_module_on_the_path_links_back_to_the_course_map(tmp_path: Path) -> None:
+    root = _module_root(tmp_path, slug="twelve-weeks-after")
+    assert main(["--root", str(root)]) == 0
+    text = (root / "site" / "modules" / "twelve-weeks-after.html").read_text(encoding="utf-8")
+    assert 'href="../index.html">Back to the course map</a>' in _next_region(text)
+    assert "Next:" not in _next_region(text)
+
+
+def test_a_module_off_the_path_gets_no_next_region(tmp_path: Path) -> None:
+    root = _module_root(tmp_path, slug="git-primer")
+    assert main(["--root", str(root)]) == 0
+    text = (root / "site" / "modules" / "git-primer.html").read_text(encoding="utf-8")
+    assert "gen:next" not in text
+    assert main(["--check", "--root", str(root)]) == 0
+
+
+def test_an_unbuilt_next_module_is_text_not_a_link(tmp_path: Path) -> None:
+    # S0's next module is A1 (what-a-model-does), which has no page in this copy.
+    root = _module_root(tmp_path, slug="same-model-different-harness")
+    assert main(["--root", str(root)]) == 0
+    page = root / "site" / "modules" / "same-model-different-harness.html"
+    link = _next_region(page.read_text(encoding="utf-8"))
+    assert 'href="what-a-model-does.html"' not in link
+    assert 'aria-disabled="true"' in link and 'class="soon"' in link
+
+
+def test_the_next_region_is_written_once_and_a_second_run_changes_nothing(tmp_path: Path) -> None:
+    root = _module_root(tmp_path)
+    assert main(["--root", str(root)]) == 0
+    page = root / "site" / "modules" / "the-agent-loop.html"
+    first = page.read_text(encoding="utf-8")
+    assert main(["--root", str(root)]) == 0
+    assert page.read_text(encoding="utf-8") == first
+    assert first.count("<!-- gen:next -->") == 1

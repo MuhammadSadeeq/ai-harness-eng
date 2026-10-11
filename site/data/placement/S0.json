@@ -52,7 +52,7 @@
    ],
    "part": "S",
    "question": "What does your Harness Board show?",
-   "why": "It is the Turn Clock with a board: the harness's settings beside the run."
+   "why": "It is the clock of a run, with the harness's settings beside it."
   },
   {
    "id": "S-4",
@@ -124,7 +124,7 @@
    ],
    "part": "A",
    "question": "What does a model carry from one call to the next?",
-   "why": "Tempting. The course shows what each call carries in A3."
+   "why": "Each call carries only what the harness sends with it. A3 shows what that is."
   },
   {
    "id": "A-4",

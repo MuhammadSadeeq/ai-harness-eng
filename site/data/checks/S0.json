@@ -19,7 +19,7 @@
    }
   ],
   "outcome": "It ended as done. The tests still failed, and nothing checked the claim.",
-  "question": "The model says the tests pass, and the run ends as done. What does the harness do next?"
+  "question": "The model says the tests pass. What does the harness do next?"
  },
  {
   "answer": 1,
