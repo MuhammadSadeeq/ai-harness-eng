@@ -531,3 +531,13 @@ basis for Phase 1, and answered SPEC §14:
   for the learner's machine instead of a Run button. The learner's code is
   the book's real code; only the operating system is stood in for, and the
   page says so (BP-4.0-steps-platform).
+
+## D-057 G1 requires C8, so the product modules can name MCP
+
+- **Context:** G1 maps Claude Code onto all eight wires, and its tools wire
+  is MCP servers (fact `harnesses.cc-mcp`). MCP is taught in C8, which was
+  not among G1's prerequisites, so the term check (B7) refused the name and
+  G1 and G2 had to say "a protocol", which is vaguer than the fact.
+- **Decision:** C8 joins G1's prerequisites (with C1, C2, C5–C7, C9, C11 and
+  C12); G2, G3 and G4 inherit it through G1. Both are core modules on the
+  default path, so the path's length does not change.

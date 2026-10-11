@@ -230,7 +230,7 @@ S0 → A1 → A2 → A3 → A4 → A5 → A6 → A7 → B1 → B2 → H0 → H1 
 
 | Code | Module | Kind | Wires | Needs | Min | Law |
 |---|---|---|---|---|---|---|
-| G1 | Inside Claude Code, wire by wire (dated) | concept | Control Context Loop Errors Tools Permissions Verification Observability | C1, C2, C5, C6, C7, C9, C11, C12 | 40 | Read real harnesses wire by wire. |
+| G1 | Inside Claude Code, wire by wire (dated) | concept | Control Context Loop Errors Tools Permissions Verification Observability | C1, C2, C5, C6, C7, C8, C9, C11, C12 | 40 | Read real harnesses wire by wire. |
 | G2 | Codex and open harnesses: what everyone agrees on (dated) | concept | Loop Permissions Context Tools | G1, F3 | 40 | Laws are what everyone agrees on; the rest is taste. |
 | G3 | Reading a real harness repository (dated) | concept | Loop Tools Observability | G1, D1 | 60 | Find the loop first. |
 | G4 | The daily craft | core | Observability Verification Control | G1, D3 | 50 | Name the failure before you fix it. |
