@@ -30,9 +30,9 @@
   mode: check
   question: "A model grader agrees with human labels on 62 of 100 cases. What does the agreement rate tell you, and what does it not?"
   options:
-    - text: "It is 62 %, but it does not say which way the errors fall; count the false passes apart."
+    - text: "It is 62%, but it does not say which way the errors fall; count the false passes apart."
       why: "Right. The same agreement can hide many false passes or many false fails."
-    - text: "The grader is right 62 % of the time about every kind of run."
+    - text: "The grader is right 62% of the time about every kind of run."
       why: "Wrong. An agreement rate is one number over all cases; it does not describe each kind of run."
     - text: "The grader's 38 misses all lean one way."
       why: "Wrong. The agreement rate does not say that; the false passes and false fails must be counted."

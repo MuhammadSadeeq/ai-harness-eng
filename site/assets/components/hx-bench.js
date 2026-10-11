@@ -95,6 +95,12 @@ export function pricedOn(tape, board) {
 const isFixedWait = (p) => Number.isInteger(p.base_ms) && p.base_ms === p.cap_ms && p.jitter === "none" && Number.isInteger(p.max_attempts);
 
 /** "turn limit 12, token budget 60,000", or "no modules plugged". */
+/** The modules line of a rack. The title already names a module it lists (Sessions, progress file), so it is left out: "" hides it. */
+export function rackModulesLine(board) {
+  const text = modulesText(board);
+  return String(board.label ?? "").toLowerCase().includes(text.toLowerCase()) ? "" : text;
+}
+
 export function modulesText(board) {
   const parts = [];
   for (const [module, params] of Object.entries(board.modules ?? {})) {
@@ -652,8 +658,11 @@ export class HxBench extends HxElement {
     const run = d.run;
     const priced = this.priced;
     const boardNow = this.boardAt(this.knobCfg ? this.state.knob : null);
-    dom.modules.old.textContent = modulesText(this.oldBoard);
-    dom.modules.new.textContent = modulesText(boardNow);
+    for (const [key, board] of [["old", this.oldBoard], ["new", boardNow]]) {
+      const line = rackModulesLine(board);
+      dom.modules[key].textContent = line;
+      dom.modules[key].hidden = line === "";
+    }
     for (const key of BOARD_KEYS) {
       const trials = run ? (key === "old" ? run.oldTrials : run.newTrials) : null;
       const present = new Set((trials ?? []).map(markOf));

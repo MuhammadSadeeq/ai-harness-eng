@@ -120,11 +120,11 @@
 
     <h3>Check your reading</h3>
     <hx-check mode="check" src="D2" item="D2-c0" data-objective="D2.o1">
-      <p>Without JavaScript, the question is: a tool works on 80 % of tries, and each try is independent. Over three tries, what are pass@3 and pass^3?</p>
+      <p>Without JavaScript, the question is: a tool works on 80% of tries, and each try is independent. Over three tries, what are pass@3 and pass^3?</p>
       <ol>
-        <li>About 99 % and about 51 %.</li>
-        <li>About 80 % and about 80 %.</li>
-        <li>About 51 % and about 99 %.</li>
+        <li>About 99% and about 51%.</li>
+        <li>About 80% and about 80%.</li>
+        <li>About 51% and about 99%.</li>
       </ol>
     </hx-check>
     <hx-check mode="check" src="D2" item="D2-c1" data-objective="D2.o2">
@@ -167,12 +167,12 @@
 
     <figure>
       <hx-dice id="dice" p="80" k="3" tasks="20" seed="1" data-objective="D2.o1">
-        <p>Without JavaScript, the lab shows one try rate and a number of tries, with pass@k and pass^k as percentages. At eighty per cent and three tries, pass@k is about 99 % and pass^k about 51 %.</p>
+        <p>Without JavaScript, the lab shows one try rate and a number of tries, with pass@k and pass^k as percentages. At eighty per cent and three tries, pass@k is about 99% and pass^k about 51%.</p>
       </hx-dice>
       <figcaption>FIG D2.1 · Pass@k and pass^k for one try rate. Try this: set the tries to one, then to three, and read both numbers each time.</figcaption>
     </figure>
 
-    <p>At a try rate of <hx-num for="dice" name="p">80</hx-num> % and <hx-num for="dice" name="k">3</hx-num> tries, pass@k is <hx-num for="dice" name="pass_at_k">—</hx-num> % and pass^k is <hx-num for="dice" name="pass_hat_k">—</hx-num> %. Change either setting and both move.</p>
+    <p>At a try rate of <hx-num for="dice" name="p">80</hx-num>% and <hx-num for="dice" name="k">3</hx-num> tries, pass@k is <hx-num for="dice" name="pass_at_k">—</hx-num>% and pass^k is <hx-num for="dice" name="pass_hat_k">—</hx-num>%. Change either setting and both move.</p>
 
     <p>Now write the interval. A pass rate needs its Wilson interval before anyone calls two results different.</p>
     <hx-kata kata="D2-wilson" data-objective="D2.o2">
@@ -190,7 +190,7 @@
       </hx-bench>
       <figcaption>FIG D2.2 · The same tape on two boards. Try this: run the bench, then read the two counts and say which difference you would trust.</figcaption>
     </figure>
-    <p>On the old board, <hx-num for="d2-bench" name="passed.old">—</hx-num> of <hx-num for="d2-bench" name="trials">20</hx-num> runs pass. On the new board, <hx-num for="d2-bench" name="passed.new">—</hx-num> of <hx-num for="d2-bench" name="trials">20</hx-num> pass. The difference is small and inside the noise. A different batch of seeds can reverse its sign, and the harmless change is the only thing that differs.</p>
+    <p>After the run, on the old board, <hx-num for="d2-bench" name="passed.old">—</hx-num> of <hx-num for="d2-bench" name="trials">20</hx-num> runs pass. On the new board, <hx-num for="d2-bench" name="passed.new">—</hx-num> of <hx-num for="d2-bench" name="trials">20</hx-num> pass. The difference is small and inside the noise. A different batch of seeds can reverse its sign, and the harmless change is the only thing that differs.</p>
 
   </section>
 
@@ -318,7 +318,7 @@
             <h3><span>Part H · Build Rein</span></h3>
             <p class="map-count" data-part-count>14 modules</p>
             <ol class="map-modules">
-              <li data-module-id="H0" data-slug="rein-setup" data-part="H" data-title="Rein setup" data-minutes="20" data-path="10" data-built="false"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><span class="module-label">H0 · Rein setup</span><span class="soon">soon</span></li>
+              <li data-module-id="H0" data-slug="rein-setup" data-part="H" data-title="Rein setup" data-minutes="20" data-path="10" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-setup.html">H0 · Rein setup</a></li>
               <li data-module-id="H1" data-slug="rein-1-talk-to-a-model" data-part="H" data-title="Rein 1: talk to a model" data-minutes="35" data-family="first-block-only" data-family-name="First block only" data-family-summary="Code reads only content[0] and misses or crashes on other blocks." data-path="11" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-1-talk-to-a-model.html">H1 · Rein 1: talk to a model</a></li>
               <li data-module-id="H2" data-slug="rein-2-one-tool-and-the-loop" data-part="H" data-title="Rein 2: one tool and the loop" data-minutes="40" data-family="almost-done-spiral" data-family-name="The “almost done” spiral" data-family-summary="A loop with one exit keeps calling tools forever." data-path="12" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-2-one-tool-and-the-loop.html">H2 · Rein 2: one tool and the loop</a></li>
               <li data-module-id="H3" data-slug="rein-3-real-tools-inside-a-wall" data-part="H" data-title="Rein 3: real tools inside a wall" data-minutes="45" data-family="sandbox-escape" data-family-name="Sandbox escape" data-family-summary="A symlink or ../ path reaches outside the workspace." data-path="25" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-3-real-tools-inside-a-wall.html">H3 · Rein 3: real tools inside a wall</a></li>
@@ -341,7 +341,7 @@
               <li data-module-id="I1" data-slug="the-job-map" data-part="I" data-title="The job map" data-minutes="30" data-path="54" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="the-job-map.html">I1 · The job map</a></li>
               <li data-module-id="I2" data-slug="readiness" data-part="I" data-title="Readiness self-assessment" data-minutes="30" data-path="55" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="readiness.html">I2 · Readiness self-assessment</a></li>
               <li data-module-id="I3" data-slug="portfolio-projects" data-part="I" data-title="Four portfolio projects" data-minutes="45" data-path="56" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="portfolio-projects.html">I3 · Four portfolio projects</a></li>
-              <li data-module-id="I4" data-slug="capstone-rein-in-rust" data-part="I" data-title="Capstone: Rein in Rust" data-minutes="60" data-path="57" data-built="false"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><span class="module-label">I4 · Capstone: Rein in Rust</span><span class="soon">soon</span></li>
+              <li data-module-id="I4" data-slug="capstone-rein-in-rust" data-part="I" data-title="Capstone: Rein in Rust" data-minutes="60" data-path="57" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="capstone-rein-in-rust.html">I4 · Capstone: Rein in Rust</a></li>
               <li data-module-id="I5" data-slug="interview-room" data-part="I" data-title="Interview Room" data-minutes="120" data-path="58" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="interview-room.html">I5 · Interview Room</a></li>
               <li data-module-id="I6" data-slug="twelve-weeks-after" data-part="I" data-title="Twelve weeks after the course" data-minutes="30" data-path="59" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="twelve-weeks-after.html">I6 · Twelve weeks after the course</a></li>
             </ol>

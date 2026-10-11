@@ -910,7 +910,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "H0",
    "kind": "guide",
    "minutes": 20,
@@ -1134,7 +1134,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "I4",
    "kind": "career",
    "minutes": 60,

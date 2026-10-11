@@ -15,13 +15,13 @@
 - id: D2-c0
   objective: D2.o1
   mode: check
-  question: "A tool works on 80 % of tries, and each try is independent. Over three tries, what are pass@3 and pass^3?"
+  question: "A tool works on 80% of tries, and each try is independent. Over three tries, what are pass@3 and pass^3?"
   options:
-    - text: "About 99 % and about 51 %."
+    - text: "About 99% and about 51%."
       why: "Right. At least one of three passes is nearly certain; all three passing is close to even."
-    - text: "About 80 % and about 80 %."
+    - text: "About 80% and about 80%."
       why: "Tempting. It keeps the single-try rate, but retries and all-pass questions change it."
-    - text: "About 51 % and about 99 %."
+    - text: "About 51% and about 99%."
       why: "Tempting. The two numbers are swapped: pass@3 is the larger one, because one pass in three is easy."
   answer: 0
 

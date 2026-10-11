@@ -1,0 +1,34 @@
+- id: I4-s1
+  objectives:
+  - I4.o4
+  prompt: Present your capstone in five minutes. What did you build, what does the parity evidence show, and what bug did parity catch?
+  model_answer: >-
+    I built the engine spec as a third runtime, with the same tapes, boards and command line as the other two. The judge runs every golden entry and reports the milestone it passed, so the evidence is the last line of its output for my final milestone. One bug it caught was a stray space in a token count: the judge named the first differing line, its seq and kind, and I traced the length of the token form back to the spacing. I fixed the separators and the golden matched.
+  rubric:
+  - "Names the design: one exact spec, three runtimes, the same command line"
+  - Quotes the judge's last line for the final milestone as the evidence
+  - Tells one real bug by its line, seq and kind, and the cause
+  - Says what the fix was, and which golden line then matched
+- id: I4-s2
+  objectives:
+  - I4.o3
+  prompt: Where do languages drift apart, and how does one exact spec keep three runtimes in step?
+  model_answer: >-
+    Integer math drifts when a language turns a time or a cost into a float. JSON key order and spacing drift in a token count, because one space changes the length. String escaping drifts when a character is written raw instead of as an escape. Random numbers drift when one draw happens out of order. The spec fixes each of these in writing, with integers only, two named JSON forms, an escape rule and a fixed draw order, and the golden traces show whether a runtime follows them.
+  rubric:
+  - Names integer math, key order or spacing, string escaping and random numbers
+  - Says the spec fixes each one in writing, and the goldens show whether it is followed
+  - Names the spec's written fixes as the way a port stays in step
+  - Says a golden line shows whether a runtime follows the spec
+- id: I4-s3
+  objectives:
+  - I4.o1
+  - I4.o2
+  prompt: What must be identical in your runtime and the other two, and what can you choose?
+  model_answer: >-
+    The tapes, the boards, the command line and the output bytes must be identical. The language is my choice, and so is how I structure the code, so long as the events and the digests match. The judge checks the output, not the code, so an implementation in any language passes the same test.
+  rubric:
+  - Names tapes, boards, the command line and the output bytes as fixed
+  - Says the language and structure are the learner's choice
+  - Says the judge checks output, not code, so any language can pass
+  - Says the milestones are groups of golden runs, not a shared contract

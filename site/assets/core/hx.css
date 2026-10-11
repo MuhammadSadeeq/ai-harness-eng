@@ -485,7 +485,7 @@ a.fact-chip { min-height: 44px; text-decoration: none; color: var(--hx-ink); }
 /* B-13: the Run key under a pre[data-run] (the shell adds it; the no-JS page has none of it). */
 .run-key { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); margin: var(--sp-3) 0 0; }
 .run-key button { min-height: 44px; min-width: 44px; padding: 0 var(--sp-4); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 600 var(--fs-small)/1 var(--font-sans); cursor: pointer; }
-.run-key button:disabled { cursor: progress; }
+.run-key button:disabled, .run-key button[aria-disabled="true"] { cursor: progress; }
 .run-status { margin: 0; font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); }
 .run-output { margin: var(--sp-2) 0 0; }
 .run-match { margin: var(--sp-2) 0 0; font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); }

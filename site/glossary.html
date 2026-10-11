@@ -951,6 +951,14 @@
         </p>
         <p class="term-alias">Also written: failure modes</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-fakemodel">
+        <h3 class="term-name"><dfn id="term-fakemodel">FakeModel</dfn></h3>
+        <p class="term-def">The scripted model in Rein. It answers from a fixed list, so every run repeats exactly and needs no key and no network.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/rein-setup.html">H0 · Rein setup</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-fan-out">
         <h3 class="term-name"><dfn id="term-fan-out">fan-out</dfn></h3>
         <p class="term-def">Starting several sub-agents at once, one per piece of work, and reading their results together.</p>
@@ -2118,6 +2126,14 @@
         </p>
         <p class="term-alias">Also written: regression evals</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-rein">
+        <h3 class="term-name"><dfn id="term-rein">Rein</dfn></h3>
+        <p class="term-def">The small agent harness you build one step at a time. Each step adds a few lines, then a checkpoint compares your output with the expected output.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/rein-setup.html">H0 · Rein setup</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-reinforcement-learning">
         <h3 class="term-name"><dfn id="term-reinforcement-learning">reinforcement learning</dfn></h3>
         <p class="term-def">Training a model by letting it try actions in an environment and adjusting it toward the actions that earn more reward.</p>
@@ -2293,6 +2309,15 @@
           <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
           <span class="taught">Taught in <a href="modules/codex-and-open-harnesses.html">G2 · Codex and open harnesses: what everyone agrees on</a></span>
         </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-scenario-tape">
+        <h3 class="term-name"><dfn id="term-scenario-tape">scenario tape</dfn></h3>
+        <p class="term-def">A JSON file that lists the scripted replies one run uses. The --fake flag points Rein at it.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/rein-setup.html">H0 · Rein setup</a></span>
+        </p>
+        <p class="term-alias">Also written: scenario tapes</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-schema-validation">
         <h3 class="term-name"><dfn id="term-schema-validation">schema validation</dfn></h3>
@@ -2910,6 +2935,15 @@
         </p>
         <p class="term-alias">Also written: virtual clocks</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-virtual-environment">
+        <h3 class="term-name"><dfn id="term-virtual-environment">virtual environment</dfn></h3>
+        <p class="term-def">A folder with its own Python packages, kept apart from the system&#x27;s. The course&#x27;s scripted run needs none; the real-model path installs one package.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/rein-setup.html">H0 · Rein setup</a></span>
+        </p>
+        <p class="term-alias">Also written: virtual environments</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-virtual-machine">
         <h3 class="term-name"><dfn id="term-virtual-machine">virtual machine</dfn></h3>
         <p class="term-def">A whole guest system that runs on a host. The course compares it with a container and an OS sandbox, by cost and by isolation.</p>
@@ -2977,7 +3011,7 @@
       </div>
     </section>
     </div>
-    <p class="glossary-count" data-glossary-count>322 terms</p>
+    <p class="glossary-count" data-glossary-count>326 terms</p>
     <!-- /gen:glossary -->
   </section>
 </main>

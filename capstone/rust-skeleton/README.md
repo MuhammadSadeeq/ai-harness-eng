@@ -14,9 +14,9 @@ cd ../..
 python3 tools/parity.py --cmd "capstone/rust-skeleton/target/debug/rein-rs run" --milestone M1
 ```
 
-The first run fails on purpose. Each of the 27 M1 runs ends with
+The first run fails on purpose. Each M1 run ends with
 `exit 1: rein-rs: the run loop is not written yet ...`, and the last line is
-`parity: 0 of 27 runs match (M1–M1)`. The first line the kit prints is already correct: check it
+`parity: 0 of N runs match (M1–M1)`, where N is the number of M1 runs the judge counts. The first line the kit prints is already correct: check it
 against the golden with `head -1 scenarios/golden/d1-example-a.d1-new.0.jsonl`. Your work starts
 with the second line, `prompt_built` (ENGINE.md section 7.1).
 

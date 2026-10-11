@@ -1,0 +1,36 @@
+- id: I4-k1
+  type: term
+  objective: I4.o2
+  front: What does the judge check?
+  back: For each golden run it runs your command and compares the output. It reports the first line that differs, with its seq and kind.
+- id: I4-k2
+  type: term
+  objective: I4.o2
+  front: What does byte for byte mean here?
+  back: Each event line must equal the golden line exactly, including key order, spacing and escapes. Close is not parity.
+- id: I4-k3
+  type: term
+  objective: I4.o2
+  front: What is a wire digest?
+  back: The SHA-256 of a run's wire output, the payloads the model would see. The judge compares digests, because the wire output is long.
+- id: I4-k4
+  type: which-wire
+  objective: I4.o1
+  wire: loop
+  front: Which wire does the run_start event belong to?
+  back: The loop wire. Every event carries the wire of its kind, and run_start is one of the loop's events.
+- id: I4-k5
+  type: term
+  objective: I4.o3
+  front: Why does the spec forbid floats?
+  back: Floats round differently across languages, so one comparison can flip. Time, cost and percent are integers, so every runtime computes the same number.
+- id: I4-k6
+  type: term
+  objective: I4.o3
+  front: What are the two forms of canonical JSON?
+  back: The trace line, with sorted keys and no spaces, and the token form, with keys in insertion order and spaces after separators. One stray space changes a token count.
+- id: I4-k7
+  type: term
+  objective: I4.o1
+  front: What does the kit do on its first run?
+  back: It parses the shared command line, reads the tape and the board, and prints the first event. Then it fails the judge with a readable message until you write the run loop.

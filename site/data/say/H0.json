@@ -1,0 +1,46 @@
+[
+ {
+  "id": "H0-s1",
+  "model_answer": "A scripted model is repeatable, so the same script gives the same reply and token counts on every run. It is free, because no tokens are billed, and offline, because no network is needed. That makes a change in my code visible in the output. A real model comes later, behind the same interface, so the harness logic is already tested when the real model arrives.",
+  "objectives": [
+   "H0.o1",
+   "H0.o3"
+  ],
+  "prompt": "Why does the build start with a scripted model instead of a real one?",
+  "rubric": [
+   "Names repeatable, free and offline",
+   "Says a change in the code shows in the output, not in the model",
+   "Says the real model comes later behind the same interface",
+   "Says the scripted run proves the harness logic before any key is used"
+  ]
+ },
+ {
+  "id": "H0-s2",
+  "model_answer": "I check for Python 3.11 or newer, make a virtual environment, and enter the step folder. Then I run the scripted command with --fake and the scenario tape, which needs no key. For the real model I install the SDK in the environment and export ANTHROPIC_API_KEY. The key stays in the environment, out of git, out of traces and out of the browser.",
+  "objectives": [
+   "H0.o2",
+   "H0.o4"
+  ],
+  "prompt": "Walk me through a setup on your machine, and say where your API key goes.",
+  "rubric": [
+   "Checks for Python 3.11 or newer before anything else",
+   "Runs the scripted command with --fake and the scenario tape",
+   "Puts the real key in ANTHROPIC_API_KEY and nowhere in git or the browser",
+   "Says the scripted run needs no key, so the setup is checked first"
+  ]
+ },
+ {
+  "id": "H0-s3",
+  "model_answer": "The step's Python runs in the browser, with a stand-in for commands. A command that needs my machine, such as one that deletes files or runs another program, shows the command and the output to expect instead. The scripted run on my machine uses my own Python, so I run it there.",
+  "objectives": [
+   "H0.o1"
+  ],
+  "prompt": "What runs in the browser for a build step, and what runs on my machine?",
+  "rubric": [
+   "Says the step's Python runs in the browser with a stand-in for commands",
+   "Names a command that needs the learner's machine",
+   "Says the scripted run on the learner's machine uses the learner's Python",
+   "Says the course's browser steps show the output for commands that need the learner's machine"
+  ]
+ }
+]

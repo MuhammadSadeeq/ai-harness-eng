@@ -1,0 +1,65 @@
+[
+ {
+  "answer": 1,
+  "id": "I4-c1",
+  "mode": "check",
+  "objective": "I4.o2",
+  "options": [
+   {
+    "text": "A missing tool result, so the next call fails.",
+    "why": "Tempting, because a missing result would break a run. But a missing result changes the events too, and the events match here."
+   },
+   {
+    "text": "The bytes of a wire payload, such as key order or spacing, which the events do not contain.",
+    "why": "Right. The wire output is checked by digest, and its bytes come from the same two JSON forms as the events."
+   },
+   {
+    "text": "The judge's milestone count, which is wrong in the judge.",
+    "why": "Wrong. The count does not change a digest; each run is judged on its own output."
+   }
+  ],
+  "question": "Your runtime's event lines match the golden, but one wire digest does not. Which gap is most likely?"
+ },
+ {
+  "answer": 0,
+  "id": "I4-c2",
+  "mode": "check",
+  "objective": "I4.o3",
+  "options": [
+   {
+    "text": "A stray space in the token form, which changes the length the estimate divides.",
+    "why": "Right. The token estimate is the length of the token form divided by four, so one extra space can move the count."
+   },
+   {
+    "text": "A different PRNG seed, which changes the tool's output.",
+    "why": "Wrong. A different seed would change the outcomes after it, and the tool output here matches."
+   },
+   {
+    "text": "The order of the keys in a trace line, which the token form does not use.",
+    "why": "Tempting, because key order is a drift. But the token form keeps insertion order, not the sorted order of a trace line, so trace order is not what counts."
+   }
+  ],
+  "question": "A tool's output matches, but a token count is one off. Which drift explains it?"
+ },
+ {
+  "answer": 0,
+  "id": "I4-c3",
+  "mode": "check",
+  "objective": "I4.o1",
+  "options": [
+   {
+    "text": "The tapes, the boards, the command line and the output bytes.",
+    "why": "Right. These are the shared contract. The language and the code structure are yours to choose."
+   },
+   {
+    "text": "The language and the code structure, so the diffs read the same.",
+    "why": "Wrong. The judge checks the output, not the code. A different language passes the same test."
+   },
+   {
+    "text": "Only the milestones, so the judge can count them.",
+    "why": "Wrong. The milestones are groups of golden runs; they are not a shared contract for the runtime."
+   }
+  ],
+  "question": "Which of these must be the same in your runtime and the course's two?"
+ }
+]

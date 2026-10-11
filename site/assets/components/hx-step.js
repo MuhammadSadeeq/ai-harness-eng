@@ -7,12 +7,14 @@
 // learner's typed answers (stdin). A checkpoint or break marked local has no Run key: it shows the command to run on
 // the learner's machine, with a copy key, the answers and the expected output. After each run the files it wrote are
 // kept and announced: hx-step-files, {step, files}, bubbling.
+// BP-4.4: "Download this step's files" lists one blob link per file (rein.py, the scenario tapes, the setup scripts),
+// so a learner can save the step into a folder on their machine before the local checkpoint command.
 import { HxElement } from "./lib/hx-element.js";
 import { mountEditor } from "./lib/editor.js";
 import { sharedPython } from "./lib/py-host.js";
 import {
   addedLines, diffRows, expectedError, matches, firstDifference, prettyScript,
-  commandOf, answersText, usesSubprocess,
+  commandOf, answersText, usesSubprocess, stepFiles,
 } from "./lib/step-logic.js";
 
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
@@ -46,6 +48,8 @@ const LOCAL_NOTE = "This command needs your own machine. It is shown here, not r
 const CHECK_LOCAL_NOTE = "This checkpoint runs on your machine, so Check my file compares your rein.py with the reference text.";
 const BROWSER_NOTE = "In the browser, Rein's commands run in a stand-in that can only run Python files. On your machine they run for real.";
 const KEEP_EVENT = "hx-step-files";
+const DOWNLOAD_TITLE = "Download this step's files";
+const DOWNLOAD_NOTE = "Each link saves one file. Save rein.py and the .py files into one folder. Save a file whose path starts with scenarios/ into a folder named scenarios inside that folder, so the commands find it.";
 let browserNoteShown = false;
 
 const cache = new Map();
@@ -325,6 +329,15 @@ export class HxStep extends HxElement {
       ...scriptNames.map((name) => el("pre", { class: "code", "aria-label": name, role: "region", tabindex: "0" },
         el("code", { text: prettyScript(step.scenarios[name]) }))));
 
+    // One blob link per file. The download name is the file's own name; the label keeps the path the commands use.
+    const fileLink = (file) => {
+      const href = URL.createObjectURL(new Blob([file.text], { type: "text/plain;charset=utf-8" }));
+      return el("a", { class: "key step-file-link", href, download: file.path.split("/").pop(), text: file.path });
+    };
+    dom.download = el("section", { class: "step-download", "aria-labelledby": `${uid}-download` },
+      el("h4", { id: `${uid}-download`, text: DOWNLOAD_TITLE }),
+      el("p", { class: "step-note", text: DOWNLOAD_NOTE }),
+      el("ul", { class: "step-files" }, ...stepFiles(step).map((file) => el("li", {}, fileLink(file)))));
     dom.command = el("pre", { class: "code step-command", role: "region", tabindex: "0", "aria-label": "The command" },
       el("code", { text: step.checkpoint.command }));
     dom.expected = el("pre", { class: "code term", role: "region", tabindex: "0", "aria-label": "The expected output" },
@@ -396,6 +409,7 @@ export class HxStep extends HxElement {
       dom.loading,
       el("section", { class: "step-chunks", "aria-label": "Chunks" }, ...dom.chunks),
       dom.script,
+      dom.download,
       el("section", { class: "step-checkpoint", "aria-label": "Checkpoint" },
         el("h4", { text: `Checkpoint: step ${step.number}` }),
         dom.localCheckpoint ?? dom.command,

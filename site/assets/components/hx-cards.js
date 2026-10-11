@@ -251,7 +251,7 @@ export class HxCards extends HxElement {
       if (event.target instanceof HTMLButtonElement || event.target instanceof HTMLInputElement
         || event.target instanceof HTMLAnchorElement) return;
       event.preventDefault();
-      this.setState({ reveal: true });
+      this.setState({ reveal: true, focusBack: true });
     } else if ((event.key === "1" || event.key === "2") && s.reveal) {
       event.preventDefault();
       this.selfGrade(event.key === "2");
@@ -262,6 +262,11 @@ export class HxCards extends HxElement {
     const s = this.state;
     const { screen, primary } = s.done ? { screen: this.summaryScreen(), primary: null } : this.cardScreen();
     this.ui.replaceChildren(screen);
+    if (s.focusBack) {
+      // The answer takes focus on reveal, so the next Tab reaches the grade keys (WCAG 2.4.3).
+      s.focusBack = false;
+      this.ui.querySelector(".card-back")?.focus({ preventScroll: true });
+    }
     if (s.focusPrimary && primary) {
       primary.focus({ preventScroll: true });
       s.focusPrimary = false;
@@ -281,10 +286,10 @@ export class HxCards extends HxElement {
       body.append(el("p", { class: "card-front", text: card.front }));
       if (!s.reveal) {
         primary = el("button", { class: "key key-primary", type: "button", "data-key": "show", text: "Show answer" });
-        primary.addEventListener("click", () => this.setState({ reveal: true }));
+        primary.addEventListener("click", () => this.setState({ reveal: true, focusBack: true }));
         body.append(el("div", { class: "card-keys" }, primary));
       } else {
-        body.append(el("p", { class: "card-back", text: card.back }));
+        body.append(el("p", { class: "card-back", text: card.back, tabindex: "-1" }));
         const again = el("button", { class: "key", type: "button", "data-key": "again", text: "Again" });
         const got = el("button", { class: "key key-primary", type: "button", "data-key": "got", text: "Got it" });
         again.addEventListener("click", () => this.selfGrade(false));

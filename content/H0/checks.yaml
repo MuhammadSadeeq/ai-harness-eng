@@ -1,0 +1,36 @@
+- id: H0-c1
+  objective: H0.o1
+  mode: check
+  question: Where does the first checkpoint of step 1 run?
+  options:
+  - text: On my machine only, after I install Python.
+    why: Tempting, because a real Python runs. But step 1's file runs in the browser, through a stand-in for commands.
+  - text: In the browser, through a stand-in for commands.
+    why: Right. Each step's Python runs in the browser. A command that needs your machine says so and shows the output to expect.
+  - text: On a course server, so no setup is needed.
+    why: Wrong. The course's steps run in the browser, and no server runs your code.
+  answer: 1
+- id: H0-c2
+  objective: H0.o2
+  mode: check
+  question: Which command runs step 1's scripted reply on my machine, with no key?
+  options:
+  - text: python rein.py "Say hello" --fake scenarios/01_hello.json
+    why: Right. The --fake flag reads the scripted replies from the scenario tape. No key and no network are used.
+  - text: python rein.py "Say hello"
+    why: Tempting, because it is the same command without the flag. Without --fake, step 1 calls the real model, which imports the SDK and needs a key.
+  - text: python rein.py --live "Say hello"
+    why: Wrong. Step 1 has no --live flag; its only option is --fake.
+  answer: 0
+- id: H0-c3
+  objective: H0.o3
+  mode: check
+  question: I run the scripted command three times. What changes between the runs?
+  options:
+  - text: Nothing. The script is the same, so the reply and the token counts repeat.
+    why: Right. The scripted model reads the same list each time, and nothing carries over between runs.
+  - text: The reply changes, because the model samples its words.
+    why: Wrong. The scripted model answers from a fixed list, so its reply cannot change between runs of the same script.
+  - text: The token count grows, because the first run is remembered.
+    why: Tempting, because a conversation grows. But each run is a new request, and nothing from the first run is kept.
+  answer: 0

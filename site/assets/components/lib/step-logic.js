@@ -70,3 +70,19 @@ export function answersText(lines) {
 export function usesSubprocess(texts) {
   return texts.some((text) => text.includes("subprocess"));
 }
+
+/**
+ * The files a learner downloads for a step (BP-4.4): rein.py, the step's scenario tapes (scenarios/<name>.json, as the
+ * commands name them) and the shared setup scripts its checkpoint runs (<name>.py, beside rein.py). Each entry is
+ * {path, text}: path is the relative path the commands use, text is the file. A setup script the step names but the
+ * data does not carry is left out (it is a data error the checker reports, not a download to make).
+ */
+export function stepFiles(step) {
+  const files = [{ path: "rein.py", text: step.rein }];
+  for (const path of Object.keys(step.scenarios ?? {})) files.push({ path, text: step.scenarios[path] });
+  for (const name of step.checkpoint?.setup ?? []) {
+    const text = step.shared?.[name];
+    if (typeof text === "string") files.push({ path: `${name}.py`, text });
+  }
+  return files;
+}

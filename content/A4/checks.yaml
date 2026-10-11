@@ -47,8 +47,7 @@
     - text: "Run the part of the tool request it has."
       why: "Tempting. Most of it is there, but a half-written request has no complete input."
     - text: "Do not run the half-written request; retry with a higher max_tokens value."
-      fact: api.max-tokens-incomplete-tool-use
-      why: "Right. The docs say to retry with a higher max_tokens value to get the full tool use."
+      why: "Right. A half-written request has no complete input, so running it can do the wrong thing."
     - text: "Treat it as end_turn and check the work."
       why: "Wrong. end_turn means the model finished. max_tokens means the reply was cut off."
   answer: 1

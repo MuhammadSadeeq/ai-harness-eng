@@ -4,7 +4,7 @@ Z = 1.959964
 
 
 def wilson(passed, n):
-    """The 95 % Wilson score interval for passed out of n, as (lo, hi) fractions. n is positive."""
+    """The 95% Wilson score interval for passed out of n, as (lo, hi) fractions. n is positive."""
     p = passed / n
     z2 = Z * Z
     denom = 1 + z2 / n

@@ -57,7 +57,7 @@ says which feature is which; `--assign` shows the result). Work through them in 
 | M6 | Evals (the graded tasks), prompt injection, canaries, tool provenance and pinned servers | A11 to A13 | 46 | 307 |
 | M7 | Sub-agents, sessions, crash and resume, ledgers with retries and idempotency, model profiles, a board's rules | A14 to A19 | 101 | 408 |
 
-The counts are the judge's (`--assign` lists each golden). A milestone's runs use only that
+The counts are a snapshot taken on 2026-10-11, and they go stale as goldens are added. `python3 tools/parity.py --assign` prints one line for each golden with its milestone; count the lines per milestone for the current figures. A milestone's runs use only that
 milestone's features and the ones before it, so a learner who has passed M3 has passed the
 cumulative judge for M1 to M3.
 

@@ -1,0 +1,52 @@
+[
+ {
+  "back": "For each golden run it runs your command and compares the output. It reports the first line that differs, with its seq and kind.",
+  "front": "What does the judge check?",
+  "id": "I4-k1",
+  "objective": "I4.o2",
+  "type": "term"
+ },
+ {
+  "back": "Each event line must equal the golden line exactly, including key order, spacing and escapes. Close is not parity.",
+  "front": "What does byte for byte mean here?",
+  "id": "I4-k2",
+  "objective": "I4.o2",
+  "type": "term"
+ },
+ {
+  "back": "The SHA-256 of a run's wire output, the payloads the model would see. The judge compares digests, because the wire output is long.",
+  "front": "What is a wire digest?",
+  "id": "I4-k3",
+  "objective": "I4.o2",
+  "type": "term"
+ },
+ {
+  "back": "The loop wire. Every event carries the wire of its kind, and run_start is one of the loop's events.",
+  "front": "Which wire does the run_start event belong to?",
+  "id": "I4-k4",
+  "objective": "I4.o1",
+  "type": "which-wire",
+  "wire": "loop"
+ },
+ {
+  "back": "Floats round differently across languages, so one comparison can flip. Time, cost and percent are integers, so every runtime computes the same number.",
+  "front": "Why does the spec forbid floats?",
+  "id": "I4-k5",
+  "objective": "I4.o3",
+  "type": "term"
+ },
+ {
+  "back": "The trace line, with sorted keys and no spaces, and the token form, with keys in insertion order and spaces after separators. One stray space changes a token count.",
+  "front": "What are the two forms of canonical JSON?",
+  "id": "I4-k6",
+  "objective": "I4.o3",
+  "type": "term"
+ },
+ {
+  "back": "It parses the shared command line, reads the tape and the board, and prints the first event. Then it fails the judge with a readable message until you write the run loop.",
+  "front": "What does the kit do on its first run?",
+  "id": "I4-k7",
+  "objective": "I4.o1",
+  "type": "term"
+ }
+]

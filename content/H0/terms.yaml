@@ -1,0 +1,30 @@
+- id: rein
+  term: Rein
+  aliases:
+  - Rein
+  strict: false
+  wire: loop
+  definition: The small agent harness you build one step at a time. Each step adds a few lines, then a checkpoint compares your output with the expected output.
+- id: fakemodel
+  term: FakeModel
+  aliases:
+  - FakeModel
+  strict: true
+  wire: loop
+  definition: The scripted model in Rein. It answers from a fixed list, so every run repeats exactly and needs no key and no network.
+- id: scenario-tape
+  term: scenario tape
+  aliases:
+  - scenario tape
+  - scenario tapes
+  strict: true
+  wire: loop
+  definition: A JSON file that lists the scripted replies one run uses. The --fake flag points Rein at it.
+- id: virtual-environment
+  term: virtual environment
+  aliases:
+  - virtual environment
+  - virtual environments
+  strict: true
+  wire: loop
+  definition: A folder with its own Python packages, kept apart from the system's. The course's scripted run needs none; the real-model path installs one package.

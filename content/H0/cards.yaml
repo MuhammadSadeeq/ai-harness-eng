@@ -1,0 +1,35 @@
+- id: H0-k1
+  type: term
+  objective: H0.o1
+  front: What is Rein?
+  back: The small agent harness you build one step at a time. Each step adds a few lines and runs a checkpoint.
+- id: H0-k2
+  type: term
+  objective: H0.o3
+  front: What is a scripted model?
+  back: A model that answers from a fixed list. The same script gives the same reply and token counts every run.
+- id: H0-k3
+  type: term
+  objective: H0.o3
+  front: Why does the build start with a scripted model?
+  back: It is repeatable, free and offline. A change in your code shows up in the output, not in the model.
+- id: H0-k4
+  type: term
+  objective: H0.o2
+  front: What is a scenario tape?
+  back: A JSON file that lists the scripted replies one run uses. The --fake flag points Rein at it.
+- id: H0-k5
+  type: term
+  objective: H0.o2
+  front: What is a virtual environment?
+  back: A folder with its own Python packages, kept apart from the system's.
+- id: H0-k6
+  type: term
+  objective: H0.o2
+  front: Does the scripted run need a package?
+  back: No. It uses the standard library only. Only the real-model path imports the SDK.
+- id: H0-k7
+  type: term
+  objective: H0.o4
+  front: Where does a real API key go?
+  back: In the ANTHROPIC_API_KEY environment variable. Never in a file under git, never in the browser.

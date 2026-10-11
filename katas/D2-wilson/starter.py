@@ -1,5 +1,5 @@
 def wilson(passed, n):
-    """The 95 % Wilson score interval for passed out of n, as (lo, hi) fractions."""
+    """The 95% Wilson score interval for passed out of n, as (lo, hi) fractions."""
     return (0.0, 1.0)
 
 

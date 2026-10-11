@@ -208,9 +208,12 @@ function rowBody(event, expanded) {
  *   feedback (Map index -> [lines], shown under that row: the hunt's answers), callouts (the explanation under
  *   quote and card rows, shown when the row is current), locked.
  */
+let transcriptScope = 0;
+
 export function transcriptList(opts) {
   const { events, detail = "story", wire = null, expanded = new Set(), repeatMap = [], pickable = false, marks = new Map(), feedback = new Map(), callouts = true, locked = false } = opts;
   const list = el("ol", { class: "transcript", "aria-label": "Transcript" });
+  const scope = ++transcriptScope;
   const rowsByIndex = new Map();
   const picks = [];
   for (const { index, event } of rows(events, { detail }).filter((r) => wire === null || r.event.wire === wire)) {
@@ -223,8 +226,12 @@ export function transcriptList(opts) {
     const mark = marks.get(index);
     const markEl = mark ? el("span", { class: `ev-mark is-${mark.kind}`, text: mark.word }) : null;
     let main;
+    let note = null;
     if (pickable) {
-      main = el("button", { class: "ev-main", type: "button", "data-key": `row-${index}`, "data-index": index, tabindex: "-1", disabled: locked || null, "aria-label": `${w?.name ?? event.wire}: ${explain(event).text}` }, head);
+      // The name is the visible text (WCAG 2.5.3): the lane and the summary follow it, in aria-describedby.
+      const noteId = `ev-note-${scope}-${index}`;
+      main = el("button", { class: "ev-main", type: "button", "data-key": `row-${index}`, "data-index": index, tabindex: "-1", disabled: locked || null, "aria-describedby": noteId }, head);
+      note = el("span", { class: "sr-only", id: noteId, text: `${w?.name ?? event.wire}: ${explain(event).text}` });
       main.addEventListener("click", () => opts.onPick?.(index));
       picks.push(main);
     } else {
@@ -239,7 +246,7 @@ export function transcriptList(opts) {
     const feedEl = lines.length > 0
       ? el("div", { class: "hunt-feedback", role: "status" }, ...lines.map((line) => el("p", { class: "hunt-line", text: line })))
       : null;
-    const li = el("li", { class: `ev w-${event.wire}`, "data-index": index, "data-wire": event.wire }, main, moreEl, feedEl, callEl, markEl);
+    const li = el("li", { class: `ev w-${event.wire}`, "data-index": index, "data-wire": event.wire }, main, note, moreEl, feedEl, callEl, markEl);
     rowsByIndex.set(index, li);
     list.append(li);
   }

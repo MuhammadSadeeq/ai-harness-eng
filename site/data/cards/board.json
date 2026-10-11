@@ -2318,6 +2318,62 @@
   "type": "term"
  },
  {
+  "back": "The small agent harness you build one step at a time. Each step adds a few lines and runs a checkpoint.",
+  "front": "What is Rein?",
+  "id": "H0-k1",
+  "module": "H0",
+  "objective": "H0.o1",
+  "type": "term"
+ },
+ {
+  "back": "A model that answers from a fixed list. The same script gives the same reply and token counts every run.",
+  "front": "What is a scripted model?",
+  "id": "H0-k2",
+  "module": "H0",
+  "objective": "H0.o3",
+  "type": "term"
+ },
+ {
+  "back": "It is repeatable, free and offline. A change in your code shows up in the output, not in the model.",
+  "front": "Why does the build start with a scripted model?",
+  "id": "H0-k3",
+  "module": "H0",
+  "objective": "H0.o3",
+  "type": "term"
+ },
+ {
+  "back": "A JSON file that lists the scripted replies one run uses. The --fake flag points Rein at it.",
+  "front": "What is a scenario tape?",
+  "id": "H0-k4",
+  "module": "H0",
+  "objective": "H0.o2",
+  "type": "term"
+ },
+ {
+  "back": "A folder with its own Python packages, kept apart from the system's.",
+  "front": "What is a virtual environment?",
+  "id": "H0-k5",
+  "module": "H0",
+  "objective": "H0.o2",
+  "type": "term"
+ },
+ {
+  "back": "No. It uses the standard library only. Only the real-model path imports the SDK.",
+  "front": "Does the scripted run need a package?",
+  "id": "H0-k6",
+  "module": "H0",
+  "objective": "H0.o2",
+  "type": "term"
+ },
+ {
+  "back": "In the ANTHROPIC_API_KEY environment variable. Never in a file under git, never in the browser.",
+  "front": "Where does a real API key go?",
+  "id": "H0-k7",
+  "module": "H0",
+  "objective": "H0.o4",
+  "type": "term"
+ },
+ {
   "back": "One function the rest of Rein calls for a reply. A scripted model and a real model sit behind it.",
   "front": "What is a model interface?",
   "id": "H1-k1",
@@ -2947,6 +3003,63 @@
   "id": "I3-k6",
   "module": "I3",
   "objective": "I3.o3",
+  "type": "term"
+ },
+ {
+  "back": "For each golden run it runs your command and compares the output. It reports the first line that differs, with its seq and kind.",
+  "front": "What does the judge check?",
+  "id": "I4-k1",
+  "module": "I4",
+  "objective": "I4.o2",
+  "type": "term"
+ },
+ {
+  "back": "Each event line must equal the golden line exactly, including key order, spacing and escapes. Close is not parity.",
+  "front": "What does byte for byte mean here?",
+  "id": "I4-k2",
+  "module": "I4",
+  "objective": "I4.o2",
+  "type": "term"
+ },
+ {
+  "back": "The SHA-256 of a run's wire output, the payloads the model would see. The judge compares digests, because the wire output is long.",
+  "front": "What is a wire digest?",
+  "id": "I4-k3",
+  "module": "I4",
+  "objective": "I4.o2",
+  "type": "term"
+ },
+ {
+  "back": "The loop wire. Every event carries the wire of its kind, and run_start is one of the loop's events.",
+  "front": "Which wire does the run_start event belong to?",
+  "id": "I4-k4",
+  "module": "I4",
+  "objective": "I4.o1",
+  "type": "which-wire",
+  "wire": "loop"
+ },
+ {
+  "back": "Floats round differently across languages, so one comparison can flip. Time, cost and percent are integers, so every runtime computes the same number.",
+  "front": "Why does the spec forbid floats?",
+  "id": "I4-k5",
+  "module": "I4",
+  "objective": "I4.o3",
+  "type": "term"
+ },
+ {
+  "back": "The trace line, with sorted keys and no spaces, and the token form, with keys in insertion order and spaces after separators. One stray space changes a token count.",
+  "front": "What are the two forms of canonical JSON?",
+  "id": "I4-k6",
+  "module": "I4",
+  "objective": "I4.o3",
+  "type": "term"
+ },
+ {
+  "back": "It parses the shared command line, reads the tape and the board, and prints the first event. Then it fails the judge with a readable message until you write the run loop.",
+  "front": "What does the kit do on its first run?",
+  "id": "I4-k7",
+  "module": "I4",
+  "objective": "I4.o1",
   "type": "term"
  },
  {

@@ -1354,6 +1354,56 @@
   "wire": "observe"
  },
  {
+  "id": "H0-s1",
+  "model_answer": "A scripted model is repeatable, so the same script gives the same reply and token counts on every run. It is free, because no tokens are billed, and offline, because no network is needed. That makes a change in my code visible in the output. A real model comes later, behind the same interface, so the harness logic is already tested when the real model arrives.",
+  "module": "H0",
+  "objectives": [
+   "H0.o1",
+   "H0.o3"
+  ],
+  "prompt": "Why does the build start with a scripted model instead of a real one?",
+  "rubric": [
+   "Names repeatable, free and offline",
+   "Says a change in the code shows in the output, not in the model",
+   "Says the real model comes later behind the same interface",
+   "Says the scripted run proves the harness logic before any key is used"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "H0-s2",
+  "model_answer": "I check for Python 3.11 or newer, make a virtual environment, and enter the step folder. Then I run the scripted command with --fake and the scenario tape, which needs no key. For the real model I install the SDK in the environment and export ANTHROPIC_API_KEY. The key stays in the environment, out of git, out of traces and out of the browser.",
+  "module": "H0",
+  "objectives": [
+   "H0.o2",
+   "H0.o4"
+  ],
+  "prompt": "Walk me through a setup on your machine, and say where your API key goes.",
+  "rubric": [
+   "Checks for Python 3.11 or newer before anything else",
+   "Runs the scripted command with --fake and the scenario tape",
+   "Puts the real key in ANTHROPIC_API_KEY and nowhere in git or the browser",
+   "Says the scripted run needs no key, so the setup is checked first"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "H0-s3",
+  "model_answer": "The step's Python runs in the browser, with a stand-in for commands. A command that needs my machine, such as one that deletes files or runs another program, shows the command and the output to expect instead. The scripted run on my machine uses my own Python, so I run it there.",
+  "module": "H0",
+  "objectives": [
+   "H0.o1"
+  ],
+  "prompt": "What runs in the browser for a build step, and what runs on my machine?",
+  "rubric": [
+   "Says the step's Python runs in the browser with a stand-in for commands",
+   "Names a command that needs the learner's machine",
+   "Says the scripted run on the learner's machine uses the learner's Python",
+   "Says the course's browser steps show the output for commands that need the learner's machine"
+  ],
+  "wire": "loop"
+ },
+ {
   "id": "H1-s1",
   "model_answer": "Rein calls one function for a reply, and the rest of the code never asks which model is behind it. A scripted model answers from a fixed list, so every run repeats exactly, and no key is needed. A real model makes the same call and returns the same kind of reply. I keep the raw content blocks, because a tool request can come after text. Then the loop reads the stop reason and the blocks, not just the first one.",
   "module": "H1",
@@ -1750,6 +1800,55 @@
    "Says which numbers are scripted, and why that matters"
   ],
   "wire": "verify"
+ },
+ {
+  "id": "I4-s1",
+  "model_answer": "I built the engine spec as a third runtime, with the same tapes, boards and command line as the other two. The judge runs every golden entry and reports the milestone it passed, so the evidence is the last line of its output for my final milestone. One bug it caught was a stray space in a token count: the judge named the first differing line, its seq and kind, and I traced the length of the token form back to the spacing. I fixed the separators and the golden matched.",
+  "module": "I4",
+  "objectives": [
+   "I4.o4"
+  ],
+  "prompt": "Present your capstone in five minutes. What did you build, what does the parity evidence show, and what bug did parity catch?",
+  "rubric": [
+   "Names the design: one exact spec, three runtimes, the same command line",
+   "Quotes the judge's last line for the final milestone as the evidence",
+   "Tells one real bug by its line, seq and kind, and the cause",
+   "Says what the fix was, and which golden line then matched"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "I4-s2",
+  "model_answer": "Integer math drifts when a language turns a time or a cost into a float. JSON key order and spacing drift in a token count, because one space changes the length. String escaping drifts when a character is written raw instead of as an escape. Random numbers drift when one draw happens out of order. The spec fixes each of these in writing, with integers only, two named JSON forms, an escape rule and a fixed draw order, and the golden traces show whether a runtime follows them.",
+  "module": "I4",
+  "objectives": [
+   "I4.o3"
+  ],
+  "prompt": "Where do languages drift apart, and how does one exact spec keep three runtimes in step?",
+  "rubric": [
+   "Names integer math, key order or spacing, string escaping and random numbers",
+   "Says the spec fixes each one in writing, and the goldens show whether it is followed",
+   "Names the spec's written fixes as the way a port stays in step",
+   "Says a golden line shows whether a runtime follows the spec"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "I4-s3",
+  "model_answer": "The tapes, the boards, the command line and the output bytes must be identical. The language is my choice, and so is how I structure the code, so long as the events and the digests match. The judge checks the output, not the code, so an implementation in any language passes the same test.",
+  "module": "I4",
+  "objectives": [
+   "I4.o1",
+   "I4.o2"
+  ],
+  "prompt": "What must be identical in your runtime and the other two, and what can you choose?",
+  "rubric": [
+   "Names tapes, boards, the command line and the output bytes as fixed",
+   "Says the language and structure are the learner's choice",
+   "Says the judge checks output, not code, so any language can pass",
+   "Says the milestones are groups of golden runs, not a shared contract"
+  ],
+  "wire": "control"
  },
  {
   "id": "I6-s1",

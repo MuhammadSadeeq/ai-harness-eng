@@ -49,11 +49,11 @@
   "objective": "D3.o2",
   "options": [
    {
-    "text": "It is 62 %, but it does not say which way the errors fall; count the false passes apart.",
+    "text": "It is 62%, but it does not say which way the errors fall; count the false passes apart.",
     "why": "Right. The same agreement can hide many false passes or many false fails."
    },
    {
-    "text": "The grader is right 62 % of the time about every kind of run.",
+    "text": "The grader is right 62% of the time about every kind of run.",
     "why": "Wrong. An agreement rate is one number over all cases; it does not describe each kind of run."
    },
    {

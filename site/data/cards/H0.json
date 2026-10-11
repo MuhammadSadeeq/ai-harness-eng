@@ -1,0 +1,51 @@
+[
+ {
+  "back": "The small agent harness you build one step at a time. Each step adds a few lines and runs a checkpoint.",
+  "front": "What is Rein?",
+  "id": "H0-k1",
+  "objective": "H0.o1",
+  "type": "term"
+ },
+ {
+  "back": "A model that answers from a fixed list. The same script gives the same reply and token counts every run.",
+  "front": "What is a scripted model?",
+  "id": "H0-k2",
+  "objective": "H0.o3",
+  "type": "term"
+ },
+ {
+  "back": "It is repeatable, free and offline. A change in your code shows up in the output, not in the model.",
+  "front": "Why does the build start with a scripted model?",
+  "id": "H0-k3",
+  "objective": "H0.o3",
+  "type": "term"
+ },
+ {
+  "back": "A JSON file that lists the scripted replies one run uses. The --fake flag points Rein at it.",
+  "front": "What is a scenario tape?",
+  "id": "H0-k4",
+  "objective": "H0.o2",
+  "type": "term"
+ },
+ {
+  "back": "A folder with its own Python packages, kept apart from the system's.",
+  "front": "What is a virtual environment?",
+  "id": "H0-k5",
+  "objective": "H0.o2",
+  "type": "term"
+ },
+ {
+  "back": "No. It uses the standard library only. Only the real-model path imports the SDK.",
+  "front": "Does the scripted run need a package?",
+  "id": "H0-k6",
+  "objective": "H0.o2",
+  "type": "term"
+ },
+ {
+  "back": "In the ANTHROPIC_API_KEY environment variable. Never in a file under git, never in the browser.",
+  "front": "Where does a real API key go?",
+  "id": "H0-k7",
+  "objective": "H0.o4",
+  "type": "term"
+ }
+]

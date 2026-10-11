@@ -25,6 +25,11 @@ export function nextValue(current, range, steps) {
   return Math.min(max, Math.max(min, onGrid + steps * step));
 }
 
+/** The text a sighted reader sees in a value: the sr-only "not run yet" is left out. */
+const shownText = (node) => [...node.childNodes]
+  .filter((child) => !(child instanceof Element && child.classList.contains("sr-only")))
+  .map((child) => child.textContent).join("");
+
 const el = (tag, attrs = {}, ...children) => {
   const node = document.createElement(tag);
   for (const [key, value] of Object.entries(attrs)) {
@@ -69,7 +74,12 @@ export class HxNum extends HxElement {
     if (!this.dom) this.build();
     const value = this.target.hxValue(this.name);
     const text = this.formatText(value);
-    this.dom.value.textContent = text;
+    if (value === null || value === undefined) {
+      // Nothing has run: the dash is shown, and a screen reader hears "not run yet" instead of a bare dash.
+      this.dom.value.replaceChildren(el("span", { "aria-hidden": "true", text }), el("span", { class: "sr-only", text: " not run yet" }));
+    } else {
+      this.dom.value.textContent = text;
+    }
     if (this.range) {
       const { min, max } = this.range;
       this.dom.spin.setAttribute("aria-valuemin", String(min));
@@ -153,7 +163,7 @@ export class HxNum extends HxElement {
   async selfTest() {
     const before = this.target.hxValue(this.name);
     if (!this.range) {
-      return this.dom.value.textContent === this.formatText(before);
+      return shownText(this.dom.value) === this.formatText(before);
     }
     this.dom.spin.focus({ preventScroll: true });
     this.dom.spin.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp", bubbles: true }));

@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 globalThis.HTMLElement ??= class {};
 globalThis.customElements ??= { define() {}, get() {}, whenDefined: () => new Promise(() => {}) };
-const { modulesText } = await import("../hx-bench.js");
+const { modulesText, rackModulesLine } = await import("../hx-bench.js");
 
 const board = (modules) => ({ id: "b", modules });
 
@@ -32,4 +32,12 @@ test("the same base and cap with jitter is not a fixed wait", () => {
 
 test("no modules says so", () => {
   assert.equal(modulesText(board({})), "no modules plugged");
+});
+
+test("a rack's modules line is left out when its title already names the module (F2: Sessions, progress file)", () => {
+  const withFile = { label: "Sessions, progress file", modules: { progress_file: { path: "progress.md" } } };
+  assert.equal(modulesText(withFile), "progress file");
+  assert.equal(rackModulesLine(withFile), "", "the title says progress file; the line would repeat it");
+  const without = { label: "Sessions, no progress file", modules: {} };
+  assert.equal(rackModulesLine(without), "no modules plugged", "a title that does not name the module keeps the line");
 });

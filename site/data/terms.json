@@ -1135,6 +1135,17 @@
   "term": "failure mode",
   "wire": "verify"
  },
+ "fakemodel": {
+  "aliases": [
+   "FakeModel"
+  ],
+  "definition": "The scripted model in Rein. It answers from a fixed list, so every run repeats exactly and needs no key and no network.",
+  "id": "fakemodel",
+  "module": "H0",
+  "strict": true,
+  "term": "FakeModel",
+  "wire": "loop"
+ },
  "fan-out": {
   "aliases": [
    "fan-out",
@@ -2658,6 +2669,17 @@
   "term": "regression eval",
   "wire": "verify"
  },
+ "rein": {
+  "aliases": [
+   "Rein"
+  ],
+  "definition": "The small agent harness you build one step at a time. Each step adds a few lines, then a checkpoint compares your output with the expected output.",
+  "id": "rein",
+  "module": "H0",
+  "strict": false,
+  "term": "Rein",
+  "wire": "loop"
+ },
  "reinforcement-learning": {
   "aliases": [
    "reinforcement learning"
@@ -2892,6 +2914,18 @@
   "strict": true,
   "term": "sandbox-first",
   "wire": "permissions"
+ },
+ "scenario-tape": {
+  "aliases": [
+   "scenario tape",
+   "scenario tapes"
+  ],
+  "definition": "A JSON file that lists the scripted replies one run uses. The --fake flag points Rein at it.",
+  "id": "scenario-tape",
+  "module": "H0",
+  "strict": true,
+  "term": "scenario tape",
+  "wire": "loop"
  },
  "schema-validation": {
   "aliases": [
@@ -3712,6 +3746,18 @@
   "strict": true,
   "term": "virtual clock",
   "wire": "errors"
+ },
+ "virtual-environment": {
+  "aliases": [
+   "virtual environment",
+   "virtual environments"
+  ],
+  "definition": "A folder with its own Python packages, kept apart from the system's. The course's scripted run needs none; the real-model path installs one package.",
+  "id": "virtual-environment",
+  "module": "H0",
+  "strict": true,
+  "term": "virtual environment",
+  "wire": "loop"
  },
  "virtual-machine": {
   "aliases": [

@@ -65,13 +65,15 @@ function mountKey(doc, pre, python) {
     status.hidden = !shown;
     status.textContent = shown ? shown.text : "";
     retry.hidden = !(shown && shown.retry);
-    button.disabled = running;
+    // aria-disabled, not disabled: a disabled button drops focus, and the learner's focus should stay on Run.
+    button.setAttribute("aria-disabled", String(running));
   };
   // subscribe() calls back now, so the key starts blank. Nothing here starts the Python worker.
   python.subscribe(paint);
 
   // The run: the snippet goes to the worker's exec job as rein.py in a fresh folder (no setup, no argv).
   const runSnippet = async () => {
+    if (running) return;
     running = true;
     message = null;
     output.hidden = true;
