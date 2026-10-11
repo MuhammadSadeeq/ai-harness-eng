@@ -222,7 +222,8 @@ export class HxCheck extends HxElement {
     const choice = this.state.committed;
     this.setState({ evidenced: true });
     this.saveAnswer({ choice, revealed: true });
-    this.evidence("prediction", { item: this.item.id, choice, correct: choice === this.item.answer });
+    // A prediction is recorded, never credited: it shows the learner committed, not that they know (COMPONENTS §5).
+    this.evidence("prediction", { item: this.item.id, choice, correct: choice === this.item.answer }, []);
   }
 
   /** Writes this item's answer to the store (the learner's own UI state). Skipped while a self-test runs. */

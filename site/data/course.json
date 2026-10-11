@@ -3343,7 +3343,8 @@
    "part": "H",
    "prereqs": [
     "H5",
-    "C2"
+    "C2",
+    "C3"
    ],
    "primers": [],
    "slug": "rein-6-a-context-budget",

@@ -235,7 +235,8 @@ async function checkPageLoad(page, url, width, screenshotPath, hookCounts, stage
       // Every same-origin link must resolve: pages that do not exist yet are not links.
       const hrefs = await page.evaluate(() => [...new Set([...document.querySelectorAll("a[href]")]
         .map((a) => new URL(a.getAttribute("href"), location.href))
-        .filter((u) => u.origin === location.origin)
+        // Only page links: a blob: download (a step's files) has the page's origin but is not a path to fetch.
+        .filter((u) => (u.protocol === "http:" || u.protocol === "https:") && u.origin === location.origin)
         .map((u) => u.origin + u.pathname))]);
       for (const href of hrefs) {
         // One retry on a network error: with pages checked in parallel a connection can reset.

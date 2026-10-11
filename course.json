@@ -3456,7 +3456,8 @@
       ],
       "prereqs": [
         "H5",
-        "C2"
+        "C2",
+        "C3"
       ],
       "primers": [],
       "minutes": 40,

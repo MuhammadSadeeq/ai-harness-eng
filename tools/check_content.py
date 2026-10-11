@@ -812,6 +812,10 @@ def _check_requirements(
                        f'[B3] the keep beat needs <p class="law">{module["law"]}</p>')
 
 
+PREDICT_OBJECTIVE = ('[B4] a prediction proves no objective: remove data-objective from '
+                     'mode="predict" (AUTHORING §13.7)')
+
+
 def _check_objectives(page: Page, module: Module, ctx: Context, shown: str, report: Report) -> None:
     covered: set[str] = set()
     # The generated header lists every objective (gen:module-meta); a list item there is not an
@@ -820,6 +824,11 @@ def _check_objectives(page: Page, module: Module, ctx: Context, shown: str, repo
               for d in descendants(e)}
     for element in descendants(page.root):
         if id(element) in listed:
+            continue
+        if element.tag == "hx-check" and element.attrs.get("mode") == "predict":
+            # A prediction is recorded, never credited (COMPONENTS §5): it proves no objective.
+            if element.attrs.get("data-objective", "").strip():
+                report.problem(shown, element.line, PREDICT_OBJECTIVE)
             continue
         for token in element.attrs.get("data-objective", "").split():
             covered.add(token)

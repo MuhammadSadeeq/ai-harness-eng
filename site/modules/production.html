@@ -91,7 +91,7 @@
   <section class="beat" data-beat="break" id="break">
     <h2>The payment that timed out</h2>
     <p>An invoice is due, and the payment call times out. The harness does not know whether the money moved. Predict what happens next.</p>
-    <hx-check mode="predict" src="F5" item="F5-p1" for="break-run" data-objective="F5.o2">
+    <hx-check mode="predict" src="F5" item="F5-p1" for="break-run">
       <p>Without JavaScript, the question is: a payment call times out. The harness retries at once and sends no key, and the reply is lost. What happens to the money?</p>
       <ol>
         <li>The retry returns the first payment&#x27;s result, so only one payment is made.</li>

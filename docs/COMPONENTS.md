@@ -67,7 +67,10 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
 - Only success credits an objective. Evidence of a failure (a kata run with a
   failing test, a wrong check answer) is still recorded, with an empty
   `objectives` list (`this.evidence(kind, detail, [])`), so it never moves the
-  progress line. Predictions, bench runs and card reviews credit as they are.
+  progress line. A prediction is recorded with no objectives, right or wrong:
+  it shows the learner committed, not that they know, so a page never puts
+  `data-objective` on `mode="predict"` (check_content B4). Bench runs and card
+  reviews credit as they are.
 
 ## 6. Accessibility and motion (binding)
 - DESIGN §9 in full: keyboard operable, visible focus, targets ≥ 44 px,

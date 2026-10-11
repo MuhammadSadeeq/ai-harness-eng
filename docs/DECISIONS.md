@@ -551,3 +551,12 @@ basis for Phase 1, and answered SPEC §14:
 - **Decision:** I3 (portfolio projects, which requires H12) joins I5's
   prerequisites. I4, the Rust capstone, stays optional for I5: the path
   places it before I5 (D-046), but a learner can rehearse without it.
+
+## D-059 H6 requires C3, so the build step can name compaction
+
+- **Context:** H6 (a context budget) writes `compact()` and records a
+  `compaction` event, but C3 (compaction and memory) was not among its
+  prerequisites, so the term check made the page call it "a summary".
+- **Decision:** C3 joins H6's prerequisites (with H5 and C2). C3 already
+  comes before H6 on the path. H5 stays without C12: on the path the trace
+  step comes before the observability module, by design.

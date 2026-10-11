@@ -245,7 +245,7 @@ S0 → A1 → A2 → A3 → A4 → A5 → A6 → A7 → B1 → B2 → H0 → H1 
 | H3 | Rein 3: real tools inside a wall | build | Tools Permissions | H2, C7, C10 | 45 | Assume the wall will be tested. |
 | H4 | Rein 4: the permission gate | build | Permissions | H3, C9 | 40 | Judge the action and its target. |
 | H5 | Rein 5: a trace | build | Observability | H4, B4 | 35 | If it isn't in the trace, it didn't happen. |
-| H6 | Rein 6: a context budget | build | Context | H5, C2 | 40 | The smallest window that works. |
+| H6 | Rein 6: a context budget | build | Context | H5, C2, C3 | 40 | The smallest window that works. |
 | H7 | Rein 7: retries and a breaker | build | Errors | H6, C6 | 45 | Errors are the main path. |
 | H8 | Rein 8: guards that stop the run well | build | Loop | H7, C5 | 40 | Every run needs more than one exit. |
 | H9 | Rein 9: the verification gate | build | Verification | H8, C11 | 40 | “Done” is a claim. |

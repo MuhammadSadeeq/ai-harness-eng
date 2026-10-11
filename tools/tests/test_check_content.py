@@ -19,6 +19,7 @@ BAD_CASES: list[tuple[str, str, str]] = [
     ("B2", "bad/B2/the-agent-loop.html", "beats are"),
     ("B3", "bad/B3/the-agent-loop.html", "needs an hx-bench in prove"),
     ("B4", "bad/B4/the-agent-loop.html", "objective A1.o4 has no assessment item"),
+    ("B4", "bad/B4-predict/same-model-different-harness.html", "a prediction proves no objective"),
     ("B5", "bad/B5/the-agent-loop.html", "the limit is 1,000"),
     ("B6", "bad/B6/the-agent-loop.html", "typed count '69 modules'"),
     ("B7", "bad/B7b/the-agent-loop.html", "is not a known term id"),

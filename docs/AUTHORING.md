@@ -390,7 +390,9 @@ report.
    with it. Keep snippets short and quick (a run is stopped after 10 s).
 7. **Only success credits an objective** (COMPONENTS §5): a failing kata run
    or a wrong answer is recorded, not credited. Put `data-objective` where
-   success proves the objective.
+   success proves the objective. A prediction proves none, right or wrong: a
+   `mode="predict"` check never carries `data-objective` (check_content B4);
+   the objective's credit comes from the hunt, run or check that follows.
 8. **Wire figures:** use a turn ≥ 2 when you want the diff; turn 1 shows
    everything as new.
 9. **Say why a board's setting is where it is** when a bench then moves it (B2:
