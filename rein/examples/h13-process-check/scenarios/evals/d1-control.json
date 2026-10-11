@@ -1,0 +1,17 @@
+{
+ "id": "d1-control",
+ "schema": 1,
+ "title": "Control: one task that writes before it reads",
+ "kind": "regression",
+ "tasks": [
+  {
+   "id": "control-write-first",
+   "tape": "d1-control-write-first"
+  }
+ ],
+ "trials": 10,
+ "boards": [
+  "d1-old"
+ ],
+ "seed_base": 0
+}

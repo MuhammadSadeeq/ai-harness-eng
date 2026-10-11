@@ -2103,6 +2103,18 @@
   "term": "next-token prediction",
   "wire": "loop"
  },
+ "null-result": {
+  "aliases": [
+   "null result",
+   "null results"
+  ],
+  "definition": "A result that shows a change did not move the number on the suite you ran. It is a finding, not a failure, and it goes in the report.",
+  "id": "null-result",
+  "module": "H13",
+  "strict": true,
+  "term": "null result",
+  "wire": "verify"
+ },
  "observability": {
   "aliases": [
    "observability"

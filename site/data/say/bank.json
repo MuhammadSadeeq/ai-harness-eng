@@ -1771,6 +1771,40 @@
   "wire": "verify"
  },
  {
+  "id": "H13-s1",
+  "model_answer": "My extension is a tool-call budget that ends a run after a fixed number of calls. I will run the D1 suite on the board that sets it, with the suite's own seed and ten trials per task. The decisive number is passes out of ten for each task. The rule: a change counts only if a task loses or gains passes; if no task moves, I report a null.",
+  "module": "H13",
+  "objectives": [
+   "H13.o2"
+  ],
+  "prompt": "Write the criterion for your own extension before you write any code. Say what it changes, the command and seed, the number that decides, and the rule for reading it.",
+  "rubric": [
+   "Names one extension and what it changes in Rein",
+   "Gives the command and the seed, or the seed range",
+   "Names the decisive number and the suite it comes from",
+   "States the rule that decides what counts as a change and what counts as a null",
+   "Writes the prediction before the run"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "H13-s2",
+  "model_answer": "The process check did not change any pass count on the D1 suite: ten of ten on each task, before and after. That is a null on this suite. The suite contains no run that writes before it reads, so the check had nothing to catch; a control task that does write first showed the check works.",
+  "module": "H13",
+  "objectives": [
+   "H13.o3"
+  ],
+  "prompt": "The numbers did not move after your change. Write the line for the brag sheet and the first sentence of the report.",
+  "rubric": [
+   "Says the number did not move, and gives the table's numbers",
+   "Says what the suite could not see, and why",
+   "Calls it a null on this suite, not a verdict on the extension",
+   "Names a control or a next test that would show whether the check works",
+   "Says nothing about the job market or about other people's results"
+  ],
+  "wire": "control"
+ },
+ {
   "id": "I1-s1",
   "model_answer": "I would read the duties before the title. The posting asks for tools, evals and guardrails, so I read it as an applied role. I would show a repository with tests and a results table, linked from a write-up that gives the method and the interval. A certificate would not answer any of the duties, so I would not lead with one.",
   "module": "I1",

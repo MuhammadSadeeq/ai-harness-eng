@@ -1,0 +1,8 @@
+- id: null-result
+  term: null result
+  aliases:
+  - null result
+  - null results
+  strict: true
+  wire: verify
+  definition: A result that shows a change did not move the number on the suite you ran. It is a finding, not a failure, and it goes in the report.

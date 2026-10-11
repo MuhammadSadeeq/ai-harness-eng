@@ -1,0 +1,30 @@
+- id: H13-k1
+  type: term
+  objective: H13.o1
+  front: What does the course rank extensions by?
+  back: Learning value, and what the extension shows a reviewer you can do. The ranking is the course's judgment and claims nothing about the job market.
+- id: H13-k2
+  type: term
+  objective: H13.o2
+  front: What are the parts of a criterion?
+  back: The question, the command and seed, the decisive number, and the rule for reading the number.
+- id: H13-k3
+  type: term
+  objective: H13.o2
+  front: Why write the prediction before the run?
+  back: So a null can be read. You can see what you expected, and compare it with what happened.
+- id: H13-k4
+  type: term
+  objective: H13.o3
+  front: What is a null result?
+  back: A result that shows a change did not move the number on the suite you ran. It is a finding, and it goes in the report.
+- id: H13-k5
+  type: term
+  objective: H13.o3
+  front: What does a control task show?
+  back: That the check can see what it measures. A null is then about the suite, not about a broken check.
+- id: H13-k6
+  type: term
+  objective: H13.o1
+  front: Why can a scripted run not decide a change to a tool description?
+  back: A scripted model replays its replies whatever the description says, so the number cannot move. Only a live run can show that effect.

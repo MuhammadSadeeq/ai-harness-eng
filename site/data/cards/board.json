@@ -2966,6 +2966,54 @@
   "type": "term"
  },
  {
+  "back": "Learning value, and what the extension shows a reviewer you can do. The ranking is the course's judgment and claims nothing about the job market.",
+  "front": "What does the course rank extensions by?",
+  "id": "H13-k1",
+  "module": "H13",
+  "objective": "H13.o1",
+  "type": "term"
+ },
+ {
+  "back": "The question, the command and seed, the decisive number, and the rule for reading the number.",
+  "front": "What are the parts of a criterion?",
+  "id": "H13-k2",
+  "module": "H13",
+  "objective": "H13.o2",
+  "type": "term"
+ },
+ {
+  "back": "So a null can be read. You can see what you expected, and compare it with what happened.",
+  "front": "Why write the prediction before the run?",
+  "id": "H13-k3",
+  "module": "H13",
+  "objective": "H13.o2",
+  "type": "term"
+ },
+ {
+  "back": "A result that shows a change did not move the number on the suite you ran. It is a finding, and it goes in the report.",
+  "front": "What is a null result?",
+  "id": "H13-k4",
+  "module": "H13",
+  "objective": "H13.o3",
+  "type": "term"
+ },
+ {
+  "back": "That the check can see what it measures. A null is then about the suite, not about a broken check.",
+  "front": "What does a control task show?",
+  "id": "H13-k5",
+  "module": "H13",
+  "objective": "H13.o3",
+  "type": "term"
+ },
+ {
+  "back": "A scripted model replays its replies whatever the description says, so the number cannot move. Only a live run can show that effect.",
+  "front": "Why can a scripted run not decide a change to a tool description?",
+  "id": "H13-k6",
+  "module": "H13",
+  "objective": "H13.o1",
+  "type": "term"
+ },
+ {
   "back": "Builds agents into a product, with tools, evals and guardrails, then watches them run. In this course's terms, it is most of the work.",
   "front": "What does an applied AI engineer do?",
   "id": "I1-k1",

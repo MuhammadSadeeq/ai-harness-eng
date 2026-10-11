@@ -1,0 +1,48 @@
+diff --git a/rein/src/rein/evals.py b/rein/src/rein/evals.py
+index 64cf50d..a89c539 100644
+--- a/rein/src/rein/evals.py
++++ b/rein/src/rein/evals.py
+@@ -158,6 +158,25 @@ def load_tapes(spec: EvalSpec, scenarios: Path) -> dict[str, Tape]:
+     return tapes
+ 
+ 
++def wrote_before_read(events: list[dict[str, Any]]) -> bool:
++    """H13 extension (process check): a write_file of a path the run had not read first (ok calls only).
++
++    edit_file is not counted: its old text must match the file, which already guards the edit.
++    """
++    read: set[str] = set()
++    for event in events:
++        if event.get("kind") != "tool_call" or event.get("ok") is not True:
++            continue
++        path = (event.get("input") or {}).get("path")
++        if not isinstance(path, str):
++            continue
++        if event.get("tool") == "read_file":
++            read.add(path)
++        elif event.get("tool") == "write_file" and path not in read:
++            return True
++    return False
++
++
+ def run_eval(
+     spec: EvalSpec,
+     tapes: dict[str, Tape],
+@@ -171,7 +190,8 @@ def run_eval(
+         for trial in range(1, spec.trials + 1):
+             prices = resolve_prices(run_pricing(tape, board), facts)
+             result = Harness(tape, board, trial, prices).run()
+-            code = result.status == "done" and result.passed
++            careless = wrote_before_read(result.events)  # H13 extension: the process check
++            code = result.status == "done" and result.passed and not careless
+             row: dict[str, Any] = {
+                 "task": task.id,
+                 "trial": trial,
+@@ -179,6 +199,7 @@ def run_eval(
+                 "passed": result.passed,
+                 "code": code,
+                 "leaked": any(event["kind"] == "leak" for event in result.events),
++                "careless": careless,
+                 "turns": result.turns,
+                 "tokens": {"input": result.tokens_in, "output": result.tokens_out},
+                 "cost": result.cost,

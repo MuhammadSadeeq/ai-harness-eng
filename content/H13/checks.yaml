@@ -1,0 +1,36 @@
+- id: H13-c1
+  objective: H13.o1
+  mode: check
+  question: Which extension should a learner scope first, by the course's judgment?
+  options:
+    - text: The one that sounds most impressive.
+      why: "Tempting and wrong. Novelty is not the test. The course ranks by what you learn and what you can show."
+    - text: The one that teaches measurement and that the package can measure.
+      why: "Right. The course ranks by learning value and by what a reviewer can check, so start with an extension the package can measure."
+    - text: The one that needs no numbers at all.
+      why: "Wrong. An extension without a measurable criterion cannot be reported honestly, which is the point of the module."
+  answer: 1
+- id: H13-c2
+  objective: H13.o3
+  mode: check
+  question: The table shows the same numbers before and after your change. What goes on the brag sheet?
+  options:
+    - text: The process check does not work.
+      why: "Wrong. A control task showed the check works: it failed ten of ten with the check and passed ten of ten without it."
+    - text: The suite could not show the check's effect, because no trial wrote a file it had not read. The result is a null on this suite.
+      why: "Right. A null is a result. It says what the suite can and cannot see, and it goes in the report."
+    - text: The check is better, because it is stricter.
+      why: "Wrong. Stricter is not better unless it changes a result that matters, and this one changed nothing."
+  answer: 1
+- id: H13-c3
+  objective: H13.o3
+  mode: check
+  question: Why run a control task when the number did not move?
+  options:
+    - text: To show the check works, so the null is about the suite and not about a broken check.
+      why: "Right. The control writes before it reads, and the check fails it. That shows the check can see what it measures."
+    - text: To raise the pass count, since a control is an easier task.
+      why: "Wrong. The control is not in the suite and does not change the suite's numbers."
+    - text: To keep the null off the brag sheet.
+      why: "Wrong. A null is reported as it is. The control makes it readable, it does not hide it."
+  answer: 0
