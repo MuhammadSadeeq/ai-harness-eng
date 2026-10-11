@@ -1,0 +1,365 @@
+{
+  "_about": "The capstone's milestones (BP-4.3 §2). A golden run belongs to the highest milestone among its features (M1 when it has none). A feature is found in the golden's tape, board or eval (dotted keys, lists searched item by item; 'text' substrings in the document's JSON) or in its recorded events ('kind' or 'kind.field=<canonical JSON>'). tools/parity.py --assign prints the result.",
+  "milestones": {
+    "M1": "the core run: tape, scripted model, board modules of section 7, events, cost (ENGINE.md sections 1 to 11)",
+    "M2": "amendments A1 to A3: context overflow, the simulated human, the rulings of building both runtimes",
+    "M3": "amendments A4 and A5: incident tapes, and the harness bugs on purpose (history, first block only)",
+    "M4": "amendments A6 to A8: compaction, the clock, prompt caching, input checks, split results, effort",
+    "M5": "amendments A9 and A10: tool design, tools on demand, tamperable tests, cost attribution",
+    "M6": "amendments A11 to A13: evals, prompt injection, tool provenance and pinned servers, canaries",
+    "M7": "amendments A14 to A19: sub-agents, sessions, crash and resume, side effects, model profiles, branch pointers, a board's rules"
+  },
+  "features": [
+    {
+      "id": "overflow",
+      "milestone": "M2",
+      "description": "A1: the prompt is over the window",
+      "events": [
+        "context_check.action=\"overflow\""
+      ]
+    },
+    {
+      "id": "human-rules",
+      "milestone": "M2",
+      "description": "A2: deny_if and fatigue, and the human field of permission",
+      "tape": [
+        "human.deny_if",
+        "human.fatigue"
+      ],
+      "events": [
+        "permission.human=\"approve\"",
+        "permission.human=\"deny\""
+      ]
+    },
+    {
+      "id": "outside-paths",
+      "milestone": "M2",
+      "description": "A3.6: paths outside the workspace (outside)",
+      "tape": [
+        "outside"
+      ]
+    },
+    {
+      "id": "list-output",
+      "milestone": "M2",
+      "description": "A3.4: list_files and ls join the paths with newlines and no trailing newline",
+      "events": [
+        "tool_call.tool=\"list_files\""
+      ],
+      "text": [
+        "\"cmd\": \"ls"
+      ]
+    },
+    {
+      "id": "links",
+      "milestone": "M2",
+      "description": "A3.7: symbolic links in the workspace",
+      "text": [
+        "{\"link\": "
+      ]
+    },
+    {
+      "id": "egress",
+      "milestone": "M2",
+      "description": "A3.8: egress hosts in the sandbox",
+      "board": [
+        "sandbox.egress"
+      ]
+    },
+    {
+      "id": "permission-rules",
+      "milestone": "M2",
+      "description": "A3.9 and A3.10: rules[i] naming and glob rules",
+      "board": [
+        "permissions.rules"
+      ]
+    },
+    {
+      "id": "output-cut",
+      "milestone": "M2",
+      "description": "A3.18: a tool output that the cap cuts",
+      "events": [
+        "tool_call.truncated=true"
+      ]
+    },
+    {
+      "id": "redaction",
+      "milestone": "M2",
+      "description": "A3.20: redaction of events, not of wire payloads",
+      "board": [
+        "redact.patterns"
+      ]
+    },
+    {
+      "id": "interrupt-resume",
+      "milestone": "M2",
+      "description": "A3.17: an interrupt with resume: the pending calls never run",
+      "text": [
+        "\"resume\": true"
+      ]
+    },
+    {
+      "id": "incident",
+      "milestone": "M3",
+      "description": "A4: an incident block (the hunt's tape)",
+      "tape": [
+        "incident"
+      ]
+    },
+    {
+      "id": "forgetful-history",
+      "milestone": "M3",
+      "description": "A5.1 and A5.2: history resend false, history_lt",
+      "board": [
+        "history"
+      ],
+      "text": [
+        "history_lt:"
+      ]
+    },
+    {
+      "id": "first-block-only",
+      "milestone": "M3",
+      "description": "A5.3: the harness reads the first block only",
+      "board": [
+        "first_block_only"
+      ]
+    },
+    {
+      "id": "compaction",
+      "milestone": "M4",
+      "description": "A6.3: compaction, and its notes",
+      "board": [
+        "compaction"
+      ],
+      "tape": [
+        "notes"
+      ],
+      "events": [
+        "compaction"
+      ]
+    },
+    {
+      "id": "conditions-prompt",
+      "milestone": "M4",
+      "description": "A6.1: context_gte and sent_lacks",
+      "text": [
+        "context_gte:",
+        "sent_lacks:"
+      ]
+    },
+    {
+      "id": "clock",
+      "milestone": "M4",
+      "description": "A6.4: the system clock (a harness bug on purpose)",
+      "board": [
+        "system_clock"
+      ]
+    },
+    {
+      "id": "cache",
+      "milestone": "M4",
+      "description": "A6.5: prompt caching and its cache rules",
+      "board": [
+        "cache"
+      ],
+      "tape": [
+        "cache_rules"
+      ],
+      "events": [
+        "cache"
+      ]
+    },
+    {
+      "id": "input-checks",
+      "milestone": "M4",
+      "description": "A7.1: validate_inputs and input_check",
+      "board": [
+        "validate_inputs"
+      ],
+      "events": [
+        "input_check"
+      ]
+    },
+    {
+      "id": "split-results",
+      "milestone": "M4",
+      "description": "A7.2: split results (a harness bug on purpose)",
+      "board": [
+        "split_results"
+      ],
+      "text": [
+        "results_split"
+      ]
+    },
+    {
+      "id": "effort",
+      "milestone": "M4",
+      "description": "A7.3: effort levels and thinking tokens",
+      "board": [
+        "effort"
+      ],
+      "tape": [
+        "effort"
+      ],
+      "text": [
+        "effort_gte:"
+      ]
+    },
+    {
+      "id": "tool-design",
+      "milestone": "M5",
+      "description": "A9.1 and A9.2: tool_overrides and tool_search",
+      "board": [
+        "tool_overrides",
+        "tool_search"
+      ],
+      "text": [
+        "tools_gte:",
+        "tool_loaded:"
+      ]
+    },
+    {
+      "id": "tamperable-tests",
+      "milestone": "M5",
+      "description": "A9.3: tape tests and pristine tests",
+      "tape": [
+        "tests"
+      ],
+      "board": [
+        "verify_gate.pristine_tests"
+      ]
+    },
+    {
+      "id": "cost-attribution",
+      "milestone": "M5",
+      "description": "A9.4: cost attribution",
+      "board": [
+        "cost_attribution"
+      ],
+      "events": [
+        "cost"
+      ]
+    },
+    {
+      "id": "injection",
+      "milestone": "M6",
+      "description": "A11.1 and A11.3: last_result_contains and canaries",
+      "text": [
+        "last_result_contains:"
+      ],
+      "tape": [
+        "canaries"
+      ],
+      "events": [
+        "leak"
+      ]
+    },
+    {
+      "id": "provenance",
+      "milestone": "M6",
+      "description": "A11.4 and A11.5: tool server provenance and tool_pins",
+      "tape": [
+        "custom_tools.server"
+      ],
+      "board": [
+        "tool_pins"
+      ],
+      "events": [
+        "tool_rejected"
+      ]
+    },
+    {
+      "id": "evals",
+      "milestone": "M6",
+      "description": "A11.7: evals (every eval golden)",
+      "eval": [
+        "tasks"
+      ]
+    },
+    {
+      "id": "sub-agents",
+      "milestone": "M7",
+      "description": "A14.1: sub-agents and run_agent",
+      "tape": [
+        "agents"
+      ],
+      "board": [
+        "subagents"
+      ],
+      "events": [
+        "subagent_start",
+        "subagent_end"
+      ]
+    },
+    {
+      "id": "sessions",
+      "milestone": "M7",
+      "description": "A14.2: sessions and the progress file",
+      "tape": [
+        "sessions"
+      ],
+      "board": [
+        "progress_file"
+      ],
+      "events": [
+        "session_start"
+      ],
+      "text": [
+        "session_gte:"
+      ]
+    },
+    {
+      "id": "crash-resume",
+      "milestone": "M7",
+      "description": "A14.3: crash, durable sessions and resume",
+      "tape": [
+        "crash"
+      ],
+      "board": [
+        "durable_session"
+      ],
+      "events": [
+        "crash",
+        "resume"
+      ]
+    },
+    {
+      "id": "side-effects",
+      "milestone": "M7",
+      "description": "A14.4: ledgers, lost replies, retries and idempotency",
+      "tape": [
+        "custom_tools.ledger",
+        "custom_tools.lose_reply"
+      ],
+      "board": [
+        "tool_retry",
+        "idempotency"
+      ]
+    },
+    {
+      "id": "model-profiles",
+      "milestone": "M7",
+      "description": "A14.5: model profiles, request params, capability check",
+      "tape": [
+        "models"
+      ],
+      "board": [
+        "model",
+        "request_params",
+        "capability_check"
+      ],
+      "events": [
+        "capability"
+      ]
+    },
+    {
+      "id": "board-rules",
+      "milestone": "M7",
+      "description": "A19: a board's rules replace the tape's rules",
+      "board": [
+        "rules_file.rules"
+      ]
+    }
+  ]
+}

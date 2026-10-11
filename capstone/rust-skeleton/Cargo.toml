@@ -1,0 +1,10 @@
+[package]
+name = "rein-rs"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Rein in Rust: the capstone kit for ENGINE.md (the skeleton; see README.md)"
+
+[dependencies]
+# preserve_order keeps keys in insertion order, which pyjson (ENGINE.md section 2) needs.
+serde_json = { version = "1", features = ["preserve_order"] }

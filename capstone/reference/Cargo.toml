@@ -1,0 +1,12 @@
+[package]
+name = "rein-rs"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "The director's Rust reference of docs/ENGINE.md (BP-4.3); private until launch (D-046)"
+
+[dependencies]
+serde_json = { version = "1", features = ["preserve_order"] }
+
+[profile.release]
+debug = false

@@ -1185,3 +1185,26 @@ eventually notices; lessons say so).
   existing golden is unchanged. Sub-agents are unchanged: they never get a
   rules layer (A14.1). The rules file is the harness's map, so a board can now
   fix a stale one on the same tape.
+- **A20 (2026-10-11): rulings from the third runtime** (the director's Rust
+  reference for I4, written from this document; D-046). Binding for every
+  runtime. Each one is what both existing runtimes and every golden already
+  do; nothing changes in them, and the text now says so.
+  1. *Tool order in a request:* the built-in tools follow `tooldefs.json`'s
+     order (A3.1), then custom tools in tape order; the tape's `tools` list
+     selects, it does not order. Only the wire digest shows the difference.
+  2. *`list_files` and `ls`:* the paths are joined by `"\n"` with no trailing
+     newline (A3.4); "one per line" in §6 means exactly that.
+  3. *The wire file (§10):* each model call writes its request line, then
+     its response line, each one canonical compact JSON (§2).
+  4. *Session handover (A14.2):* no `trace_write` at a handover; the next
+     `session_start` follows the last event of the session before it.
+  5. *Sub-agents (A15.1):* `history`, `first_block_only`, `split_results` and
+     `close_books` apply to the main agent only; the missing-result check
+     (A5.5a) applies inside sub-agents too.
+  6. *An interrupt with resume (A3.17):* the pending tool calls never run, and
+     the turn goes on to its next step; §7.1's pseudocode does not fall
+     through into the tool branch.
+  7. *A crash (A14.3):* fires after the tool results of its turn and before
+     the next turn's guards.
+  8. *Milli rounding (A3.19):* `floor(p × 1000 + 0.5)`, half up, never a
+     language's own round (Python's rounds half to even).
