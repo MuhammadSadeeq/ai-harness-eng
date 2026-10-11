@@ -56,3 +56,4 @@
   definition: >-
     The model's own statement that it has finished, carried by end_turn. The loop treats it as a
     claim to check. It is not proof that the task is done.
+  fact: api.stop-reason-end-turn

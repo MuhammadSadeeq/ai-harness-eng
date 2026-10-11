@@ -113,7 +113,7 @@
   <section class="beat" data-beat="see" id="see">
     <h2>The model asks, the harness acts</h2>
     <p>A reply from the model is a list of blocks. A block that asks for a tool is a <dfn data-term="tool-use">tool_use</dfn> block: it has an id, a name and an input. <span class="fact" data-fact="api.stop-reason-tool-use">The stop reason tool_use means the model is calling a tool and expects the application to run it.</span> The model only writes the request. Some docs call this <dfn data-term="function-calling">function calling</dfn>.</p>
-    <p>The harness reads each block by its type, runs the named tool with its input, and records the output. <dfn data-term="parallel-tool-calls">Parallel tool calls</dfn> are several requests for tools in one reply, and <span class="fact" data-fact="api.parallel-results-one-message">their results go back together in one user message.</span></p>
+    <p>The harness reads each block by its type, runs the named tool with its input, and records the output. <span class="fact" data-fact="api.parallel-tool-calls-one-response">By default the model may call several tools in one reply</span>: these are <dfn data-term="parallel-tool-calls">parallel tool calls</dfn>, and <span class="fact" data-fact="api.parallel-results-one-message">their results go back together in one user message.</span></p>
 
     <pre data-run tabindex="0" role="region" aria-label="Python code"><code class="language-python">def read_file(path):
     return {"a.txt": "Buy milk."}.get(path, "missing")

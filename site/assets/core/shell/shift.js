@@ -187,7 +187,7 @@ export function pickShift({
       const longest = poolIncidents.filter((item) => huntDays.get(item.tape) === oldest);
       incident = longest[seedOf(day) % longest.length];
     } else {
-      note = nothingNewNote(incidents, path, done, started);
+      note = nothingNewNote(incidents, path, done, pool);
     }
   }
   const katas = memory.filter((kata) => pool.has(kata.module));
@@ -201,11 +201,12 @@ export function pickShift({
 
 /**
  * The line for a day with nothing new to hunt: the next path module that has an incident and is neither finished nor
- * started. Starting it adds its incident to the pool; a started module's incident is already in the pool.
+ * in the pool. Starting it adds its incident to the pool; a pool module's incident (a new learner's first module
+ * included) is already there.
  */
-function nothingNewNote(incidents, path, done, started) {
+function nothingNewNote(incidents, path, done, pool) {
   const titles = new Map(incidents.map((incident) => [incident.module, incident.title]));
-  const next = path.find((id) => !done.has(id) && !started.has(id) && titles.has(id));
+  const next = path.find((id) => !done.has(id) && !pool.has(id) && titles.has(id));
   return next === undefined
     ? "Nothing new to hunt today."
     : `Nothing new to hunt today. Start ${next} · ${titles.get(next)} to add its incident.`;
@@ -223,6 +224,14 @@ function sayDrill(modules, drillDays, day) {
 }
 
 /** What is left of the shift today: "incident" and "drill", in that order, or none. */
+/**
+ * What a drill kata credits (D-062 amended): the slot's objective, filed under the slot's module, only once the
+ * learner has started or finished that module. Before that the kata is practice: it credits nothing and starts nothing.
+ */
+export function drillCredit({ objective = "", module = "" } = {}, modules) {
+  return module !== "" && startedIds(modules).has(module) ? { objective, module } : { objective: "", module: "" };
+}
+
 export function shiftLeft(shift, entries) {
   const left = [];
   if (shift.incident && !incidentHunted(entries, shift.incident.tape)) left.push("incident");
@@ -309,8 +318,9 @@ export function mountShift(store, { root = document, now = () => new Date(), dat
     const drillSlot = slot("drill-slot");
     if (drillSlot) {
       const drill = shift.drill;
+      const credit = drillCredit(drillSlot.dataset, store.state.modules);
       const make = drill.kind === "kata"
-        ? () => element("hx-kata", { kata: drill.id, mode: "memory", "data-objective": drillSlot.dataset.objective ?? "", "data-module": drillSlot.dataset.module ?? "" })
+        ? () => element("hx-kata", { kata: drill.id, mode: "memory", "data-objective": credit.objective, "data-module": credit.module })
         : () => element("hx-say", { src: drill.module });
       drillSlot.replaceChildren(startButton(drill.kind === "kata" ? "Start the kata" : "Start the drill", () => mountInto(drillSlot, make())));
       setText(slot("drill-note"), drill.kind === "kata"

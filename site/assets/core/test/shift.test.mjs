@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
   seedOf, dayNumber, dayOf, entriesOn, incidentHunted, unhuntedIncidents, drillDone, pickShift, shiftLeft, cardsLine,
-  lastDrilledDays, lastHuntDays, lastDrillDays,
+  lastDrilledDays, lastHuntDays, lastDrillDays, drillCredit,
 } from "../shell/shift.js";
 import { startedIds, wiresByModule } from "../../components/lib/pool.js";
 
@@ -274,4 +274,20 @@ test("replay, the first six path modules done: six distinct incidents in six day
   const rows = replay(new Set(["S0", "A1", "A2", "A3", "A4", "A5"]));
   const firstSix = rows.slice(0, 6).map((row) => row.incident);
   assert.equal(new Set(firstSix).size, 6, JSON.stringify(rows));
+});
+
+test("a drill kata credits the slot's objective only once its module is started (D-062 amended)", () => {
+  const slot = { objective: "I5.o2", module: "I5" };
+  assert.deepEqual(drillCredit(slot, {}), { objective: "", module: "" });
+  assert.deepEqual(drillCredit(slot, { A3: { status: "started" } }), { objective: "", module: "" });
+  assert.deepEqual(drillCredit(slot, { I5: { status: "started" } }), { objective: "I5.o2", module: "I5" });
+  assert.deepEqual(drillCredit(slot, { I5: { status: "done" } }), { objective: "I5.o2", module: "I5" });
+  assert.deepEqual(drillCredit({}, { I5: { status: "started" } }), { objective: "", module: "" });
+});
+
+test("replay, nothing started: the note never names the first module, which is already the pool", () => {
+  const rows = replay(new Set());
+  const notes = rows.map((row) => row.note).filter(Boolean);
+  assert.ok(notes.length > 0, JSON.stringify(rows));
+  assert.ok(notes.every((note) => !note.includes("Start S0 ")), JSON.stringify(notes));
 });

@@ -6,6 +6,7 @@
   strict: true
   wire: context
   definition: "Reusing the work done on the start of a request when a later call starts the same way, so that start costs less."
+  fact: models.cache-read-multiplier
 - id: cache-prefix
   term: cache prefix
   aliases:

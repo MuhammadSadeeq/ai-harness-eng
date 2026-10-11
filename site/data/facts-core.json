@@ -449,6 +449,12 @@
   "status": "verified",
   "verified_on": "2026-10-10"
  },
+ "api.parallel-tool-calls-one-response": {
+  "id": "api.parallel-tool-calls-one-response",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
  "api.prefill-claude-4-6-and-later": {
   "id": "api.prefill-claude-4-6-and-later",
   "source": "https://platform.claude.com/docs/en/api/errors",

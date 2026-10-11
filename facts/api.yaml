@@ -429,6 +429,16 @@
   kind: "docs"
   note: "Troubleshooting section 1 of the same page says the most common issue is formatting tool results incorrectly in the conversation history, and that this 'teaches' Claude to avoid parallel calls."
 
+- id: "api.parallel-tool-calls-one-response"
+  claim: "By default, Claude may call multiple tools in a single response: the response can contain several tool_use blocks in one assistant turn."
+  source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use"
+  source_alt: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md"
+  quote: "By default, Claude may call multiple tools in a single response."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  note: "The Execution semantics section of the same page: the response 'can contain several `tool_use` blocks in a single assistant turn.'"
+
 - id: "api.prefill-claude-4-6-and-later"
   claim: "Claude 4.6 and later models and Claude Mythos Preview do not support assistant prefill; a prefilled last assistant message returns HTTP 400 invalid_request_error."
   source: "https://platform.claude.com/docs/en/api/errors"

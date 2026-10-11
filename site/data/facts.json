@@ -599,6 +599,14 @@
   "verified_on": "2026-10-10",
   "volatility": "volatile"
  },
+ "api.parallel-tool-calls-one-response": {
+  "claim": "By default, Claude may call multiple tools in a single response: the response can contain several tool_use blocks in one assistant turn.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
  "api.prefill-claude-4-6-and-later": {
   "claim": "Claude 4.6 and later models and Claude Mythos Preview do not support assistant prefill; a prefilled last assistant message returns HTTP 400 invalid_request_error.",
   "kind": "docs",

@@ -616,3 +616,11 @@ basis for Phase 1, and answered SPEC §14:
   never joins the pool. The drill takes the least recently drilled item in
   the pool. I5.o2 is credited only by a passing memory kata: the slot that
   mounts the kata declares the objective, and check_content B4 reads it.
+- **Amended again (2026-10-11), after round 2:** the shift's drill credits
+  I5.o2 only once the learner has started or finished I5. Before that a
+  drill kata is practice: it credits nothing and starts no module, so the
+  drill can never pull I5 into the pool ahead of its prerequisites. The
+  "nothing new" note names the next module outside the pool, never a new
+  learner's first module. With one module in the pool and no memory kata,
+  the drill is that module's say prompts every day; that is intended (the
+  drill is review of what was seen).

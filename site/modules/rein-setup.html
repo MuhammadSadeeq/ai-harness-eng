@@ -138,7 +138,7 @@ source .venv/bin/activate</code></pre>
     </hx-check>
 
     <h3>A real key, later and optional</h3>
-    <p>To run the real model, install the SDK in the environment and export your key. <span class="fact" data-fact="api.sdk-env-api-key">The SDK reads the key from ANTHROPIC_API_KEY when you do not pass one.</span> Rein's real-model step reads the key from <code>ANTHROPIC_API_KEY</code>, so the key lives in the environment. Keep it out of every file that goes into git, out of traces, and out of the browser. The course's pages never ask for a key.</p>
+    <p>To run the real model, install the SDK in the environment and export your key. <span class="fact" data-fact="api.sdk-env-api-key">The Python SDK reads the key from ANTHROPIC_API_KEY when you do not pass one.</span> Rein's real-model step reads the key from <code>ANTHROPIC_API_KEY</code>, so the key lives in the environment. Keep it out of every file that goes into git, out of traces, and out of the browser. The course's pages never ask for a key.</p>
     <aside class="note">
       <p>Run these on your machine, only when you want the real model.</p>
     </aside>
@@ -167,7 +167,7 @@ export ANTHROPIC_API_KEY=your-key-here</code></pre>
         <dt>What is a scenario tape?</dt><dd>A JSON file that lists the scripted replies one run uses. The --fake flag points Rein at it.</dd>
         <dt>What is a virtual environment?</dt><dd>A folder with its own Python packages, kept apart from the system's.</dd>
         <dt>Does the scripted run need a package?</dt><dd>No. It uses the standard library only. Only the real-model path imports the SDK.</dd>
-        <dt>Where does a real API key go?</dt><dd><span class="fact" data-fact="api.sdk-env-api-key">The SDK reads it by default from the ANTHROPIC_API_KEY environment variable.</span> Never in a file under git, never in the browser.</dd>
+        <dt>Where does a real API key go?</dt><dd><span class="fact" data-fact="api.sdk-env-api-key">The Python SDK reads it by default from the ANTHROPIC_API_KEY environment variable.</span> Never in a file under git, never in the browser.</dd>
       </dl>
     </hx-cards>
     <hx-say src="H0">
