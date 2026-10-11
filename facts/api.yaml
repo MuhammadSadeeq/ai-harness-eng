@@ -152,6 +152,15 @@
   kind: "docs"
   note: "Quote checked on source_alt (the .md rendering of this URL). The HTML reference renders its descriptions client-side, so the sentence is absent from the HTML fetch."
 
+- id: "api.console-api-keys"
+  claim: "API keys for the Claude API live in the Claude Console, where one is created on the Settings → API keys page."
+  source: "https://platform.claude.com/docs/en/get-api-key"
+  source_alt: "https://platform.claude.com/docs/en/get-api-key.md"
+  quote: "API keys for the Claude API (also called Anthropic API keys) live in the Claude Console. To view your existing keys or create a new one, go to [Settings → API keys](https://platform.claude.com/settings/keys)."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
 - id: "api.content-multiple-blocks"
   claim: "A response's content is an array of content blocks, each with a type that determines its shape."
   source: "https://platform.claude.com/docs/en/api/messages/create"
@@ -373,6 +382,25 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.models-entry-id"
+  claim: "Each entry in the Models API list has an id, which is a unique model identifier."
+  source: "https://platform.claude.com/docs/en/api/models/list"
+  source_alt: "https://platform.claude.com/docs/en/api/models/list.md"
+  quote: "Unique model identifier."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  note: "Field description of id in the Returns section of the page (data: array of ModelInfo)."
+
+- id: "api.models-list"
+  claim: "The Models API response (GET /v1/models) shows which models are available for use in the API; more recently released models are listed first."
+  source: "https://platform.claude.com/docs/en/api/models/list"
+  source_alt: "https://platform.claude.com/docs/en/api/models/list.md"
+  quote: "The Models API response can be used to determine which models are available for use in the API. More recently released models are listed first."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
 - id: "api.parallel-results-one-message"
   claim: "For parallel tool use, the docs mark one user message per tool result as Wrong and all tool results together in a single user message as Correct."
   source: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use"
@@ -445,6 +473,24 @@
   verified_on: 2026-10-10
   volatility: "volatile"
   kind: "docs"
+
+- id: "api.sdk-env-api-key"
+  claim: "In the Python SDK, passing api_key is optional: its default reads the ANTHROPIC_API_KEY environment variable."
+  source: "https://github.com/anthropics/anthropic-sdk-python/blob/b4b7916deaf4e5570cd627b1ae7ee4394a4de39f/README.md"
+  quote: 'api_key=os.environ.get("ANTHROPIC_API_KEY"),  # This is the default and can be omitted'
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  note: "Read at tag v1.13.0 (commit b4b7916deaf4e5570cd627b1ae7ee4394a4de39f), README line 28, from a shallow clone of the repository. The client source agrees: src/anthropic/_client.py reads os.environ.get(\"ANTHROPIC_API_KEY\") when no credential argument is passed."
+
+- id: "api.sdk-max-retries-option"
+  claim: "The Python SDK's Anthropic client takes a max_retries option, whose default is DEFAULT_MAX_RETRIES."
+  source: "https://github.com/anthropics/anthropic-sdk-python/blob/b4b7916deaf4e5570cd627b1ae7ee4394a4de39f/src/anthropic/_client.py"
+  quote: "max_retries: int = DEFAULT_MAX_RETRIES,"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  note: "Tag v1.13.0 (commit b4b7916deaf4e5570cd627b1ae7ee4394a4de39f); the line is the constructor parameter of class Anthropic (line 168). DEFAULT_MAX_RETRIES is 2 in src/anthropic/_constants.py (line 11), which matches the docs' 'twice by default' in api.error-sdk-retries. Per request, copy(), aliased as with_options (line 537), also takes max_retries, as in client.with_options(max_retries=...). The README does not document max_retries."
 
 - id: "api.split-results-teach-serial"
   claim: "The parallel tool use docs say that formatting tool results incorrectly in the conversation history 'teaches' Claude to avoid parallel calls."
@@ -646,6 +692,16 @@
   verified_on: 2026-10-10
   volatility: "volatile"
   kind: "docs"
+
+- id: "api.thinking-blocks-preserve"
+  claim: "Within the latest assistant message, the consecutive thinking blocks must match what the model generated: they cannot be rearranged, edited or partially dropped."
+  source: "https://platform.claude.com/docs/en/build-with-claude/thinking"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/thinking.md"
+  quote: "Within the latest assistant message, the sequence of consecutive `thinking` blocks must match what the model generated in the original request: you can't rearrange, edit, or partially drop them."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  note: "From 'Preserving thinking blocks' under 'Thinking with tool use'. The same section says to pass every thinking block back complete and unmodified (api.thinking-blocks-pass-back-tool-use), and the page says modified thinking blocks are rejected with a 400 error."
 
 - id: "api.thinking-budget-tokens-deprecated"
   claim: "Manual thinking with type enabled and budget_tokens is deprecated on Claude 4.6 models, where requests still succeed, and is rejected with HTTP 400 on Claude 4.7 and later."

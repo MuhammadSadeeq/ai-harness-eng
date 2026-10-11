@@ -138,6 +138,18 @@
   kind: "docs"
   note: "The three causes are headings on the page and are not quoted here: 1. Context window routing error; 2. Output corruption; 3. Approximate top-k XLA:TPU miscompilation. The page's publication date (Sep 17, 2025) appears in its markup. The page was read through its embedded text."
 
+- id: "anthropic.postmortem-2025-causes"
+  claim: "Anthropic's postmortem names three bugs, by these headings: a context window routing error, output corruption, and an approximate top-k XLA:TPU miscompilation."
+  source: "https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues"
+  quote: |-
+    1. Context window routing error
+    2. Output corruption
+    3. Approximate top-k XLA:TPU miscompilation
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "docs"
+  note: "The three quoted lines are the page's h3 headings, in page order, with the page's own numbering. Read from the page HTML on 2026-10-11."
+
 - id: "anthropic.twt-meaningful-context"
   claim: "Anthropic's second tool-writing principle is returning meaningful context from tools back to agents."
   source: "https://www.anthropic.com/engineering/writing-tools-for-agents"

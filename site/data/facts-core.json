@@ -143,6 +143,12 @@
   "status": "verified",
   "verified_on": "2026-10-11"
  },
+ "anthropic.postmortem-2025-causes": {
+  "id": "anthropic.postmortem-2025-causes",
+  "source": "https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
  "anthropic.postmortem-2025-issues": {
   "id": "anthropic.postmortem-2025-issues",
   "source": "https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues",
@@ -274,6 +280,12 @@
   "source": "https://platform.claude.com/docs/en/api/messages",
   "status": "verified",
   "verified_on": "2026-10-10"
+ },
+ "api.console-api-keys": {
+  "id": "api.console-api-keys",
+  "source": "https://platform.claude.com/docs/en/get-api-key",
+  "status": "verified",
+  "verified_on": "2026-10-11"
  },
  "api.content-multiple-blocks": {
   "id": "api.content-multiple-blocks",
@@ -407,6 +419,18 @@
   "status": "verified",
   "verified_on": "2026-10-10"
  },
+ "api.models-entry-id": {
+  "id": "api.models-entry-id",
+  "source": "https://platform.claude.com/docs/en/api/models/list",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "api.models-list": {
+  "id": "api.models-list",
+  "source": "https://platform.claude.com/docs/en/api/models/list",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
  "api.parallel-results-one-message": {
   "id": "api.parallel-results-one-message",
   "source": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use",
@@ -454,6 +478,18 @@
   "source": "https://platform.claude.com/docs/en/api/rate-limits",
   "status": "verified",
   "verified_on": "2026-10-10"
+ },
+ "api.sdk-env-api-key": {
+  "id": "api.sdk-env-api-key",
+  "source": "https://github.com/anthropics/anthropic-sdk-python/blob/b4b7916deaf4e5570cd627b1ae7ee4394a4de39f/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "api.sdk-max-retries-option": {
+  "id": "api.sdk-max-retries-option",
+  "source": "https://github.com/anthropics/anthropic-sdk-python/blob/b4b7916deaf4e5570cd627b1ae7ee4394a4de39f/src/anthropic/_client.py",
+  "status": "verified",
+  "verified_on": "2026-10-11"
  },
  "api.split-results-teach-serial": {
   "id": "api.split-results-teach-serial",
@@ -586,6 +622,12 @@
   "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
   "status": "verified",
   "verified_on": "2026-10-10"
+ },
+ "api.thinking-blocks-preserve": {
+  "id": "api.thinking-blocks-preserve",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-11"
  },
  "api.thinking-budget-tokens-deprecated": {
   "id": "api.thinking-budget-tokens-deprecated",

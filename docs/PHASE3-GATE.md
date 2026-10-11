@@ -92,10 +92,11 @@ Findings: 0 blockers, 5 majors, 9 minors.
 
 ## 5. Open items carried forward
 
-- Facts still missing for later pages (BP-4.5-facts, running): the
-  postmortem's three causes (G1.o3 names none until then), the SDK reading
-  `ANTHROPIC_API_KEY`, where keys are made, the Models API, thinking blocks
-  in tool loops, retry-after and the SDK's retry option.
+- BP-4.5-facts added seven verified facts for the later pages, spot-checked
+  against their sources: the postmortem's three causes (G1.o3 now names
+  them), the SDK reading `ANTHROPIC_API_KEY`, where keys are made, the Models
+  API and its entries, thinking blocks in tool loops, and the SDK's
+  `max_retries` option. `check_facts`: 279 facts, 242 verified.
 - The loader loads a component inside a closed `details` eagerly: it reads
   its top as 0. Weight stays in budget; fix it in the Phase 6 audit.
 - A self-test that restores state after itself (`restoreAfterTest`) is

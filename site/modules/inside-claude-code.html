@@ -128,7 +128,7 @@
       <li>Observability: no fact in the course covers it, so it is left open.</li>
     </ul>
     <h3>Read a postmortem by its wires</h3>
-    <p><span class="fact" data-fact="anthropic.postmortem-2025-issues">Anthropic's postmortem describes three bugs that caused the degradation, and gives when each occurred and how it was resolved.</span> For each bug, name the wire it touches, then its failure family, then what the fix changes. The course quotes no cause, so this module names none.</p>
+    <p><span class="fact" data-fact="anthropic.postmortem-2025-issues">Anthropic's postmortem describes three bugs that caused the degradation, and gives when each occurred and how it was resolved.</span> <span class="fact" data-fact="anthropic.postmortem-2025-causes">Its headings name the three: a context window routing error, output corruption, and an approximate top-k XLA:TPU miscompilation.</span> By their names, all three sit in how the model is served, below the API call, so no harness wire caused them. Read it by its wires anyway: for each bug, ask which wire would have caught the bad output, and which family a trace would show. A wrong answer that the run reports as done is a false “done”. A harness postmortem reads the same way, and the check below gives one.</p>
     <h3>Lessons worth taking</h3>
     <ol>
       <li>Show the model the line it needs. A cut on tool output should keep the failing part, not the start of the file.</li>

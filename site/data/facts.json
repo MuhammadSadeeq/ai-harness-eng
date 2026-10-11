@@ -191,6 +191,14 @@
   "verified_on": "2026-10-11",
   "volatility": "stable"
  },
+ "anthropic.postmortem-2025-causes": {
+  "claim": "Anthropic's postmortem names three bugs, by these headings: a context window routing error, output corruption, and an approximate top-k XLA:TPU miscompilation.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
  "anthropic.postmortem-2025-issues": {
   "claim": "Anthropic's postmortem describes three bugs that caused the degradation, and gives when each occurred and how it was resolved.",
   "kind": "docs",
@@ -365,6 +373,14 @@
   "source": "https://platform.claude.com/docs/en/api/messages",
   "status": "verified",
   "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.console-api-keys": {
+  "claim": "API keys for the Claude API live in the Claude Console, where one is created on the Settings → API keys page.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/get-api-key",
+  "status": "verified",
+  "verified_on": "2026-10-11",
   "volatility": "volatile"
  },
  "api.content-multiple-blocks": {
@@ -543,6 +559,22 @@
   "verified_on": "2026-10-10",
   "volatility": "volatile"
  },
+ "api.models-entry-id": {
+  "claim": "Each entry in the Models API list has an id, which is a unique model identifier.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/models/list",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "api.models-list": {
+  "claim": "The Models API response (GET /v1/models) shows which models are available for use in the API; more recently released models are listed first.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/models/list",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
  "api.parallel-results-one-message": {
   "claim": "For parallel tool use, the docs mark one user message per tool result as Wrong and all tool results together in a single user message as Correct.",
   "kind": "docs",
@@ -605,6 +637,22 @@
   "source": "https://platform.claude.com/docs/en/api/rate-limits",
   "status": "verified",
   "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.sdk-env-api-key": {
+  "claim": "In the Python SDK, passing api_key is optional: its default reads the ANTHROPIC_API_KEY environment variable.",
+  "kind": "docs",
+  "source": "https://github.com/anthropics/anthropic-sdk-python/blob/b4b7916deaf4e5570cd627b1ae7ee4394a4de39f/README.md",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "api.sdk-max-retries-option": {
+  "claim": "The Python SDK's Anthropic client takes a max_retries option, whose default is DEFAULT_MAX_RETRIES.",
+  "kind": "docs",
+  "source": "https://github.com/anthropics/anthropic-sdk-python/blob/b4b7916deaf4e5570cd627b1ae7ee4394a4de39f/src/anthropic/_client.py",
+  "status": "verified",
+  "verified_on": "2026-10-11",
   "volatility": "volatile"
  },
  "api.split-results-teach-serial": {
@@ -781,6 +829,14 @@
   "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
   "status": "verified",
   "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.thinking-blocks-preserve": {
+  "claim": "Within the latest assistant message, the consecutive thinking blocks must match what the model generated: they cannot be rearranged, edited or partially dropped.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+  "status": "verified",
+  "verified_on": "2026-10-11",
   "volatility": "volatile"
  },
  "api.thinking-budget-tokens-deprecated": {
