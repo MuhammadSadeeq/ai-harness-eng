@@ -1,8 +1,9 @@
 # Phase 6 gate: the audit
 
-**Status:** round 1 is complete: every blocker and major of the five
-audits is fixed or ruled below. Round 2 is in progress. Round 2 (each
-reviewer re-checks its own findings on the fixed commit) follows.
+**Status:** both rounds are complete. Round 1's three blockers are fixed;
+every major is fixed or ruled; round 2 found no blocker in any of the five
+areas, and each of its new majors is fixed. Sign-off follows the full gate
+on the final commit (the last section).
 
 SPEC §10 sets the Phase 6 exit gate: **no blockers; majors are fixed; round 2
 confirms.** Five reviewers, one area each, worked on a clean worktree of
@@ -19,7 +20,7 @@ quote; a severity; a `file:line`). Reports: `docs/gate/phase6-audit-*.md`.
 | 4. Accessibility and mobile | 1 | 5 | 3 | phase6-audit-4-a11y.md |
 | 5. Code and tests | 0 | 12 | 11 | phase6-audit-5-code.md |
 
-### Blockers (both fixed)
+### Blockers (all three fixed)
 
 - **D2 taught a false rule** ("two results differ only when their
   intervals do not overlap"; 50/100 and 65/100 overlap, yet p = 0.03).
@@ -28,6 +29,9 @@ quote; a severity; a `file:line`). Reports: `docs/gate/phase6-audit-*.md`.
 - **I5.o2 could not be earned**, so I5 and Part I could never be done. A
   passing memory kata in the Interview Room or the on-call drill credits
   it, declared once on the slot that mounts it (9c8d35f).
+- **A filtered replay could not be stepped by keyboard** (audit 4): the
+  arrow keys and the − and + buttons stood still on a filtered wire. They
+  pass their direction now (509ef41; a test drives it).
 
 ### Majors, by what fixed them
 
@@ -175,3 +179,12 @@ No blocker in any of the five reports.
 - **A one-module drill (audit 2, N3):** with one module in the pool and no
   memory kata, the drill is that module's say prompts every day. That is
   intended: the drill reviews what was seen (D-062).
+
+## Exit gate (SPEC §10)
+
+| Rule | Result |
+|---|---|
+| No blockers | **Pass.** Round 1 had three (D2's false overlap rule, I5.o2 unearnable, the filtered replay); all fixed. Round 2: none in five reports. |
+| Majors are fixed | **Pass.** Every round-1 major is fixed or ruled above; the four new majors round 2 found (a span without "tier", the drill starting I5, a refused copy shown only to screen readers, the transcript's expand key) are fixed. |
+| Round 2 confirms | **Pass.** Fixed / not fixed / ruled / new, per audit: 55/3/0/4, 20/2/2/3, 11/1/2/1, 8/0/1/2, 22/0/1/4; every "not fixed" and every new item is closed or ruled above. |
+
