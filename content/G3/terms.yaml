@@ -1,0 +1,9 @@
+- id: code-tour
+  term: code tour
+  aliases:
+  - code tour
+  - code tours
+  strict: true
+  wire: loop
+  definition: 'A fixed order for reading an unfamiliar harness: the loop, the model adapter, the tools, the config,
+    then the trace.'

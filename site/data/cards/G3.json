@@ -1,0 +1,44 @@
+[
+ {
+  "back": "The loop, the model adapter, the tools, the config, then the trace.",
+  "front": "In what order do you read an unfamiliar harness?",
+  "id": "G3-k1",
+  "objective": "G3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Write it down as missing, with the file you looked in. A missing wire is a finding too.",
+  "front": "What do you do when a wire is missing from a repository?",
+  "id": "G3-k2",
+  "objective": "G3.o2",
+  "type": "term"
+ },
+ {
+  "back": "From the agent's save step, when an output path is set.",
+  "front": "Where does a trajectory come from in a local run?",
+  "id": "G3-k3",
+  "objective": "G3.o3",
+  "type": "term"
+ },
+ {
+  "back": "A measure you can run on the same seeds before and after the change.",
+  "front": "What makes a proposed change worth making?",
+  "id": "G3-k4",
+  "objective": "G3.o4",
+  "type": "term"
+ },
+ {
+  "back": "Every other part is called from it, so the loop shows where each call goes.",
+  "front": "Why start with the loop?",
+  "id": "G3-k5",
+  "objective": "G3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Not necessarily. Read which loop you are looking at; a part can sit in a subclass.",
+  "front": "Is a file that is not in the default loop missing from the harness?",
+  "id": "G3-k6",
+  "objective": "G3.o2",
+  "type": "term"
+ }
+]

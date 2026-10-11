@@ -1,0 +1,32 @@
+[
+ {
+  "id": "G3-s1",
+  "model_answer": "I find the loop first, because every other part is called from it. Then I read the model adapter, the tools, the config and the trace, in that order. For each wire I write down the file where it lives, or note that it is missing and where I looked. A part that sits in a subclass is not missing from the harness, so I check which loop I am reading. I keep the notes beside the regression report, so each finding points to a file.",
+  "objectives": [
+   "G3.o1",
+   "G3.o2"
+  ],
+  "prompt": "You open an unfamiliar harness repository after a regression report. Walk me through your first hour.",
+  "rubric": [
+   "Follows the order: loop, model adapter, tools, config, trace",
+   "Names a file for each wire, or notes it missing with where it looked",
+   "Says a part can sit in a subclass",
+   "Ties each finding to the regression report"
+  ]
+ },
+ {
+  "id": "G3-s2",
+  "model_answer": "I read the trajectory the save step wrote, turn by turn, to find the first event that is wrong. The save step writes the messages, the cost and the exit status, so the file says what the run did and how it ended. Then I propose one change, such as a check on the done claim, and I measure it on the same tasks and seeds before and after. If the measure does not move, I drop the change.",
+  "objectives": [
+   "G3.o3",
+   "G3.o4"
+  ],
+  "prompt": "You ran the harness on a toy task and the run looks wrong. What do you read, and what change would you propose?",
+  "rubric": [
+   "Reads the trajectory written by the save step",
+   "Finds the first wrong event before proposing anything",
+   "Proposes one change, not several at once",
+   "Measures the change on the same tasks before and after"
+  ]
+ }
+]

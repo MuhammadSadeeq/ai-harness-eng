@@ -1,0 +1,83 @@
+{
+ "buckets": [
+  {
+   "hint": "What is the model told, and which instruction wins?",
+   "id": "control",
+   "label": "Control plane"
+  },
+  {
+   "hint": "What is on the desk this call, and what is saved?",
+   "id": "context",
+   "label": "Context & memory"
+  },
+  {
+   "hint": "What happens next, what do we carry, when do we stop?",
+   "id": "loop",
+   "label": "Loop & state"
+  },
+  {
+   "hint": "When something fails, how do we continue without spinning?",
+   "id": "errors",
+   "label": "Errors & recovery"
+  },
+  {
+   "hint": "What can the model do, and is each tool easy to use?",
+   "id": "tools",
+   "label": "Tools"
+  },
+  {
+   "hint": "Which actions are allowed, and how bad can a mistake get?",
+   "id": "permissions",
+   "label": "Permissions & sandbox"
+  },
+  {
+   "hint": "How do we know it's really done, and did the change help?",
+   "id": "verify",
+   "label": "Verification & evals"
+  },
+  {
+   "hint": "What exactly happened, and where did time and money go?",
+   "id": "observe",
+   "label": "Observability"
+  }
+ ],
+ "items": [
+  {
+   "bucket": "loop",
+   "id": "g3-a",
+   "text": "agents/default.py: the while loop in run()",
+   "why": "The loop runs each step until the agent exits."
+  },
+  {
+   "bucket": "tools",
+   "id": "g3-b",
+   "text": "environments/local.py: execute()",
+   "why": "The environment runs the command the model asked for."
+  },
+  {
+   "bucket": "control",
+   "id": "g3-c",
+   "text": "config/default.yaml: system_template",
+   "why": "The system template is the instruction the model reads first."
+  },
+  {
+   "bucket": "errors",
+   "id": "g3-d",
+   "text": "models/utils/retry.py",
+   "why": "The retry helper decides which model call failures are tried again."
+  },
+  {
+   "bucket": "observe",
+   "id": "g3-e",
+   "text": "agents/default.py: save()",
+   "why": "The save step writes the trajectory, with cost and exit status."
+  },
+  {
+   "bucket": "permissions",
+   "id": "g3-f",
+   "text": "agents/interactive.py: the confirm mode",
+   "why": "In confirm mode, the agent waits for a person before a command runs."
+  }
+ ],
+ "prompt": "Locate each wire in the repository. Sort each place by the wire it serves."
+}

@@ -1,0 +1,108 @@
+[
+ {
+  "answer": 1,
+  "id": "G3-p1",
+  "mode": "predict",
+  "objective": "G3.o1",
+  "options": [
+   {
+    "text": "Read every file in alphabetical order.",
+    "why": "Tempting. You do not have to read every file; you follow the loop."
+   },
+   {
+    "text": "Find the loop, then follow the path the tool output takes to the model.",
+    "why": "Right. The loop is where every call goes, and the output path is where a cut can hide a failure."
+   },
+   {
+    "text": "Start with the test files.",
+    "why": "Tempting. The tests say what the author wanted, not what the loop does."
+   }
+  ],
+  "outcome": "In the incident, the cut was the change. Reading the loop showed where the output was cut before the model saw it.",
+  "question": "A regression report says the same model is worse after a harness change. You open an unfamiliar repository. Where do you start?"
+ },
+ {
+  "answer": 0,
+  "id": "G3-c1",
+  "mode": "check",
+  "objective": "G3.o1",
+  "options": [
+   {
+    "text": "The loop.",
+    "why": "Right. Every other part is called from it."
+   },
+   {
+    "text": "The tools.",
+    "why": "Tempting. The tools run when the loop asks; the loop comes first."
+   },
+   {
+    "text": "The config.",
+    "why": "Tempting. The config sets the loop's values; it does not run them."
+   }
+  ],
+  "question": "In an unfamiliar harness, which file do you open first?"
+ },
+ {
+  "answer": 1,
+  "id": "G3-c2",
+  "mode": "check",
+  "objective": "G3.o2",
+  "options": [
+   {
+    "text": "In the model's own reply.",
+    "why": "Tempting and wrong. The reply is what the model claims, not a check of it."
+   },
+   {
+    "text": "In the environment: the output marker is checked, and the loop does not run the tests.",
+    "why": "Right. The finish test is the marker check in the environment. The default loop has no verify step of its own."
+   },
+   {
+    "text": "In the config file.",
+    "why": "Tempting. The config holds the prompt; it does not check the work."
+   }
+  ],
+  "question": "In the default loop of this repository, where is the check that the work is done?"
+ },
+ {
+  "answer": 0,
+  "id": "G3-c3",
+  "mode": "check",
+  "objective": "G3.o3",
+  "options": [
+   {
+    "text": "The agent's save step, when an output path is set.",
+    "why": "Right. The save step writes the messages, the cost and the exit status."
+   },
+   {
+    "text": "The model's log on the provider's side.",
+    "why": "Tempting. The local run writes its own record."
+   },
+   {
+    "text": "The test output.",
+    "why": "Tempting. The test output is one tool result inside the trajectory."
+   }
+  ],
+  "question": "After a local run, where does the trajectory come from?"
+ },
+ {
+  "answer": 1,
+  "id": "G3-c4",
+  "mode": "check",
+  "objective": "G3.o4",
+  "options": [
+   {
+    "text": "Add it and read one run that looks good.",
+    "why": "Tempting. One run is not a measure."
+   },
+   {
+    "text": "Bench it against the old loop on the same seeds, and compare the pass counts.",
+    "why": "Right. The same seeds make the two runs comparable."
+   },
+   {
+    "text": "Remove the cost limit, since the gate makes it unnecessary.",
+    "why": "Tempting and wrong. The gate does not replace a budget."
+   }
+  ],
+  "question": "You want to add a verification gate to the default loop. How do you know it helped?"
+ }
+]

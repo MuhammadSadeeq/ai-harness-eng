@@ -1,0 +1,83 @@
+{
+  "prompt": "Locate each wire in the repository. Sort each place by the wire it serves.",
+  "buckets": [
+    {
+      "id": "control",
+      "label": "Control plane",
+      "hint": "What is the model told, and which instruction wins?"
+    },
+    {
+      "id": "context",
+      "label": "Context & memory",
+      "hint": "What is on the desk this call, and what is saved?"
+    },
+    {
+      "id": "loop",
+      "label": "Loop & state",
+      "hint": "What happens next, what do we carry, when do we stop?"
+    },
+    {
+      "id": "errors",
+      "label": "Errors & recovery",
+      "hint": "When something fails, how do we continue without spinning?"
+    },
+    {
+      "id": "tools",
+      "label": "Tools",
+      "hint": "What can the model do, and is each tool easy to use?"
+    },
+    {
+      "id": "permissions",
+      "label": "Permissions & sandbox",
+      "hint": "Which actions are allowed, and how bad can a mistake get?"
+    },
+    {
+      "id": "verify",
+      "label": "Verification & evals",
+      "hint": "How do we know it's really done, and did the change help?"
+    },
+    {
+      "id": "observe",
+      "label": "Observability",
+      "hint": "What exactly happened, and where did time and money go?"
+    }
+  ],
+  "items": [
+    {
+      "id": "g3-a",
+      "text": "agents/default.py: the while loop in run()",
+      "bucket": "loop",
+      "why": "The loop runs each step until the agent exits."
+    },
+    {
+      "id": "g3-b",
+      "text": "environments/local.py: execute()",
+      "bucket": "tools",
+      "why": "The environment runs the command the model asked for."
+    },
+    {
+      "id": "g3-c",
+      "text": "config/default.yaml: system_template",
+      "bucket": "control",
+      "why": "The system template is the instruction the model reads first."
+    },
+    {
+      "id": "g3-d",
+      "text": "models/utils/retry.py",
+      "bucket": "errors",
+      "why": "The retry helper decides which model call failures are tried again."
+    },
+    {
+      "id": "g3-e",
+      "text": "agents/default.py: save()",
+      "bucket": "observe",
+      "why": "The save step writes the trajectory, with cost and exit status."
+    },
+    {
+      "id": "g3-f",
+      "text": "agents/interactive.py: the confirm mode",
+      "bucket": "permissions",
+      "why": "In confirm mode, the agent waits for a person before a command runs."
+    }
+  ]
+}

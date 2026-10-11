@@ -878,7 +878,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "G3",
    "kind": "concept",
    "minutes": 60,

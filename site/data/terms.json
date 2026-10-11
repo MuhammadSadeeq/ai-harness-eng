@@ -401,6 +401,18 @@
   "term": "code grader",
   "wire": "verify"
  },
+ "code-tour": {
+  "aliases": [
+   "code tour",
+   "code tours"
+  ],
+  "definition": "A fixed order for reading an unfamiliar harness: the loop, the model adapter, the tools, the config, then the trace.",
+  "id": "code-tour",
+  "module": "G3",
+  "strict": true,
+  "term": "code tour",
+  "wire": "loop"
+ },
  "commit": {
   "aliases": [
    "commit",
