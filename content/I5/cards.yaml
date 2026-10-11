@@ -10,7 +10,6 @@
   back: When you save it. The rubric lines you covered are the record; the rest of the screen is for you.
 - id: I5-c3
   type: term
-  objective: I5.o2
   front: What is a from-memory kata?
   back: A blank file and a timer, checked by the same tests as the practice kata. No hints are shown.
 - id: I5-c4

@@ -43,7 +43,8 @@ const BUILDERS = {
         slot.replaceChildren();
         return;
       }
-      mountInto(slot, element("hx-kata", { kata: pick.value, mode: "memory" }));
+      // The slot declares the kata objective (data-objective, COMPONENTS §5): the mounted kata credits exactly that.
+      mountInto(slot, element("hx-kata", { kata: pick.value, mode: "memory", "data-objective": slot.dataset.objective ?? "" }));
     });
   },
 

@@ -181,3 +181,15 @@ test("cardProblem reports the first problem in AUTHORING §10 shape, or null", (
   assert.match(cardProblem({ ...base, type: "name-family", trace: ["1", "2"], family: "false-done" }, wires, families), /5 to 10/);
   assert.match(cardProblem({ ...base, type: "name-family", trace: ["1", "2", "3", "4", "5"], family: "nope" }, wires, families), /not a course family/);
 });
+
+test("sessionQueue takes the new cards in the given fresh order, and a stored card is never new (D-062)", () => {
+  const ids = ["a1", "b1", "c1"];
+  const cards = { b1: { ...newCard("2026-10-10"), due: "2026-10-20" } };
+  // Without an order, the new cards come in set order (a1, c1: b1 is stored and not new).
+  assert.deepEqual(sessionQueue(cards, ids, "2026-10-11"), ["a1", "c1"]);
+  // With an order, the new cards come in that order; a stored card in the order is still not new.
+  assert.deepEqual(sessionQueue(cards, ids, "2026-10-11", SESSION_LIMIT, ["c1", "b1", "a1"]), ["c1", "a1"]);
+  // A due card still comes first, in its own order.
+  const due = { a1: { ...newCard("2026-10-01"), due: "2026-10-01" } };
+  assert.deepEqual(sessionQueue(due, ids, "2026-10-11", SESSION_LIMIT, ["c1"]), ["a1", "c1"]);
+});

@@ -84,3 +84,14 @@ test("the six I5 design prompts pass hx-design's own check: clarifying questions
   }
   assert.equal(new Set(design.map((x) => x.id)).size, 6);
 });
+
+test("bankOrder with an order: only the prompts in it are new, in that order; answered ones follow as before (D-062)", () => {
+  const prompts = [
+    { id: "p1", wire: "loop" }, { id: "p2", wire: "loop" }, { id: "p3", wire: "tools" }, { id: "p4", wire: "tools" },
+  ];
+  const evidence = [{ kind: "say", detail: { item: "p2" } }];
+  // p1 and p3 are the pool's new prompts in that order; p4 is outside the pool and is not shown as new.
+  assert.deepEqual(bankOrder(prompts, evidence, "all", ["p3", "p1"]).map((p) => p.id), ["p3", "p1", "p2"]);
+  // Without an order the bank is as before: every unanswered prompt, in bank order.
+  assert.deepEqual(bankOrder(prompts, evidence).map((p) => p.id), ["p1", "p3", "p4", "p2"]);
+});

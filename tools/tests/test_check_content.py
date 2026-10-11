@@ -404,6 +404,28 @@ def test_a_replay_credits_no_objective_so_its_objective_is_uncovered(tmp_path: P
     assert any("[B4] objective T1.o1 has no assessment item" in p.message for p in report.problems)
 
 
+BAD_B4_PAGE = FIXTURES / "bad" / "B4" / "the-agent-loop.html"
+MOUNT_SLOT = '<div data-station-slot data-mounts="hx-kata" data-objective="A1.o4"></div>'
+
+
+def test_a_slot_that_mounts_a_kata_credits_the_objective_it_declares(tmp_path: Path) -> None:
+    # D-061 (round 3): a slot marked data-mounts="hx-kata" credits its data-objective;
+    # without the mark it does not.
+    root = copy_fixture(tmp_path)
+    page = tmp_path / "the-agent-loop.html"
+    text = BAD_B4_PAGE.read_text(encoding="utf-8")
+    assert text.count("</main>") == 1
+    page.write_text(text.replace("</main>", MOUNT_SLOT + "</main>"), encoding="utf-8")
+    report, _ = run_on(root, [page])
+    assert not any("objective A1.o4 has no assessment item" in p.message for p in report.problems)
+    plain = tmp_path / "plain" / "the-agent-loop.html"
+    plain.parent.mkdir()
+    unmarked = MOUNT_SLOT.replace(' data-mounts="hx-kata"', "")
+    plain.write_text(text.replace("</main>", unmarked + "</main>"), encoding="utf-8")
+    report, _ = run_on(root, [plain])
+    assert any("[B4] objective A1.o4 has no assessment item" in p.message for p in report.problems)
+
+
 def test_say_and_cards_objectives_count_only_while_their_component_is_rendered(
     tmp_path: Path,
 ) -> None:

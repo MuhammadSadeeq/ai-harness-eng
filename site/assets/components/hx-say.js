@@ -4,8 +4,10 @@
 // Evidence: "say" {item, ticked, total, seconds} with the item's objectives from the YAML (not data-objective).
 // "Last time" is the result the store held when the page loaded, or the one saved in this visit.
 import { HxElement } from "./lib/hx-element.js";
-import { getContent } from "./lib/data.js";
+import { getContent, getCourseCore, getOncall } from "./lib/data.js";
 import { formatInt } from "./lib/format.js";
+import { localToday } from "./lib/leitner.js";
+import { promptFreshOrder } from "./lib/pool.js";
 
 const AMBER_AT = 60;
 const PLENTY_AT = 90;
@@ -31,13 +33,17 @@ export const filterLabel = (value) => FILTER_LABELS[value] ?? value[0].toUpperCa
  * the one answered longest ago first. `evidence` is the store's list; a prompt's last entry there is its latest answer.
  * A filter keeps one wire or one kind of prompt.
  */
-export function bankOrder(prompts, evidence = [], filter = "all") {
+export function bankOrder(prompts, evidence = [], filter = "all", order = null) {
   const last = new Map();
   evidence.forEach((entry, i) => {
     if (entry?.kind === "say" && entry.detail?.item) last.set(entry.detail.item, i);
   });
   const shown = prompts.filter((p) => filter === "all" || p.wire === filter);
-  const fresh = shown.filter((p) => !last.has(p.id));
+  const unanswered = shown.filter((p) => !last.has(p.id));
+  // With an order (the learner's pool, D-062), only the prompts in it are new, in that order.
+  const fresh = order === null
+    ? unanswered
+    : order.map((id) => unanswered.find((p) => p.id === id)).filter(Boolean);
   const answered = shown.filter((p) => last.has(p.id)).sort((a, b) => last.get(a.id) - last.get(b.id));
   return [...fresh, ...answered];
 }
@@ -85,12 +91,23 @@ export class HxSay extends HxElement {
     this.bank = src === "bank";
     this.all = prompts;
     this.filter = "all";
-    this.prompts = this.bank ? bankOrder(prompts, this.store?.state?.evidence ?? [], "all") : prompts;
+    this.freshOrder = this.bank ? await this.poolOrder(prompts) : null;
+    this.prompts = this.bank ? bankOrder(prompts, this.store?.state?.evidence ?? [], "all", this.freshOrder) : prompts;
     this.prior = {};
     for (const entry of this.store?.state?.evidence ?? []) {
       if (entry.kind === "say" && entry.detail) this.prior[entry.detail.item] = { ticked: entry.detail.ticked, total: entry.detail.total };
     }
     this.state = { index: 0, phase: "ready", now: 0, elapsed: null, ticks: blank(this.prompts[0]), saved: {}, cleared: {} };
+  }
+
+  // The bank's new prompts come from the learner's pool (D-062): the started modules, round-robin by wire, seeded per day.
+  async poolOrder(prompts) {
+    const [course, oncall] = await Promise.all([getCourseCore(), getOncall()]);
+    return promptFreshOrder(prompts, {
+      path: course.path ?? [],
+      incidentModules: (oncall.incidents ?? []).map((incident) => incident.module),
+      modules: this.store?.state?.modules ?? {},
+    }, localToday());
   }
 
   // phases: ready -> timing -> timed (stopped or skipped) -> revealed -> saved
@@ -165,7 +182,7 @@ export class HxSay extends HxElement {
 
   // The bank's filter: the same bank in a new order, from its first prompt. A filter with no prompts is refused.
   setFilter(filter) {
-    const next = bankOrder(this.all, this.store?.state?.evidence ?? [], filter);
+    const next = bankOrder(this.all, this.store?.state?.evidence ?? [], filter, this.freshOrder);
     if (next.length === 0) {
       this.dom.filter.value = this.filter;
       return;

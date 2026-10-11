@@ -9,9 +9,10 @@
 // 2 is Got it (a visible line says so).
 import { HxElement } from "./lib/hx-element.js";
 import { cardCredit } from "./lib/credit.js";
-import { getContent, getCourseCore } from "./lib/data.js";
+import { getContent, getCourseCore, getOncall } from "./lib/data.js";
+import { boardFreshOrder } from "./lib/pool.js";
 import {
-  localToday, addDays, grade as gradeCard, stored, sessionQueue, sessionSummary, cardProblem,
+  localToday, addDays, grade as gradeCard, stored, sessionQueue, sessionSummary, cardProblem, SESSION_LIMIT,
   seedOf, shuffleAway, familyChoices, jsonRows, pointerGet,
 } from "./lib/leitner.js";
 
@@ -63,7 +64,10 @@ export class HxCards extends HxElement {
   async setup() {
     const src = this.getAttribute("src");
     if (!src) throw new Error("hx-cards needs src");
-    const [cards, course] = await Promise.all([getContent("cards", src), getCourseCore()]);
+    const board = src === "board";
+    const [cards, course, oncall] = await Promise.all([
+      getContent("cards", src), getCourseCore(), board ? getOncall() : Promise.resolve(null),
+    ]);
     if (!Array.isArray(cards) || cards.length === 0) throw new Error("hx-cards: no cards");
     const wires = [...course.wires].sort((a, b) => a.n - b.n);
     const wireIds = wires.map((wire) => wire.id);
@@ -76,6 +80,8 @@ export class HxCards extends HxElement {
       ids.add(card.id);
     }
     this.src = src;
+    // The board draws its new cards from the learner's pool (D-062); a module's own cards need no pool.
+    this.board = board ? { cards, course, incidentModules: (oncall.incidents ?? []).map((incident) => incident.module) } : null;
     this.cards = new Map(cards.map((card) => [card.id, card]));
     this.allIds = cards.map((card) => card.id);
     this.wires = wires;
@@ -97,7 +103,10 @@ export class HxCards extends HxElement {
   /** A fresh session from the stored boxes and today's date. */
   start() {
     this.today = localToday();
-    this.queue = sessionQueue(this.cardsNow(), this.allIds, this.today);
+    const fresh = this.board
+      ? boardFreshOrder({ ...this.board, modules: this.store?.state?.modules ?? {} }, this.today)
+      : null;
+    this.queue = sessionQueue(this.cardsNow(), this.allIds, this.today, SESSION_LIMIT, fresh);
     this.queueStart = this.queue.length;
     this.seen = new Set();
     this.missed = new Set();

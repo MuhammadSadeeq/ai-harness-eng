@@ -110,7 +110,7 @@ export class HxElement extends HTMLElement {
 
   /** objectives: the element's data-objective by default; pass a list for per-item objectives (cards, say). */
   evidence(kind, detail = {}, objectives = null) {
-    const module = document.documentElement.dataset.module ?? null;
+    const module = this.dataset.module || document.documentElement.dataset.module || null;
     objectives ??= (this.dataset.objective ?? "").split(/\s+/).filter(Boolean);
     this.dispatchEvent(new CustomEvent("hx-evidence", {
       bubbles: true,

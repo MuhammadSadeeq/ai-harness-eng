@@ -895,7 +895,11 @@ def _check_objectives(page: Page, module: Module, ctx: Context, shown: str, repo
             page_items.says.add(element.attrs.get("src", ""))
         elif element.tag == "hx-cards":
             page_items.cards.add(element.attrs.get("src", ""))
-        credits = element.tag == "hx-check" or element.tag in CREDITING_ELEMENTS
+        # A slot that mounts a kata at runtime (the Interview Room memory station, the on-call
+        # drill) declares the kata's objective on itself with data-mounts="hx-kata": that
+        # declaration is a kata credit (D-061).
+        mounts_kata = element.attrs.get("data-mounts") == "hx-kata"
+        credits = element.tag == "hx-check" or element.tag in CREDITING_ELEMENTS or mounts_kata
         for token in element.attrs.get("data-objective", "").split():
             if credits:
                 covered.add(token)

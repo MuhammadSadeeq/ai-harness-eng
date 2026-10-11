@@ -42,6 +42,7 @@ export const getCourse = async () => JSON.parse(await fetchText("course.json"));
  * reads a module's objectives uses getCourse().
  */
 export const getCourseCore = async () => JSON.parse(await fetchText("course-core.json"));
+export const getOncall = async () => JSON.parse(await fetchText("oncall/shift.json"));
 export const getTerms = async () => JSON.parse(await fetchText("terms.json"));
 /**
  * kind is "cards", "say", "checks", "placement" or "design". src is a module id such as "B2" (site/data/<kind>/B2.json) or, on

@@ -6,6 +6,7 @@ import { loadComponents } from "./loader.js";
 import { todayIso } from "./chrome.js";
 import { dueCards } from "./pure.js";
 import { formatInt } from "../../components/lib/format.js";
+import { doneIds, poolOf, startedIds, wiresByModule } from "../../components/lib/pool.js";
 
 // The cards a session takes when none is due: the same limit as hx-cards' session (lib/leitner.js SESSION_LIMIT).
 const SESSION_CARDS = 20;
@@ -21,6 +22,18 @@ export function loadShift(url = SHIFT_URL) {
     return response.json();
   });
   return shiftData;
+}
+
+const CORE_URL = new URL("../../../data/course-core.json", import.meta.url).href;
+let coreData = null;
+
+/** The course's core data (site/data/course-core.json): the path order and each module's wires, fetched once. */
+export function loadCore(url = CORE_URL) {
+  coreData ??= fetch(url).then((response) => {
+    if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
+    return response.json();
+  });
+  return coreData;
 }
 
 /** FNV-1a, 32 bits: the same text gives the same number, so one day picks the same incident for everyone. */
@@ -79,37 +92,134 @@ export function drillDone(entries, drill) {
   );
 }
 
+/** The day number of each wire's latest shift (a shift's incident wires and drill wires); a wire never drilled is absent. */
+export function lastDrilledDays(evidence, incidents, memory, wiresOf) {
+  const tapeModule = new Map(incidents.map((incident) => [incident.tape, incident.module]));
+  const kataModule = new Map(memory.map((kata) => [kata.id, kata.module]));
+  const latest = new Map();
+  for (const entry of Array.isArray(evidence) ? evidence : []) {
+    if (entry?.kind !== "shift" || typeof entry.detail?.day !== "string") continue;
+    const num = dayNumber(entry.detail.day);
+    const modules = [tapeModule.get(entry.detail.incident), entry.detail.drill_module ?? kataModule.get(entry.detail.drill)];
+    for (const mod of modules) {
+      for (const wire of wiresOf.get(mod) ?? []) {
+        if ((latest.get(wire) ?? -Infinity) < num) latest.set(wire, num);
+      }
+    }
+  }
+  return latest;
+}
+
+/** The day number of each incident's latest hunt (its tape's incident entry), read from the store's evidence. */
+export function lastHuntDays(evidence) {
+  const latest = new Map();
+  for (const entry of Array.isArray(evidence) ? evidence : []) {
+    if (entry?.kind !== "incident" || !entry.detail?.tape) continue;
+    const day = dayOf(entry);
+    if (!day) continue;
+    const num = dayNumber(day);
+    if ((latest.get(entry.detail.tape) ?? -Infinity) < num) latest.set(entry.detail.tape, num);
+  }
+  return latest;
+}
+
 /**
- * The shift for a day. The incident comes from the modules the learner has done when there are any (scope "done"),
- * else from the whole course (scope "course"); the day's seed picks one. Drills alternate by day: an odd day gives a
- * memory kata when one exists, and any other day gives a say prompt from the bank.
+ * The day number of each drill item's latest drill, keyed "kata:<id>" or "say:<module>" (a shift's record names the
+ * kata, or "say" with its module). An item never drilled is absent.
  */
-export function pickShift({ incidents = [], memory = [], sayModules = [], doneModules = [], day }) {
-  const done = new Set(doneModules);
-  const pool = (items) => {
-    const finished = items.filter((item) => done.has(item.module));
-    return finished.length > 0 ? { items: finished, scope: "done" } : { items, scope: "course" };
+export function lastDrillDays(evidence) {
+  const latest = new Map();
+  for (const entry of Array.isArray(evidence) ? evidence : []) {
+    if (entry?.kind !== "shift" || typeof entry.detail?.day !== "string") continue;
+    const key = entry.detail.drill === "say" ? `say:${entry.detail.drill_module ?? ""}` : entry.detail.drill ? `kata:${entry.detail.drill}` : "";
+    if (!key) continue;
+    const num = dayNumber(entry.detail.day);
+    if ((latest.get(key) ?? -Infinity) < num) latest.set(key, num);
+  }
+  return latest;
+}
+
+/** The incident whose least recently drilled wire was drilled longest ago; ties go to the day's seed. */
+function leastDrilledPick(candidates, wiresOf, lastDrilled, day) {
+  const score = (incident) => {
+    const wires = wiresOf.get(incident.module) ?? [];
+    return wires.length === 0 ? -1 : Math.min(...wires.map((wire) => lastDrilled.get(wire) ?? -1));
   };
-  const incidentPool = pool(incidents);
-  const incident = incidentPool.items.length > 0
-    ? incidentPool.items[seedOf(day) % incidentPool.items.length]
-    : null;
-  const katas = pool(memory).items;
+  const best = Math.min(...candidates.map(score));
+  const tied = candidates.filter((incident) => score(incident) === best);
+  return tied[seedOf(day) % tied.length];
+}
+
+/** The item drilled longest ago (never drilled counts as longest); ties go to the day's seed. */
+function leastRecentlyDrilled(items, drillDays, day, salt) {
+  const score = (item) => drillDays.get(item.key) ?? -1;
+  const best = Math.min(...items.map(score));
+  const tied = items.filter((item) => score(item) === best);
+  return tied[seedOf(`${day}/${salt}`) % tied.length].item;
+}
+
+/**
+ * The shift for a day (D-062, amended by the round 3 rulings). The pool is the modules the learner has started or
+ * finished; with none, the first path module that has an incident.
+ *  - An incident not hunted yet comes first, the one whose least recently drilled wire was drilled longest ago.
+ *  - When every incident in the pool has been hunted, the one hunted longest ago is offered if that hunt was at least
+ *    three days before today. Otherwise there is no incident today, and `note` points to the learner's next unfinished
+ *    module on the path (never a module not started). Cards and the drill still run.
+ *  - The drill comes from the pool, alternating by day: an odd day gives a memory kata, any other day a say prompt.
+ *    Among the pool's katas (or say modules) the least recently drilled comes first; ties go to the day's seed.
+ */
+export function pickShift({
+  incidents = [], memory = [], sayModules = [], started = new Set(), done = new Set(), path = [],
+  wiresOf = new Map(), huntDays = new Map(), lastDrilled = new Map(), drillDays = new Map(), day,
+}) {
+  const pool = poolOf(started, path, incidents.map((incident) => incident.module));
+  const scope = started.size > 0 ? "started" : "first";
+  const poolIncidents = incidents.filter((incident) => pool.has(incident.module));
+  const unhunted = poolIncidents.filter((incident) => !huntDays.has(incident.tape));
+  const today = dayNumber(day);
+  let incident = null;
+  let note = null;
+  if (unhunted.length > 0) {
+    incident = leastDrilledPick(unhunted, wiresOf, lastDrilled, day);
+  } else if (poolIncidents.length > 0) {
+    const oldest = Math.min(...poolIncidents.map((item) => huntDays.get(item.tape)));
+    if (today - oldest >= 3) {
+      const longest = poolIncidents.filter((item) => huntDays.get(item.tape) === oldest);
+      incident = longest[seedOf(day) % longest.length];
+    } else {
+      note = nothingNewNote(incidents, path, done, started);
+    }
+  }
+  const katas = memory.filter((kata) => pool.has(kata.module));
+  const say = sayModules.filter((mod) => pool.has(mod));
   const useKata = dayNumber(day) % 2 === 1 && katas.length > 0;
   const drill = useKata
-    ? kataDrill(katas[seedOf(`${day}/kata`) % katas.length])
-    : sayDrill(pool(sayModules.map((module) => ({ module }))).items, day);
-  return { day, incident, drill, scope: incidentPool.scope };
+    ? kataDrill(leastRecentlyDrilled(katas.map((kata) => ({ key: `kata:${kata.id}`, item: kata })), drillDays, day, "kata"))
+    : sayDrill(say, drillDays, day);
+  return { day, incident, note, drill, scope };
+}
+
+/**
+ * The line for a day with nothing new to hunt: the next path module that has an incident and is neither finished nor
+ * started. Starting it adds its incident to the pool; a started module's incident is already in the pool.
+ */
+function nothingNewNote(incidents, path, done, started) {
+  const titles = new Map(incidents.map((incident) => [incident.module, incident.title]));
+  const next = path.find((id) => !done.has(id) && !started.has(id) && titles.has(id));
+  return next === undefined
+    ? "Nothing new to hunt today."
+    : `Nothing new to hunt today. Start ${next} · ${titles.get(next)} to add its incident.`;
 }
 
 function kataDrill(kata) {
   return { kind: "kata", id: kata.id, title: kata.title, module: kata.module };
 }
 
-/** A say drill: one built module's prompts (a small file), chosen by the day; the module's own prompts are the drill. */
-function sayDrill(modules, day) {
+/** A say drill: one pool module's prompts, the least recently drilled module first (ties to the day's seed). */
+function sayDrill(modules, drillDays, day) {
   if (modules.length === 0) return { kind: "say", module: "" };
-  return { kind: "say", module: modules[seedOf(`${day}/say`) % modules.length].module };
+  const items = modules.map((mod) => ({ key: `say:${mod}`, item: mod }));
+  return { kind: "say", module: leastRecentlyDrilled(items, drillDays, day, "say") };
 }
 
 /** What is left of the shift today: "incident" and "drill", in that order, or none. */
@@ -118,12 +228,6 @@ export function shiftLeft(shift, entries) {
   if (shift.incident && !incidentHunted(entries, shift.incident.tape)) left.push("incident");
   if (shift.drill && !drillDone(entries, shift.drill)) left.push("drill");
   return left;
-}
-
-function doneModuleIds(state) {
-  return Object.entries(state.modules ?? {})
-    .filter(([, mod]) => mod?.status === "done")
-    .map(([id]) => id);
 }
 
 function setText(node, text) {
@@ -157,7 +261,7 @@ function element(tag, attrs = {}) {
  * with the loader; the page's own text is filled from the shift. Returns the render function, or null when the page
  * has no shift.
  */
-export function mountShift(store, { root = document, now = () => new Date(), data = loadShift } = {}) {
+export function mountShift(store, { root = document, now = () => new Date(), data = loadShift, core = loadCore } = {}) {
   const page = root.querySelector("[data-shift-page]");
   if (!page) return null;
   const slot = (name) => page.querySelector(`[data-shift-${name}]`);
@@ -188,19 +292,25 @@ export function mountShift(store, { root = document, now = () => new Date(), dat
     if (shift.incident && incidentSlot) {
       const tape = shift.incident.tape;
       incidentSlot.replaceChildren(startButton("Start the incident", () => mountInto(incidentSlot, element("hx-incident", { tape }))));
-      const text = shift.scope === "done"
-        ? `From ${shift.incident.module} · ${shift.incident.title}, a module you have done.`
-        : `No module is done yet, so this incident comes from the whole course: ${shift.incident.module} · ${shift.incident.title}.`;
+      const text = shift.scope === "started"
+        ? `From ${shift.incident.module} · ${shift.incident.title}, a module you have started or finished.`
+        : `You have not started a module yet, so this incident is the first on the path: ${shift.incident.module} · ${shift.incident.title}.`;
       const incidentNote = slot("incident-note");
       if (incidentNote) incidentNote.textContent = text;
     } else {
-      slot("incident-section")?.setAttribute("hidden", "");
+      // Nothing new to hunt today: the one-line note stands in for the incident, and nothing is started.
+      const incidentNote = slot("incident-note");
+      if (incidentNote && shift.note) {
+        incidentNote.textContent = shift.note;
+      } else {
+        slot("incident-section")?.setAttribute("hidden", "");
+      }
     }
     const drillSlot = slot("drill-slot");
     if (drillSlot) {
       const drill = shift.drill;
       const make = drill.kind === "kata"
-        ? () => element("hx-kata", { kata: drill.id, mode: "memory" })
+        ? () => element("hx-kata", { kata: drill.id, mode: "memory", "data-objective": drillSlot.dataset.objective ?? "", "data-module": drillSlot.dataset.module ?? "" })
         : () => element("hx-say", { src: drill.module });
       drillSlot.replaceChildren(startButton(drill.kind === "kata" ? "Start the kata" : "Start the drill", () => mountInto(drillSlot, make())));
       setText(slot("drill-note"), drill.kind === "kata"
@@ -217,6 +327,7 @@ export function mountShift(store, { root = document, now = () => new Date(), dat
       day,
       incident: shift.incident?.tape ?? "",
       drill: shift.drill.kind === "kata" ? shift.drill.id : "say",
+      drill_module: shift.drill.module ?? "",
       incident_done: shift.incident ? incidentHunted(entries, shift.incident.tape) : false,
       drill_done: drillDone(entries, shift.drill),
     };
@@ -252,13 +363,23 @@ export function mountShift(store, { root = document, now = () => new Date(), dat
   };
 
   store.subscribe(render);
-  data().then((doc) => {
+  Promise.all([data(), core()]).then(([doc, core]) => {
     boardSize = Number(doc.board_cards ?? 0);
+    const incidents = doc.incidents ?? [];
+    const memory = doc.memory_katas ?? [];
+    const wiresOf = wiresByModule(core);
+    const evidence = store.state.evidence ?? [];
     shift = pickShift({
-      incidents: doc.incidents ?? [],
-      memory: doc.memory_katas ?? [],
+      incidents,
+      memory,
       sayModules: doc.say_modules ?? [],
-      doneModules: doneModuleIds(store.state),
+      started: startedIds(store.state.modules),
+      path: core.path ?? [],
+      wiresOf,
+      done: doneIds(store.state.modules),
+      huntDays: lastHuntDays(evidence),
+      drillDays: lastDrillDays(evidence),
+      lastDrilled: lastDrilledDays(evidence, incidents, memory, wiresOf),
       day,
     });
     if (!built) build();

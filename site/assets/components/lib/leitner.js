@@ -44,8 +44,11 @@ export function grade(card, correct, today) {
   return { box, due: addDays(today, INTERVALS[box - 1]), seen, last: today };
 }
 
-/** The due cards (earliest due first, then course order), then the new cards; at most `limit`. */
-export function sessionQueue(cards, ids, today, limit = SESSION_LIMIT) {
+/**
+ * The due cards (earliest due first, then course order), then the new cards; at most `limit`. `fresh` (optional) is the
+ * order to take the new cards in, for the board's pool (D-062); a card with a stored box is never new, whatever the order.
+ */
+export function sessionQueue(cards, ids, today, limit = SESSION_LIMIT, fresh = null) {
   const order = new Map(ids.map((id, index) => [id, index]));
   const due = ids
     .filter((id) => stored(cards, id)?.due <= today)
@@ -53,8 +56,8 @@ export function sessionQueue(cards, ids, today, limit = SESSION_LIMIT) {
       const byDue = stored(cards, a).due.localeCompare(stored(cards, b).due);
       return byDue !== 0 ? byDue : order.get(a) - order.get(b);
     });
-  const fresh = ids.filter((id) => stored(cards, id) === null);
-  return [...due, ...fresh].slice(0, limit);
+  const news = (fresh ?? ids).filter((id) => stored(cards, id) === null);
+  return [...due, ...news].slice(0, limit);
 }
 
 function plural(n, word) {
