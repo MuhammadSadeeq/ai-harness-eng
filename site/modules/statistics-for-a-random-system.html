@@ -172,7 +172,7 @@
       <figcaption>FIG D2.1 · Pass@k and pass^k for one try rate. Try this: set the tries to one, then to three, and read both numbers each time.</figcaption>
     </figure>
 
-    <p>At a try rate of <hx-num for="dice" name="p">80</hx-num>% and <hx-num for="dice" name="k">3</hx-num> tries, pass@k is <hx-num for="dice" name="pass_at_k">—</hx-num>% and pass^k is <hx-num for="dice" name="pass_hat_k">—</hx-num>%. Change either setting and both move.</p>
+    <p>At a try rate of <hx-num for="dice" name="p">80</hx-num>% and <hx-num for="dice" name="k">3</hx-num> tries, pass@k is <hx-num for="dice" name="pass_at_k">99</hx-num>% and pass^k is <hx-num for="dice" name="pass_hat_k">51</hx-num>%. Change either setting and both move.</p>
 
     <p>Now write the interval. A pass rate needs its Wilson interval before anyone calls two results different.</p>
     <hx-kata kata="D2-wilson" data-objective="D2.o2">
@@ -190,7 +190,7 @@
       </hx-bench>
       <figcaption>FIG D2.2 · The same tape on two boards. Try this: run the bench, then read the two counts and say which difference you would trust.</figcaption>
     </figure>
-    <p>After the run, on the old board, <hx-num for="d2-bench" name="passed.old">—</hx-num> of <hx-num for="d2-bench" name="trials">20</hx-num> runs pass. On the new board, <hx-num for="d2-bench" name="passed.new">—</hx-num> of <hx-num for="d2-bench" name="trials">20</hx-num> pass. The difference is small and inside the noise. A different batch of seeds can reverse its sign, and the harmless change is the only thing that differs.</p>
+    <p>After the run, on the old board, <hx-num for="d2-bench" name="passed.old">10</hx-num> of <hx-num for="d2-bench" name="trials">20</hx-num> runs pass. On the new board, <hx-num for="d2-bench" name="passed.new">8</hx-num> of <hx-num for="d2-bench" name="trials">20</hx-num> pass. The difference is small and inside the noise. A different batch of seeds can reverse its sign, and the harmless change is the only thing that differs.</p>
 
   </section>
 

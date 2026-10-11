@@ -197,7 +197,7 @@
       </hx-replay>
       <figcaption>FIG C12.2 · The same run with the cap and redaction on. Try this: find the DEPLOY_TOKEN line and the cut marker in the tool result.</figcaption>
     </figure>
-    <p>Run the bench on both boards. The pass count stays the same. After the run, the worst-case cost falls from <hx-num for="cap-bench" name="worst_cost.old" format="usd">—</hx-num> on the old board to <hx-num for="cap-bench" name="worst_cost.new" format="usd">—</hx-num> on the new one, and <hx-num for="cap-bench" name="passed.old">—</hx-num> of <hx-num for="cap-bench" name="trials">20</hx-num> runs pass on the old board against <hx-num for="cap-bench" name="passed.new">—</hx-num> on the new.</p>
+    <p>Run the bench on both boards. The pass count stays the same. After the run, the worst-case cost falls from <hx-num for="cap-bench" name="worst_cost.old" format="usd">$0.0115</hx-num> on the old board to <hx-num for="cap-bench" name="worst_cost.new" format="usd">$0.0050</hx-num> on the new one, and <hx-num for="cap-bench" name="passed.old">20</hx-num> of <hx-num for="cap-bench" name="trials">20</hx-num> runs pass on the old board against <hx-num for="cap-bench" name="passed.new">20</hx-num> on the new.</p>
     <figure>
       <hx-bench id="cap-bench" tape="c12-unexplained-bill" old="c12-old" new="c12-new" trials="20" data-objective="C12.o5">
         <p>Without JavaScript, this shows the two boards on the same seeds: how many runs pass and what each run costs.</p>

@@ -168,7 +168,7 @@
   <section class="beat" data-beat="prove" id="prove">
     <h2>Count the leaks, not the passes</h2>
     <p>Each run uses one seed, and every board gets the same seeds. The bench shows what the tests see: on each board, the same runs pass.</p>
-    <p>After the run, on the open board, <hx-num for="e1-bench" name="passed.old">—</hx-num> of <hx-num for="e1-bench" name="trials">20</hx-num> runs pass. On the egress board, <hx-num for="e1-bench" name="passed.new">—</hx-num> of <hx-num for="e1-bench" name="trials">20</hx-num> pass. Both boards pass the same tests, so the bench cannot tell them apart.</p>
+    <p>After the run, on the open board, <hx-num for="e1-bench" name="passed.old">20</hx-num> of <hx-num for="e1-bench" name="trials">20</hx-num> runs pass. On the egress board, <hx-num for="e1-bench" name="passed.new">20</hx-num> of <hx-num for="e1-bench" name="trials">20</hx-num> pass. Both boards pass the same tests, so the bench cannot tell them apart.</p>
     <figure>
       <hx-bench id="e1-bench" tape="e1-injected-page" old="e1-open" new="e1-egress" trials="20" data-objective="E1.o3">
         <p>Without JavaScript, this shows the two boards on the same seeds: how many runs pass on each, and the worst case.</p>
@@ -176,7 +176,7 @@
       <figcaption>FIG E1.2 · The same tests on both boards. Try this: run the bench, then find the leaks in the eval below.</figcaption>
     </figure>
 
-    <p>The leaks are what separate the boards. The eval runs the same seeds on three boards: the open board, the board whose rules say not to send, and the egress board. After the run, on the open board, <hx-num for="e1-evalbench" name="leaked.old">—</hx-num> of <hx-num for="e1-evalbench" name="runs.old">—</hx-num> runs leak, a leak rate of <hx-num for="e1-evalbench" name="asr.old">—</hx-num>%. The rules layer lowers that: <hx-num for="e1-evalbench" name="leaked.mid">—</hx-num> of <hx-num for="e1-evalbench" name="runs.mid">—</hx-num> runs leak. Egress stops it: <hx-num for="e1-evalbench" name="leaked.new">—</hx-num> of <hx-num for="e1-evalbench" name="runs.new">—</hx-num> runs leak.</p>
+    <p>The leaks are what separate the boards. The eval runs the same seeds on three boards: the open board, the board whose rules say not to send, and the egress board. After the run, on the open board, <hx-num for="e1-evalbench" name="leaked.old">16</hx-num> of <hx-num for="e1-evalbench" name="runs.old">20</hx-num> runs leak, a leak rate of <hx-num for="e1-evalbench" name="asr.old">80</hx-num>%. The rules layer lowers that: <hx-num for="e1-evalbench" name="leaked.mid">6</hx-num> of <hx-num for="e1-evalbench" name="runs.mid">20</hx-num> runs leak. In the default run, egress stops it: <hx-num for="e1-evalbench" name="leaked.new">0</hx-num> of <hx-num for="e1-evalbench" name="runs.new">20</hx-num> runs leak.</p>
     <figure>
       <hx-evalbench id="e1-evalbench" src="../data/labs/E1/evalbench.json" data-objective="E1.o3">
         <p>Without JavaScript, the eval lists one task on three boards. Run it to see each board's passes, its leaks, and the interval around each rate.</p>

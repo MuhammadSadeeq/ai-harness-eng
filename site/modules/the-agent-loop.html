@@ -217,7 +217,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
   <section class="beat" data-beat="fix" id="fix">
     <h2>Set the exits</h2>
     <p>The new board starts with a turn limit of 12, a safe guess. The bench runs both boards on the same 20 seeds; each seed is one scripted run, so it repeats exactly. Lower the limit and run again. Find the cheapest turn limit that still lets every passing run finish.</p>
-    <p>With a turn limit of <hx-num for="bench-par" name="knob" pointer-only>12</hx-num> turns, the new board passes <hx-num for="bench-par" name="passed.new">—</hx-num> of 20 runs.</p>
+    <p>With a turn limit of <hx-num for="bench-par" name="knob" pointer-only>12</hx-num> turns, the new board passes <hx-num for="bench-par" name="passed.new">13</hx-num> of 20 runs.</p>
 
     <figure>
       <hx-bench id="bench-par" tape="b2-spiral" old="b2-old" new="b2-new" knob="turn_limit.max_turns" knob-min="4" knob-max="30" par="cheapest-worst-case" trials="20" data-objective="B2.o3">

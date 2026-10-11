@@ -182,7 +182,7 @@
   <section class="beat" data-beat="prove" id="prove">
     <h2>Pass the checks, then count what got through</h2>
     <p>Both boards get the same seeds. The broad board lets the task write anywhere; the least board refuses everything the task does not need.</p>
-    <p>After the run, on the broad board, <hx-num for="e2-bench" name="passed.old">—</hx-num> of <hx-num for="e2-bench" name="trials">20</hx-num> runs pass. On the least board, <hx-num for="e2-bench" name="passed.new">—</hx-num> of <hx-num for="e2-bench" name="trials">20</hx-num> pass. The broad runs say done and fail their checks, because the archive is empty. The least runs pass, because the refused write leaves the archive whole.</p>
+    <p>After the run, on the broad board, <hx-num for="e2-bench" name="passed.old">0</hx-num> of <hx-num for="e2-bench" name="trials">20</hx-num> runs pass. On the least board, <hx-num for="e2-bench" name="passed.new">20</hx-num> of <hx-num for="e2-bench" name="trials">20</hx-num> pass. The broad runs say done and fail their checks, because the archive is empty. The least runs pass, because the refused write leaves the archive whole.</p>
     <figure>
       <hx-bench id="e2-bench" tape="e2-excessive-agency" old="e2-agency-broad" new="e2-agency-least" trials="20" data-objective="E2.o3">
         <p>Without JavaScript, this shows the two boards on the same seeds: how many runs pass on each, and the worst case.</p>
@@ -197,7 +197,7 @@
       </hx-evalbench>
       <figcaption>FIG E2.4 · The attack suite on two boards. Try this: run it, then find the leak count on the pinned board and read what the pin did to it.</figcaption>
     </figure>
-    <p>The number to report is the <dfn data-term="attack-success-rate">attack success rate</dfn>: the share of seeded attack runs in which the attack succeeded. After the run, on the old board, <hx-num for="e2-evalbench" name="leaked.old">—</hx-num> of <hx-num for="e2-evalbench" name="runs.old">—</hx-num> runs leak, an attack success rate of <hx-num for="e2-evalbench" name="asr.old">—</hx-num>%. On the pinned board, <hx-num for="e2-evalbench" name="leaked.new">—</hx-num> of <hx-num for="e2-evalbench" name="runs.new">—</hx-num> runs leak. Report it with the number of runs it came from. The lab's counts are measures of the lab, not of a product.</p>
+    <p>The number to report is the <dfn data-term="attack-success-rate">attack success rate</dfn>: the share of seeded attack runs in which the attack succeeded. After the run, on the old board, <hx-num for="e2-evalbench" name="leaked.old">10</hx-num> of <hx-num for="e2-evalbench" name="runs.old">20</hx-num> runs leak, an attack success rate of <hx-num for="e2-evalbench" name="asr.old">50</hx-num>%. On the pinned board, <hx-num for="e2-evalbench" name="leaked.new">0</hx-num> of <hx-num for="e2-evalbench" name="runs.new">20</hx-num> runs leak. Report it with the number of runs it came from. The lab's counts are measures of the lab, not of a product.</p>
 
     <hx-check mode="check" src="E2" item="E2-c4" data-objective="E2.o4">
       <p>Without JavaScript, the question is: which statement about an attack success rate is right?</p>

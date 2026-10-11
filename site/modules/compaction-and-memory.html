@@ -160,7 +160,7 @@
   <section class="beat" data-beat="prove" id="prove">
     <h2>Prove the keep list</h2>
     <p>Each run uses one seed, and both boards get the same seeds. The old board keeps no notes. The new board keeps the goal, the constraint, the decisions, the progress and the file pointers.</p>
-    <p>After the run, on the old board, <hx-num for="keep-bench" name="passed.old">—</hx-num> of <hx-num for="keep-bench" name="trials">20</hx-num> runs pass. On the new board, <hx-num for="keep-bench" name="passed.new">—</hx-num> of <hx-num for="keep-bench" name="trials">20</hx-num> pass. The only change is the keep list.</p>
+    <p>After the run, on the old board, <hx-num for="keep-bench" name="passed.old">0</hx-num> of <hx-num for="keep-bench" name="trials">20</hx-num> runs pass. On the new board, <hx-num for="keep-bench" name="passed.new">20</hx-num> of <hx-num for="keep-bench" name="trials">20</hx-num> pass. The only change is the keep list.</p>
     <figure>
       <hx-bench id="keep-bench" tape="c3-amnesia" old="c3-old" new="c3-new" trials="20" data-objective="C3.o2">
         <p>Without JavaScript, this shows the two boards on the same seeds: how many runs pass on each, and the worst case.</p>

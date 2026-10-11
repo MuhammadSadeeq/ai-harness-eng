@@ -171,7 +171,7 @@
   <section class="beat" data-beat="prove" id="prove">
     <h2>Prove what the bench cannot see</h2>
     <p>Each run uses one seed, and both boards get the same seeds. The old board asks for every call. The new board denies a delete outside the project and allows the harmless reads.</p>
-    <p>After the run, on the old board, <hx-num for="policy-bench" name="passed.old">—</hx-num> of <hx-num for="policy-bench" name="trials">20</hx-num> runs pass. On the new board, <hx-num for="policy-bench" name="passed.new">—</hx-num> of <hx-num for="policy-bench" name="trials">20</hx-num> pass. Both boards pass every test. The bench counts tests, not what a run touched.</p>
+    <p>After the run, on the old board, <hx-num for="policy-bench" name="passed.old">20</hx-num> of <hx-num for="policy-bench" name="trials">20</hx-num> runs pass. On the new board, <hx-num for="policy-bench" name="passed.new">20</hx-num> of <hx-num for="policy-bench" name="trials">20</hx-num> pass. Both boards pass every test. The bench counts tests, not what a run touched.</p>
     <figure>
       <hx-bench id="policy-bench" tape="c9-approval" old="c9-old" new="c9-new" trials="20" data-objective="C9.o3">
         <p>Without JavaScript, this shows the two boards on the same seeds: how many runs pass on each, and the worst case.</p>
