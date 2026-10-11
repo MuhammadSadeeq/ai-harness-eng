@@ -1,0 +1,50 @@
+- id: G2-p1
+  objective: G2.o3
+  mode: predict
+  question: A run ends with a reply that says done, and the file it claims to write does not exist. What ends the
+    run?
+  options:
+  - text: A check on the file runs first, and refuses the done claim.
+    why: Tempting. A check like that would stop the run, but nothing in this harness runs one.
+  - text: The model's reply alone ends the run, because nothing else asks whether the file exists.
+    why: Right. The harness trusts the done claim, and the check that would catch the gap never runs.
+  - text: The tool error stops the run before it says done.
+    why: Tempting. The error was returned to the model as a result, and the loop went on.
+  answer: 1
+  outcome: The run ended done at its last reply. The summary was never written, and the scenario check fails.
+- id: G2-c1
+  objective: G2.o1
+  mode: check
+  question: To compare two harnesses wire by wire, what do you write on each wire?
+  options:
+  - text: The product's own marketing claim.
+    why: Tempting and wrong. A claim is not a design choice.
+  - text: The design choice on that wire, and its trade-off.
+    why: Right. The comparison is the choices and what each costs.
+  - text: The model version the harness uses.
+    why: Tempting. The model is the same on both sides of the comparison.
+  answer: 1
+- id: G2-c2
+  objective: G2.o2
+  mode: check
+  question: A company reports a percentage from its own experiment with its harness. How do you label it?
+  options:
+  - text: As a fact about the field.
+    why: Tempting and wrong. It is one company's number from its own test.
+  - text: As the company's own number, with the source.
+    why: Right. Whose number it is and where it came from both stay visible.
+  - text: Leave it out.
+    why: Tempting. Leaving it out loses the evidence; labelling it keeps it honest.
+  answer: 1
+- id: G2-c3
+  objective: G2.o3
+  mode: check
+  question: Which of these do both products' sources show, so the course can call it a law?
+  options:
+  - text: Every harness uses the same tool names.
+    why: Tempting and wrong. Names are taste; they differ.
+  - text: Instructions live in a project file that the harness loads.
+    why: Right. The comparison shows a project instructions file for both products.
+  - text: The done claim is checked before it is trusted.
+    why: Tempting. It is the course's judgment; the comparison does not show both products doing it.
+  answer: 1

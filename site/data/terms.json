@@ -138,6 +138,18 @@
   "term": "approval fatigue",
   "wire": "permissions"
  },
+ "approval-mode": {
+  "aliases": [
+   "approval mode",
+   "approval modes"
+  ],
+  "definition": "A setting that decides which actions wait for a person before they run, and which run on their own.",
+  "id": "approval-mode",
+  "module": "G2",
+  "strict": true,
+  "term": "approval mode",
+  "wire": "permissions"
+ },
  "ask": {
   "aliases": [
    "ask"
@@ -160,6 +172,18 @@
   "strict": true,
   "term": "attention budget",
   "wire": "context"
+ },
+ "auto-mode": {
+  "aliases": [
+   "auto mode",
+   "auto modes"
+  ],
+  "definition": "In Claude Code, auto is a permission mode that lets everything run without asking, with background safety checks.",
+  "id": "auto-mode",
+  "module": "G1",
+  "strict": true,
+  "term": "auto mode",
+  "wire": "permissions"
  },
  "batch-processing": {
   "aliases": [
@@ -2148,6 +2172,18 @@
   "term": "permissions",
   "wire": "permissions"
  },
+ "plan-mode": {
+  "aliases": [
+   "plan mode",
+   "plan modes"
+  ],
+  "definition": "In Claude Code, plan mode is a permission mode: Claude explores and writes a plan, and does not edit the source until the plan is approved, except in interactive terminal sessions with bypass permissions available.",
+  "id": "plan-mode",
+  "module": "G1",
+  "strict": true,
+  "term": "plan mode",
+  "wire": "control"
+ },
  "planner": {
   "aliases": [
    "planner",
@@ -2604,6 +2640,17 @@
   "module": "B4",
   "strict": true,
   "term": "sandbox",
+  "wire": "permissions"
+ },
+ "sandbox-first": {
+  "aliases": [
+   "sandbox-first"
+  ],
+  "definition": "A design where every tool call runs inside a confined environment, and the confinement is set before the first call.",
+  "id": "sandbox-first",
+  "module": "G2",
+  "strict": true,
+  "term": "sandbox-first",
   "wire": "permissions"
  },
  "schema-validation": {

@@ -1,0 +1,30 @@
+- id: G1-s1
+  objectives:
+  - G1.o1
+  - G1.o2
+  prompt: A product harness made one run cost far more than the last. Which wires do you read, and which lesson
+    does it teach?
+  model_answer: 'I start with the observe wire, to see where the cost went: the call count and the tokens each turn
+    used. Then I read the loop for a turn limit or a budget that did not hold, because a loop without brakes can
+    keep spending. The lesson is to measure cost per finished task, not per call, and to hold the budget in the
+    harness rather than in the model''s good intentions. Before I trust a fix, I run the same tasks again on both
+    versions.'
+  rubric:
+  - Names the observe wire as the first place to read
+  - Names the loop as the place for turn and budget limits
+  - States the lesson as cost per finished task, not per call
+  - Says how the fix is measured on the same tasks
+- id: G1-s2
+  objectives:
+  - G1.o3
+  prompt: Read a postmortem that says a run deleted a folder. Name the wire and the failure family behind it, and
+    the fix.
+  model_answer: 'The wire is permissions. A destructive action ran without anyone being asked, so the harness let
+    a risky action through. The family is the one where an action with real effects runs unasked. The fix changes
+    the harness: a question before any delete, and a refusal for paths outside the project. Before it ships, I run
+    the same task with the fix and check that the delete is now asked or refused.'
+  rubric:
+  - Names the permissions wire
+  - Names the failure family for unasked risky actions
+  - Proposes a fix in the harness, not in the model
+  - Says how the fix is tested before it ships

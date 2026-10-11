@@ -1,0 +1,64 @@
+{
+ "buckets": [
+  {
+   "hint": "Both products' sources show it.",
+   "id": "law",
+   "label": "Law"
+  },
+  {
+   "hint": "The course's view; no source shows both products doing it.",
+   "id": "judgment",
+   "label": "Judgment"
+  },
+  {
+   "hint": "A choice that can differ, and still work.",
+   "id": "taste",
+   "label": "Taste"
+  }
+ ],
+ "items": [
+  {
+   "bucket": "law",
+   "id": "g2-a",
+   "text": "Instructions live in a project file that the harness loads.",
+   "why": "The comparison shows a project instructions file for both products."
+  },
+  {
+   "bucket": "law",
+   "id": "g2-b",
+   "text": "Commands wait for approval, depending on the approval or permission mode.",
+   "why": "The comparison shows approval or permission modes for both products."
+  },
+  {
+   "bucket": "law",
+   "id": "g2-c",
+   "text": "Tool calls run inside a sandbox.",
+   "why": "The comparison shows a sandbox for both products."
+  },
+  {
+   "bucket": "judgment",
+   "id": "g2-d",
+   "text": "A claim of done is checked before the harness trusts it.",
+   "why": "The course's judgment. The comparison does not show both products doing it."
+  },
+  {
+   "bucket": "judgment",
+   "id": "g2-e",
+   "text": "What ran is written to a record.",
+   "why": "The course's judgment. The comparison does not show it for either product."
+  },
+  {
+   "bucket": "taste",
+   "id": "g2-f",
+   "text": "The rules file uses headings for each rule.",
+   "why": "The layout of the file is a choice. Both layouts can work."
+  },
+  {
+   "bucket": "taste",
+   "id": "g2-g",
+   "text": "A tool is named read_file, not open_file.",
+   "why": "Names are wording. Nothing about the behaviour depends on the name."
+  }
+ ],
+ "prompt": "Sort each idea: a law both sources show, the course's judgment, or taste that can differ."
+}

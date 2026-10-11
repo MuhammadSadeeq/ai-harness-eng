@@ -1,0 +1,16 @@
+- id: sandbox-first
+  term: sandbox-first
+  aliases:
+  - sandbox-first
+  strict: true
+  wire: permissions
+  definition: A design where every tool call runs inside a confined environment, and the confinement is set before
+    the first call.
+- id: approval-mode
+  term: approval mode
+  aliases:
+  - approval mode
+  - approval modes
+  strict: true
+  wire: permissions
+  definition: A setting that decides which actions wait for a person before they run, and which run on their own.

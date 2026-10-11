@@ -1,0 +1,83 @@
+{
+ "buckets": [
+  {
+   "hint": "What is the model told, and which instruction wins?",
+   "id": "control",
+   "label": "Control plane"
+  },
+  {
+   "hint": "What is on the desk this call, and what is saved?",
+   "id": "context",
+   "label": "Context & memory"
+  },
+  {
+   "hint": "What happens next, what do we carry, when do we stop?",
+   "id": "loop",
+   "label": "Loop & state"
+  },
+  {
+   "hint": "When something fails, how do we continue without spinning?",
+   "id": "errors",
+   "label": "Errors & recovery"
+  },
+  {
+   "hint": "What can the model do, and is each tool easy to use?",
+   "id": "tools",
+   "label": "Tools"
+  },
+  {
+   "hint": "Which actions are allowed, and how bad can a mistake get?",
+   "id": "permissions",
+   "label": "Permissions & sandbox"
+  },
+  {
+   "hint": "How do we know it's really done, and did the change help?",
+   "id": "verify",
+   "label": "Verification & evals"
+  },
+  {
+   "hint": "What exactly happened, and where did time and money go?",
+   "id": "observe",
+   "label": "Observability"
+  }
+ ],
+ "items": [
+  {
+   "bucket": "loop",
+   "id": "g1-a",
+   "text": "A turn limit and a cost limit stop a run.",
+   "why": "The loop holds its own brakes. The model does not decide when the run is too long."
+  },
+  {
+   "bucket": "context",
+   "id": "g1-b",
+   "text": "A summary replaces the oldest turns when the window fills.",
+   "why": "What the model sees is the context. Choosing what stays is the context wire."
+  },
+  {
+   "bucket": "permissions",
+   "id": "g1-c",
+   "text": "A rule refuses a delete outside the project folder.",
+   "why": "The harness refuses the action before it runs."
+  },
+  {
+   "bucket": "errors",
+   "id": "g1-d",
+   "text": "A failed tool call is returned as an error the model can read.",
+   "why": "The error is returned as a result. Retrying it is a separate decision."
+  },
+  {
+   "bucket": "verify",
+   "id": "g1-e",
+   "text": "The run does not say done until a test passes.",
+   "why": "The done claim is checked before it is trusted."
+  },
+  {
+   "bucket": "observe",
+   "id": "g1-f",
+   "text": "Every turn is written to a log with its cost.",
+   "why": "The log is what lets you see where a run spent its money."
+  }
+ ],
+ "prompt": "Sort the invented features. These are practice features, not any product's list."
+}

@@ -1,0 +1,44 @@
+[
+ {
+  "back": "The design choice and its trade-off, not a claim from marketing.",
+  "front": "What do you write on each wire when you compare two harnesses?",
+  "id": "G2-k1",
+  "objective": "G2.o1",
+  "type": "term"
+ },
+ {
+  "back": "As the company's own, with its source, and never as a fact about the field.",
+  "front": "How do you label a company's own number?",
+  "id": "G2-k2",
+  "objective": "G2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Instructions in a project file, permission or approval modes, and a sandbox. The rest of the course's list is the course's judgment or taste.",
+  "front": "Which ideas do both products' sources show as laws?",
+  "id": "G2-k3",
+  "objective": "G2.o3",
+  "type": "term"
+ },
+ {
+  "back": "In the Codex repository, Codex collects every AGENTS.md from the project root down to the current working directory and concatenates them.",
+  "front": "What does Codex do with AGENTS.md files?",
+  "id": "G2-k4",
+  "objective": "G2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Loading a skill's detail only as a task needs it.",
+  "front": "What is progressive disclosure?",
+  "id": "G2-k5",
+  "objective": "G2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Tool names, prompt wording and the layout of a rules file: they differ, and each can work.",
+  "front": "Which ideas are taste, not law?",
+  "id": "G2-k6",
+  "objective": "G2.o3",
+  "type": "term"
+ }
+]

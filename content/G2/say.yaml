@@ -1,0 +1,29 @@
+- id: G2-s1
+  objectives:
+  - G2.o1
+  - G2.o2
+  prompt: Two harnesses differ on who approves a write. How do you compare them, and how do you report a company's
+    numbers about its own harness?
+  model_answer: 'I compare them on the permissions wire. For each harness I write the design choice: who approves
+    a write, what waits for a person, and what the waiting costs in time. The trade-off is the comparison, not a
+    verdict. For a company''s own numbers I say whose they are, cite the source, and do not present them as settled
+    facts about the field. A number from one company''s own test is evidence about that test.'
+  rubric:
+  - Compares the harnesses on the permissions wire, with the trade-off named
+  - Names a company's numbers as the company's own
+  - Cites a source for any number
+  - Does not turn one company's test into a claim about the whole field
+- id: G2-s2
+  objectives:
+  - G2.o3
+  prompt: Name the features both sources show as laws, one item that is the course's judgment, and one idea that
+    is only taste.
+  model_answer: 'Both sources show a project instructions file, permission or approval modes, and a sandbox, so
+    the course treats those as laws. That a done claim is checked before it is trusted is the course''s judgment:
+    the comparison does not show both products doing it. Tool names and the layout of a rules file are taste, and
+    two harnesses can differ on both and still work.'
+  rubric:
+  - 'Names a feature both sources show: a project instructions file, a permission or approval mode, or a sandbox'
+  - Names the done-claim check as the course's judgment, not a shared feature
+  - Names one idea that is taste, and says why
+  - Bases the laws on the comparison, not on a survey of products

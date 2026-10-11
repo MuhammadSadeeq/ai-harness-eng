@@ -1,0 +1,50 @@
+- id: G1-p1
+  objective: G1.o1
+  mode: predict
+  question: A team changes one default in its harness. The model stays the same. Its tests get worse. Which part
+    do you read first?
+  options:
+  - text: 'The model: it must have got worse at the task.'
+    why: Tempting. The model did not change, and the change is in the harness.
+  - text: The wire that carries the tool output, where the output is cut before the model sees it.
+    why: Right. A harness setting can hide the failure from the model while the model stays the same.
+  - text: The system prompt wording.
+    why: Tempting. The wording guides the model; a cut in the output is enforced by the harness.
+  answer: 1
+  outcome: The cut hid the failing line. The model was the same; the harness changed what it saw.
+- id: G1-c1
+  objective: G1.o1
+  mode: check
+  question: A rule stops a shell command from writing outside the project folder. Which wire does it belong to?
+  options:
+  - text: 'Permissions: it decides which actions run.'
+    why: Right. The rule refuses an action before it runs.
+  - text: 'Context: it limits what the model remembers.'
+    why: Tempting. Context is what the model sees, not what the harness allows.
+  - text: 'Observe: it records the command.'
+    why: Tempting. Recording the command is observe; refusing it is permissions.
+  answer: 0
+- id: G1-c2
+  objective: G1.o2
+  mode: check
+  question: Which lesson does a turn limit, a budget and a cost limit teach together?
+  options:
+  - text: Every feature is about the model.
+    why: Tempting and wrong. These are harness settings, not model settings.
+  - text: A loop needs brakes of its own, set by the harness.
+    why: Right. The model cannot be trusted to stop itself; the harness holds the limits.
+  - text: Costs only matter in a demo.
+    why: Tempting and wrong. Cost decides whether the run is worth finishing.
+  answer: 1
+- id: G1-c3
+  objective: G1.o3
+  mode: check
+  question: A postmortem says the agent claimed its tests passed, and they had not been run. Which wire and family?
+  options:
+  - text: Verify, and the false-done family.
+    why: Right. The done claim was not checked before it was trusted.
+  - text: Context, and the forgetful-harness family.
+    why: Tempting. The model did remember the tests; it did not run them.
+  - text: Tools, and the schema-drift family.
+    why: Tempting. The tool calls had the right shape; the check never ran.
+  answer: 0

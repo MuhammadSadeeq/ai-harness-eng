@@ -1,0 +1,32 @@
+- id: G2-k1
+  type: term
+  objective: G2.o1
+  front: What do you write on each wire when you compare two harnesses?
+  back: The design choice and its trade-off, not a claim from marketing.
+- id: G2-k2
+  type: term
+  objective: G2.o2
+  front: How do you label a company's own number?
+  back: As the company's own, with its source, and never as a fact about the field.
+- id: G2-k3
+  type: term
+  objective: G2.o3
+  front: Which ideas do both products' sources show as laws?
+  back: Instructions in a project file, permission or approval modes, and a sandbox. The rest of the course's list
+    is the course's judgment or taste.
+- id: G2-k4
+  type: term
+  objective: G2.o3
+  front: What does Codex do with AGENTS.md files?
+  back: In the Codex repository, Codex collects every AGENTS.md from the project root down to the current working
+    directory and concatenates them.
+- id: G2-k5
+  type: term
+  objective: G2.o3
+  front: What is progressive disclosure?
+  back: Loading a skill's detail only as a task needs it.
+- id: G2-k6
+  type: term
+  objective: G2.o3
+  front: Which ideas are taste, not law?
+  back: 'Tool names, prompt wording and the layout of a rules file: they differ, and each can work.'

@@ -1,0 +1,44 @@
+[
+ {
+  "back": "The wire the symptom points at: a wrong answer points at the loop or the tools; a wrong claim of done points at verify.",
+  "front": "What is the first wire to read for a symptom?",
+  "id": "G1-k1",
+  "objective": "G1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Control, context, loop, errors, tools, permissions, verify and observe.",
+  "front": "What are the eight wires?",
+  "id": "G1-k2",
+  "objective": "G1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Make the done claim earn its place: a check runs before the run is trusted.",
+  "front": "What is the first lesson worth taking from a product harness?",
+  "id": "G1-k3",
+  "objective": "G1.o2",
+  "type": "term"
+ },
+ {
+  "back": "Which actions run on their own, which wait for a person, and which are refused.",
+  "front": "What does a permission design decide?",
+  "id": "G1-k4",
+  "objective": "G1.o2",
+  "type": "term"
+ },
+ {
+  "back": "The symptom, the cause and the fix, which you can map onto a wire and a failure family.",
+  "front": "What does a postmortem give a harness engineer?",
+  "id": "G1-k5",
+  "objective": "G1.o3",
+  "type": "term"
+ },
+ {
+  "back": "A family says what kind of failure it is, so the fix changes the right wire and not the model.",
+  "front": "Why name the family before the fix?",
+  "id": "G1-k6",
+  "objective": "G1.o3",
+  "type": "term"
+ }
+]
