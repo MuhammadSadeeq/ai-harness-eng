@@ -200,6 +200,33 @@ def test_a_wire_digest_that_differs_fails_the_run(
     assert "--wire: sha256" in out and "differs from the golden's" in out
 
 
+def test_a_board_module_with_no_parameters_still_credits_its_feature(tmp_path: Path) -> None:
+    # first_block_only: {} has no parameters, but the key names the feature (A5.3, M3).
+    board = tmp_path / "board.json"
+    board.write_text(
+        json.dumps({"id": "b", "label": "B", "modules": {"first_block_only": {}}}), encoding="utf-8"
+    )
+    spec = tmp_path / "tape.json"
+    spec.write_text("{}", encoding="utf-8")
+    events = tmp_path / "golden.jsonl"
+    events.write_text("", encoding="utf-8")
+    golden = parity.Golden(
+        label="g",
+        kind="run",
+        name="t",
+        board="b",
+        seed=0,
+        engine=False,
+        golden=events,
+        spec=spec,
+        board_file=board,
+        digest=None,
+    )
+    assigned = parity.assign(ROOT, [golden])
+    assert "first-block-only" in assigned["g"].features
+    assert assigned["g"].milestone == "M3"
+
+
 def test_a_missing_binary_is_a_usage_error(capsys: pytest.CaptureFixture[str]) -> None:
     assert parity.main(["--cmd", "no-such-binary-for-parity run"]) == 2
     assert "not found on PATH" in capsys.readouterr().err

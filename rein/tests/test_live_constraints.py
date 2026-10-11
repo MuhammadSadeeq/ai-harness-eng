@@ -26,7 +26,7 @@ from rein.live import (
 )
 from rein.model import LiveUsage
 from rein.pricing import Prices, resolve_prices
-from rein.spec import ERROR_MESSAGES
+from rein.spec import ERROR_MESSAGES, WIRE_MAX_TOKENS
 
 FACTS = load_facts()
 PRICES = resolve_prices({"fact": "models.sonnet-5-5-price"}, FACTS)
@@ -142,12 +142,77 @@ def test_the_spend_cap_stops_the_run_before_any_request_is_sent() -> None:
     assert guards and guards[0]["guard"] == "spend_cap"
 
 
+def test_the_spend_cap_refuses_a_request_whose_output_could_pass_it() -> None:
+    # The worst case of a request is its input bound plus its output bound (WIRE_MAX_TOKENS at the
+    # output price). A cap between the two must refuse it before any request is sent.
+    with MockAnthropic(load_exchange("tool_then_done")) as probe:
+        measured, _ = live_run(probe)
+    body = json.dumps(measured.wire[0], separators=(",", ":"), ensure_ascii=True)
+    input_price = max(PRICES.input_milli, PRICES.cache_write_milli or 0)
+    input_only = len(body.encode("utf-8")) * input_price
+    full = input_only + WIRE_MAX_TOKENS * PRICES.output_milli
+    cap = input_only + 1
+    assert input_only < cap < full
+    with MockAnthropic(load_exchange("tool_then_done")) as mock:
+        result, model = live_run(mock, cap=cap)
+    assert result.status == "budget"
+    assert mock.bodies() == []
+    assert model.calls == 0
+
+
+def test_cache_writes_and_reads_are_priced_in_the_run_cost_and_the_cap() -> None:
+    # models.sonnet-5-5-price: cache writes at $2.50 per MTok, cache reads at $0.10, base input $2.
+    # The run's cost and the cap must both price each kind of token at its own rate.
+    assert PRICES.cache_write_milli is not None and PRICES.cache_read_milli is not None
+    assert PRICES.cache_read_milli != PRICES.input_milli
+    exchange: list[Any] = []
+    for status, body, headers in load_exchange("tool_then_done"):
+        if status == 200:
+            usage = dict(
+                body["usage"], cache_creation_input_tokens=1000, cache_read_input_tokens=5000
+            )
+            body = dict(body, usage=usage)
+        exchange.append((status, body, headers))
+    replies = [body["usage"] for status, body, _ in exchange if status == 200]
+    expected = sum(
+        u["input_tokens"] * PRICES.input_milli
+        + u["cache_creation_input_tokens"] * PRICES.cache_write_milli
+        + u["cache_read_input_tokens"] * PRICES.cache_read_milli
+        + u["output_tokens"] * PRICES.output_milli
+        for u in replies
+    )
+    with MockAnthropic(exchange) as mock:
+        result, model = live_run(mock)
+    assert model.calls == len(replies)
+    assert result.cost == expected
+    assert model.cap.spent == expected
+
+
 def test_the_spend_the_cap_counts_is_the_run_cost() -> None:
     # Cost comes from the API's usage and the dated prices (models.sonnet-5-5-price).
     with MockAnthropic(load_exchange("tool_then_done")) as mock:
         result, model = live_run(mock)
     assert result.cost == model.cap.spent
     assert result.cost > 0
+
+
+def test_an_html_200_is_a_live_error_not_a_crash() -> None:
+    # A proxy or captive portal answers 200 with a page: the SDK returns text, not a Message.
+    with (
+        MockAnthropic([(200, "<html><body>portal</body></html>", {})]) as mock,
+        pytest.raises(LiveError) as caught,
+    ):
+        live_run(mock)
+    assert "something other than a Messages API reply" in str(caught.value)
+
+
+def test_a_200_message_without_usage_is_a_live_error_not_a_crash() -> None:
+    first_status, body, headers = load_exchange("tool_then_done")[0]
+    assert first_status == 200
+    no_usage = {key: value for key, value in body.items() if key != "usage"}
+    with MockAnthropic([(200, no_usage, headers)]) as mock, pytest.raises(LiveError) as caught:
+        live_run(mock)
+    assert "something other than a Messages API reply" in str(caught.value)
 
 
 def test_a_bad_request_is_a_model_error_with_the_fixed_message() -> None:
@@ -187,6 +252,7 @@ def test_the_key_never_reaches_a_trace_even_when_the_server_echoes_it() -> None:
 
 def test_redaction_replaces_the_key_in_any_error_text() -> None:
     assert redact(f"a {SECRET} b", SECRET) == "a [REDACTED] b"
+    assert redact(f"a {SECRET} b {SECRET}", SECRET) == "a [REDACTED] b [REDACTED]"
     assert redact("no key here", None) == "no key here"
 
 

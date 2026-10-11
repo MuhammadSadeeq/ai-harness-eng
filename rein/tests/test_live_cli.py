@@ -84,6 +84,63 @@ def test_a_live_run_prints_the_events_and_never_prints_the_key(
     assert [e for e in events if e["kind"] == "run_end"][0]["status"] == "done"
 
 
+def _live_run_args(workspace: dict[str, Path], cap: str | None) -> list[str]:
+    args = [
+        "run",
+        "--tape",
+        str(workspace["tape"]),
+        "--board",
+        str(workspace["board"]),
+        "--live",
+        "claude-sonnet-5-5",
+        "--facts",
+        str(FACTS_PATH),
+    ]
+    return args if cap is None else [*args, "--max-cost-usd", cap]
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        pytest.param("<html><body>portal</body></html>", id="html-page"),
+        pytest.param(
+            {"id": "msg_1", "type": "message", "role": "assistant", "content": []},
+            id="message-without-usage",
+        ),
+    ],
+)
+def test_a_200_that_is_not_a_reply_exits_two_on_one_line(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    workspace: dict[str, Path],
+    body: Any,
+) -> None:
+    with MockAnthropic([(200, body, {})]) as mock:
+        live_env(monkeypatch, mock.url)
+        code = main(_live_run_args(workspace, "1"))
+    captured = capsys.readouterr()
+    assert code == 2
+    lines = captured.err.splitlines()
+    assert len(lines) == 1 and lines[0].startswith("rein: "), captured.err
+    assert "Traceback" not in captured.err and SENTINEL not in captured.err
+
+
+@pytest.mark.parametrize("cap", ["inf", "nan", "0", "-1"])
+def test_an_unusable_cap_is_refused_before_any_request(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    workspace: dict[str, Path],
+    cap: str,
+) -> None:
+    with MockAnthropic([]) as mock:
+        live_env(monkeypatch, mock.url)
+        code = main(_live_run_args(workspace, cap))
+        assert mock.requests == []
+    captured = capsys.readouterr()
+    assert code == 2
+    assert "--max-cost-usd must be a finite number above zero" in captured.err
+
+
 def test_a_live_run_without_a_cap_is_refused(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], workspace: dict[str, Path]
 ) -> None:

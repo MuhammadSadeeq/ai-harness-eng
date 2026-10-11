@@ -41,3 +41,7 @@ def test_an_unknown_jitter_is_refused():
     except ValueError:
         return
     raise AssertionError("only none and full are jitter modes")
+
+
+def test_an_error_that_is_not_listed_is_permanent():
+    assert should_retry("refusal", 1, 5) is False

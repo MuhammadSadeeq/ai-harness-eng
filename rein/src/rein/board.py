@@ -52,9 +52,13 @@ def board_from_dict(raw: Any) -> Board:
             raise BoardError(f"module {name!r} must be an object")
         _check_module(name, params)
         _check_a6_a7(name, params)
+    for key in ("id", "label"):
+        value = raw.get(key)
+        if not isinstance(value, str) or not value.strip():
+            raise BoardError(f"board.{key} must be a non-empty string")
     return Board(
-        id=str(raw.get("id", "")),
-        label=str(raw.get("label", "")),
+        id=str(raw["id"]),
+        label=str(raw["label"]),
         modules={str(k): dict(v) for k, v in modules_raw.items()},
     )
 

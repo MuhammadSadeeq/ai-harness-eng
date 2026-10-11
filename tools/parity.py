@@ -247,7 +247,9 @@ def assign(root: Path, goldens: list[Golden]) -> dict[str, Assignment]:
     for golden in goldens:
         board_file = _load_json(golden.board_file)
         # A board's feature keys name its modules ("sandbox.egress"), not the file's own keys.
-        board = board_file.get("modules", {}) if isinstance(board_file, dict) else {}
+        modules = board_file.get("modules", {}) if isinstance(board_file, dict) else {}
+        # A module with no parameters ({}) still counts: its key is the evidence, so it is True.
+        board = {k: (v if v else True) for k, v in modules.items()}
         if golden.kind == "eval":
             spec = _load_json(golden.spec)
             tapes = [

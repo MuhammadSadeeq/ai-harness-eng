@@ -406,6 +406,7 @@ def test_a_sub_agent_result_is_never_retried_even_when_it_starts_with_timed_out(
     board = board_from_dict(
         {
             "id": "retry-agents",
+            "label": "Retry agents",
             "modules": {
                 "subagents": {"context": "isolated", "max": 5, "max_turns": 2},
                 "tool_retry": {"max_attempts": 3},

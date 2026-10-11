@@ -70,6 +70,10 @@ def test_same_seed_gives_identical_output() -> None:
     second = run_trial(dev_tape(), dev_board("b2-old"), 3, FACTS)
     assert first.events == second.events
     assert first.wire == second.wire
+    # The seed matters: seed 0 takes the success branch (done in six turns) and seed 3 does not
+    # (it is interrupted at 60 turns), so a seed that is ignored would make them equal.
+    other = run_trial(dev_tape(), dev_board("b2-old"), 0, FACTS)
+    assert (other.result.status, other.result.turns) != (first.result.status, first.result.turns)
 
 
 def test_each_turn_emits_the_per_turn_events() -> None:

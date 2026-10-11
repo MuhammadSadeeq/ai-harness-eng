@@ -12,6 +12,7 @@ fact yet is marked ``no fact`` and reported, not asserted.
 from __future__ import annotations
 
 import json
+import math
 import time
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -48,8 +49,8 @@ class SpendCap:
 
     @classmethod
     def from_usd(cls, usd: float) -> SpendCap:
-        if not usd > 0:
-            raise LiveError("--max-cost-usd must be above zero")
+        if not math.isfinite(usd) or usd <= 0:
+            raise LiveError("--max-cost-usd must be a finite number above zero")
         return cls(limit=round(usd * 1_000_000_000))
 
 
@@ -242,6 +243,16 @@ class LiveModel:
         except anthropic.APIConnectionError:
             return ErrorOutcome(type="api_error", retry_after_ms=0, error_ms=MODEL_ERROR_MS)
         latency = round((time.monotonic() - started) * 1000)
+        # A 200 body that is not a Message (a proxy's HTML page) or has no usage cannot be priced:
+        # it is a one-line error for the learner, not a traceback.
+        if (
+            not isinstance(response, anthropic.types.Message)
+            or getattr(response, "usage", None) is None
+        ):
+            raise LiveError(
+                "the API answered with something other than a Messages API reply: "
+                "check the API address"
+            )
         reply = reply_from_response(response, latency)
         if reply.usage is not None:
             self.cap.spent += cost_nano(reply.usage, self.prices)

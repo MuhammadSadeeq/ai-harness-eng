@@ -107,3 +107,9 @@ def test_max_tokens_reply_is_not_run():
 def test_refusal_returns_refusal():
     model = FakeReplies([reply("refusal")])
     assert run_loop(model, TOOLS, "refuse", 5, 10_000) == "refusal", "return refusal, do not raise"
+
+
+def test_the_budget_is_spent_exactly_at_the_limit():
+    model = FakeReplies([reply("tool_use", [tool_use("t1", "add", {"a": 1, "b": 2})], 100, 50)])
+    assert run_loop(model, TOOLS, "spend", 10, 150) == "budget"
+    assert len(model.sent) == 1

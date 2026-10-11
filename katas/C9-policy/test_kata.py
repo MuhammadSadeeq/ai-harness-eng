@@ -48,3 +48,8 @@ def test_list_order_does_not_decide():
     ]
     result = decide({"tool": "edit_file", "input": {"path": "tests/t.py"}}, rules, "allow")
     assert result == {"decision": "deny", "reason": "tests are off limits"}, "the deny group is checked first, whatever the list order"
+
+
+def test_a_prefix_must_be_at_the_start_of_the_path():
+    rules = [{"decision": "deny", "tool": "edit_file", "prefix": "tests/", "reason": "no"}]
+    assert decide({"tool": "edit_file", "input": {"path": "src/tests/t.py"}}, rules, "allow")["decision"] == "allow"

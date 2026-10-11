@@ -42,3 +42,15 @@ def test_one_of_a_hundred_and_sixty_of_a_hundred_differ():
 
 def test_a_result_does_not_differ_from_itself():
     assert differ((50, 100), (50, 100)) is False
+
+
+def test_intervals_that_only_touch_do_not_differ():
+    # Closed intervals that meet at 0.5 share that point, so they overlap and cannot differ.
+    import kata
+    spans = {1: (0.2, 0.5), 9: (0.5, 0.8)}
+    saved = kata.wilson
+    kata.wilson = lambda passed, n: spans[passed]
+    try:
+        assert differ((1, 10), (9, 10)) is False
+    finally:
+        kata.wilson = saved

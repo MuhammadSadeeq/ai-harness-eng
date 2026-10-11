@@ -28,3 +28,8 @@ def test_the_middle_is_gone():
     text = "start" + "-" * 60 + "middle-part" + "-" * 60 + "finish"
     shown = cap_output(text, 3)
     assert "middle-part" not in shown, "the cut removes the middle"
+
+
+def test_a_length_of_four_times_the_limit_plus_three_is_still_unchanged():
+    text = "x" * 21
+    assert cap_output(text, 5) == text

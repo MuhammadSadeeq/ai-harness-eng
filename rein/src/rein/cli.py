@@ -95,6 +95,7 @@ def _facts_for(explicit: str | None, anchor: Path) -> dict[str, Any] | None:
 def _require_cap(args: argparse.Namespace) -> None:
     if args.max_cost_usd is None:
         raise LiveError("--max-cost-usd is required for live runs")
+    SpendCap.from_usd(args.max_cost_usd)  # refuses zero, negative, nan and inf before any request
 
 
 def _live_model(model_id: str, max_cost_usd: float, facts: dict[str, Any] | None) -> LiveModel:
@@ -229,4 +230,3 @@ def main(argv: list[str] | None = None) -> int:
     ) as exc:
         print(f"rein: {redact(str(exc), key)}", file=sys.stderr)
         return 2
-

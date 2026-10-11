@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "live"
-Recorded = tuple[int, dict[str, Any], dict[str, str]]  # status, body, headers
+Recorded = tuple[int, Any, dict[str, str]]  # status, body (a dict, or raw text), headers
 
 
 def load_exchange(name: str) -> list[Recorded]:
@@ -75,10 +75,13 @@ class MockAnthropic:
             def log_message(self, format: str, *args: object) -> None:  # silence the server
                 return
 
-            def _send(self, status: int, body: dict[str, Any], headers: dict[str, str]) -> None:
-                raw = json.dumps(body).encode("utf-8")
+            def _send(self, status: int, body: Any, headers: dict[str, str]) -> None:
+                if isinstance(body, str):  # a proxy or captive portal answers with a page
+                    raw, kind = body.encode("utf-8"), "text/html"
+                else:
+                    raw, kind = json.dumps(body).encode("utf-8"), "application/json"
                 self.send_response(status)
-                self.send_header("content-type", "application/json")
+                self.send_header("content-type", kind)
                 self.send_header("content-length", str(len(raw)))
                 for name, value in headers.items():
                     self.send_header(name, value)
@@ -101,7 +104,7 @@ class MockAnthropic:
                     )
                     return
                 status, payload, extra = mock._queue.pop(0)
-                if mock.echo_key:
+                if mock.echo_key and isinstance(payload, dict):
                     key = headers.get("x-api-key", "")
                     payload = json.loads(json.dumps(payload).replace("{key}", key))
                 self._send(status, payload, extra)

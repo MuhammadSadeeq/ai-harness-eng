@@ -60,3 +60,8 @@ def test_tool_use_without_a_call_stops():
 def test_empty_content_with_end_turn_is_done():
     text, calls, action = read_reply({"stop_reason": "end_turn", "content": []})
     assert (text, calls, action) == ("", [], "done"), "an empty end_turn reply is still done, with no text"
+
+
+def test_an_empty_text_block_still_makes_a_line():
+    reply = {"stop_reason": "end_turn", "content": [text_block(""), text_block("a")]}
+    assert read_reply(reply)[0] == "\na"

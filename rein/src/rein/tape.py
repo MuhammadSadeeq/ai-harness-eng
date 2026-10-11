@@ -84,7 +84,9 @@ def tape_from_dict(raw: Any) -> Tape:
     try:
         check_plain(raw, "$")
         return _build(raw)
-    except (KeyError, TypeError, ValueError, IndexError) as exc:
+    except KeyError as exc:
+        raise TapeError(f"tape {raw.get('id', '?')!r} is missing {exc.args[0]}") from exc
+    except (TypeError, ValueError, IndexError) as exc:
         raise TapeError(f"tape {raw.get('id', '?')!r}: {exc}") from exc
 
 

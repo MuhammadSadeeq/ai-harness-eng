@@ -22,3 +22,23 @@ wrong_solutions:
   code: "TRANSIENT = (\"overloaded\", \"rate_limit\", \"api_error\", \"timeout\")\n\n\ndef should_retry(error_type, attempt, max_attempts):\n    return error_type in TRANSIENT and attempt < max_attempts\n\n\ndef backoff_ms(attempt, base_ms, cap_ms, jitter, draw=0):\n    return min(cap_ms, base_ms * 2 ** (attempt - 1))\n\n\ndef breaker_open(failures_in_a_row, threshold):\n    return failures_in_a_row >= threshold\n"
 - name: breaker-one-late
   code: "TRANSIENT = (\"overloaded\", \"rate_limit\", \"api_error\", \"timeout\")\n\n\ndef should_retry(error_type, attempt, max_attempts):\n    return error_type in TRANSIENT and attempt < max_attempts\n\n\ndef backoff_ms(attempt, base_ms, cap_ms, jitter, draw=0):\n    base = min(cap_ms, base_ms * 2 ** (attempt - 1))\n    if jitter == \"none\":\n        return base\n    if jitter == \"full\":\n        return draw % (base + 1)\n    raise ValueError(f\"unknown jitter: {jitter}\")\n\n\ndef breaker_open(failures_in_a_row, threshold):\n    return failures_in_a_row > threshold\n"
+- name: blacklist-only-invalid-request
+  code: |
+    TRANSIENT = ("overloaded", "rate_limit", "api_error", "timeout")
+
+
+    def should_retry(error_type, attempt, max_attempts):
+        return error_type != "invalid_request" and attempt < max_attempts
+
+
+    def backoff_ms(attempt, base_ms, cap_ms, jitter, draw=0):
+        base = min(cap_ms, base_ms * 2 ** (attempt - 1))
+        if jitter == "none":
+            return base
+        if jitter == "full":
+            return draw % (base + 1)
+        raise ValueError(f"unknown jitter: {jitter}")
+
+
+    def breaker_open(failures_in_a_row, threshold):
+        return failures_in_a_row >= threshold

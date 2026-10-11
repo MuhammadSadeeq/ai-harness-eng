@@ -58,3 +58,7 @@ def test_an_unknown_leg_is_refused():
         assert "exfil" in str(exc), "say which leg name is unknown"
         return
     assert False, "an unknown leg must be refused, not ignored"
+
+
+def test_a_leg_named_by_two_tools_still_counts_once_for_the_trifecta():
+    assert lethal([READER, READER, FETCH, POST]) is True

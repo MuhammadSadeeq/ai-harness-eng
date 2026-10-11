@@ -130,6 +130,7 @@ print(json.dumps(obj, sort_keys=True, separators=(",", ":")))</code></pre>
       <p>Run this on your machine. This page has no Run key for it.</p>
     </aside>
     <pre tabindex="0" role="region" aria-label="Command to run on your machine"><code>python3 tools/parity.py --cmd "&lt;your command&gt; run" --milestone M1</code></pre>
+    <p>The course's Python runtime is <code>python -m rein.sim</code>, the shared command behind these goldens. Install the package first with <code>python -m pip install -e ./rein</code>, then run <code>python3 tools/parity.py --cmd "python -m rein.sim run" --milestone M1</code>. Do not use <code>python -m rein run</code> for the judge: it passes the run goldens, but <code>rein eval</code> prints a table and not the golden form, so the eval goldens fail.</p>
     <p>Each failing run prints one line: the first differing line, its seq and kind, and both sides. The last line counts the matches, in the form <code>parity: N of N runs match (M1–M1)</code>, where N is the number of runs. The exit status is 0 only when every run matches. Your command must end in <code>run</code>, and the judge runs it without a shell.</p>
 
     <h3>Seven milestones</h3>

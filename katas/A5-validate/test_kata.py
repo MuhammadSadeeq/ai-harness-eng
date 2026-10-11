@@ -57,3 +57,7 @@ def test_an_enum_names_the_allowed_values_as_json():
 def test_the_first_failure_wins_in_field_order():
     value = {"path": 1, "content": 2}
     assert check_value(WRITE, value) == "field path must be string", "the first key in the input is reported"
+
+
+def test_an_empty_string_is_a_present_field():
+    assert check_value(WRITE, {"path": "", "content": ""}) == ""

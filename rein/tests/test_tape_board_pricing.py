@@ -83,6 +83,28 @@ def test_board_rejects_unknown_module_and_bad_params() -> None:
         )
 
 
+def test_a_board_needs_a_non_empty_id_and_label() -> None:
+    # The board schema requires both (scenarios/board.schema.json); an empty name would reach the
+    # trace and the results file as "".
+    for raw in (
+        {"modules": {}},
+        {"id": "", "label": "B", "modules": {}},
+        {"id": "b", "modules": {}},
+        {"id": "b", "label": "  ", "modules": {}},
+    ):
+        with pytest.raises(BoardError) as caught:
+            board_from_dict(raw)
+        assert "must be a non-empty string" in str(caught.value)
+
+
+def test_a_tape_without_model_id_names_the_field() -> None:
+    raw = dict(BASE_TAPE)
+    del raw["model_id"]
+    with pytest.raises(TapeError) as caught:
+        tape_from_dict(raw)
+    assert "is missing model_id" in str(caught.value)
+
+
 def test_usd_per_mtok_rounds_half_up_to_milli() -> None:
     assert usd_to_milli(2) == 2000
     assert usd_to_milli(0.1) == 100
