@@ -403,7 +403,8 @@ Every event has: `v` (1), `run` (`"<tape>:<board>:<seed>"`), `seq` (0, 1, …),
 
 Statuses: `done`, `unverified`, `max_turns`, `budget`, `loop`,
 `circuit_open`, `interrupted`, `refused`, `max_tokens_reply`, `error`
-(SPEC §7.2's list, extended; D-039). Reserved for later phases (in the schema
+(SPEC §7.2's list, extended; D-039). Rein's own steps add `max_time` (A21); the
+runtimes never end a run with it. Reserved for later phases (in the schema
 now, not emitted yet): `compaction`, `cache`, `subagent_start`, `subagent_end`.
 
 Every turn emits at least `prompt_built`, `context_check`, `model_call`,
@@ -1208,3 +1209,11 @@ eventually notices; lessons say so).
      the next turn's guards.
   8. *Milli rounding (A3.19):* `floor(p × 1000 + 0.5)`, half up, never a
      language's own round (Python's rounds half to even).
+- **A21 (2026-10-11): `max_time`, Rein's time guard** (D-060). The trace
+  schema's `run_end.status` and `guard.guard` enums gain `max_time`. It is
+  emitted only by the learner's Rein (steps H8 onward): before each model
+  call, when the step's clock has run past `--max-seconds`, Rein writes
+  `guard(guard="max_time", limit, value)` in whole seconds and ends the run
+  `max_time`. The three runtimes have no time guard and no board module for
+  one, so no tape, golden or parity run changes. A trace that carries it
+  replays in the Replay Deck as "stopped by the time limit".

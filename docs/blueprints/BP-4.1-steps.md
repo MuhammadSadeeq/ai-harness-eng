@@ -61,7 +61,8 @@ Prose ≤ 900 words per page (step text inside `hx-step` does not count).
   repeats exactly. The trace's `t` reads the same clock. The breaker ends
   the run with status `circuit_open`.
 - **H8, one status per ending (H8.o1):** each guard ends the run with its
-  own status from ENGINE §9 (`max_turns`, `budget`, `loop`, `interrupted`):
+  own status from ENGINE §9 (`max_turns`, `budget`, `loop`, `interrupted`,
+  and `max_time` for the time guard, D-060):
   the book's `stopped` lines become these, in one chunk that names why.
   Closing the books on interrupt (H8.o2) is the book's code.
 - **H9:** status `unverified` as in the book; the check command runs through

@@ -115,6 +115,7 @@ test("run_end: done (passed and not), unverified, the three guards, breaker, int
   assert.equal(end({ status: "budget" }), "The run ends: stopped by the token budget.");
   assert.equal(end({ status: "loop" }), "The run ends: stopped by the loop guard.");
   assert.equal(end({ status: "circuit_open" }), "The run ends: the breaker stopped it.");
+  assert.equal(end({ status: "max_time" }), "The run ends: stopped by the time limit.");
   assert.equal(end({ status: "interrupted" }), "The run ends: interrupted.");
   assert.equal(end({ status: "error" }), "The run ends with an error.");
   assert.equal(end({ status: "refused" }), "The run ends: the model declined.");

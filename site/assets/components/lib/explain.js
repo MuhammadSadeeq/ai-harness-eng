@@ -61,6 +61,8 @@ function explainRunEnd(e) {
       return { text: "The run ends: stopped by the turn limit.", terms: ["turn limit"] };
     case "budget":
       return { text: "The run ends: stopped by the token budget.", terms: ["token budget"] };
+    case "max_time":
+      return { text: "The run ends: stopped by the time limit.", terms: [] };
     case "loop":
       return { text: "The run ends: stopped by the loop guard.", terms: ["loop guard"] };
     case "circuit_open":

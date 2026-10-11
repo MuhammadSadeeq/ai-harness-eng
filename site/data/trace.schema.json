@@ -445,7 +445,8 @@
      "enum": [
       "max_turns",
       "budget",
-      "loop"
+      "loop",
+      "max_time"
      ]
     },
     "kind": {
@@ -1291,7 +1292,8 @@
       "interrupted",
       "refused",
       "max_tokens_reply",
-      "error"
+      "error",
+      "max_time"
      ]
     },
     "t": {

@@ -32,6 +32,7 @@ test("status words", () => {
   assert.equal(statusWords("done", false), "false done, checks fail");
   assert.equal(statusWords("max_turns", true), "stopped by the turn limit");
   assert.equal(statusWords("circuit_open", false), "stopped by the breaker");
+  assert.equal(statusWords("max_time", false), "stopped by the time limit");
 });
 
 test("pricing from a fact means USD", () => {

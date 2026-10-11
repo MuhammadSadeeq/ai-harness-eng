@@ -46,6 +46,7 @@ export function isPass(status, passed) {
 const STATUS_WORDS = {
   unverified: "unverified, checks fail",
   max_turns: "stopped by the turn limit",
+  max_time: "stopped by the time limit", // D-060: Rein's time guard (H8); the simulator never ends this way
   budget: "stopped by the token budget",
   loop: "stopped by the loop guard",
   circuit_open: "stopped by the breaker",

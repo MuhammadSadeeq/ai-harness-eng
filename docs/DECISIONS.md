@@ -560,3 +560,19 @@ basis for Phase 1, and answered SPEC §14:
 - **Decision:** C3 joins H6's prerequisites (with H5 and C2). C3 already
   comes before H6 on the path. H5 stays without C12: on the path the trace
   step comes before the observability module, by design.
+
+## D-060 Rein's fourth guard is time, with its own status `max_time`
+
+- **Context:** H8.o1 asks for guards on turns, tokens, time and repeated
+  actions, each with its own final status. ENGINE §9 had no status for time,
+  and BP-4.1 listed only `max_turns`, `budget`, `loop` and `interrupted`.
+  H7 gives Rein a clock (virtual under `--fake`), so a time limit can be
+  tested without waiting.
+- **Decision:** Rein's H8 adds `--max-seconds N` (off by default). The run
+  checks its clock before each model call and ends `max_time` with a `guard`
+  line when the limit is passed. The trace schema gains the status and the
+  guard name (ENGINE A21). The simulator, the Python runtime and the Rust
+  reference stay as they are: no board module asks for a time limit.
+- **Also:** Rein's loop guard warns the model once before it ends the run
+  with `loop`; the C5 simulator stops at the first repeat. H8 says so.
+
