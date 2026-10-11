@@ -541,3 +541,13 @@ basis for Phase 1, and answered SPEC §14:
 - **Decision:** C8 joins G1's prerequisites (with C1, C2, C5–C7, C9, C11 and
   C12); G2, G3 and G4 inherit it through G1. Both are core modules on the
   default path, so the path's length does not change.
+
+## D-058 The Interview Room requires the portfolio module
+
+- **Context:** I5 (the Interview Room) and I6 (twelve weeks after) came
+  after the build track on the path, but I5's prerequisites (I2, D2, G4,
+  F5) did not include it, so the term check refused "Rein" and "write-up"
+  on I6, and the Interview Room's stories had no portfolio behind them.
+- **Decision:** I3 (portfolio projects, which requires H12) joins I5's
+  prerequisites. I4, the Rust capstone, stays optional for I5: the path
+  places it before I5 (D-046), but a learner can rehearse without it.

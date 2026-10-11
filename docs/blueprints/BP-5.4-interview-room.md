@@ -72,6 +72,17 @@ say prompt, alternating by day. The page records a shift as evidence
 links to it. No streaks that punish a missed day; say "Today's shift" and
 what is left.
 
+## 5. Two career pieces the I pages point to
+- **Portfolio templates (I3, Appendix D):** four downloadable Markdown
+  templates under `site/templates/`, one per I3 project, each with a README
+  skeleton, the results table (the columns `rein results --markdown`
+  prints, BP-4.2 §3) and a write-up outline (question, method, the command
+  and seed that reproduce it, results, limits). I3 links them.
+- **Adjusting readiness honestly (I2.o2, SPEC §6.4):** `hx-readiness` lets
+  the learner lower a wire's level below what the evidence shows, never
+  raise it above, with a one-line reason; the brag sheet prints the evidence
+  level and the adjustment side by side. I2 then teaches the control.
+
 ## Acceptance (quote final lines)
 ```
 .venv/bin/python tools/gen_data.py --check && .venv/bin/python tools/gen_pages.py --check

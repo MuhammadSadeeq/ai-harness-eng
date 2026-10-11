@@ -262,7 +262,7 @@ S0 → A1 → A2 → A3 → A4 → A5 → A6 → A7 → B1 → B2 → H0 → H1 
 | I2 | Readiness self-assessment | career | Control Context Loop Errors Tools Permissions Verification Observability | I1 | 30 | Claim only what you can show. |
 | I3 | Four portfolio projects | career | Verification Observability | H12, I2 | 45 | A result is a number, an interval and a method. |
 | I4 | Capstone: Rein in Rust | career | Control Context Loop Errors Tools Permissions Verification Observability | H12, I3 | 60 | Same spec, same traces, any language. |
-| I5 | Interview Room | career | Control Context Loop Errors Tools Permissions Verification Observability | I2, D2, G4, F5 | 120 | Walk the clock out loud. |
+| I5 | Interview Room | career | Control Context Loop Errors Tools Permissions Verification Observability | I2, I3, D2, G4, F5 | 120 | Walk the clock out loud. |
 | I6 | Twelve weeks after the course | career | Observability | I5 | 30 | Practice in public, on a schedule. |
 
 #### Part T — Toolbelt
