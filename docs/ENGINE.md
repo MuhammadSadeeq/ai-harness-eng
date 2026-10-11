@@ -1175,3 +1175,12 @@ eventually notices; lessons say so).
   session's (k from 0), `/agents/<name>/script/<i>` for a sub-agent's, and
   `/models/<id>/script/<i>` for a model profile's; nested steps extend the
   pointer as before. Every location therefore resolves against the tape.
+- **A19 (2026-10-11): a board's rules.** Binding for both runtimes (G4, and
+  H10 later). `rules_file` takes an optional `rules`: a list of non-empty
+  strings. When it is present, it replaces the tape's `rules` for the whole
+  run: the system text (§7.1, "Project rules:"), the `rules` layer in
+  `prompt_built.layers`, and everything computed from them (tokens, cache
+  prefixes, `sent_lacks:`). An empty list means no rules layer, as for a tape
+  without rules. Absent, the tape's `rules` are used, as before, so every
+  existing golden is unchanged. The rules file is the harness's map, so a
+  board can now fix a stale one on the same tape.
