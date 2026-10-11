@@ -1,0 +1,19 @@
+{
+  "id": "d2-new",
+  "label": "After the change: reads of the notes are approved by a person",
+  "modules": {
+    "permissions": {
+      "mode": "allow",
+      "rules": [
+        {
+          "decision": "ask",
+          "tool": "read_file",
+          "match": {
+            "path": "README.md"
+          },
+          "reason": "a person reads the notes"
+        }
+      ]
+    }
+  }
+}

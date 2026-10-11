@@ -1,0 +1,53 @@
+id: D1-eval
+module: D1
+title: Run an eval with a code grader over seeded trials
+objectives: [D1.o3]
+minutes: 25
+hints:
+  - "A run passes the code grader only as a true done: the status is done and the checks passed."
+  - "Count each run once for passes. For tasks, a task passes at least once when any of its trials passes, and passes every time when all of them do."
+  - "passes sums the runs where status is done and passed is True. Group the trials by task, then count the groups with any True and the groups with all True."
+from_memory: false
+wrong_solutions:
+  - name: counts-passed-alone
+    code: |
+
+      def run_eval(trials):
+          passes = sum(1 for t in trials if t["passed"])
+          by_task = {}
+          for t in trials:
+              by_task.setdefault(t["task"], []).append(t["passed"] is True)
+          return {"runs": len(trials), "passes": passes,
+                  "tasks_any_pass": sum(1 for o in by_task.values() if any(o)),
+                  "tasks_all_pass": sum(1 for o in by_task.values() if all(o))}
+  - name: counts-done-alone
+    code: |
+
+      def run_eval(trials):
+          passes = sum(1 for t in trials if t["status"] == "done")
+          by_task = {}
+          for t in trials:
+              by_task.setdefault(t["task"], []).append(t["status"] == "done")
+          return {"runs": len(trials), "passes": passes,
+                  "tasks_any_pass": sum(1 for o in by_task.values() if any(o)),
+                  "tasks_all_pass": sum(1 for o in by_task.values() if all(o))}
+  - name: any-is-all
+    code: |
+
+      def run_eval(trials):
+          passes = sum(1 for t in trials if t["status"] == "done" and t["passed"] is True)
+          by_task = {}
+          for t in trials:
+              by_task.setdefault(t["task"], []).append(t["status"] == "done" and t["passed"] is True)
+          any_pass = sum(1 for o in by_task.values() if any(o))
+          return {"runs": len(trials), "passes": passes, "tasks_any_pass": any_pass, "tasks_all_pass": any_pass}
+  - name: counts-runs-not-tasks
+    code: |
+
+      def run_eval(trials):
+          passes = sum(1 for t in trials if t["status"] == "done" and t["passed"] is True)
+          by_task = {}
+          for t in trials:
+              by_task.setdefault(t["task"], []).append(t["status"] == "done" and t["passed"] is True)
+          return {"runs": len(trials), "passes": passes, "tasks_any_pass": passes,
+                  "tasks_all_pass": sum(1 for o in by_task.values() if all(o))}

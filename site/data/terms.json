@@ -69,6 +69,18 @@
   "term": "AGENTS.md",
   "wire": "control"
  },
+ "agreement-rate": {
+  "aliases": [
+   "agreement rate",
+   "agreement rates"
+  ],
+  "definition": "The share of cases where a grader and a human give the same verdict. It does not say which way the errors fall.",
+  "id": "agreement-rate",
+  "module": "D3",
+  "strict": true,
+  "term": "agreement rate",
+  "wire": "verify"
+ },
  "allow": {
   "aliases": [
    "allow"
@@ -160,6 +172,30 @@
   "term": "blast radius",
   "wire": "permissions"
  },
+ "brain": {
+  "aliases": [
+   "brain",
+   "brains"
+  ],
+  "definition": "The model and its loop: it reads the history, decides the next call, and keeps the credentials.",
+  "id": "brain",
+  "module": "F3",
+  "strict": false,
+  "term": "brain",
+  "wire": "loop"
+ },
+ "breaking-change": {
+  "aliases": [
+   "breaking change",
+   "breaking changes"
+  ],
+  "definition": "A change that makes working code fail, or behave differently, without any change on your side.",
+  "id": "breaking-change",
+  "module": "F7",
+  "strict": true,
+  "term": "breaking change",
+  "wire": "loop"
+ },
  "cache-breakpoint": {
   "aliases": [
    "cache breakpoint",
@@ -245,6 +281,67 @@
   "term": "cache write",
   "wire": "context"
  },
+ "calibration": {
+  "aliases": [
+   "calibration",
+   "calibrating",
+   "calibrate"
+  ],
+  "definition": "Checking a grader against human labels you trust, and measuring how often the two agree and which way the grader errs.",
+  "id": "calibration",
+  "module": "D3",
+  "strict": true,
+  "term": "calibration",
+  "wire": "verify"
+ },
+ "canary": {
+  "aliases": [
+   "canary",
+   "canaries"
+  ],
+  "definition": "A small share of real traffic sent to a new harness, to see its behaviour before a wider rollout.",
+  "id": "canary",
+  "module": "F5",
+  "strict": true,
+  "term": "canary",
+  "wire": "observe"
+ },
+ "capability-check": {
+  "aliases": [
+   "capability check",
+   "capability checks"
+  ],
+  "definition": "A check of the model's profile before a request is sent. It drops or refuses the parameters the model rejects.",
+  "id": "capability-check",
+  "module": "F7",
+  "strict": true,
+  "term": "capability check",
+  "wire": "control"
+ },
+ "capability-eval": {
+  "aliases": [
+   "capability eval",
+   "capability evals"
+  ],
+  "definition": "An eval that asks what the agent can do yet. Its pass rate should climb as the harness improves.",
+  "id": "capability-eval",
+  "module": "D1",
+  "strict": true,
+  "term": "capability eval",
+  "wire": "verify"
+ },
+ "checkpoint": {
+  "aliases": [
+   "checkpoint",
+   "checkpoints"
+  ],
+  "definition": "A saved record of what is done and what the next step is, written after each step.",
+  "id": "checkpoint",
+  "module": "F5",
+  "strict": false,
+  "term": "checkpoint",
+  "wire": "loop"
+ },
  "circuit-breaker": {
   "aliases": [
    "circuit breaker",
@@ -279,6 +376,18 @@
   "strict": true,
   "term": "clean reset",
   "wire": "context"
+ },
+ "code-grader": {
+  "aliases": [
+   "code grader",
+   "code graders"
+  ],
+  "definition": "A program that decides. A run passes when it ends done and the tape's checks hold. It cannot be talked into a pass.",
+  "id": "code-grader",
+  "module": "D1",
+  "strict": true,
+  "term": "code grader",
+  "wire": "verify"
  },
  "commit": {
   "aliases": [
@@ -351,6 +460,18 @@
   "strict": false,
   "term": "concurrency"
  },
+ "confidence-interval": {
+  "aliases": [
+   "confidence interval",
+   "confidence intervals"
+  ],
+  "definition": "A range the true rate is likely to lie in, given the trials. Its width shrinks as the trials grow.",
+  "id": "confidence-interval",
+  "module": "D2",
+  "strict": true,
+  "term": "confidence interval",
+  "wire": "verify"
+ },
  "constrained-decoding": {
   "aliases": [
    "constrained decoding"
@@ -373,6 +494,17 @@
   "strict": false,
   "term": "container",
   "wire": "permissions"
+ },
+ "contamination": {
+  "aliases": [
+   "contamination"
+  ],
+  "definition": "A test case the model saw while it learned or while you tuned. The score then measures memory, not the task.",
+  "id": "contamination",
+  "module": "D3",
+  "strict": true,
+  "term": "contamination",
+  "wire": "verify"
  },
  "content-block": {
   "aliases": [
@@ -545,6 +677,19 @@
   "term": "deny",
   "wire": "permissions"
  },
+ "deprecation": {
+  "aliases": [
+   "deprecation",
+   "deprecated",
+   "deprecations"
+  ],
+  "definition": "A notice that a parameter or format still works but will be removed, so code should move before it is.",
+  "id": "deprecation",
+  "module": "F7",
+  "strict": false,
+  "term": "deprecation",
+  "wire": "control"
+ },
  "destructive-tool": {
   "aliases": [
    "destructive tool",
@@ -590,6 +735,17 @@
   "strict": false,
   "term": "drift",
   "wire": "verify"
+ },
+ "durable-execution": {
+  "aliases": [
+   "durable execution"
+  ],
+  "definition": "A run whose progress is kept outside the process, so a crash does not lose it.",
+  "id": "durable-execution",
+  "module": "F5",
+  "strict": true,
+  "term": "durable execution",
+  "wire": "loop"
  },
  "effort": {
   "aliases": [
@@ -637,6 +793,40 @@
   "term": "enum",
   "wire": "tools"
  },
+ "environment": {
+  "aliases": [
+   "environment",
+   "environments"
+  ],
+  "definition": "The files, tools and board a task runs in. It stays fixed, so two runs differ only by the change under test.",
+  "id": "environment",
+  "module": "D1",
+  "strict": false,
+  "term": "environment",
+  "wire": "verify"
+ },
+ "eval": {
+  "aliases": [
+   "eval"
+  ],
+  "definition": "A fixed set of tasks, run over seeded trials and graded, with a count of the passes. A harness change is judged by it.",
+  "id": "eval",
+  "module": "D1",
+  "strict": false,
+  "term": "eval",
+  "wire": "verify"
+ },
+ "eval-awareness": {
+  "aliases": [
+   "eval awareness"
+  ],
+  "definition": "A model that suspects it is being tested and may behave differently. The course treats it as a principle to design against.",
+  "id": "eval-awareness",
+  "module": "D3",
+  "strict": true,
+  "term": "eval awareness",
+  "wire": "verify"
+ },
  "event": {
   "aliases": [
    "event",
@@ -648,6 +838,18 @@
   "strict": false,
   "term": "event",
   "wire": "observe"
+ },
+ "event-log": {
+  "aliases": [
+   "event log",
+   "event logs"
+  ],
+  "definition": "A record of every turn, call and result of a run. Nothing in it is edited or removed.",
+  "id": "event-log",
+  "module": "F3",
+  "strict": true,
+  "term": "event log",
+  "wire": "context"
  },
  "exfiltration": {
   "aliases": [
@@ -802,6 +1004,30 @@
   "term": "GenAI semantic conventions",
   "wire": "observe"
  },
+ "golden-set": {
+  "aliases": [
+   "golden set",
+   "golden sets"
+  ],
+  "definition": "A small set of cases with human labels you trust, kept to calibrate a grader against.",
+  "id": "golden-set",
+  "module": "D3",
+  "strict": true,
+  "term": "golden set",
+  "wire": "verify"
+ },
+ "grader": {
+  "aliases": [
+   "grader",
+   "graders"
+  ],
+  "definition": "The check that says whether a run passed. Every eval has one, and it can be wrong in its own way.",
+  "id": "grader",
+  "module": "D1",
+  "strict": true,
+  "term": "grader",
+  "wire": "verify"
+ },
  "ground-truth": {
   "aliases": [
    "ground truth"
@@ -848,6 +1074,17 @@
   "strict": true,
   "term": "handoff note",
   "wire": "context"
+ },
+ "hands": {
+  "aliases": [
+   "hands"
+  ],
+  "definition": "The sandboxes and tools that act on the workspace. They run what the brain asks for.",
+  "id": "hands",
+  "module": "F3",
+  "strict": false,
+  "term": "hands",
+  "wire": "permissions"
  },
  "harness": {
   "aliases": [
@@ -919,6 +1156,30 @@
   "strict": true,
   "term": "HTTP status code"
  },
+ "human-grader": {
+  "aliases": [
+   "human grader",
+   "human graders"
+  ],
+  "definition": "A person who reads a run and gives a verdict. A careful person is slow, and two people can disagree.",
+  "id": "human-grader",
+  "module": "D1",
+  "strict": true,
+  "term": "human grader",
+  "wire": "verify"
+ },
+ "human-in-the-loop": {
+  "aliases": [
+   "human-in-the-loop",
+   "human in the loop"
+  ],
+  "definition": "A step that waits for a person to approve it before it runs, with the step shown in words they can check.",
+  "id": "human-in-the-loop",
+  "module": "F5",
+  "strict": true,
+  "term": "human-in-the-loop",
+  "wire": "permissions"
+ },
  "idempotency": {
   "aliases": [
    "idempotency"
@@ -986,6 +1247,17 @@
   "module": "C11",
   "strict": true,
   "term": "inferential check",
+  "wire": "verify"
+ },
+ "infrastructure-noise": {
+  "aliases": [
+   "infrastructure noise"
+  ],
+  "definition": "Variation from the machine, the network or a time limit, rather than from the model or the change.",
+  "id": "infrastructure-noise",
+  "module": "D2",
+  "strict": true,
+  "term": "infrastructure noise",
   "wire": "verify"
  },
  "input-schema": {
@@ -1117,6 +1389,18 @@
   "term": "latency",
   "wire": "loop"
  },
+ "llm-judge": {
+  "aliases": [
+   "LLM judge",
+   "LLM judges"
+  ],
+  "definition": "A model that grades another model's run. The same as a model grader: cheap and quick, and it reads the claim as easily as the work.",
+  "id": "llm-judge",
+  "module": "D3",
+  "strict": true,
+  "term": "LLM judge",
+  "wire": "verify"
+ },
  "loop-detection": {
   "aliases": [
    "loop detection",
@@ -1127,6 +1411,18 @@
   "module": "C5",
   "strict": true,
   "term": "loop detection",
+  "wire": "loop"
+ },
+ "managed-agent": {
+  "aliases": [
+   "managed agent",
+   "managed agents"
+  ],
+  "definition": "A run of an agent that someone else hosts, split into a brain, hands and an event log.",
+  "id": "managed-agent",
+  "module": "F3",
+  "strict": true,
+  "term": "managed agent",
   "wire": "loop"
  },
  "max-tokens": {
@@ -1248,6 +1544,18 @@
   "term": "messages array",
   "wire": "context"
  },
+ "migration-guide": {
+  "aliases": [
+   "migration guide",
+   "migration guides"
+  ],
+  "definition": "A list a vendor publishes of what changed between models. Read it for the changes that break your code.",
+  "id": "migration-guide",
+  "module": "F7",
+  "strict": true,
+  "term": "migration guide",
+  "wire": "loop"
+ },
  "model-context-protocol": {
   "aliases": [
    "Model Context Protocol",
@@ -1259,6 +1567,18 @@
   "strict": true,
   "term": "Model Context Protocol",
   "wire": "tools"
+ },
+ "model-grader": {
+  "aliases": [
+   "model grader",
+   "model graders"
+  ],
+  "definition": "A judge model that reads a run and gives a verdict. It can pass a claim it never checked.",
+  "id": "model-grader",
+  "module": "D1",
+  "strict": true,
+  "term": "model grader",
+  "wire": "verify"
  },
  "model-id": {
   "aliases": [
@@ -1282,6 +1602,18 @@
   "module": "H1",
   "strict": true,
   "term": "model interface",
+  "wire": "loop"
+ },
+ "model-migration": {
+  "aliases": [
+   "model migration",
+   "model migrations"
+  ],
+  "definition": "The work of moving a harness from one model to another, and checking that its assumptions still hold.",
+  "id": "model-migration",
+  "module": "F7",
+  "strict": true,
+  "term": "model migration",
   "wire": "loop"
  },
  "mount": {
@@ -1365,6 +1697,18 @@
   "term": "orphaned tool call",
   "wire": "loop"
  },
+ "outcome": {
+  "aliases": [
+   "outcome",
+   "outcomes"
+  ],
+  "definition": "How a run ended: done, stopped by a limit, or failed, with the checks' verdict beside it.",
+  "id": "outcome",
+  "module": "D1",
+  "strict": false,
+  "term": "outcome",
+  "wire": "verify"
+ },
  "output-cap": {
   "aliases": [
    "output cap",
@@ -1447,6 +1791,28 @@
   "module": "T6",
   "strict": true,
   "term": "parametrize"
+ },
+ "pass-at-k": {
+  "aliases": [
+   "pass@k"
+  ],
+  "definition": "The chance that at least one of k tries passes. It shows what a harness can reach when it may retry.",
+  "id": "pass-at-k",
+  "module": "D2",
+  "strict": true,
+  "term": "pass@k",
+  "wire": "verify"
+ },
+ "pass-hat-k": {
+  "aliases": [
+   "pass^k"
+  ],
+  "definition": "The chance that all k tries pass. It shows how reliable a single try is.",
+  "id": "pass-hat-k",
+  "module": "D2",
+  "strict": true,
+  "term": "pass^k",
+  "wire": "verify"
  },
  "pass-rate": {
   "aliases": [
@@ -1647,6 +2013,18 @@
   "term": "prompt engineering",
   "wire": "control"
  },
+ "queue": {
+  "aliases": [
+   "queue",
+   "queues"
+  ],
+  "definition": "A line of work that waits its turn, so the run keeps its order when the provider is busy.",
+  "id": "queue",
+  "module": "F5",
+  "strict": false,
+  "term": "queue",
+  "wire": "errors"
+ },
  "race-condition": {
   "aliases": [
    "race condition",
@@ -1740,6 +2118,18 @@
   "term": "refusal",
   "wire": "loop"
  },
+ "regression-eval": {
+  "aliases": [
+   "regression eval",
+   "regression evals"
+  ],
+  "definition": "An eval that guards what already works. Its pass rate should hold, and a drop is the news.",
+  "id": "regression-eval",
+  "module": "D1",
+  "strict": true,
+  "term": "regression eval",
+  "wire": "verify"
+ },
  "reliability": {
   "aliases": [
    "reliability"
@@ -1798,6 +2188,18 @@
   "term": "role",
   "wire": "context"
  },
+ "rollout": {
+  "aliases": [
+   "rollout",
+   "rollouts"
+  ],
+  "definition": "Widening the share of traffic that a new harness gets, one step at a time, each step gated by its evals.",
+  "id": "rollout",
+  "module": "F5",
+  "strict": false,
+  "term": "rollout",
+  "wire": "observe"
+ },
  "rules-file": {
   "aliases": [
    "rules file",
@@ -1832,6 +2234,18 @@
   "strict": true,
   "term": "run state",
   "wire": "loop"
+ },
+ "sample-size": {
+  "aliases": [
+   "sample size",
+   "sample sizes"
+  ],
+  "definition": "The number of trials behind a rate. It moves the interval more than the point estimate does.",
+  "id": "sample-size",
+  "module": "D2",
+  "strict": false,
+  "term": "sample size",
+  "wire": "verify"
  },
  "sampling": {
   "aliases": [
@@ -1951,6 +2365,17 @@
   "module": "C3",
   "strict": true,
   "term": "session log",
+  "wire": "observe"
+ },
+ "shadow-mode": {
+  "aliases": [
+   "shadow mode"
+  ],
+  "definition": "Running a new harness beside the old one, comparing the results, and letting only the old one act.",
+  "id": "shadow-mode",
+  "module": "F5",
+  "strict": true,
+  "term": "shadow mode",
   "wire": "observe"
  },
  "skill": {
@@ -2084,6 +2509,18 @@
   "term": "system prompt",
   "wire": "control"
  },
+ "task": {
+  "aliases": [
+   "task",
+   "tasks"
+  ],
+  "definition": "One thing you ask the agent to do, with its starting files and what counts as done.",
+  "id": "task",
+  "module": "D1",
+  "strict": false,
+  "term": "task",
+  "wire": "verify"
+ },
  "temperature": {
   "aliases": [
    "temperature"
@@ -2141,6 +2578,18 @@
   "strict": true,
   "term": "token",
   "wire": "context"
+ },
+ "token-bucket": {
+  "aliases": [
+   "token bucket",
+   "token buckets"
+  ],
+  "definition": "A limit that fills at a steady rate. Each call takes one token, and an empty bucket means wait.",
+  "id": "token-bucket",
+  "module": "F5",
+  "strict": true,
+  "term": "token bucket",
+  "wire": "errors"
  },
  "token-budget": {
   "aliases": [
@@ -2309,6 +2758,30 @@
   "term": "training",
   "wire": "control"
  },
+ "trajectory": {
+  "aliases": [
+   "trajectory",
+   "trajectories"
+  ],
+  "definition": "The path a run took through its tools, step by step. Two runs can reach the same outcome by different paths.",
+  "id": "trajectory",
+  "module": "D1",
+  "strict": false,
+  "term": "trajectory",
+  "wire": "verify"
+ },
+ "transcript": {
+  "aliases": [
+   "transcript",
+   "transcripts"
+  ],
+  "definition": "The record of one run: each model reply, tool call and result, in order.",
+  "id": "transcript",
+  "module": "D1",
+  "strict": false,
+  "term": "transcript",
+  "wire": "verify"
+ },
  "transient-error": {
   "aliases": [
    "transient error",
@@ -2415,6 +2888,17 @@
   "term": "user harness",
   "wire": "control"
  },
+ "variance": {
+  "aliases": [
+   "variance"
+  ],
+  "definition": "How far a result moves from one batch of runs to the next. A pass rate from few trials has high variance.",
+  "id": "variance",
+  "module": "D2",
+  "strict": false,
+  "term": "variance",
+  "wire": "verify"
+ },
  "verification": {
   "aliases": [
    "verification"
@@ -2461,6 +2945,19 @@
   "strict": false,
   "term": "weights",
   "wire": "context"
+ },
+ "wilson-interval": {
+  "aliases": [
+   "Wilson interval",
+   "Wilson intervals",
+   "Wilson score interval"
+  ],
+  "definition": "A confidence interval for a pass rate that stays inside 0 and 1 and stays honest at small counts.",
+  "id": "wilson-interval",
+  "module": "D2",
+  "strict": true,
+  "term": "Wilson interval",
+  "wire": "verify"
  },
  "wire": {
   "aliases": [

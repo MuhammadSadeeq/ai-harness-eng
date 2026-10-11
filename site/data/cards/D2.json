@@ -1,0 +1,44 @@
+[
+ {
+  "back": "The chance that at least one of k tries passes. It shows what a harness can reach when it may retry.",
+  "front": "What does pass@k measure?",
+  "id": "D2-k1",
+  "objective": "D2.o1",
+  "type": "term"
+ },
+ {
+  "back": "The chance that all k tries pass. It shows how reliable one try is, so it tells the opposite story.",
+  "front": "What does pass^k measure, and how does it differ from pass@k?",
+  "id": "D2-k2",
+  "objective": "D2.o1",
+  "type": "term"
+ },
+ {
+  "back": "A confidence interval for a pass rate that stays inside 0 and 1 and stays honest at small counts.",
+  "front": "What is a Wilson interval?",
+  "id": "D2-k3",
+  "objective": "D2.o2",
+  "type": "term"
+ },
+ {
+  "back": "When their intervals do not overlap. A gap between the two point estimates is not enough.",
+  "front": "When do two results really differ?",
+  "id": "D2-k4",
+  "objective": "D2.o2",
+  "type": "term"
+ },
+ {
+  "back": "It shrinks, roughly with the square root of the trials. Four times the trials roughly halves it.",
+  "front": "What happens to a confidence interval's width when the trials grow?",
+  "id": "D2-k5",
+  "objective": "D2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Infrastructure noise, a time limit that cuts slow runs, or a flaky check that fails for reasons unrelated to the work.",
+  "front": "Name noise that is not sampling.",
+  "id": "D2-k6",
+  "objective": "D2.o4",
+  "type": "term"
+ }
+]

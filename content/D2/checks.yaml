@@ -1,0 +1,78 @@
+- id: D2-p1
+  objective: D2.o4
+  mode: predict
+  question: "The same tape runs on two boards with the same policy. The new board adds one approval on a harmless read of the notes. On seed 1, what happens?"
+  options:
+    - text: "Both boards end the same way, because the approval changes nothing."
+      why: "Tempting. The policy is the same, but the approval draws from the same random stream as the branch, so the branch can land elsewhere."
+    - text: "The new board's run can end differently, because the approval uses the run's random stream before the branch."
+      why: "Right. The harmless change moves the draws, so the same policy can finish on the other side of the branch."
+    - text: "The new board always passes, because it is the newer board."
+      why: "Wrong. A newer board is not a better one; this change alters only the random draws."
+  answer: 1
+  outcome: "On seed 1 the old board's fix fails and the new board's passes. The approval drew from the stream the branch uses."
+
+- id: D2-c0
+  objective: D2.o1
+  mode: check
+  question: "A tool works on 80 % of tries, and each try is independent. Over three tries, what are pass@3 and pass^3?"
+  options:
+    - text: "About 99 % and about 51 %."
+      why: "Right. At least one of three passes is nearly certain; all three passing is close to even."
+    - text: "About 80 % and about 80 %."
+      why: "Tempting. It keeps the single-try rate, but retries and all-pass questions change it."
+    - text: "About 51 % and about 99 %."
+      why: "Tempting. The two numbers are swapped: pass@3 is the larger one, because one pass in three is easy."
+  answer: 0
+
+- id: D2-c1
+  objective: D2.o2
+  mode: check
+  question: "Which pair of results really differs?"
+  options:
+    - text: "6 of 10 against 4 of 10."
+      why: "Tempting. The gap is the same, but the intervals overlap, so the two do not differ yet."
+    - text: "60 of 100 against 40 of 100."
+      why: "Right. With this many trials the intervals do not overlap, so the two really differ."
+    - text: "Both pairs differ, because the gaps are equal."
+      why: "Wrong. Equal gaps do not settle it; the spread around each rate decides."
+  answer: 1
+
+- id: D2-c2
+  objective: D2.o3
+  mode: check
+  question: "You want to tell two boards apart. Going from ten trials to forty, what happens to the interval's width?"
+  options:
+    - text: "It roughly halves."
+      why: "Right. The width falls with the square root of the trials, and four times the trials roughly halves it."
+    - text: "It falls to a quarter."
+      why: "Wrong. A quarter needs about sixteen times the trials, not four."
+    - text: "It stays the same."
+      why: "Wrong. More trials always narrow the interval, though never by the same amount each time."
+  answer: 0
+
+- id: D2-c3
+  objective: D2.o4
+  mode: check
+  question: "Which of these is noise beyond sampling?"
+  options:
+    - text: "A flaky check that fails for reasons unrelated to the work."
+      why: "Right. The check moves the result without any change in the model or the harness."
+    - text: "Ten more trials."
+      why: "Wrong. More trials reduce sampling noise; they are not a source of it."
+    - text: "A confidence interval around the rate."
+      why: "Wrong. An interval describes the noise; it does not create any."
+  answer: 0
+
+- id: D2-c4
+  objective: D2.o1
+  mode: check
+  question: "pass@k says what a harness can reach when it may retry. What does pass^k add?"
+  options:
+    - text: "How reliable one try is, since all k must pass."
+      why: "Right. Pass^k needs every try to pass, so it measures reliability."
+    - text: "How many retries the run needs."
+      why: "Wrong. Neither number counts retries; pass@k says what retries can reach."
+    - text: "Nothing pass@k does not already say."
+      why: "Wrong. The two numbers answer different questions, and they can disagree."
+  answer: 0

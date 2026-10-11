@@ -1,0 +1,55 @@
+- id: pass-at-k
+  term: pass@k
+  aliases: [pass@k]
+  strict: true
+  wire: verify
+  definition: >-
+    The chance that at least one of k tries passes. It shows what a harness can reach when it may retry.
+
+- id: pass-hat-k
+  term: pass^k
+  aliases: [pass^k]
+  strict: true
+  wire: verify
+  definition: >-
+    The chance that all k tries pass. It shows how reliable a single try is.
+
+- id: variance
+  term: variance
+  aliases: [variance]
+  strict: false
+  wire: verify
+  definition: >-
+    How far a result moves from one batch of runs to the next. A pass rate from few trials has high variance.
+
+- id: confidence-interval
+  term: confidence interval
+  aliases: [confidence interval, confidence intervals]
+  strict: true
+  wire: verify
+  definition: >-
+    A range the true rate is likely to lie in, given the trials. Its width shrinks as the trials grow.
+
+- id: wilson-interval
+  term: Wilson interval
+  aliases: [Wilson interval, Wilson intervals, Wilson score interval]
+  strict: true
+  wire: verify
+  definition: >-
+    A confidence interval for a pass rate that stays inside 0 and 1 and stays honest at small counts.
+
+- id: sample-size
+  term: sample size
+  aliases: [sample size, sample sizes]
+  strict: false
+  wire: verify
+  definition: >-
+    The number of trials behind a rate. It moves the interval more than the point estimate does.
+
+- id: infrastructure-noise
+  term: infrastructure noise
+  aliases: [infrastructure noise]
+  strict: true
+  wire: verify
+  definition: >-
+    Variation from the machine, the network or a time limit, rather than from the model or the change.

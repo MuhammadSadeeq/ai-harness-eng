@@ -1,0 +1,12 @@
+{
+  "eval": "d3-graded",
+  "boards": {
+    "old": "d1-old",
+    "new": "d1-new"
+  },
+  "start_tasks": [
+    "false-done-a",
+    "example-a"
+  ],
+  "note": "Illustrative: the model grader is a simulated judge whose false-pass rate rubber-stamps false dones, as the lab labels it. It is not a measurement of any real grader."
+}

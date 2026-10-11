@@ -1,0 +1,108 @@
+[
+ {
+  "answer": 1,
+  "id": "D3-p1",
+  "mode": "predict",
+  "objective": "D3.o4",
+  "options": [
+   {
+    "text": "It reads the file, sees the failure, and fails the run.",
+    "why": "Wrong. A grader that reads only the reply never sees the file; that is the trouble."
+   },
+   {
+    "text": "It passes some of these runs, at its false-pass rate.",
+    "why": "Right. A judge that reads the claim believes it some of the time, and the rate is its own."
+   },
+   {
+    "text": "It passes every one of them, since the claim sounds confident.",
+    "why": "Tempting. A judge can rubber-stamp most claims, but not by design every time; its rate is a property to measure."
+   }
+  ],
+  "outcome": "The model grader passed some of these claims at its false-pass rate. The code check failed every one.",
+  "question": "A run's reply says all checks pass and the work is done. The file still fails its check. A model grader reads only the reply. What does it do with this run?"
+ },
+ {
+  "answer": 0,
+  "id": "D3-c1",
+  "mode": "check",
+  "objective": "D3.o1",
+  "options": [
+   {
+    "text": "Block only when the new interval sits fully below the old one's.",
+    "why": "Right. A drop inside the overlap is inside the noise, so blocking on it blocks good changes."
+   },
+   {
+    "text": "Block on any drop, however small.",
+    "why": "Wrong. A few points from a few trials can be pure noise."
+   },
+   {
+    "text": "Never block: a drop is always noise.",
+    "why": "Wrong. A drop whose interval sits clearly below the old one is a real regression."
+   }
+  ],
+  "question": "A regression eval's pass rate drops by a few points. What should CI do?"
+ },
+ {
+  "answer": 0,
+  "id": "D3-c2",
+  "mode": "check",
+  "objective": "D3.o2",
+  "options": [
+   {
+    "text": "It is 62 %, but it does not say which way the errors fall; count the false passes apart.",
+    "why": "Right. The same agreement can hide many false passes or many false fails."
+   },
+   {
+    "text": "The grader is right 62 % of the time about every kind of run.",
+    "why": "Wrong. An agreement rate is one number over all cases; it does not describe each kind of run."
+   },
+   {
+    "text": "The grader's 38 misses all lean one way.",
+    "why": "Wrong. The agreement rate does not say that; the false passes and false fails must be counted."
+   }
+  ],
+  "question": "A model grader agrees with human labels on 62 of 100 cases. What does the agreement rate tell you, and what does it not?"
+ },
+ {
+  "answer": 0,
+  "id": "D3-c3",
+  "mode": "check",
+  "objective": "D3.o3",
+  "options": [
+   {
+    "text": "Keep a held-out set you never tune on or show to the model.",
+    "why": "Right. A case the model never saw cannot be remembered, so the score measures the task."
+   },
+   {
+    "text": "Add more tasks from the public set you tuned on.",
+    "why": "Wrong. More cases from the same contaminated set add more memory, not more signal."
+   },
+   {
+    "text": "Run the same tasks twice and average them.",
+    "why": "Wrong. Repeating contaminated tasks averages the memory, it does not remove it."
+   }
+  ],
+  "question": "Which step reduces the effect of contamination on your score?"
+ },
+ {
+  "answer": 0,
+  "id": "D3-c4",
+  "mode": "check",
+  "objective": "D3.o4",
+  "options": [
+   {
+    "text": "The reply says done while the file's check fails.",
+    "why": "Right. The reply claims what the check contradicts; read it beside the file."
+   },
+   {
+    "text": "The model grader's pass rate is high.",
+    "why": "Tempting. A high pass rate alone proves nothing; it must be set against the code check."
+   },
+   {
+    "text": "The run used many turns.",
+    "why": "Wrong. Many turns can mean hard work, not a wrong reason."
+   }
+  ],
+  "question": "Which evidence shows a grader passing work for the wrong reason?"
+ }
+]

@@ -1,0 +1,95 @@
+- id: eval
+  term: eval
+  aliases: [eval]
+  strict: false
+  wire: verify
+  definition: >-
+    A fixed set of tasks, run over seeded trials and graded, with a count of the passes. A harness change is judged by it.
+
+- id: task
+  term: task
+  aliases: [task, tasks]
+  strict: false
+  wire: verify
+  definition: >-
+    One thing you ask the agent to do, with its starting files and what counts as done.
+
+- id: environment
+  term: environment
+  aliases: [environment, environments]
+  strict: false
+  wire: verify
+  definition: >-
+    The files, tools and board a task runs in. It stays fixed, so two runs differ only by the change under test.
+
+- id: grader
+  term: grader
+  aliases: [grader, graders]
+  strict: true
+  wire: verify
+  definition: >-
+    The check that says whether a run passed. Every eval has one, and it can be wrong in its own way.
+
+- id: code-grader
+  term: code grader
+  aliases: [code grader, code graders]
+  strict: true
+  wire: verify
+  definition: >-
+    A program that decides. A run passes when it ends done and the tape's checks hold. It cannot be talked into a pass.
+
+- id: model-grader
+  term: model grader
+  aliases: [model grader, model graders]
+  strict: true
+  wire: verify
+  definition: >-
+    A judge model that reads a run and gives a verdict. It can pass a claim it never checked.
+
+- id: human-grader
+  term: human grader
+  aliases: [human grader, human graders]
+  strict: true
+  wire: verify
+  definition: >-
+    A person who reads a run and gives a verdict. A careful person is slow, and two people can disagree.
+
+- id: transcript
+  term: transcript
+  aliases: [transcript, transcripts]
+  strict: false
+  wire: verify
+  definition: >-
+    The record of one run: each model reply, tool call and result, in order.
+
+- id: outcome
+  term: outcome
+  aliases: [outcome, outcomes]
+  strict: false
+  wire: verify
+  definition: >-
+    How a run ended: done, stopped by a limit, or failed, with the checks' verdict beside it.
+
+- id: trajectory
+  term: trajectory
+  aliases: [trajectory, trajectories]
+  strict: false
+  wire: verify
+  definition: >-
+    The path a run took through its tools, step by step. Two runs can reach the same outcome by different paths.
+
+- id: capability-eval
+  term: capability eval
+  aliases: [capability eval, capability evals]
+  strict: true
+  wire: verify
+  definition: >-
+    An eval that asks what the agent can do yet. Its pass rate should climb as the harness improves.
+
+- id: regression-eval
+  term: regression eval
+  aliases: [regression eval, regression evals]
+  strict: true
+  wire: verify
+  definition: >-
+    An eval that guards what already works. Its pass rate should hold, and a drop is the news.

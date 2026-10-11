@@ -1,0 +1,24 @@
+{"agent":"main","board":"d2-new","kind":"run_start","model_id":"claude-sonnet-5-5","run":"d2-noise:d2-new:1","seed":1,"seq":0,"t":0,"task":"Write the fix to fix.txt.","turn":0,"v":1,"wire":"loop"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"d2-noise:d2-new:1","seq":1,"t":0,"tokens":449,"turn":1,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":5,"run":"d2-noise:d2-new:1","seq":2,"t":0,"tokens":449,"turn":1,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"d2-noise:d2-new:1","seq":3,"t":0,"tokens_in":449,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"d2-noise:d2-new:1","seq":4,"t":0,"turn":1,"v":1,"wire":"errors"}
+{"agent":"main","cost":1248000,"kind":"model_reply","run":"d2-noise:d2-new:1","seq":5,"stop_reason":"tool_use","t":1300,"text":"Reading the notes.","tool_uses":[{"id":"toolu_1_1","input":{"path":"README.md"},"name":"read_file"}],"turn":1,"usage":{"input_tokens":449,"output_tokens":35},"v":1,"wire":"loop"}
+{"agent":"main","decision":"ask","final":"allow","human":"approve","kind":"permission","reason":"a person reads the notes","rule":"rules[0]","run":"d2-noise:d2-new:1","seq":6,"t":1300,"tool":"read_file","tool_use_id":"toolu_1_1","turn":1,"v":1,"wire":"permissions"}
+{"agent":"main","input":{"path":"README.md"},"kind":"tool_call","ok":true,"output":"Notes for the fix: write the word fixed to fix.txt.\n","output_tokens":13,"run":"d2-noise:d2-new:1","seq":7,"t":1400,"tool":"read_file","tool_use_id":"toolu_1_1","truncated":false,"turn":1,"v":1,"wire":"tools"}
+{"agent":"main","events":8,"kind":"trace_write","redacted":0,"run":"d2-noise:d2-new:1","seq":8,"t":1400,"turn":1,"v":1,"wire":"observe"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"d2-noise:d2-new:1","seq":9,"t":1400,"tokens":536,"turn":2,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":6,"run":"d2-noise:d2-new:1","seq":10,"t":1400,"tokens":536,"turn":2,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"d2-noise:d2-new:1","seq":11,"t":1400,"tokens_in":536,"turn":2,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"d2-noise:d2-new:1","seq":12,"t":1400,"turn":2,"v":1,"wire":"errors"}
+{"agent":"main","cost":2770000,"kind":"model_reply","run":"d2-noise:d2-new:1","seq":13,"stop_reason":"tool_use","t":2900,"text":"The notes are clear. Writing the fix.","tool_uses":[{"id":"toolu_2_1","input":{"content":"fixed\n","path":"fix.txt"},"name":"write_file"}],"turn":2,"usage":{"input_tokens":536,"output_tokens":45},"v":1,"wire":"loop"}
+{"agent":"main","decision":"allow","final":"allow","human":null,"kind":"permission","reason":"no rule matched (mode allow)","rule":"default","run":"d2-noise:d2-new:1","seq":14,"t":2900,"tool":"write_file","tool_use_id":"toolu_2_1","turn":2,"v":1,"wire":"permissions"}
+{"agent":"main","input":{"content":"fixed\n","path":"fix.txt"},"kind":"tool_call","ok":true,"output":"Wrote fix.txt (6 chars)","output_tokens":6,"run":"d2-noise:d2-new:1","seq":15,"t":3000,"tool":"write_file","tool_use_id":"toolu_2_1","truncated":false,"turn":2,"v":1,"wire":"tools"}
+{"agent":"main","events":7,"kind":"trace_write","redacted":0,"run":"d2-noise:d2-new:1","seq":16,"t":3000,"turn":2,"v":1,"wire":"observe"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"d2-noise:d2-new:1","seq":17,"t":3000,"tokens":626,"turn":3,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":7,"run":"d2-noise:d2-new:1","seq":18,"t":3000,"tokens":626,"turn":3,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"d2-noise:d2-new:1","seq":19,"t":3000,"tokens_in":626,"turn":3,"v":1,"wire":"loop"}
+{"agent":"main","attempts":1,"breaker":"none","kind":"recovery_check","run":"d2-noise:d2-new:1","seq":20,"t":3000,"turn":3,"v":1,"wire":"errors"}
+{"agent":"main","cost":4102000,"kind":"model_reply","run":"d2-noise:d2-new:1","seq":21,"stop_reason":"end_turn","t":3760,"text":"Done.","tool_uses":[],"turn":3,"usage":{"input_tokens":626,"output_tokens":8},"v":1,"wire":"loop"}
+{"agent":"main","events":5,"kind":"trace_write","redacted":0,"run":"d2-noise:d2-new:1","seq":22,"t":3760,"turn":3,"v":1,"wire":"observe"}
+{"agent":"main","cost":4102000,"kind":"run_end","passed":true,"run":"d2-noise:d2-new:1","seq":23,"status":"done","t":3760,"tokens":{"input":1611,"output":88},"turn":3,"turns":3,"v":1,"wire":"loop"}

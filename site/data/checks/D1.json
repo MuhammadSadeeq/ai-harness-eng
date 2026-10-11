@@ -1,0 +1,87 @@
+[
+ {
+  "answer": 1,
+  "id": "D1-p1",
+  "mode": "predict",
+  "objective": "D1.o1",
+  "options": [
+   {
+    "text": "It passes, because the two examples did.",
+    "why": "Tempting. The examples are short and the held-out task is not, so their passing says nothing about it."
+   },
+   {
+    "text": "It stops at the turn limit, before its files are done, and fails.",
+    "why": "Right. The board stops a run after four turns, so an eight-turn task never finishes its writes."
+   },
+   {
+    "text": "It runs slower but still passes.",
+    "why": "Tempting. A limit is a stop, not a slowdown; the run ends before the work is done."
+   }
+  ],
+  "outcome": "The guard stopped the run at four turns. The examples said nothing about it.",
+  "question": "The change caps every run at four turns. The two examples need two turns each. A held-out task needs eight. What happens to the held-out task on the new board?"
+ },
+ {
+  "answer": 0,
+  "id": "D1-c1",
+  "mode": "check",
+  "objective": "D1.o1",
+  "options": [
+   {
+    "text": "The grader.",
+    "why": "Right. The grader is the check that says pass or fail."
+   },
+   {
+    "text": "The trials.",
+    "why": "Wrong. The trials are the repeated runs; they do not decide anything."
+   },
+   {
+    "text": "The transcript.",
+    "why": "Wrong. The transcript is the record a grader reads; it is not the decision."
+   }
+  ],
+  "question": "Which part of an eval decides whether a run passed?"
+ },
+ {
+  "answer": 0,
+  "id": "D1-c2",
+  "mode": "check",
+  "objective": "D1.o2",
+  "options": [
+   {
+    "text": "A model grader that reads the reply and not the files.",
+    "why": "Right. A judge that reads the claim can pass the claim, whatever the files hold."
+   },
+   {
+    "text": "A code grader that runs the tape's checks.",
+    "why": "Wrong. The checks read the files, so the code grader cannot be talked into a pass."
+   },
+   {
+    "text": "A human grader who reads the whole run.",
+    "why": "Tempting. A person can be wrong too, but reading the whole run is not reading the claim alone."
+   }
+  ],
+  "question": "Which grader can pass a run that never did the work?"
+ },
+ {
+  "answer": 0,
+  "id": "D1-c3",
+  "mode": "check",
+  "objective": "D1.o4",
+  "options": [
+   {
+    "text": "A regression eval.",
+    "why": "Right. It guards what already works, so a drop is the signal."
+   },
+   {
+    "text": "A capability eval.",
+    "why": "Wrong. A capability eval asks what the agent can do yet; its rate is expected to climb."
+   },
+   {
+    "text": "A human grader.",
+    "why": "Wrong. A human grader is a kind of grader, not a kind of eval."
+   }
+  ],
+  "question": "An eval guards a fix you shipped last month. Its pass rate should hold. Which kind is it?"
+ }
+]

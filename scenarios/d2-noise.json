@@ -1,0 +1,98 @@
+{
+ "schema": 1,
+ "model_id": "claude-sonnet-5-5",
+ "pricing": {
+  "fact": "models.sonnet-5-5-price"
+ },
+ "window": 8000,
+ "rules": [],
+ "outside": {},
+ "custom_tools": [],
+ "human": {
+  "default": "approve",
+  "fatigue": {
+   "after": 0,
+   "approve_percent": 100
+  }
+ },
+ "interrupt": null,
+ "golden_seeds": [
+  0,
+  1,
+  2
+ ],
+ "seed_base": 20261010,
+ "id": "d2-noise",
+ "title": "A fair coin decides the fix",
+ "task": "Write the fix to fix.txt.",
+ "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the work is finished.",
+ "workspace": {
+  "README.md": "Notes for the fix: write the word fixed to fix.txt.\n",
+  "fix.txt": ""
+ },
+ "tools": [
+  "read_file",
+  "write_file",
+  "edit_file",
+  "list_files"
+ ],
+ "checks": [
+  {
+   "file": "fix.txt",
+   "contains": "fixed"
+  }
+ ],
+ "test_output": {
+  "pass": "1 passed",
+  "fail": "1 failed"
+ },
+ "script": [
+  {
+   "say": "Reading the notes.",
+   "tools": [
+    [
+     "read_file",
+     {
+      "path": "README.md"
+     }
+    ]
+   ]
+  },
+  {
+   "branch": [
+    {
+     "percent": 50,
+     "then": [
+      {
+       "say": "The notes are clear. Writing the fix.",
+       "tools": [
+        [
+         "write_file",
+         {
+          "path": "fix.txt",
+          "content": "fixed\n"
+         }
+        ]
+       ]
+      },
+      {
+       "say": "Done."
+      }
+     ]
+    },
+    {
+     "percent": 50,
+     "then": [
+      {
+       "say": "Done."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "boards": [
+  "d2-old",
+  "d2-new"
+ ]
+}

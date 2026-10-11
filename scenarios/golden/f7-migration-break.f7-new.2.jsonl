@@ -1,0 +1,7 @@
+{"agent":"main","board":"f7-new","kind":"run_start","model_id":"model-new","run":"f7-migration-break:f7-new:2","seed":2,"seq":0,"t":0,"task":"Write summary.txt from notes/a.txt and notes/b.txt.","turn":0,"v":1,"wire":"loop"}
+{"agent":"main","kind":"prompt_built","layers":["system","tools","history"],"run":"f7-migration-break:f7-new:2","seq":1,"t":0,"tokens":258,"turn":1,"v":1,"wire":"control"}
+{"action":"none","agent":"main","kind":"context_check","percent":3,"run":"f7-migration-break:f7-new:2","seq":2,"t":0,"tokens":258,"turn":1,"v":1,"window":8000,"wire":"context"}
+{"agent":"main","attempt":1,"kind":"model_call","run":"f7-migration-break:f7-new:2","seq":3,"t":0,"tokens_in":258,"turn":1,"v":1,"wire":"loop"}
+{"agent":"main","attempt":1,"kind":"model_error","message":"temperature: this parameter is not supported on model-new","retry_after_ms":0,"run":"f7-migration-break:f7-new:2","seq":4,"t":300,"turn":1,"type":"invalid_request","v":1,"wire":"errors"}
+{"agent":"main","events":5,"kind":"trace_write","redacted":0,"run":"f7-migration-break:f7-new:2","seq":5,"t":300,"turn":1,"v":1,"wire":"observe"}
+{"agent":"main","cost":0,"kind":"run_end","passed":false,"run":"f7-migration-break:f7-new:2","seq":6,"status":"error","t":300,"tokens":{"input":0,"output":0},"turn":1,"turns":1,"v":1,"wire":"loop"}

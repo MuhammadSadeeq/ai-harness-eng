@@ -1,0 +1,35 @@
+- id: D2-k1
+  type: term
+  objective: D2.o1
+  front: "What does pass@k measure?"
+  back: "The chance that at least one of k tries passes. It shows what a harness can reach when it may retry."
+
+- id: D2-k2
+  type: term
+  objective: D2.o1
+  front: "What does pass^k measure, and how does it differ from pass@k?"
+  back: "The chance that all k tries pass. It shows how reliable one try is, so it tells the opposite story."
+
+- id: D2-k3
+  type: term
+  objective: D2.o2
+  front: "What is a Wilson interval?"
+  back: "A confidence interval for a pass rate that stays inside 0 and 1 and stays honest at small counts."
+
+- id: D2-k4
+  type: term
+  objective: D2.o2
+  front: "When do two results really differ?"
+  back: "When their intervals do not overlap. A gap between the two point estimates is not enough."
+
+- id: D2-k5
+  type: term
+  objective: D2.o3
+  front: "What happens to a confidence interval's width when the trials grow?"
+  back: "It shrinks, roughly with the square root of the trials. Four times the trials roughly halves it."
+
+- id: D2-k6
+  type: term
+  objective: D2.o4
+  front: "Name noise that is not sampling."
+  back: "Infrastructure noise, a time limit that cuts slow runs, or a flaky check that fails for reasons unrelated to the work."

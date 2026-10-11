@@ -1,0 +1,54 @@
+- id: F3-p1
+  objective: F3.o1
+  mode: predict
+  question: A refund run has refunded the order and read the ticket at turn two. The process dies. The harness starts
+    the run again from the task alone. What happens?
+  options:
+  - text: The run carries on at turn three, with the refund already in its history.
+    why: Tempting. That is what a durable log does, but this harness starts from the task alone, so the history
+      is gone.
+  - text: The run starts over, and the model may refund again, because it has no record of the first refund.
+    why: Right. The model only knows what the harness sends it. With no log, the first refund is invisible to it.
+  - text: The run stops with an error, and the refund is undone.
+    why: Tempting. Nothing undoes a refund that ran. The harness has no step that reverses it.
+  answer: 1
+  outcome: The run started over and refunded the order a second time. The ledger holds two refunds and the note
+    still says once.
+- id: F3-c1
+  objective: F3.o2
+  mode: check
+  question: You replace the hands, the sandbox host, in the middle of a run. What must survive the swap?
+  options:
+  - text: Nothing. The run starts again from the task.
+    why: Tempting. That throws away every finished call, so the new hands would repeat them.
+  - text: The event log and the brain. The new hands read the log and carry on.
+    why: Right. The log says what finished, so the brain can continue from there, whatever hands run the next call.
+  - text: Only the workspace files. The history is rebuilt from them.
+    why: Tempting. The files do not say which calls ran or what they returned.
+  answer: 1
+- id: F3-c2
+  objective: F3.o3
+  mode: check
+  question: Where should an API key for an email tool live?
+  options:
+  - text: Inside the sandbox, so the tool can call the mail service directly.
+    why: Tempting. The code in the sandbox is code the model wrote, and it can read the key.
+  - text: With the brain, outside the sandbox. The brain makes the call and passes back the result.
+    why: Right. The credential never enters the place where generated code runs.
+  - text: In the prompt, so the model can use it when it needs it.
+    why: Tempting and wrong. A prompt is read by the model and may be copied into the log or a reply.
+  answer: 1
+- id: F3-c3
+  objective: F3.o4
+  mode: check
+  question: When does a managed agent service fit better than your own harness?
+  options:
+  - text: When you want full control of the loop and every line of the harness.
+    why: Tempting. That is the case for your own harness, not for a hosted one.
+  - text: When you would rather not run the brain, the hands and the log yourself, and the service's terms fit your
+      data.
+    why: Right. Running the three parts is the work a managed service takes over; the terms still decide whether
+      your data can go there.
+  - text: Never. A hosted agent teaches you nothing about the harness.
+    why: Tempting. You can learn the three parts from any harness, hosted or not.
+  answer: 1

@@ -1,0 +1,44 @@
+- id: model-migration
+  term: model migration
+  aliases:
+  - model migration
+  - model migrations
+  strict: true
+  wire: loop
+  definition: The work of moving a harness from one model to another, and checking that its assumptions still hold.
+- id: breaking-change
+  term: breaking change
+  aliases:
+  - breaking change
+  - breaking changes
+  strict: true
+  wire: loop
+  definition: A change that makes working code fail, or behave differently, without any change on your side.
+- id: deprecation
+  term: deprecation
+  aliases:
+  - deprecation
+  - deprecated
+  - deprecations
+  strict: false
+  wire: control
+  definition: A notice that a parameter or format still works but will be removed, so code should move before it
+    is.
+- id: capability-check
+  term: capability check
+  aliases:
+  - capability check
+  - capability checks
+  strict: true
+  wire: control
+  definition: A check of the model's profile before a request is sent. It drops or refuses the parameters the model
+    rejects.
+- id: migration-guide
+  term: migration guide
+  aliases:
+  - migration guide
+  - migration guides
+  strict: true
+  wire: loop
+  definition: A list a vendor publishes of what changed between models. Read it for the changes that break your
+    code.

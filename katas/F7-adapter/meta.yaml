@@ -1,0 +1,47 @@
+id: F7-adapter
+module: F7
+title: One adapter with capability checks
+objectives:
+- F7.o2
+minutes: 25
+hints:
+- 'Split the cases first: a parameter the model accepts passes through; a rejected one is dropped when
+  the check is on and refused when it is off.'
+- Build the new dictionary as you walk the parameters. Keep the rejected names in self.dropped only while
+  the check is on, and raise the message with the model id when it is off.
+- 'Nearly the code: for name, value in params.items(): if name in self.rejects: (refuse with the model
+  id, or append to self.dropped and continue); else fields[name] = value.'
+from_memory: true
+wrong_solutions:
+- name: drops-everything
+  code: "class Adapter:\n    def __init__(self, model_id, rejects, capability_check):\n        self.model_id\
+    \ = model_id\n        self.rejects = list(rejects)\n        self.capability_check = capability_check\n\
+    \        self.dropped = []\n\n    def request_fields(self, params):\n        self.dropped = []\n \
+    \       return {}\n"
+- name: no-check-sends-it
+  code: "class Adapter:\n    def __init__(self, model_id, rejects, capability_check):\n        self.model_id\
+    \ = model_id\n        self.rejects = list(rejects)\n        self.capability_check = capability_check\n\
+    \        self.dropped = []\n\n    def request_fields(self, params):\n        self.dropped = []\n \
+    \       return dict(params)\n"
+- name: refuses-even-with-the-check
+  code: "class Adapter:\n    def __init__(self, model_id, rejects, capability_check):\n        self.model_id\
+    \ = model_id\n        self.rejects = list(rejects)\n        self.capability_check = capability_check\n\
+    \        self.dropped = []\n\n    def request_fields(self, params):\n        self.dropped = []\n \
+    \       fields = {}\n        for name, value in params.items():\n            if name in self.rejects:\n\
+    \                raise ValueError(f\"{name}: this parameter is not supported on {self.model_id}\"\
+    )\n            fields[name] = value\n        return fields\n"
+- name: message-without-model
+  code: "class Adapter:\n    def __init__(self, model_id, rejects, capability_check):\n        self.model_id\
+    \ = model_id\n        self.rejects = list(rejects)\n        self.capability_check = capability_check\n\
+    \        self.dropped = []\n\n    def request_fields(self, params):\n        self.dropped = []\n \
+    \       fields = {}\n        for name, value in params.items():\n            if name in self.rejects:\n\
+    \                if not self.capability_check:\n                    raise ValueError(f\"{name}: this\
+    \ parameter is not supported\")\n                self.dropped.append(name)\n                continue\n\
+    \            fields[name] = value\n        return fields\n"
+- name: mutates-the-caller
+  code: "class Adapter:\n    def __init__(self, model_id, rejects, capability_check):\n        self.model_id\
+    \ = model_id\n        self.rejects = list(rejects)\n        self.capability_check = capability_check\n\
+    \        self.dropped = []\n\n    def request_fields(self, params):\n        self.dropped = []\n \
+    \       for name in list(params):\n            if name in self.rejects:\n                if not self.capability_check:\n\
+    \                    raise ValueError(f\"{name}: this parameter is not supported on {self.model_id}\"\
+    )\n                self.dropped.append(name)\n                del params[name]\n        return dict(params)\n"

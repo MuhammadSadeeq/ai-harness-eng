@@ -1,0 +1,66 @@
+{
+ "schema": 1,
+ "model_id": "claude-sonnet-5-5",
+ "pricing": {
+  "fact": "models.sonnet-5-5-price"
+ },
+ "window": 8000,
+ "rules": [],
+ "outside": {},
+ "custom_tools": [],
+ "human": {
+  "default": "approve"
+ },
+ "interrupt": null,
+ "golden_seeds": [
+  0,
+  1,
+  2
+ ],
+ "seed_base": 20261010,
+ "id": "d3-false-done-b",
+ "title": "Done after a wrong edit",
+ "task": "Make mul() return the product of its two arguments.",
+ "system": "You are a coding agent. Use the tools to change files and run tests. Say done when the work is finished.",
+ "workspace": {
+  "ops.py": "def mul(a, b):\n    return a + b\n"
+ },
+ "tools": [
+  "read_file",
+  "write_file",
+  "edit_file",
+  "list_files"
+ ],
+ "checks": [
+  {
+   "file": "ops.py",
+   "contains": "a * b"
+  }
+ ],
+ "test_output": {
+  "pass": "1 passed",
+  "fail": "1 failed"
+ },
+ "script": [
+  {
+   "say": "I'll fix the function.",
+   "tools": [
+    [
+     "edit_file",
+     {
+      "path": "ops.py",
+      "old_text": "return a + b",
+      "new_text": "return a * 2"
+     }
+    ]
+   ]
+  },
+  {
+   "say": "The product is correct now. Done."
+  }
+ ],
+ "boards": [
+  "d1-old",
+  "d1-new"
+ ]
+}

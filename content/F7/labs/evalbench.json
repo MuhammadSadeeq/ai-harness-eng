@@ -1,0 +1,12 @@
+{
+  "eval": "f7-regression",
+  "boards": {
+    "old": "f7-old",
+    "new": "f7-new-check"
+  },
+  "start_tasks": [
+    "notes",
+    "tickets"
+  ],
+  "note": "The course's invented models, scripted runs: illustrative, not a measurement."
+}

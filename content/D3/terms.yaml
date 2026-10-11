@@ -1,0 +1,47 @@
+- id: llm-judge
+  term: LLM judge
+  aliases: [LLM judge, LLM judges]
+  strict: true
+  wire: verify
+  definition: >-
+    A model that grades another model's run. The same as a model grader: cheap and quick, and it reads the claim as easily as the work.
+
+- id: calibration
+  term: calibration
+  aliases: [calibration, calibrating, calibrate]
+  strict: true
+  wire: verify
+  definition: >-
+    Checking a grader against human labels you trust, and measuring how often the two agree and which way the grader errs.
+
+- id: agreement-rate
+  term: agreement rate
+  aliases: [agreement rate, agreement rates]
+  strict: true
+  wire: verify
+  definition: >-
+    The share of cases where a grader and a human give the same verdict. It does not say which way the errors fall.
+
+- id: contamination
+  term: contamination
+  aliases: [contamination]
+  strict: true
+  wire: verify
+  definition: >-
+    A test case the model saw while it learned or while you tuned. The score then measures memory, not the task.
+
+- id: eval-awareness
+  term: eval awareness
+  aliases: [eval awareness]
+  strict: true
+  wire: verify
+  definition: >-
+    A model that suspects it is being tested and may behave differently. The course treats it as a principle to design against.
+
+- id: golden-set
+  term: golden set
+  aliases: [golden set, golden sets]
+  strict: true
+  wire: verify
+  definition: >-
+    A small set of cases with human labels you trust, kept to calibrate a grader against.

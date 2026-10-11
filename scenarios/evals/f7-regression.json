@@ -1,0 +1,26 @@
+{
+  "id": "f7-regression",
+  "schema": 1,
+  "title": "Three tasks on the old model and the new model",
+  "kind": "regression",
+  "tasks": [
+    {
+      "id": "migration-break",
+      "tape": "f7-migration-break"
+    },
+    {
+      "id": "notes",
+      "tape": "f7-notes"
+    },
+    {
+      "id": "tickets",
+      "tape": "f7-tickets"
+    }
+  ],
+  "trials": 20,
+  "boards": [
+    "f7-old",
+    "f7-new-check"
+  ],
+  "seed_base": 0
+}

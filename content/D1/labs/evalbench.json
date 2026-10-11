@@ -1,0 +1,12 @@
+{
+  "eval": "d1-suite",
+  "boards": {
+    "old": "d1-old",
+    "new": "d1-new"
+  },
+  "start_tasks": [
+    "example-a",
+    "example-b"
+  ],
+  "note": "Illustrative: the course's five-task suite. The two examples are the hand-picked ones. The change under test is a turn limit of four; the suite has five tasks, so its numbers are a demonstration, not a measurement."
+}

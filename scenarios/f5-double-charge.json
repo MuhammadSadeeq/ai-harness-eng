@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "rules": [],
+  "outside": {},
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "seed_base": 20261010,
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given. Say done when the work is finished.",
+  "id": "f5-double-charge",
+  "title": "A lost reply, and a retry that pays twice",
+  "task": "Pay invoice 77 (10 units), then write receipt.txt if the payment confirmed.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "workspace": {
+    "invoice.txt": "Invoice 77: 10 units, due today.\n",
+    "payments.txt": ""
+  },
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [
+    {
+      "name": "pay",
+      "description": "Pay an invoice an amount, in whole units.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "invoice": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "invoice",
+          "amount"
+        ],
+        "additionalProperties": false
+      },
+      "latency_ms": 200,
+      "trifecta": [],
+      "ledger": "payments.txt",
+      "lose_reply": [
+        1
+      ],
+      "results": [],
+      "default": {
+        "output": "Paid invoice 77.",
+        "ok": true
+      }
+    }
+  ],
+  "checks": [
+    {
+      "file": "payments.txt",
+      "lines": 1
+    },
+    {
+      "file": "receipt.txt",
+      "contains": "paid once"
+    }
+  ],
+  "script": [
+    {
+      "say": "I'll pay invoice 77.",
+      "tools": [
+        [
+          "pay",
+          {
+            "invoice": "77",
+            "amount": 10
+          }
+        ]
+      ]
+    },
+    {
+      "when": [
+        {
+          "if": "last_result_contains:Paid",
+          "then": [
+            {
+              "say": "Paid. Writing the receipt.",
+              "tools": [
+                [
+                  "write_file",
+                  {
+                    "path": "receipt.txt",
+                    "content": "Invoice 77 paid once.\n"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "else": [
+            {
+              "say": "The payment did not confirm, so I stop.",
+              "stop": "end_turn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "say": "Done. Invoice 77 is paid.",
+      "stop": "end_turn"
+    }
+  ],
+  "boards": [
+    "f5-old",
+    "f5-new"
+  ],
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "incident": {
+    "family": "double-charge",
+    "wire": "errors",
+    "board": "f5-old",
+    "seed": 0,
+    "first_bad_seq": 8,
+    "accept_seqs": [
+      7
+    ],
+    "why": "The first payment at event 7 timed out, so the reply was lost, and the payment may have happened. The harness retried at once with no key, and the tool paid again at event 8. The receipt at event 14 says paid once, and the ledger holds two payments.",
+    "hint": "After a lost reply, ask what the harness knows. Does the retry tell the payment that the first one happened?",
+    "notes": [
+      {
+        "seq": 7,
+        "text": "The reply is lost, not the payment. The harness cannot tell which one happened. Tempting: call the timeout a failure of the payment. It is a failure of the reply."
+      },
+      {
+        "seq": 14,
+        "text": "The model says paid once. It repeats the harness's belief, which the ledger does not support."
+      },
+      {
+        "seq": 24,
+        "text": "The run ends done and passed false: two lines in the ledger for one invoice. Tempting: read only the receipt, which looks right."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Send an idempotency key with each payment, so a repeat returns the first result",
+        "why": "The tool applies the key once. The retry gets the first result, and the ledger keeps one line."
+      },
+      {
+        "text": "Do not retry a payment at all",
+        "why": "Tempting, but the harness still would not know whether the first payment happened. Not retrying leaves the doubt in place."
+      },
+      {
+        "text": "Wait longer before the retry",
+        "why": "Tempting. A longer wait changes when the second payment runs, not whether it runs."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 90
+  }
+}

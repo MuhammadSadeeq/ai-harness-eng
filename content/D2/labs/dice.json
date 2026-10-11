@@ -1,0 +1,7 @@
+{
+  "p": 80,
+  "k": 3,
+  "tasks": 20,
+  "seed": 1,
+  "note": "Illustrative: each try works with probability p, so pass@k and pass^k are the course's model of a random system. Set these attributes on hx-dice."
+}

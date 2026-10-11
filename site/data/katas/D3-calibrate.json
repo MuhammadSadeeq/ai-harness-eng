@@ -1,0 +1,18 @@
+{
+ "from_memory": false,
+ "hints": [
+  "Agreement is the share of cases where the model grader and the human give the same verdict, pass or fail.",
+  "A false pass is a case the model passed and the human failed. Count these apart from the false fails, which run the other way.",
+  "Count over every case, not only the passes. With no cases, the agreement is 0.0 and the counts are zero."
+ ],
+ "id": "D3-calibrate",
+ "minutes": 25,
+ "module": "D3",
+ "objectives": [
+  "D3.o2"
+ ],
+ "solution": "def calibrate(pairs):\n    \"\"\"Compare a model grader with human labels. pairs is a list of (model_pass, human_pass), both bools.\n\n    Returns {\"of\", \"agree\", \"agreement\", \"false_passes\", \"false_fails\"}. agreement is the fraction of cases where the\n    grader and the human agree. A false pass is a case the model passed and the human failed; a false fail is the reverse.\n    With no cases the agreement is 0.0.\n    \"\"\"\n    of = len(pairs)\n    agree = sum(1 for m, h in pairs if m == h)\n    false_passes = sum(1 for m, h in pairs if m and not h)\n    false_fails = sum(1 for m, h in pairs if not m and h)\n    agreement = agree / of if of else 0.0\n    return {\"of\": of, \"agree\": agree, \"agreement\": agreement, \"false_passes\": false_passes, \"false_fails\": false_fails}\n",
+ "starter": "def calibrate(pairs):\n    \"\"\"Return {\"of\", \"agree\", \"agreement\", \"false_passes\", \"false_fails\"} for (model_pass, human_pass) pairs.\"\"\"\n    return {}\n",
+ "tests": "from kata import calibrate\n\nPAIRS = [(True, True), (True, False), (False, False), (False, True), (True, True)]\n\n\ndef test_agreement_is_counted_over_every_case():\n    got = calibrate(PAIRS)\n    assert got[\"of\"] == 5 and got[\"agree\"] == 3\n    assert abs(got[\"agreement\"] - 0.6) < 1e-9\n\n\ndef test_a_false_pass_is_a_model_pass_the_human_failed():\n    assert calibrate(PAIRS)[\"false_passes\"] == 1\n\n\ndef test_a_false_fail_is_a_model_fail_the_human_passed():\n    assert calibrate(PAIRS)[\"false_fails\"] == 1\n\n\ndef test_a_grader_that_always_passes_agrees_only_on_human_passes():\n    got = calibrate([(True, True), (True, False), (True, False), (True, True)])\n    assert got[\"agree\"] == 2 and abs(got[\"agreement\"] - 0.5) < 1e-9 and got[\"false_passes\"] == 2\n\n\ndef test_no_cases_gives_zero_agreement_and_no_errors():\n    assert calibrate([]) == {\"of\": 0, \"agree\": 0, \"agreement\": 0.0, \"false_passes\": 0, \"false_fails\": 0}\n\n\ndef test_the_order_of_cases_does_not_change_the_result():\n    assert calibrate(list(reversed(PAIRS))) == calibrate(PAIRS)\n",
+ "title": "Calibrate a model grader against human labels"
+}

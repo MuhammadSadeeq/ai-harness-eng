@@ -1,0 +1,64 @@
+- id: token-bucket
+  term: token bucket
+  aliases:
+  - token bucket
+  - token buckets
+  strict: true
+  wire: errors
+  definition: A limit that fills at a steady rate. Each call takes one token, and an empty bucket means wait.
+- id: queue
+  term: queue
+  aliases:
+  - queue
+  - queues
+  strict: false
+  wire: errors
+  definition: A line of work that waits its turn, so the run keeps its order when the provider is busy.
+- id: durable-execution
+  term: durable execution
+  aliases:
+  - durable execution
+  strict: true
+  wire: loop
+  definition: A run whose progress is kept outside the process, so a crash does not lose it.
+- id: checkpoint
+  term: checkpoint
+  aliases:
+  - checkpoint
+  - checkpoints
+  strict: false
+  wire: loop
+  definition: A saved record of what is done and what the next step is, written after each step.
+- id: human-in-the-loop
+  term: human-in-the-loop
+  aliases:
+  - human-in-the-loop
+  - human in the loop
+  strict: true
+  wire: permissions
+  definition: A step that waits for a person to approve it before it runs, with the step shown in words they can
+    check.
+- id: shadow-mode
+  term: shadow mode
+  aliases:
+  - shadow mode
+  strict: true
+  wire: observe
+  definition: Running a new harness beside the old one, comparing the results, and letting only the old one act.
+- id: canary
+  term: canary
+  aliases:
+  - canary
+  - canaries
+  strict: true
+  wire: observe
+  definition: A small share of real traffic sent to a new harness, to see its behaviour before a wider rollout.
+- id: rollout
+  term: rollout
+  aliases:
+  - rollout
+  - rollouts
+  strict: false
+  wire: observe
+  definition: Widening the share of traffic that a new harness gets, one step at a time, each step gated by its
+    evals.

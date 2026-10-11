@@ -1,0 +1,12 @@
+{
+  "id": "f7-new",
+  "label": "The new model, old harness",
+  "modules": {
+    "model": {
+      "id": "model-new"
+    },
+    "request_params": {
+      "temperature": 0
+    }
+  }
+}

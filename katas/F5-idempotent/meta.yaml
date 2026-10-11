@@ -1,0 +1,39 @@
+id: F5-idempotent
+module: F5
+title: A retry wrapper that sends one key per logical action
+objectives:
+- F5.o1
+- F5.o2
+minutes: 25
+hints:
+- 'Split the cases first: a timed-out reply is retried, and every other reply ends the action.'
+- Take the key once, before the loop, and pass that same key on every attempt. Count the attempts, and
+  stop when the count reaches max_attempts.
+- 'Nearly the code: key = action_id; loop: attempts += 1, ok, output = send(key); return when ok, or the
+  output does not start with Timed out, or attempts >= max_attempts.'
+from_memory: true
+wrong_solutions:
+- name: key-per-attempt
+  code: "TIMED_OUT = \"Timed out\"\n\n\ndef keyed_call(send, action_id, max_attempts):\n    attempts =\
+    \ 0\n    while True:\n        attempts += 1\n        ok, output = send(f\"{action_id}-{attempts}\"\
+    )\n        if ok or not output.startswith(TIMED_OUT) or attempts >= max_attempts:\n            return\
+    \ ok, output, attempts\n"
+- name: retries-every-failure
+  code: "TIMED_OUT = \"Timed out\"\n\n\ndef keyed_call(send, action_id, max_attempts):\n    key = action_id\n\
+    \    attempts = 0\n    while True:\n        attempts += 1\n        ok, output = send(key)\n      \
+    \  if ok or attempts >= max_attempts:\n            return ok, output, attempts\n"
+- name: no-cap
+  code: "TIMED_OUT = \"Timed out\"\n\n\ndef keyed_call(send, action_id, max_attempts):\n    key = action_id\n\
+    \    attempts = 0\n    while True:\n        attempts += 1\n        ok, output = send(key)\n      \
+    \  if ok or not output.startswith(TIMED_OUT) or attempts >= max_attempts + 5:\n            return\
+    \ ok, output, attempts\n"
+- name: timeout-as-success
+  code: "TIMED_OUT = \"Timed out\"\n\n\ndef keyed_call(send, action_id, max_attempts):\n    key = action_id\n\
+    \    attempts = 0\n    while True:\n        attempts += 1\n        ok, output = send(key)\n      \
+    \  if ok or not output.startswith(TIMED_OUT) or attempts >= max_attempts:\n            return True,\
+    \ output, attempts\n"
+- name: random-key
+  code: "import random\n\nTIMED_OUT = \"Timed out\"\n\n\ndef keyed_call(send, action_id, max_attempts):\n\
+    \    attempts = 0\n    while True:\n        attempts += 1\n        ok, output = send(str(random.random()))\n\
+    \        if ok or not output.startswith(TIMED_OUT) or attempts >= max_attempts:\n            return\
+    \ ok, output, attempts\n"

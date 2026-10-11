@@ -1,0 +1,24 @@
+- id: D1-s1
+  objectives: [D1.o1, D1.o2]
+  prompt: "Name the parts of an eval, and say how a model grader can fail."
+  model_answer: >-
+    An eval has tasks with their environments, a number of trials per task, a grader that decides each run, a transcript
+    of each run and an outcome. A model grader reads the run and gives a verdict, so it can pass a claim that the files do
+    not support. I would check its verdicts against a code check on the same runs before I trusted it.
+  rubric:
+    - "Names the task, the environment, the trials, the grader, the transcript and the outcome"
+    - "Says the grader decides whether a run passed"
+    - "Says a model grader can pass a claim it never checked"
+    - "Proposes checking the grader against a code check or a human on the same runs"
+
+- id: D1-s2
+  objectives: [D1.o3, D1.o4]
+  prompt: "A harness change passes the two examples you picked. What do you run before you ship it, and which kind of eval is it?"
+  model_answer: >-
+    I would run the eval over held-out tasks as well as the examples, with a code grader and seeded trials, on the old and
+    the new board. It is a regression eval: it guards what already works, so a drop in its pass rate is the signal.
+  rubric:
+    - "Runs held-out tasks, not only the examples"
+    - "Uses a code grader over seeded trials on both boards"
+    - "Names the kind as a regression eval and says why"
+    - "Says the examples alone cannot show a cut"

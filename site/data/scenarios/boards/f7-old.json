@@ -1,0 +1,12 @@
+{
+  "id": "f7-old",
+  "label": "The old model",
+  "modules": {
+    "model": {
+      "id": "model-old"
+    },
+    "request_params": {
+      "temperature": 0
+    }
+  }
+}

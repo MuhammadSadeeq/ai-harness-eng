@@ -1,0 +1,51 @@
+[
+ {
+  "back": "How many seconds to wait before the retry. Earlier retries fail.",
+  "front": "What does a 429 response's retry-after tell the client?",
+  "id": "F5-k1",
+  "objective": "F5.o1",
+  "type": "term"
+ },
+ {
+  "back": "Tokens fill at a steady rate. Each call takes one, and an empty bucket means wait.",
+  "front": "How does a token bucket shape a client?",
+  "id": "F5-k2",
+  "objective": "F5.o1",
+  "type": "term"
+ },
+ {
+  "back": "What is done and what the next step is, saved after each step, outside the process.",
+  "front": "What does a checkpoint hold?",
+  "id": "F5-k3",
+  "objective": "F5.o2",
+  "type": "term"
+ },
+ {
+  "back": "So the tool can recognise the repeat and return the first result, instead of paying again.",
+  "front": "Why does a retry need the same key as the first try?",
+  "id": "F5-k4",
+  "objective": "F5.o2",
+  "type": "term"
+ },
+ {
+  "back": "The step, with its amount and target, and a clear yes or no. A spinner is not an approval.",
+  "front": "What must an approval screen show?",
+  "id": "F5-k5",
+  "objective": "F5.o3",
+  "type": "term"
+ },
+ {
+  "back": "The new harness runs beside the old one. Its results are compared, and only the old one acts.",
+  "front": "What is shadow mode?",
+  "id": "F5-k6",
+  "objective": "F5.o4",
+  "type": "term"
+ },
+ {
+  "back": "The evals. A wider share of traffic waits until the evals pass at the current share.",
+  "front": "What gates each step of a rollout?",
+  "id": "F5-k7",
+  "objective": "F5.o4",
+  "type": "term"
+ }
+]

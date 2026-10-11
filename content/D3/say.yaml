@@ -1,0 +1,25 @@
+- id: D3-s1
+  objectives: [D3.o1, D3.o2]
+  prompt: "How do you calibrate a model grader, and what do you report?"
+  model_answer: >-
+    I would label a golden set with humans I trust, run the grader on the same cases, and count the agreement rate. I
+    would report the false passes and the false fails apart, not one number, because they cost different things. In CI
+    I would block a change only when the new interval sits fully below the old one's.
+  rubric:
+    - "Labels a golden set with humans before trusting the grader"
+    - "Reports the agreement rate and counts the false passes and false fails apart"
+    - "Says which way the grader errs matters more than one agreement number"
+    - "Blocks in CI only when the new interval sits fully below the old one's"
+
+- id: D3-s2
+  objectives: [D3.o3, D3.o4]
+  prompt: "What is contamination, and how would you read transcripts to catch a grader that passes for the wrong reason?"
+  model_answer: >-
+    Contamination is a test case the model saw while it learned or while I tuned, so the score measures memory. I keep a
+    held-out set I never tune on. To catch a grader that passes for the wrong reason, I read each passing transcript next
+    to the file: a reply that says done while the check fails is the sign.
+  rubric:
+    - "Defines contamination as a test case the model saw, so the score measures memory"
+    - "Keeps a held-out set that is never tuned on"
+    - "Reads the reply next to the file or the check"
+    - "Names a reply that says done while the check fails as the sign"

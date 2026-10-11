@@ -642,7 +642,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "D1",
    "kind": "core",
    "minutes": 50,
@@ -658,7 +658,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "D2",
    "kind": "core",
    "minutes": 55,
@@ -674,7 +674,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "D3",
    "kind": "core",
    "minutes": 55,
@@ -760,7 +760,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "F3",
    "kind": "concept",
    "minutes": 35,
@@ -791,7 +791,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "F5",
    "kind": "core",
    "minutes": 55,
@@ -826,7 +826,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "F7",
    "kind": "core",
    "minutes": 50,

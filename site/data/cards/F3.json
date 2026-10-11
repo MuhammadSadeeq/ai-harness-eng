@@ -1,0 +1,44 @@
+[
+ {
+  "back": "The brain (the model and its loop), the hands (the sandboxes and tools), and the event log (the record of the run, which only grows at the end).",
+  "front": "What are the three parts of a managed agent?",
+  "id": "F3-k1",
+  "objective": "F3.o1",
+  "type": "term"
+ },
+ {
+  "back": "It records each turn, call and result as it happens, so a new process can read what already ran.",
+  "front": "What is an event log for?",
+  "id": "F3-k2",
+  "objective": "F3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Each part can fail and be replaced alone. A new sandbox can take over the hands while the log and the brain keep going.",
+  "front": "Why does the split help when a part fails?",
+  "id": "F3-k3",
+  "objective": "F3.o2",
+  "type": "term"
+ },
+ {
+  "back": "With the brain, outside the sandbox. The hands run code the model wrote, so a key inside them can be read.",
+  "front": "Where do the credentials stay?",
+  "id": "F3-k4",
+  "objective": "F3.o3",
+  "type": "term"
+ },
+ {
+  "back": "When you would rather not run the brain, the hands and the log yourself, and the service's terms fit your data.",
+  "front": "When does a managed service fit better than your own harness?",
+  "id": "F3-k5",
+  "objective": "F3.o4",
+  "type": "term"
+ },
+ {
+  "back": "False, when the log lives outside the process. Without the log, the run starts over and repeats its side effects.",
+  "front": "A crash loses the run. True or false?",
+  "id": "F3-k6",
+  "objective": "F3.o2",
+  "type": "term"
+ }
+]

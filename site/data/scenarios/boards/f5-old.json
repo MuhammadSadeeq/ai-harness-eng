@@ -1,0 +1,9 @@
+{
+  "id": "f5-old",
+  "label": "Retry the payment, no key",
+  "modules": {
+    "tool_retry": {
+      "max_attempts": 3
+    }
+  }
+}

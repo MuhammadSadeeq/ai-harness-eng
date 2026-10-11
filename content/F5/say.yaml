@@ -1,0 +1,29 @@
+- id: F5-s1
+  objectives:
+  - F5.o1
+  - F5.o2
+  prompt: A payment call times out, and your harness does not know whether the payment went through. What does the
+    harness do, and what must it never do?
+  model_answer: The reply was lost, so the harness retries with the same key. The tool applies the key once and
+    returns the first result on a repeat. The harness must never retry a side effect with a new key, because the
+    second call would pay again. A retry also waits the time the provider asks for, when it sends a retry-after
+    value.
+  rubric:
+  - Retries with the same key, not a new one
+  - Never retries a side effect without a key
+  - Honors retry-after when the provider sends it
+  - Says that a lost reply is not a failed payment
+- id: F5-s2
+  objectives:
+  - F5.o3
+  - F5.o4
+  prompt: You have a new harness that passes its evals. How do you ship it, and what does the approval screen show
+    for a step that charges money?
+  model_answer: I run the new harness in shadow mode first, then send a small canary share of real traffic to it.
+    Each wider rollout step waits until the evals pass at the current share. An approval screen for a charge shows
+    the amount, the target and what the step will do, with a yes and a no. It never shows only a spinner.
+  rubric:
+  - Starts in shadow mode before real traffic
+  - Gates each rollout step with the evals
+  - Shows the amount, the target and a clear yes or no for a charge
+  - Names the eval that opens each wider step

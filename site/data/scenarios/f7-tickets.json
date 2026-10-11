@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "rules": [],
+  "outside": {},
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "seed_base": 20261010,
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given. Say done when the work is finished.",
+  "id": "f7-tickets",
+  "title": "Count the open tickets",
+  "task": "Count the open tickets in tickets/open.txt and write the number to tickets/count.txt.",
+  "model_id": "model-old",
+  "pricing": {
+    "input_milli_per_mtok": 1000,
+    "output_milli_per_mtok": 2000,
+    "cache_write_milli_per_mtok": 1250,
+    "cache_read_milli_per_mtok": 100
+  },
+  "workspace": {
+    "tickets/open.txt": "login fails on Safari\nexport drops the last row\ndocs link is broken\n"
+  },
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [],
+  "models": {
+    "model-old": {
+      "pricing": {
+        "input_milli_per_mtok": 1000,
+        "output_milli_per_mtok": 2000,
+        "cache_write_milli_per_mtok": 1250,
+        "cache_read_milli_per_mtok": 100
+      }
+    },
+    "model-new": {
+      "pricing": {
+        "input_milli_per_mtok": 2000,
+        "output_milli_per_mtok": 4000,
+        "cache_write_milli_per_mtok": 2500,
+        "cache_read_milli_per_mtok": 200
+      },
+      "rejects": [
+        "temperature"
+      ],
+      "script": [
+        {
+          "say": "Counting the open tickets.",
+          "tools": [
+            [
+              "read_file",
+              {
+                "path": "tickets/open.txt"
+              }
+            ]
+          ]
+        },
+        {
+          "say": "Writing the count.",
+          "tools": [
+            [
+              "write_file",
+              {
+                "path": "tickets/count.txt",
+                "content": "3\n"
+              }
+            ]
+          ]
+        },
+        {
+          "say": "Done.",
+          "stop": "end_turn"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "say": "Counting the open tickets.",
+      "tools": [
+        [
+          "read_file",
+          {
+            "path": "tickets/open.txt"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Writing the count.",
+      "tools": [
+        [
+          "write_file",
+          {
+            "path": "tickets/count.txt",
+            "content": "3\n"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Done.",
+      "stop": "end_turn"
+    }
+  ],
+  "checks": [
+    {
+      "file": "tickets/count.txt",
+      "contains": "3"
+    }
+  ],
+  "boards": [
+    "f7-old",
+    "f7-new-check"
+  ],
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ]
+}

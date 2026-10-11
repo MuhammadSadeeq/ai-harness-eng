@@ -1,0 +1,35 @@
+- id: F5-k1
+  type: term
+  objective: F5.o1
+  front: What does a 429 response's retry-after tell the client?
+  back: How many seconds to wait before the retry. Earlier retries fail.
+- id: F5-k2
+  type: term
+  objective: F5.o1
+  front: How does a token bucket shape a client?
+  back: Tokens fill at a steady rate. Each call takes one, and an empty bucket means wait.
+- id: F5-k3
+  type: term
+  objective: F5.o2
+  front: What does a checkpoint hold?
+  back: What is done and what the next step is, saved after each step, outside the process.
+- id: F5-k4
+  type: term
+  objective: F5.o2
+  front: Why does a retry need the same key as the first try?
+  back: So the tool can recognise the repeat and return the first result, instead of paying again.
+- id: F5-k5
+  type: term
+  objective: F5.o3
+  front: What must an approval screen show?
+  back: The step, with its amount and target, and a clear yes or no. A spinner is not an approval.
+- id: F5-k6
+  type: term
+  objective: F5.o4
+  front: What is shadow mode?
+  back: The new harness runs beside the old one. Its results are compared, and only the old one acts.
+- id: F5-k7
+  type: term
+  objective: F5.o4
+  front: What gates each step of a rollout?
+  back: The evals. A wider share of traffic waits until the evals pass at the current share.

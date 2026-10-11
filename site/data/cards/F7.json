@@ -1,0 +1,44 @@
+[
+ {
+  "back": "A change that makes working code fail or behave differently, with no change on your side.",
+  "front": "What is a breaking change?",
+  "id": "F7-k1",
+  "objective": "F7.o1",
+  "type": "term"
+ },
+ {
+  "back": "A notice that a parameter or format still works but will be removed. Move the code before it is.",
+  "front": "What is a deprecation?",
+  "id": "F7-k2",
+  "objective": "F7.o1",
+  "type": "term"
+ },
+ {
+  "back": "It reads the model's profile and drops the parameters the model rejects, or refuses them with the model's name.",
+  "front": "What does a capability check do?",
+  "id": "F7-k3",
+  "objective": "F7.o2",
+  "type": "term"
+ },
+ {
+  "back": "In one adapter, so a migration is a config change plus a test run.",
+  "front": "Where do model-specific rules live?",
+  "id": "F7-k4",
+  "objective": "F7.o2",
+  "type": "term"
+ },
+ {
+  "back": "Two pass rates can differ by chance. When the intervals overlap, the eval cannot tell the models apart.",
+  "front": "Why read the intervals, not the pass rates?",
+  "id": "F7-k5",
+  "objective": "F7.o3",
+  "type": "term"
+ },
+ {
+  "back": "When an eval on the new model passes without it. Keep it where the eval needs it.",
+  "front": "When do you remove a harness part the new model may not need?",
+  "id": "F7-k6",
+  "objective": "F7.o4",
+  "type": "term"
+ }
+]

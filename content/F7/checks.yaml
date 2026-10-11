@@ -1,0 +1,64 @@
+- id: F7-p1
+  objective: F7.o1
+  mode: predict
+  question: The team moves the harness to the new model, and nothing else changes. The first request fails. Where
+    does the failure happen?
+  options:
+  - text: In a tool call, after the first read, and the run retries it.
+    why: Tempting. The tools are unchanged, and the run has not reached a tool yet.
+  - text: 'At the request itself: the new model refuses a parameter the harness sends.'
+    why: Right. The model rejects a field before any tool runs, and the error names it.
+  - text: In the summary file, which comes out wrong.
+    why: 'Tempting. No file is written: the run ends before a tool is called.'
+  answer: 1
+  outcome: The request failed at once with a permanent error. The run ended as error at its first turn, and the
+    summary was never written.
+- id: F7-c1
+  objective: F7.o1
+  mode: check
+  question: A migration guide says the new model no longer accepts a parameter. What do you do first?
+  options:
+  - text: Ignore it until a production request fails.
+    why: Tempting. The guide told you; waiting for the failure is the expensive way to learn it.
+  - text: Find every place the harness sends that parameter, and check the new model on one request.
+    why: Right. The guide names the change; a single request shows whether your code is affected.
+  - text: Delete it everywhere and move on.
+    why: Tempting. A parameter may be needed for the old model during the move.
+  answer: 1
+- id: F7-c2
+  objective: F7.o2
+  mode: check
+  question: Where should a model's rules, such as the parameters it rejects, live?
+  options:
+  - text: 'Scattered: a test beside each call that sends the field.'
+    why: Tempting. Each call looks safe, but the next migration misses one of them.
+  - text: In one adapter with a capability check, which every call goes through.
+    why: Right. One place to change, one place to test, and every request is checked the same way.
+  - text: In the system prompt, so the model avoids the field.
+    why: Tempting and wrong. The model does not decide which fields the API accepts.
+  answer: 1
+- id: F7-c3
+  objective: F7.o3
+  mode: check
+  question: At one trial per task, the two boards' intervals overlap, and the old board passes more tasks. What
+    do you conclude?
+  options:
+  - text: The new model is worse, so switch back.
+    why: Tempting. A higher pass count with overlapping intervals is not yet a difference.
+  - text: This is too little data to decide. Add tasks and trials, then choose.
+    why: Right. Overlap means the data does not separate the boards; more data can.
+  - text: They are the same model, so the pass counts must match.
+    why: Tempting. The two boards run different models, and a few trials are noisy.
+  answer: 1
+- id: F7-c4
+  objective: F7.o4
+  mode: check
+  question: A harness part was added for the old model. How do you decide whether to keep it?
+  options:
+  - text: Keep it, because it was always there.
+    why: Tempting. Age is not evidence that the new model needs it.
+  - text: Remove it, run the eval on the new model, and keep it only where the eval needs it.
+    why: Right. The eval shows whether the part still does work, and the run is the evidence.
+  - text: Ask the model whether it still needs it.
+    why: Tempting and wrong. The model's answer is not a test of the harness.
+  answer: 1

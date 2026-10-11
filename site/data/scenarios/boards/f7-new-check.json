@@ -1,0 +1,13 @@
+{
+  "id": "f7-new-check",
+  "label": "The new model, capability check",
+  "modules": {
+    "model": {
+      "id": "model-new"
+    },
+    "request_params": {
+      "temperature": 0
+    },
+    "capability_check": {}
+  }
+}

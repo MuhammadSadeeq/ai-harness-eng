@@ -38,3 +38,54 @@ test("reading formats: int, usd, percent", () => {
   assert.equal(formatValue(13, "percent"), "13%");
   assert.equal(formatValue(null, "int"), "—", "no value yet is an em dash");
 });
+
+// A target that defines after hx-num (lazy loading, COMPONENTS §10): hx-num waits for its definition and its ready
+// promise, reads the value, and re-reads on every hx-change from the target, since a derived value (pass@k depends
+// on p and k) can change when a different setting changes.
+test("hx-num waits for a target that defines after it, then re-reads on any change of the target", async () => {
+  const saved = { document: globalThis.document, whenDefined: globalThis.customElements.whenDefined };
+  let resolveDefined;
+  const defined = new Promise((resolve) => { resolveDefined = resolve; });
+  let resolveReady;
+  const listeners = [];
+  // Before it defines, the target has no value methods and no ready promise, as an element that has not upgraded.
+  const target = {
+    localName: "hx-fake",
+    addEventListener: (type, fn) => listeners.push([type, fn]),
+    removeEventListener() {},
+  };
+  // Defining the element: its methods and its pending ready promise appear, then the definition resolves.
+  const define = () => {
+    target.hxRange = () => null;
+    target.hxValue = (name) => ({ pass_at_k: 99, p: 80 })[name] ?? null;
+    target.ready = new Promise((resolve) => { resolveReady = resolve; });
+    resolveDefined();
+  };
+  globalThis.document = { getElementById: (id) => (id === "t" ? target : null) };
+  globalThis.customElements.whenDefined = (tag) => (tag === "hx-fake" ? defined : Promise.reject(new Error(`unexpected ${tag}`)));
+  try {
+    const { HxNum } = await import("../hx-num.js");
+    const num = new HxNum();
+    const attrs = { for: "t", name: "pass_at_k" };
+    num.getAttribute = (key) => attrs[key] ?? null;
+    num.hasAttribute = () => false;
+    let renders = 0;
+    num.render = () => { renders += 1; };
+    let settled = false;
+    const setup = num.setup().then(() => { settled = true; });
+    define();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(settled, false, "hx-num waits for the target's ready promise");
+    resolveReady(true);
+    await setup;
+    assert.equal(num.target, target, "hx-num is bound to the target once it is ready");
+    const onChange = listeners.find(([type]) => type === "hx-change")[1];
+    onChange({ detail: { name: "p" } });
+    assert.equal(renders, 1, "a change to a different setting re-reads a derived value");
+    onChange({ detail: { name: "pass_at_k" } });
+    assert.equal(renders, 2, "a change to the value itself re-reads it too");
+  } finally {
+    globalThis.document = saved.document;
+    globalThis.customElements.whenDefined = saved.whenDefined;
+  }
+});

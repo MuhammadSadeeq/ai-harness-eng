@@ -1,0 +1,29 @@
+- id: F7-s1
+  objectives:
+  - F7.o1
+  - F7.o2
+  prompt: Your team moves the harness to a new model, and the first request fails. How do you find the cause, and
+    where do the model's rules go afterwards?
+  model_answer: I read the request the harness sent and the error the model returned. A permanent error that names
+    a parameter is a breaking change, so I look at the model's changes and at the parameter the harness sends. I
+    put the model's rules in one adapter with a capability check, so the harness drops or refuses the parameters
+    the model rejects, and the change is a config change plus a test run.
+  rubric:
+  - Reads the request and the error before changing anything
+  - Names the parameter as a breaking change
+  - Puts the model's rules in one adapter with a capability check
+  - Checks the new model on one request before changing the harness
+- id: F7-s2
+  objectives:
+  - F7.o3
+  - F7.o4
+  prompt: The regression eval says the new model passes fewer tasks, but the intervals overlap. What do you do,
+    and when do you remove a part of the harness?
+  model_answer: I do not switch on a difference the intervals do not show. I add tasks or trials until the intervals
+    separate, then decide. I remove a harness part only after an eval on the new model passes without it, and keep
+    it where the eval needs it, with the run that shows why.
+  rubric:
+  - Reads the intervals, not the rates
+  - Adds tasks or trials when they overlap
+  - Removes a part only with an eval that passes without it
+  - Says which tasks or trials were added before the decision

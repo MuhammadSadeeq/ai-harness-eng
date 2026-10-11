@@ -1,0 +1,44 @@
+[
+ {
+  "back": "The task, its environment, the trials, the grader, the transcript and the outcome.",
+  "front": "What are the parts of an eval?",
+  "id": "D1-k1",
+  "objective": "D1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Whether a run passed. Every eval has one, and it can be wrong in its own way.",
+  "front": "What does the grader decide?",
+  "id": "D1-k2",
+  "objective": "D1.o1",
+  "type": "term"
+ },
+ {
+  "back": "It can pass a claim it never checked. A judge that reads the reply and not the file rubber-stamps it.",
+  "front": "How can a model grader fail?",
+  "id": "D1-k3",
+  "objective": "D1.o2",
+  "type": "term"
+ },
+ {
+  "back": "It only checks what it was written to check. It cannot tell a true done from a claim the checks never test.",
+  "front": "What is the code grader's weak point?",
+  "id": "D1-k4",
+  "objective": "D1.o2",
+  "type": "term"
+ },
+ {
+  "back": "A regression eval. A capability eval asks what the agent can do yet.",
+  "front": "Which kind of eval guards a fix you already shipped?",
+  "id": "D1-k5",
+  "objective": "D1.o4",
+  "type": "term"
+ },
+ {
+  "back": "The record of each reply and tool result in a run. It is where you see why a grader passed or failed a run.",
+  "front": "What is a transcript, and why keep it?",
+  "id": "D1-k6",
+  "objective": "D1.o3",
+  "type": "term"
+ }
+]

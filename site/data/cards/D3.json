@@ -1,0 +1,44 @@
+[
+ {
+  "back": "When the new interval sits fully below the old one's. A drop of a few points inside the noise is not a regression.",
+  "front": "When does a regression eval block a change in CI?",
+  "id": "D3-k1",
+  "objective": "D3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Checking a model grader against human labels you trust: how often the two agree, and which way the grader errs.",
+  "front": "What is calibration?",
+  "id": "D3-k2",
+  "objective": "D3.o2",
+  "type": "term"
+ },
+ {
+  "back": "It does not say which way the errors fall. Count the false passes and the false fails apart.",
+  "front": "Why is an agreement rate not enough?",
+  "id": "D3-k3",
+  "objective": "D3.o2",
+  "type": "term"
+ },
+ {
+  "back": "A test case the model saw while learning or tuning, so the score measures memory, not the task.",
+  "front": "What is contamination?",
+  "id": "D3-k4",
+  "objective": "D3.o3",
+  "type": "term"
+ },
+ {
+  "back": "Keep a held-out set you never tune on, and do not announce which runs are tests.",
+  "front": "How do you reduce contamination and eval awareness?",
+  "id": "D3-k5",
+  "objective": "D3.o3",
+  "type": "term"
+ },
+ {
+  "back": "The reply says done while the file's check fails. Read the reply next to the file.",
+  "front": "What is the first sign of a grader passing work for the wrong reason?",
+  "id": "D3-k6",
+  "objective": "D3.o4",
+  "type": "term"
+ }
+]

@@ -1,0 +1,38 @@
+{
+ "id": "d3-graded",
+ "schema": 1,
+ "title": "Five tasks, two of them false dones, graded by a model",
+ "kind": "capability",
+ "tasks": [
+  {
+   "id": "false-done-a",
+   "tape": "d3-false-done-a"
+  },
+  {
+   "id": "false-done-b",
+   "tape": "d3-false-done-b"
+  },
+  {
+   "id": "example-a",
+   "tape": "d1-example-a"
+  },
+  {
+   "id": "example-b",
+   "tape": "d1-example-b"
+  },
+  {
+   "id": "held-out-a",
+   "tape": "d1-held-out-a"
+  }
+ ],
+ "trials": 20,
+ "boards": [
+  "d1-old",
+  "d1-new"
+ ],
+ "seed_base": 7,
+ "model_grader": {
+  "false_pass_percent": 60,
+  "false_fail_percent": 10
+ }
+}

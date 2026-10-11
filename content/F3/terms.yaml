@@ -1,0 +1,31 @@
+- id: managed-agent
+  term: managed agent
+  aliases:
+  - managed agent
+  - managed agents
+  strict: true
+  wire: loop
+  definition: A run of an agent that someone else hosts, split into a brain, hands and an event log.
+- id: brain
+  term: brain
+  aliases:
+  - brain
+  - brains
+  strict: false
+  wire: loop
+  definition: 'The model and its loop: it reads the history, decides the next call, and keeps the credentials.'
+- id: hands
+  term: hands
+  aliases:
+  - hands
+  strict: false
+  wire: permissions
+  definition: The sandboxes and tools that act on the workspace. They run what the brain asks for.
+- id: event-log
+  term: event log
+  aliases:
+  - event log
+  - event logs
+  strict: true
+  wire: context
+  definition: A record of every turn, call and result of a run. Nothing in it is edited or removed.

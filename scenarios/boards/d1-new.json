@@ -1,0 +1,9 @@
+{
+  "id": "d1-new",
+  "label": "After the change: a turn limit of four",
+  "modules": {
+    "turn_limit": {
+      "max_turns": 4
+    }
+  }
+}

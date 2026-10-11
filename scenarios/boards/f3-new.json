@@ -1,0 +1,7 @@
+{
+  "id": "f3-new",
+  "label": "Durable session: resume from the log",
+  "modules": {
+    "durable_session": {}
+  }
+}

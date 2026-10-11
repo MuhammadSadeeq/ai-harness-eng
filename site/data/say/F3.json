@@ -1,0 +1,32 @@
+[
+ {
+  "id": "F3-s1",
+  "model_answer": "I would split the agent into three parts. The brain is the model and its loop, the hands are the sandbox and the tools, and the event log is the record of every call and result. If the sandbox host fails, I would replace the hands and keep the log and the brain, so the run can carry on from what it already finished.",
+  "objectives": [
+   "F3.o1",
+   "F3.o2"
+  ],
+  "prompt": "Describe an agent you would run for a week: its brain, its hands and its log. Which part would you replace first, and why?",
+  "rubric": [
+   "Names the brain, the hands and the event log",
+   "Says which part fails and how the others survive",
+   "Explains that the log is what makes the replacement possible",
+   "Says what the new part must read from the log before it acts"
+  ]
+ },
+ {
+  "id": "F3-s2",
+  "model_answer": "The key stays with the brain, outside the sandbox, so code the model wrote cannot read it. The brain makes the call and passes back the result. I would use a managed service when I would rather not run the brain, the hands and the log myself, and when the service's terms fit my data. Otherwise I would keep the harness, because I want to see every line of the loop.",
+  "objectives": [
+   "F3.o3",
+   "F3.o4"
+  ],
+  "prompt": "Your agent needs an API key for an email tool. Where does the key go, and when would you hand the whole run to a managed service?",
+  "rubric": [
+   "Keeps the key with the brain, outside the sandbox",
+   "Names one case where a managed service fits",
+   "Names one case where it does not",
+   "Explains why the key never enters the place where generated code runs"
+  ]
+ }
+]

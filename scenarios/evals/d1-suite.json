@@ -1,0 +1,34 @@
+{
+ "id": "d1-suite",
+ "schema": 1,
+ "title": "Five tasks: two examples and three held-out tasks",
+ "kind": "regression",
+ "tasks": [
+  {
+   "id": "example-a",
+   "tape": "d1-example-a"
+  },
+  {
+   "id": "example-b",
+   "tape": "d1-example-b"
+  },
+  {
+   "id": "held-out-a",
+   "tape": "d1-held-out-a"
+  },
+  {
+   "id": "held-out-b",
+   "tape": "d1-held-out-b"
+  },
+  {
+   "id": "held-out-c",
+   "tape": "d1-held-out-c"
+  }
+ ],
+ "trials": 10,
+ "boards": [
+  "d1-old",
+  "d1-new"
+ ],
+ "seed_base": 0
+}

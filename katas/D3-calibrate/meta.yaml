@@ -1,0 +1,40 @@
+id: D3-calibrate
+module: D3
+title: Calibrate a model grader against human labels
+objectives: [D3.o2]
+minutes: 25
+hints:
+  - "Agreement is the share of cases where the model grader and the human give the same verdict, pass or fail."
+  - "A false pass is a case the model passed and the human failed. Count these apart from the false fails, which run the other way."
+  - "Count over every case, not only the passes. With no cases, the agreement is 0.0 and the counts are zero."
+from_memory: false
+wrong_solutions:
+  - name: agreement-on-human-passes
+    code: |
+
+      def calibrate(pairs):
+          passes = [(m, h) for m, h in pairs if h]
+          agree = sum(1 for m, h in passes if m == h)
+          agreement = agree / len(passes) if passes else 0.0
+          return {"of": len(pairs), "agree": agree, "agreement": agreement,
+                  "false_passes": sum(1 for m, h in pairs if m and not h),
+                  "false_fails": sum(1 for m, h in pairs if not m and h)}
+  - name: swapped-errors
+    code: |
+
+      def calibrate(pairs):
+          of = len(pairs)
+          agree = sum(1 for m, h in pairs if m == h)
+          agreement = agree / of if of else 0.0
+          return {"of": of, "agree": agree, "agreement": agreement,
+                  "false_passes": sum(1 for m, h in pairs if not m and h),
+                  "false_fails": sum(1 for m, h in pairs if m and not h)}
+  - name: divides-by-zero
+    code: |
+
+      def calibrate(pairs):
+          of = len(pairs)
+          agree = sum(1 for m, h in pairs if m == h)
+          return {"of": of, "agree": agree, "agreement": agree / of,
+                  "false_passes": sum(1 for m, h in pairs if m and not h),
+                  "false_fails": sum(1 for m, h in pairs if not m and h)}

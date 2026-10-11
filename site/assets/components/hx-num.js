@@ -46,9 +46,9 @@ export class HxNum extends HxElement {
     this.name = name;
     this.format = this.getAttribute("format") ?? "";
     this.range = target.hxRange(name) ?? null;
-    this.onTargetChange = (event) => {
-      if (event.detail?.name === name) this.render();
-    };
+    // A derived value (pass@k depends on p and k) can change when a different setting of the target changes, so every
+    // hx-change from the target re-reads this value, not only one named after it.
+    this.onTargetChange = () => this.render();
     target.addEventListener("hx-change", this.onTargetChange);
   }
 

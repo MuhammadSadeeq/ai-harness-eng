@@ -1,0 +1,66 @@
+- id: F5-p1
+  objective: F5.o2
+  mode: predict
+  question: A payment call times out. The harness retries at once and sends no key, and the reply is lost. What
+    happens to the money?
+  options:
+  - text: The retry returns the first payment's result, so only one payment is made.
+    why: Tempting. That is what a shared key would do. This retry sends none, so the tool cannot tell the repeat
+      from a new payment.
+  - text: The second call may pay again, so the invoice can be paid twice.
+    why: Right. The tool sees a new action, and a new action pays. Nothing tells it the first one went through.
+  - text: The harness waits for the first receipt, and nothing is paid twice.
+    why: Tempting. The harness does not wait for a receipt before it retries.
+  answer: 1
+  outcome: The retry paid again. The ledger holds two payments for one invoice, and the receipt says paid once.
+- id: F5-c1
+  objective: F5.o1
+  mode: check
+  question: A 429 response carries a retry-after value. What should the client do?
+  options:
+  - text: Retry at once, since the limit may have cleared.
+    why: Tempting. Earlier retries fail, so an immediate retry is wasted.
+    fact: api.retry-after-meaning
+  - text: Wait the number of seconds retry-after gives, then retry.
+    why: Right. The header says how long to wait, and the docs say earlier retries fail.
+    fact: api.error-429-retry-after
+  - text: Send the request to a bigger model.
+    why: Tempting and wrong. A rate limit is about how much the organisation may use, not about the model.
+  answer: 1
+- id: F5-c2
+  objective: F5.o2
+  mode: check
+  question: A run charged the card in step 3 and died in step 4. On resume, what is safe?
+  options:
+  - text: Run step 3 again, so the state is rebuilt.
+    why: Tempting. It repeats the charge.
+  - text: Read the checkpoint and continue at step 4.
+    why: Right. The checkpoint says step 3 is done, so the resume starts where the run stopped.
+  - text: Start from step 1, because the log may be lost.
+    why: Tempting. A log that is lost cannot be the reason to repeat charges; the checkpoint is kept outside the
+      process.
+  answer: 1
+- id: F5-c3
+  objective: F5.o3
+  mode: check
+  question: A step will charge a card and waits for a person. What should the approval screen show?
+  options:
+  - text: A spinner until the answer comes back.
+    why: Tempting. A spinner shows the run is alive, not what the person is approving.
+  - text: What the step does, with its amount and target, and a clear yes or no.
+    why: Right. The person can check the step in words, and the answer is one clear choice.
+  - text: The model's full reasoning, so the person can judge it.
+    why: Tempting. Long reasoning is not the step, and it is hard to check.
+  answer: 1
+- id: F5-c4
+  objective: F5.o4
+  mode: check
+  question: A new harness passes its evals on the test set. How do you ship it?
+  options:
+  - text: 'To everyone at once: the evals passed.'
+    why: Tempting. The evals passing is one gate, not the whole rollout.
+  - text: In shadow mode first, then a canary, with an eval gate before each wider step.
+    why: Right. Each step shows a real behaviour before the next one, and a failure stays small.
+  - text: To the developers only, and never to users.
+    why: Tempting. Developers do not see the traffic that breaks a harness.
+  answer: 1
