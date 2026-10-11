@@ -335,6 +335,13 @@ async function checkWeight(browser, url) {
   try {
     await page.goto(url, { waitUntil: "load" });
     await page.waitForLoadState("networkidle");
+    // "networkidle" is 500 ms without a request. On a loaded machine a component can take longer than that between
+    // its module and its data, so the count stops short and the weight reads low. Wait until no new response has
+    // come for 2 s (at most 30 s), so the weight is the page's own, whatever the load.
+    for (let waited = 0, seen = -1; seen !== responses.length && waited < 30000; waited += 2000) {
+      seen = responses.length;
+      await page.waitForTimeout(2000);
+    }
     for (const response of responses) {
       const u = response.url();
       if (u.includes("/vendor/pyodide/") || u.includes("/vendor/codemirror")) continue;
