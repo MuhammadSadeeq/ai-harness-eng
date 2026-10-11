@@ -1,7 +1,8 @@
 # Phase 3 gate: the content waves
 
-**Status:** content complete; the gate closes when the two walkthrough
-majors still in flight (M2 focus, M3 label in name) are committed, below.
+**Status:** every walkthrough finding is fixed or ruled (e601ea8 closes the
+last two majors); the gate is signed off on the first commit after it that
+the full local gate passes, below.
 SPEC §10 sets the Phase 3 exit gate: **each wave is checker-green and
 reviewed, its facts are verified, and its screenshots are approved.** Each
 condition is below, with its evidence. Phase 4 (the build track) started
@@ -81,13 +82,13 @@ Findings: 0 blockers, 5 majors, 9 minors.
 | Id | Finding | Outcome |
 |---|---|---|
 | M1 | A tap in an incident credited an objective | **Fixed** (1178fca): a prediction credits no objective. Every predict check carried `data-objective`, and it revealed on the hunt's first tap. `check_content` B4 now rejects it. Re-probed: all eight A4 events leave the progress line at 0 of 5. |
-| M2 | Focus dropped to the page after "Show answer", a beat link and a Run key | In flight: hx-cards and the Run key (JS builder), the beat strip (design builder) |
-| M3 | Label in Name on events that quote the model | In flight: the accessible name starts with the visible text (JS builder) |
+| M2 | Focus dropped to the page after "Show answer", a beat link and a Run key | **Fixed**: the beat strip focuses the beat's heading, a second press included (5c1e8e1); "Show answer" focuses the answer, and the Run key keeps focus while it runs (e601ea8). Probed with real keys on B2, A4 and T6. |
+| M3 | Label in Name on events that quote the model | **Fixed** (e601ea8): an event button's name is its visible text; the lane and the summary are its description. Probed on A4, C3, C9 and F2. |
 | M4 | Built pages marked "soon" in the course map | **Not a product defect.** The walk read the director's working tree, whose generated chrome was older than HEAD (commits are assembled in a clean worktree). At HEAD every built page is linked. The assemble step now regenerates the working tree's pages after each commit. |
 | M5 | Term markers 19 px tall | **Ruled**: DESIGN §9 now exempts links and term markers in running text (WCAG 2.5.8's inline exception). |
-| m1–m6 | A4 chip over-reach, repeated heading and prompt, dash placeholders before a run, F2's doubled label, percent style | In flight (JS builder); rulings: "95%" with no space; a sentence with run numbers reads as pending before the run |
-| m7 | Continue sends a learner back to S0 after A4 | **Ruled**: Continue goes to the first unfinished module after the latest one with evidence (design builder) |
-| m8 | The glossary shows no per-learner mark | Checked against SPEC by the design builder; changed only if a spec line asks for it |
+| m1–m6 | A4 chip over-reach, repeated heading and prompt, dash placeholders before a run, F2's doubled label, percent style | **Fixed** (e601ea8). Rulings: "95%" with no space; a sentence with run numbers starts "After the run," and the dash reads "not run yet". B2's retry option stays: its why says no more than the fact. |
+| m7 | Continue sends a learner back to S0 after A4 | **Fixed** (5c1e8e1). Ruling: Continue resumes where the learner left off, in the module of the latest evidence if unfinished, else the next unfinished one. |
+| m8 | The glossary shows no per-learner mark | **No change**: no spec line asks for one (BP-5.2 specifies the filter count only). |
 | m9 | Five laws repeat in theory and build pairs | Deliberate: a build module restates its theory module's law and links back to it with a margin note (AUTHORING §13.11) |
 
 ## 5. Open items carried forward
@@ -97,13 +98,17 @@ Findings: 0 blockers, 5 majors, 9 minors.
   them), the SDK reading `ANTHROPIC_API_KEY`, where keys are made, the Models
   API and its entries, thinking blocks in tool loops, and the SDK's
   `max_retries` option. `check_facts`: 279 facts, 242 verified.
-- The loader loads a component inside a closed `details` eagerly: it reads
-  its top as 0. Weight stays in budget; fix it in the Phase 6 audit.
+- The loader loaded a component inside a closed `details` eagerly; it now
+  waits for the details to open (5c1e8e1).
+- Page weight: the heaviest pages (A4, D2) are at 299 KB of 300. QA now
+  weighs a page when its requests stop (4135d39), and a font subset is in
+  flight to restore headroom.
 - A self-test that restores state after itself (`restoreAfterTest`) is
   silent when the restore fails; the after-interaction audit runs with
   `keep: true`, so QA still sees the learner's end state.
 
 ## Sign-off
 
-The director signs the waves off when M2, M3 and the minors are committed
-and the gate is green on that commit.
+The director signs the waves off on the first commit at or after e601ea8
+that `tools/ci_local.sh --committed --qa` passes; the commit is recorded
+here when it does.
