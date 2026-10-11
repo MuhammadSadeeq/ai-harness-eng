@@ -31,6 +31,8 @@ from pydantic import BaseModel, TypeAdapter, ValidationError
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_SCENARIOS = REPO_ROOT / "scenarios"
 DEFAULT_FACTS = REPO_ROOT / "site" / "data" / "facts.json"
+# BP-4.2 §4: the recorded responses of the live tests, hand-written to the SDK types.
+LIVE_FIXTURES = REPO_ROOT / "rein" / "tests" / "fixtures" / "live"
 REQUEST_KEYS = ("model", "max_tokens", "messages", "tools", "system", "output_config")
 REQUIRED_REQUEST_KEYS = ("model", "max_tokens", "messages", "tools")
 MESSAGE_TYPE = "message"
@@ -263,10 +265,68 @@ def live_wire(
                 yield where, [trace_line(item) for item in trial.wire], sent
 
 
+def _error_problems(body: Any, where: str, report: Report) -> None:
+    """An error body, in the API's shape: {"type": "error", "error": {"type", "message"}}."""
+    report.payloads += 1
+    error = body.get("error") if isinstance(body, dict) else None
+    if (
+        not isinstance(body, dict)
+        or body.get("type") != "error"
+        or not isinstance(error, dict)
+        or not isinstance(error.get("type"), str)
+        or not isinstance(error.get("message"), str)
+    ):
+        report.error(where, 0, "an error body must be type error with error.type and error.message")
+
+
+def _model_problems(info: Any, where: str, report: Report) -> None:
+    """A Models API entry validates against the SDK's ModelInfo type."""
+    report.payloads += 1
+    problems: list[str] = []
+    if not isinstance(info, dict):
+        problems.append(f"{where}: a model entry must be an object")
+    else:
+        fields = set(sdk.ModelInfo.model_fields)
+        required = {n for n, i in sdk.ModelInfo.model_fields.items() if i.is_required()}
+        _check_keys(info, fields, required, where, problems)
+        try:
+            sdk.ModelInfo.model_validate(info)
+        except ValidationError as exc:
+            problems.append(f"{where}: {exc.errors()[0]['msg']} at {exc.errors()[0]['loc']}")
+    for message in problems:
+        report.error(where, 0, message)
+
+
+def check_fixtures(report: Report, fixtures_dir: Path = LIVE_FIXTURES) -> None:
+    """The recorded live fixtures: exchanges (200 responses are Messages, others are error bodies)
+    and the Models API entries. Each file is named in the report by its path."""
+    if not fixtures_dir.is_dir():
+        return
+    for path in sorted(fixtures_dir.glob("*.json")):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        inside = path.is_relative_to(REPO_ROOT)
+        where = path.relative_to(REPO_ROOT).as_posix() if inside else path.name
+        for index, item in enumerate(data.get("exchange", []), start=1):
+            status = int(item["status"])
+            body = item["body"]
+            if status == 200:
+                check_lines([json.dumps(body)], f"{where}[{index}]", report)
+            else:
+                _error_problems(body, f"{where}[{index}] (status {status})", report)
+        for model_id, info in data.get("models", {}).items():
+            _model_problems(info, f"{where}.models.{model_id}", report)
+        if "not_found" in data:
+            _error_problems(data["not_found"], f"{where}.not_found", report)
+
+
 def check(scenarios_dir: Path = DEFAULT_SCENARIOS, facts_path: Path = DEFAULT_FACTS) -> Report:
     report = Report()
     for where, lines, sent in live_wire(scenarios_dir, facts_path):
         check_lines(lines, where, report, sent)
+    # The live fixtures belong to the repository's own scenarios: a run on another scenarios
+    # folder (a test's copy) checks that folder's payloads only.
+    if scenarios_dir.resolve() == DEFAULT_SCENARIOS.resolve():
+        check_fixtures(report)
     return report
 
 

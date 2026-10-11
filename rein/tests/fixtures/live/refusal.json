@@ -1,0 +1,19 @@
+{
+  "description": "A refusal: the stop reason is refusal on a normal 200 response, not an error (api.stop-reason-refusal).",
+  "exchange": [
+    {
+      "status": 200,
+      "headers": {},
+      "body": {
+        "id": "msg_recorded_refusal",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-5-5",
+        "content": [{"type": "text", "text": "I can't help with that request."}],
+        "stop_reason": "refusal",
+        "stop_sequence": null,
+        "usage": {"input_tokens": 300, "output_tokens": 9, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+      }
+    }
+  ]
+}

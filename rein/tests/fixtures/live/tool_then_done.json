@@ -1,0 +1,39 @@
+{
+  "description": "A tool-using run to done: a thinking block and a read_file call, then a closing text reply. Recorded shape of the Messages API response (api.messages-create-endpoint, api.stop-reason-tool-use, api.stop-reason-end-turn).",
+  "exchange": [
+    {
+      "status": 200,
+      "headers": {},
+      "body": {
+        "id": "msg_recorded_tool",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-5-5",
+        "content": [
+          {"type": "thinking", "thinking": "The file must be read before it is described.", "signature": "sig-recorded-tool-0001"},
+          {"type": "text", "text": "I will read the file."},
+          {"type": "tool_use", "id": "toolu_recorded_01", "name": "read_file", "input": {"path": "a.txt"}}
+        ],
+        "stop_reason": "tool_use",
+        "stop_sequence": null,
+        "usage": {"input_tokens": 412, "output_tokens": 58, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+      }
+    },
+    {
+      "status": 200,
+      "headers": {},
+      "body": {
+        "id": "msg_recorded_done",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-5-5",
+        "content": [
+          {"type": "text", "text": "The file says hello. Done."}
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "usage": {"input_tokens": 530, "output_tokens": 14, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "description": "Two tool_use blocks in one reply; the results must go back in one user message (api.parallel-results-one-message).",
+  "exchange": [
+    {
+      "status": 200,
+      "headers": {},
+      "body": {
+        "id": "msg_recorded_parallel",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-5-5",
+        "content": [
+          {"type": "tool_use", "id": "toolu_par_01", "name": "read_file", "input": {"path": "a.txt"}},
+          {"type": "tool_use", "id": "toolu_par_02", "name": "read_file", "input": {"path": "a.txt"}}
+        ],
+        "stop_reason": "tool_use",
+        "stop_sequence": null,
+        "usage": {"input_tokens": 400, "output_tokens": 40, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+      }
+    },
+    {
+      "status": 200,
+      "headers": {},
+      "body": {
+        "id": "msg_recorded_parallel_done",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-5-5",
+        "content": [{"type": "text", "text": "Both reads say hello. Done."}],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "usage": {"input_tokens": 520, "output_tokens": 12, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+      }
+    }
+  ]
+}

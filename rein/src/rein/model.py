@@ -11,7 +11,7 @@ import copy
 from collections import deque
 from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Protocol
 
 from .prng import Mulberry32
 from .spec import (
@@ -37,6 +37,16 @@ class ToolUse:
 
 
 @dataclass(frozen=True)
+class LiveUsage:
+    """A live reply's usage as the API reports it (BP-4.2; facts api.cache-usage-fields)."""
+
+    input_tokens: int
+    output_tokens: int
+    cache_creation_input_tokens: int = 0
+    cache_read_input_tokens: int = 0
+
+
+@dataclass(frozen=True)
 class Reply:
     say: str | None
     content: list[dict[str, Any]]
@@ -44,6 +54,7 @@ class Reply:
     stop_reason: str
     latency_ms: int
     output_tokens: int
+    usage: LiveUsage | None = None  # BP-4.2: a live reply's own counts; None for the script
 
 
 @dataclass(frozen=True)
@@ -51,6 +62,16 @@ class ErrorOutcome:
     type: str
     retry_after_ms: int
     error_ms: int
+
+
+@dataclass(frozen=True)
+class BudgetStop:
+    """A live model's refusal to send a request that could pass the spend cap (BP-4.2 §1).
+
+    Nothing is sent. The harness ends the run with status ``budget``."""
+
+    limit: int  # nano-units (1 USD = 1e9)
+    spent: int  # nano-units spent so far in the run
 
 
 @dataclass(frozen=True)
@@ -71,9 +92,19 @@ class CallContext:
     thinking: int = 0  # A7.3: thinking tokens this reply adds to its output
     session: int = 1  # A14.2: the session in force, from 1 (1 on a tape without sessions)
     scope: str = ""  # A14.1: a sub-agent's id scope ("" for the main agent)
+    wire: dict[str, Any] | None = None  # BP-4.2: the payload the harness sends (live runs only)
 
 
 Entry = tuple[dict[str, Any], str]
+
+
+class ModelCall(Protocol):
+    """A model behind the harness (BP-4.2). The script is one; a live model is another. Each
+    answers one turn: a Reply, an ErrorOutcome, or a BudgetStop."""
+
+    model_id: str
+
+    def call(self, ctx: CallContext) -> Reply | ErrorOutcome | BudgetStop: ...
 
 
 @dataclass

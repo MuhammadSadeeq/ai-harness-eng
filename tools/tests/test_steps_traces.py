@@ -19,9 +19,9 @@ from pathlib import Path
 import jsonschema
 import pytest
 
+from tools import check_steps as cs
+
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "tools"))
-import check_steps as cs  # noqa: E402
 
 SCHEMA = json.loads((ROOT / "scenarios" / "trace.schema.json").read_text(encoding="utf-8"))
 VALIDATOR = jsonschema.Draft202012Validator(SCHEMA)

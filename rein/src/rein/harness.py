@@ -13,8 +13,10 @@ from typing import Any
 from .board import Board, BoardError
 from .inputs import check_input
 from .model import (
+    BudgetStop,
     CallContext,
     ErrorOutcome,
+    ModelCall,
     Reply,
     ScriptedModel,
     ToolUse,
@@ -143,7 +145,9 @@ SWAPPED = (
 
 
 class Harness:
-    def __init__(self, tape: Tape, board: Board, seed: int, prices: Prices) -> None:
+    def __init__(
+        self, tape: Tape, board: Board, seed: int, prices: Prices, live: ModelCall | None = None
+    ) -> None:
         self.tape = tape
         self.board = board
         self.seed = seed
@@ -187,7 +191,13 @@ class Harness:
         self.session = 1  # A14.2: from 1; a tape without sessions is session 1 throughout
         self.session_script: list[dict[str, Any]] = main_script
         self.session_prefix = main_prefix
-        self.model = self._new_model()
+        self.model: ScriptedModel | ModelCall = self._new_model()
+        # BP-4.2: a live model answers every main-agent turn in place of the script (sub-agents
+        # refuse live runs, so their scripts never meet it). None keeps the scripted run exactly.
+        self.live = live is not None
+        if live is not None:
+            self.model = live
+            self.model_id = live.model_id
         self.system_base = tape.system  # A14.1: a sub-agent may have its own
         self.agent = "main"  # A14.4: the events' agent label (a sub-agent's is name#k)
         self.scope = ""  # A14.1: the id scope of a sub-agent's tool uses and replies
@@ -394,7 +404,12 @@ class Harness:
             reply = result
             self.last_text = _reply_text(reply)
             read, write, uncached = 0, 0, prompt_tokens
-            if self.has_cache:  # A6.5: after recovery_check, before model_reply
+            if reply.usage is not None:  # BP-4.2: a live reply's own counts replace the estimate
+                read = reply.usage.cache_read_input_tokens
+                write = reply.usage.cache_creation_input_tokens
+                uncached = reply.usage.input_tokens
+                prompt_tokens = uncached + read + write
+            elif self.has_cache:  # A6.5: after recovery_check, before model_reply
                 read, write, uncached, matched, hit = self._cache_step(prompt_tokens, request)
                 self._emit(
                     "cache",
@@ -609,6 +624,13 @@ class Harness:
         self, prompt_tokens: int, reply: Reply, read: int, write: int, uncached: int
     ) -> dict[str, Any]:
         """model_reply.usage: cache fields with cache plugged, thinking with an effort block."""
+        if reply.usage is not None:  # BP-4.2: the API's counts, as the response reports them
+            return {
+                "input_tokens": uncached,
+                "cache_creation_input_tokens": write,
+                "cache_read_input_tokens": read,
+                "output_tokens": reply.output_tokens,
+            }
         if self.has_cache:
             usage: dict[str, Any] = {
                 "input_tokens": uncached,
@@ -797,6 +819,9 @@ class Harness:
             attempt += 1
             self._emit("model_call", attempt=attempt, tokens_in=prompt_tokens)
             outcome = self.model.call(self._context(prompt_tokens, request))
+            if isinstance(outcome, BudgetStop):  # BP-4.2 §1: the spend cap, before any send
+                self._emit("guard", guard="spend_cap", limit=outcome.limit, value=outcome.spent)
+                return "budget"
             if isinstance(outcome, ErrorOutcome):
                 self.t += outcome.error_ms
                 self.consecutive_failures += 1
@@ -852,6 +877,7 @@ class Harness:
             thinking=self.thinking,
             session=self.session,
             scope=self.scope,
+            wire=self._wire_request(request) if self.live else None,
         )
 
     # ---- interrupts (section 7.6, A3.17) ----------------------------------------------------

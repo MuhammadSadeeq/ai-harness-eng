@@ -1,0 +1,10 @@
+{
+  "description": "A 401 authentication_error (api.error-401-authentication). The run stops with a message that names the variable, not the key.",
+  "exchange": [
+    {
+      "status": 401,
+      "headers": {},
+      "body": {"type": "error", "error": {"type": "authentication_error", "message": "invalid x-api-key"}}
+    }
+  ]
+}

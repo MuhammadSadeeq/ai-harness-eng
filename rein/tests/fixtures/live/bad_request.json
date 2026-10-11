@@ -1,0 +1,10 @@
+{
+  "description": "A 400 invalid_request_error (api.error-400-invalid-request). The harness records a fixed message, never this text.",
+  "exchange": [
+    {
+      "status": 400,
+      "headers": {},
+      "body": {"type": "error", "error": {"type": "invalid_request_error", "message": "messages: the request is malformed"}}
+    }
+  ]
+}

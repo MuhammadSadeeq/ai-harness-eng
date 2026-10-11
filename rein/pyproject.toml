@@ -8,6 +8,10 @@ version = "0.0.0"
 requires-python = ">=3.11"
 dependencies = []
 
+[project.optional-dependencies]
+# The real-model path (BP-4.2): the pinned SDK (D-019). The core package keeps zero dependencies.
+live = ["anthropic==1.8.0"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
