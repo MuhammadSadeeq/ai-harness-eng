@@ -404,7 +404,7 @@ export class HxReplay extends HxElement {
     r.wireSelect.addEventListener("change", () => this.setWire(r.wireSelect.value || null));
     r.wireLabel = el("label", { class: "wire-select" }, el("span", { text: "Wire" }), r.wireSelect);
     r.filterLine = el("p", { class: "filter-state", "aria-live": "off" });
-    r.showAll = el("button", { class: "btn btn-quiet", type: "button", "data-key": "show-all", "data-focus-next": "run-position", text: "Show all" });
+    r.showAll = el("button", { class: "btn btn-quiet", type: "button", "data-key": "show-all", "data-focus-next": "run-position view-friendly", text: "Show all" });
     r.showAll.addEventListener("click", () => this.toggleWire(null));
     r.transcriptWrap = el("div", { class: "transcript-wrap", tabindex: "0", role: "region", "aria-label": "Transcript" });
     r.empty = el("p", { class: "empty", text: "Nothing on this wire in this run." });

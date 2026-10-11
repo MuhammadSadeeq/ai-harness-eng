@@ -95,9 +95,10 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
 - A press never leaves focus on BODY (D-063). A control a press can make
   unavailable (busy, end of a range, done) takes `aria-disabled="true"` and
   its handler ignores the press, never the `disabled` attribute. A control
-  that hides itself on a press names its successor with
-  `data-focus-next="<key>"`. The base moves focus to the same key, else that
-  successor, else the component's UI. QA's keyboard walk of the lab pages
+  that hides itself on a press names its successors with
+  `data-focus-next="<key> [<key>...]"`. The base moves focus to the same key,
+  else the first successor that is usable and not `aria-disabled`, else the
+  component's UI. QA's keyboard walk of the lab pages
   checks it.
 
 ## 7. Test hook

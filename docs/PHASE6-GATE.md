@@ -101,10 +101,10 @@ FIXED, NOT FIXED or RULED for each, then any new problem a fix introduced.
 | 1. Technical accuracy | 283d660 | 55 | 3 | 0 | 4 (1 major) | phase6-audit-1-round2.md |
 | 2. Sequencing and pedagogy | 283d660 | 20 | 2 | 2 | 3 (1 major) | phase6-audit-2-round2.md |
 | 3. Interaction QA | 509ef41 | 11 | 1 | 2 | 1 (major) | phase6-audit-3-round2.md |
-| 4. Accessibility and mobile | 312e352 | — | — | — | — | running |
+| 4. Accessibility and mobile | 312e352 | 8 | 0 | 1 | 2 (minor) | phase6-audit-4-round2.md |
 | 5. Code and tests | 283d660 | 22 | 0 | 1 | 4 (minor) | phase6-audit-5-round2.md |
 
-No blocker in any report so far.
+No blocker in any of the five reports.
 
 ### Round 2 findings, and what closed them
 
@@ -143,6 +143,14 @@ No blocker in any report so far.
   walk now warns when focus falls back to a component (D-063's last
   resort): none on all 35 walked pages.
 
+- **Audit 4, new minor (N2):** with the prediction still to make, "Show
+  all" moved focus onto the locked run slider. A successor that is
+  `aria-disabled` is now skipped, and Show all names two (the slider, then
+  the Friendly view toggle); a probe lands on Friendly when locked and on
+  the slider when not.
+- **Audit 4 confirmed the table-cell ruling** with real clicks: a click 0 to
+  43 px below each marker's top opens its term.
+
 ### Ruled in round 2
 
 - **Term collisions (audit 2, m9):** Rein's "checkpoint" is defined where
@@ -160,6 +168,10 @@ No blocker in any report so far.
   `wilson` written in another order. The kata's contract is that `differ`
   compares `wilson(*a)` with `wilson(*b)`; the starter now says so, and the
   stubbed test checks that comparison.
+- **A press on a dimmed control says nothing (audit 4, N1):** Previous at
+  turn 1, Next at the last, "Plugged in" and a busy Run stay focusable and
+  dimmed, and a press does nothing. Screen readers announce them as
+  unavailable; left as they are.
 - **A one-module drill (audit 2, N3):** with one module in the pool and no
   memory kata, the drill is that module's say prompts every day. That is
   intended: the drill reviews what was seen (D-062).

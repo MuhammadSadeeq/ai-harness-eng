@@ -16,8 +16,9 @@
 // - this.ready resolves to true once the first render succeeds (false on failure).
 // - setState(patch) merges and re-renders. Focus survives re-renders: give focusable elements a
 //   data-key and the element with the same key is focused again after render(). If that element is
-//   gone, hidden or disabled, focus goes to the key named by the pressed control's data-focus-next,
-//   else to this.ui itself (tabindex -1). A render never leaves focus on BODY (D-063).
+//   gone, hidden or disabled, focus goes to the first usable key named by the pressed control's
+//   data-focus-next (a space-separated list), else to this.ui itself (tabindex -1). A render never
+//   leaves focus on BODY (D-063).
 // - live(text) sets the component's one polite live region (only when the text changes).
 // - evidence(kind, detail) dispatches the bubbling hx-evidence event (§5).
 // - reducedMotion reads the stored motion setting, else the system setting (DESIGN §8.4).
@@ -182,15 +183,18 @@ export class HxElement extends HTMLElement {
   }
 
   /**
-   * Focus after a render took it away (D-063): the control with the same data-key, else the one its
-   * data-focus-next named, else the component's UI itself. Never BODY.
+   * Focus after a render took it away (D-063): the control with the same data-key (it may be
+   * aria-disabled: a busy control keeps the focus), else the first of the keys its data-focus-next
+   * names that is usable and not aria-disabled, else the component's UI itself. Never BODY.
    */
   #refocus(key, next) {
     if (!this.ui) return;
-    for (const k of [key, next]) {
+    const successors = (next ?? "").split(/\s+/).filter(Boolean);
+    for (const k of [key, ...successors]) {
       if (k === null) continue;
       const target = this.ui.querySelector(`[data-key="${CSS.escape(k)}"]`);
-      if (target && usable(target)) {
+      const open = k === key || target?.getAttribute("aria-disabled") !== "true";
+      if (target && usable(target) && open) {
         target.focus({ preventScroll: true });
         if (document.activeElement === target) return;
       }
