@@ -128,8 +128,12 @@ def _check_message(message: Any, where: str, problems: list[str]) -> None:
             _check_block(block, f"{where}.content[{index}]", problems)
 
 
-def check_request(payload: dict[str, Any], where: str, problems: list[str]) -> None:
-    _check_keys(payload, set(REQUEST_KEYS), set(REQUIRED_REQUEST_KEYS), where, problems)
+def check_request(
+    payload: dict[str, Any], where: str, problems: list[str], sent: frozenset[str] = frozenset()
+) -> None:
+    # `sent`: the keys the run's board adds on purpose with request_params (A14.5), such as a
+    # parameter a newer API no longer takes: the lesson is the harness sending it.
+    _check_keys(payload, set(REQUEST_KEYS) | sent, set(REQUIRED_REQUEST_KEYS), where, problems)
     if "output_config" in payload:  # A7.3: the effort level (anthropic 1.8.0 OutputConfigParam)
         _check_keys(
             payload["output_config"],
@@ -197,7 +201,7 @@ def _response_block(block_type: str) -> type[BaseModel] | None:
     return None
 
 
-def payload_problems(line: str, where: str) -> list[str]:
+def payload_problems(line: str, where: str, sent: frozenset[str] = frozenset()) -> list[str]:
     problems: list[str] = []
     try:
         payload = json.loads(line)
@@ -208,22 +212,27 @@ def payload_problems(line: str, where: str) -> list[str]:
     if payload.get("type") == MESSAGE_TYPE or "stop_reason" in payload:
         check_response(payload, where, problems)
     else:
-        check_request(payload, where, problems)
+        check_request(payload, where, problems, sent)
     return problems
 
 
-def check_lines(lines: list[str], where: str, report: Report) -> None:
+def check_lines(
+    lines: list[str], where: str, report: Report, sent: frozenset[str] = frozenset()
+) -> None:
     """Validate JSONL payload lines; every line is one payload."""
     for number, line in enumerate(lines, start=1):
         report.payloads += 1
-        for message in payload_problems(line, where):
+        for message in payload_problems(line, where, sent):
             report.error(where, number, message)
 
 
-def live_wire(scenarios_dir: Path, facts_path: Path) -> Iterator[tuple[str, list[str]]]:
+def live_wire(
+    scenarios_dir: Path, facts_path: Path
+) -> Iterator[tuple[str, list[str], frozenset[str]]]:
     """A3.23: the wire of every run, produced live by Rein (no golden files are read).
 
-    Yields (where, canonical JSONL lines) for each tape x its boards x its golden seeds."""
+    Yields (where, canonical JSONL lines, the board's request_params keys) for each tape x its
+    boards x its golden seeds."""
     src = str(REPO_ROOT / "rein" / "src")
     if src not in sys.path:
         sys.path.insert(0, src)
@@ -247,16 +256,17 @@ def live_wire(scenarios_dir: Path, facts_path: Path) -> Iterator[tuple[str, list
         for board_id in tape.boards:
             board_path = boards_dir / f"{board_id}.json"
             board = board_module.load_board(board_path)
+            sent = frozenset(board.modules.get("request_params", {}))
             for seed in tape.golden_seeds:
                 trial = sim_module.run_trial(tape, board, seed, facts)
                 where = f"{tape_path.stem}:{board_id}:{seed}"
-                yield where, [trace_line(item) for item in trial.wire]
+                yield where, [trace_line(item) for item in trial.wire], sent
 
 
 def check(scenarios_dir: Path = DEFAULT_SCENARIOS, facts_path: Path = DEFAULT_FACTS) -> Report:
     report = Report()
-    for where, lines in live_wire(scenarios_dir, facts_path):
-        check_lines(lines, where, report)
+    for where, lines, sent in live_wire(scenarios_dir, facts_path):
+        check_lines(lines, where, report, sent)
     return report
 
 

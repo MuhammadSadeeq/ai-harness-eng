@@ -131,7 +131,9 @@ def test_main_reports_the_payload_count(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     monkeypatch.setattr(
-        cw, "live_wire", lambda scen, facts: iter([("t", [trace_line(p) for p in _wire()])])
+        cw,
+        "live_wire",
+        lambda scen, facts: iter([("t", [trace_line(p) for p in _wire()], frozenset())]),
     )
     assert cw.main(["--scenarios", str(tmp_path), "--facts", str(FACTS)]) == 0
     assert capsys.readouterr().out.strip() == f"check_wire: {len(_wire())} payloads OK"
@@ -142,6 +144,16 @@ def test_main_fails_on_a_bad_live_payload(
 ) -> None:
     _, response = good_pair()
     bad = dict(response, stop_reason="stop")
-    monkeypatch.setattr(cw, "live_wire", lambda scen, facts: iter([("t", [trace_line(bad)])]))
+    monkeypatch.setattr(
+        cw, "live_wire", lambda scen, facts: iter([("t", [trace_line(bad)], frozenset())])
+    )
     assert cw.main(["--scenarios", str(tmp_path), "--facts", str(FACTS)]) == 1
     assert capsys.readouterr().out.strip().splitlines()[-1] == "check_wire: FAILED (1 problems)"
+
+
+def test_a_key_the_board_sends_on_purpose_is_allowed_and_only_that_one() -> None:
+    """A14.5: request_params put a parameter on the wire on purpose (F7: a removed one)."""
+    payload = {**_wire()[0], "temperature": 1}
+    assert cw.payload_problems(trace_line(payload), "t", frozenset({"temperature"})) == []
+    problems = cw.payload_problems(trace_line(payload), "t")
+    assert any("unknown key 'temperature'" in p for p in problems)
