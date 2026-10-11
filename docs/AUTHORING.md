@@ -53,7 +53,7 @@ Components upgrade it. Copy this skeleton exactly; fill only the marked parts.
 <!-- tools/gen_pages.py fills the top bar (wordmark, module code and title,
      Course, Glossary, Readiness, the Board) and the Menu sheet (with the
      theme). -->
-<main id="main" class="module">
+<main id="main" tabindex="-1" class="module">
   <header class="module-head">
     <p class="plate-label">B2 · Part B · From chatbot to agent</p>
     <h1>The agent loop</h1>

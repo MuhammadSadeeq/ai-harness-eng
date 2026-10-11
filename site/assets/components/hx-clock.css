@@ -13,7 +13,8 @@ hx-clock .hand { stroke: var(--w-loop); stroke-width: 3.5; stroke-linecap: round
 hx-clock .pulse { fill: var(--w-loop); }
 hx-clock .spoke-group { cursor: pointer; }
 hx-clock .spoke-group:focus-visible { outline: none; }
-hx-clock .spoke-group:focus-visible .node { stroke: var(--hx-focus); stroke-width: 4; }
+/* The 3 px ring is drawn on the spoke's hit circle (r 22), outside the node (r 15 to 17), so it reads as a ring, not as a dashed node. */
+hx-clock .spoke-group:focus-visible .hit { stroke: var(--hx-focus); stroke-width: 3; }
 hx-clock .spoke-group .hit { fill: transparent; }
 hx-clock .spoke-group .spoke { fill: none; stroke: var(--w); }
 hx-clock .spoke-group .node { fill: var(--hx-panel); stroke: var(--w); stroke-width: 2.5; }

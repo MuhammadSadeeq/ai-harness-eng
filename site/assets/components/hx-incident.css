@@ -31,9 +31,11 @@
 .result { display: grid; gap: var(--sp-1); padding: var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-plate); background: var(--hx-panel); font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
 .result-time { margin: 0; font: 600 var(--fs-readout)/1.2 var(--font-mono); color: var(--hx-ink); }
 .result-taps { margin: 0; }
+/* System reduce unless the learner chose Full; the in-app Reduced choice always applies (DESIGN §8, hx.css). */
 @media (prefers-reduced-motion: reduce) {
-  .incident * { transition: none !important; animation: none !important; }
+  :root:not([data-motion="full"]) .incident * { transition: none !important; animation: none !important; }
 }
+:root[data-motion="reduced"] .incident * { transition: none !important; animation: none !important; }
 
 .pick-line { margin: 0; font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
 .incident .choice-text .choice-mark { display: block; margin: 0 0 var(--sp-1); }

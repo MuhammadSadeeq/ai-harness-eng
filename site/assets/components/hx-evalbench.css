@@ -59,6 +59,8 @@ hx-evalbench .hx-ui { display: grid; gap: var(--sp-4); }
 @media (min-width: 700px) { .eb-readouts.eb-three { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .eb-leak-verdict { font-weight: 600; }
 
+/* System reduce unless the learner chose Full; the in-app Reduced choice always applies (DESIGN §8, hx.css). */
 @media (prefers-reduced-motion: reduce) {
-  hx-evalbench * { transition: none !important; animation: none !important; }
+  :root:not([data-motion="full"]) hx-evalbench * { transition: none !important; animation: none !important; }
 }
+:root[data-motion="reduced"] hx-evalbench * { transition: none !important; animation: none !important; }

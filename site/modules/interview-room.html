@@ -52,7 +52,7 @@
   <button class="key menu-close" type="button" data-close>Close menu</button>
 </dialog>
 <!-- /gen:topbar -->
-<main id="main" class="module">
+<main id="main" tabindex="-1" class="module">
   <header class="module-head">
     <p class="plate-label">I5 · Part I · Get hired</p>
     <h1>Interview Room</h1>
@@ -201,8 +201,18 @@
   <section class="beat" data-beat="keep" id="keep">
     <h2>Keep it</h2>
     <p class="law">Walk the clock out loud.</p>
-    <hx-cards src="I5"></hx-cards>
-    <hx-say src="I5"></hx-say>
+    <hx-cards src="I5">
+      <dl>
+        <dt>What do you do with a say prompt before you answer?</dt><dd>Say the answer out loud for 60 to 90 seconds, then compare it with the model answer and the rubric.</dd>
+        <dt>What do you say about a result you measured?</dt><dd>The interval and the trial count, not only the point estimate.</dd>
+      </dl>
+    </hx-cards>
+    <hx-say src="I5">
+      <ol>
+        <li>Walk me through the harness for a coding agent that works in a large monorepo.</li>
+        <li>Walk me through the harness for a customer-support agent that can issue refunds.</li>
+      </ol>
+    </hx-say>
   </section>
 
     <aside class="rail" aria-label="Course map" tabindex="0">

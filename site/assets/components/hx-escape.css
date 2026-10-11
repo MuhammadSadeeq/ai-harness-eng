@@ -50,6 +50,8 @@ hx-escape .hx-ui { display: grid; gap: var(--sp-5); }
   .esc-defenses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .esc-readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+/* System reduce unless the learner chose Full; the in-app Reduced choice always applies (DESIGN §8, hx.css). */
 @media (prefers-reduced-motion: reduce) {
-  hx-escape * { transition: none !important; animation: none !important; }
+  :root:not([data-motion="full"]) hx-escape * { transition: none !important; animation: none !important; }
 }
+:root[data-motion="reduced"] hx-escape * { transition: none !important; animation: none !important; }

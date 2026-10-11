@@ -41,9 +41,11 @@
   .transcript-area { grid-column: 2; grid-row: 1 / span 7; }
   .replay .transport { position: static; }
 }
+/* System reduce unless the learner chose Full; the in-app Reduced choice always applies (DESIGN §8, hx.css). */
 @media (prefers-reduced-motion: reduce) {
-  .replay * { transition: none !important; animation: none !important; }
+  :root:not([data-motion="full"]) .replay * { transition: none !important; animation: none !important; }
 }
+:root[data-motion="reduced"] .replay * { transition: none !important; animation: none !important; }
 
 .strip-caption { margin: 0; font: 500 var(--fs-small)/1.4 var(--font-sans); color: var(--hx-ink-2); }
 .strip-caption .cap-desk { display: none; }

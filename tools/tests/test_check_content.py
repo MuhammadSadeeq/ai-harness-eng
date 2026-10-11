@@ -39,6 +39,7 @@ BAD_CASES: list[tuple[str, str, str]] = [
         "javascript: URLs are not allowed in href",
     ),
     ("B8", "bad/B8-pre/same-model-different-harness.html", 'a <pre> needs tabindex="0"'),
+    ("B11", "bad/B11/same-model-different-harness.html", "needs its no-JS fallback"),
 ]
 
 

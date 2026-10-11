@@ -52,7 +52,7 @@
   <button class="key menu-close" type="button" data-close>Close menu</button>
 </dialog>
 <!-- /gen:topbar -->
-<main id="main" class="module" data-shift-page>
+<main id="main" tabindex="-1" class="module" data-shift-page>
   <header class="module-head">
     <p class="plate-label">On call · about ten minutes</p>
     <h1>Today's shift</h1>
@@ -68,7 +68,9 @@
   <section class="beat" aria-labelledby="shift-cards">
     <h2 id="shift-cards">Cards that are due</h2>
     <p class="meta" data-shift-cards-status></p>
-    <hx-cards src="board"></hx-cards>
+    <hx-cards src="board">
+      <p>The cards due today come from the modules you have started, mixed by wire. Without JavaScript, review the cards under "Keep it" on each module's page.</p>
+    </hx-cards>
   </section>
   <section class="beat" aria-labelledby="shift-drill">
     <h2 id="shift-drill">The drill</h2>

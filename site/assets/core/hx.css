@@ -33,8 +33,10 @@ a { color: var(--hx-ink); }
 :focus-visible { outline: 3px solid var(--hx-focus); outline-offset: 2px; border-radius: 4px; }
 [hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.skip { position: absolute; left: 12px; top: -60px; z-index: 30; padding: 10px 14px; background: var(--hx-ink); color: var(--hx-paper); border-radius: var(--r-btn); font: 600 var(--fs-ui) var(--font-sans); text-decoration: none; }
+.skip { position: absolute; left: 12px; top: -60px; z-index: 30; display: flex; align-items: center; min-height: 44px; padding: 10px 14px; background: var(--hx-ink); color: var(--hx-paper); border-radius: var(--r-btn); font: 600 var(--fs-ui) var(--font-sans); text-decoration: none; }
 .skip:focus { top: 12px; }
+/* The skip link moves focus to <main id="main" tabindex="-1">. The target is not a control, so it shows no ring. */
+#main:focus { outline: none; }
 
 /* ---------- type ---------- */
 h1, h2, h3, h4 { margin: 0; line-height: var(--lh-head); }

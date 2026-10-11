@@ -3,7 +3,7 @@
 
 Usage: python tools/check_content.py [PAGE_OR_DIR ...] [--course PATH] [--site DIR] [--content DIR]
 
-With no page arguments it checks course.json (A1-A7) and every page in site/modules/ (B1-B8).
+With no page arguments it checks course.json (A1-A7) and every page in site/modules/ (B1-B11).
 With page arguments it checks only those pages; course.json is then only loaded for reference.
 Problems print as ``path:line: [rule] message``; the last line is the summary.
 """
@@ -749,6 +749,9 @@ def _check_skeleton(page: Page, module: Module, shown: str, report: Report) -> N
     mains = [e for e in elements if e.tag == "main"]
     if not mains or mains[0].attrs.get("id") != "main":
         report.problem(shown, mains[0].line if mains else 0, '[B1] <main id="main"> is required')
+    elif mains[0].attrs.get("tabindex") != "-1":
+        # The skip link moves focus only to a focusable target (DESIGN §9).
+        report.problem(shown, mains[0].line, '[B1] <main id="main"> needs tabindex="-1"')
 
 
 def _beat_sections(page: Page) -> list[Element]:
@@ -990,6 +993,10 @@ def _check_terms(page: Page, module: Module, ctx: Context, shown: str, report: R
 
 def _check_hygiene(page: Page, shown: str, report: Report) -> None:
     for element in descendants(page.root):
+        if element.tag.startswith("hx-") and not all_text(element).strip():
+            report.problem(shown, element.line,
+                           f"[B11] <{element.tag}> needs its no-JS fallback as children "
+                           "(AUTHORING §6, COMPONENTS §2)")
         if "style" in element.attrs:
             report.problem(shown, element.line, "[B8] inline style attributes are not allowed")
         for name in element.attrs:
