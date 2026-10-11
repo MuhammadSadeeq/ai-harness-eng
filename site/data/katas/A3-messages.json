@@ -6,6 +6,7 @@
   "Nearly the code: history.append({'role': 'user', 'content': user_text}); reply = ask(list(history)); history.append({'role': 'assistant', 'content': reply}); return reply."
  ],
  "id": "A3-messages",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef send_turn(history, user_text, ask):\n    ...\n",
  "minutes": 15,
  "module": "A3",
  "objectives": [

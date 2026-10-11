@@ -505,6 +505,8 @@ export class HxCards extends HxElement {
     this.start();
     this.setState({});
     const initial = this.queue.length;
+    // The session's own cards: a session takes at most SESSION_LIMIT, so a larger board (the shift's) is not all reviewed.
+    const sessionIds = [...this.queue];
     if (initial === 0) return false;
     // A restored or fresh deck starts on a front, never on a back.
     if (this.state.reveal) return false;
@@ -532,7 +534,7 @@ export class HxCards extends HxElement {
     if (summary !== this.summaryText()) return false;
     const tomorrow = addDays(this.today, 1);
     return this.queueStart === initial
-      && this.allIds.every((id) => {
+      && sessionIds.every((id) => {
         const card = stored(this.cardsNow(), id);
         return card && card.box === 2 && card.due === tomorrow;
       });

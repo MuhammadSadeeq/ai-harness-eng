@@ -6,6 +6,7 @@
   "Nearly the code: f\"{tool} has no {noun} {names}. It takes: {', '.join(allowed)}. Send again with only those fields.\"; the counts use f\"{n:,}\"."
  ],
  "id": "C7-errors",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef input_error(tool, allowed, bad):\n    ...\n\ndef no_match(query, path):\n    ...\n\ndef truncated(shown, total):\n    ...\n",
  "minutes": 20,
  "module": "C7",
  "objectives": [

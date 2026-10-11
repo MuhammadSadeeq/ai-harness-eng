@@ -24,9 +24,40 @@ export function partMarks(course, doc) {
 }
 
 /** The first path module the learner has not finished, with its page address. Null when the path is done. */
+/**
+ * The module of the most recent evidence entry that belongs to a module on the path: by its `at` time, with the list
+ * order breaking a tie (the list is appended in order). Null when no entry belongs to the path.
+ */
+export function mostRecentModule(evidence, path) {
+  const onPath = new Set(path);
+  let best = null;
+  (Array.isArray(evidence) ? evidence : []).forEach((entry, index) => {
+    if (typeof entry?.module !== "string" || !onPath.has(entry.module)) return;
+    const at = typeof entry.at === "string" ? entry.at : "";
+    if (best === null || at > best.at || (at === best.at && index > best.index)) {
+      best = { module: entry.module, at, index };
+    }
+  });
+  return best?.module ?? null;
+}
+
+/**
+ * Where Continue goes: resume where the learner left off. The module of the most recent evidence entry is the place to
+ * resume while it is unfinished. Once it is done, Continue goes to the first unfinished module after it in path order,
+ * then (if none comes after it) to the first unfinished module. With no evidence, the first unfinished module.
+ * Null when every module on the path is done.
+ */
 export function continueTarget(course, doc) {
-  const id = course.path.find((moduleId) => moduleStatus(doc, moduleId) !== "done");
-  if (!id) return null;
+  const path = course.path;
+  const latest = mostRecentModule(doc?.evidence, path);
+  if (latest !== null && moduleStatus(doc, latest) !== "done") return targetOf(course, latest);
+  const after = latest === null ? -1 : path.indexOf(latest);
+  const id = path.find((moduleId, index) => index > after && moduleStatus(doc, moduleId) !== "done")
+    ?? path.find((moduleId) => moduleStatus(doc, moduleId) !== "done");
+  return id ? targetOf(course, id) : null;
+}
+
+function targetOf(course, id) {
   const module = course.modules.find((m) => m.id === id);
   return { id, title: module.title, part: module.part, href: `modules/${module.slug}.html` };
 }
@@ -66,6 +97,17 @@ export function factChipLabel(iso) {
 }
 
 /** Only the registry entries whose tags the page actually has, in page order. Unknown tags are left alone. */
+/**
+ * The nearest closed <details> around an element, or null. An element in a closed details is hidden: its position is
+ * top 0 and it cannot intersect the viewport, so the loader waits for the details to open instead of loading it now.
+ */
+export function closedDetailsOf(el) {
+  for (let node = el?.parentElement ?? null; node; node = node.parentElement ?? null) {
+    if (node.localName === "details" && !node.open) return node;
+  }
+  return null;
+}
+
 export function filterRegistry(registry, presentTags) {
   return presentTags.filter((tag) => Object.prototype.hasOwnProperty.call(registry, tag)).map((tag) => ({ tag, url: registry[tag] }));
 }

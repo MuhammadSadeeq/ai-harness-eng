@@ -7,7 +7,7 @@ hints:
   - "Read the decision order: deny rules first, then ask rules, then allow rules, then the mode's default. The first rule of the first group that matches decides."
   - "A rule matches when its tool is the call's tool and its prefix is empty or the call's input path starts with it. A call with no path matches only a rule whose prefix is empty."
   - "Nearly the code: for each group in order (deny, ask, allow), loop over the rules with that decision, and return the first that matches with its reason. If none matches, return the mode as the decision with the reason 'the mode default'."
-from_memory: false
+from_memory: true
 wrong_solutions:
   - name: allow-before-ask
     code: |

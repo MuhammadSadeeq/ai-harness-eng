@@ -1,11 +1,12 @@
 {
- "from_memory": false,
+ "from_memory": true,
  "hints": [
   "The gate must not trust the tests the model can change. Compare the suite the workspace holds with the original suite, and run the original.",
   "If the names or the sources differ in any way, the gate fails and says the tests were changed. Only an unchanged suite is run, and the run is the original one.",
   "Nearly the code: if current != pristine, return passed False and a reason that says the tests were changed. Otherwise run the pristine tests inside try: passed is the run's result, and an exception is a failure, not a pass."
  ],
  "id": "C11-gate",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef verify(current, pristine, run):\n    ...\n",
  "minutes": 25,
  "module": "C11",
  "objectives": [

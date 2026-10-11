@@ -2,10 +2,12 @@
 // module. Only registered tags that the page contains are loaded, and only when needed: a tag with an element that
 // starts within 1.5 viewport heights of the page top loads at once; the others load when an element comes within
 // 600 px of the viewport. Every other hx-* element, and each one still waiting, keeps its no-JS fallback until then.
-import { filterRegistry, splitLoads } from "./pure.js";
+// An element inside a closed <details> waits until that details opens (its toggle event), then loads as usual.
+import { closedDetailsOf, filterRegistry, splitLoads } from "./pure.js";
 import { REGISTRY } from "../../components/registry.js";
 
 const LAZY_MARGIN = "600px 0px 600px 0px";
+const armed = new WeakSet(); // closed details that already have a loader waiting for them to open
 
 export function presentTags(root = document) {
   const tags = new Set();
@@ -24,8 +26,14 @@ export function loadComponents({ root = document, registry = REGISTRY, importer 
   if (plan.length === 0) return Promise.resolve([]);
   const urlOf = new Map(plan.map(({ tag, url }) => [tag, url]));
   const elements = [];
+  const options = { registry, importer, view };
   for (const tag of urlOf.keys()) {
     for (const el of root.querySelectorAll(tag)) {
+      const details = closedDetailsOf(el);
+      if (details) {
+        armOnOpen(details, options);
+        continue;
+      }
       elements.push({ tag, el, top: el.getBoundingClientRect().top + (view.scrollY || 0) });
     }
   }
@@ -55,4 +63,17 @@ export function loadComponents({ root = document, registry = REGISTRY, importer 
     }
   }
   return Promise.all(eager.map(load)).then((tags) => tags.filter(Boolean));
+}
+
+/** Once: when this closed details opens, the components inside it load as usual (then it is not armed again). */
+function armOnOpen(details, options) {
+  if (armed.has(details)) return;
+  armed.add(details);
+  const onToggle = () => {
+    if (!details.open) return;
+    details.removeEventListener("toggle", onToggle);
+    armed.delete(details);
+    loadComponents({ ...options, root: details });
+  };
+  details.addEventListener("toggle", onToggle);
 }

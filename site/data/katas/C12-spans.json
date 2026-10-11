@@ -6,6 +6,7 @@
   "Nearly the code: the run is out[0]; a tool_call creates a tool span under turn_index[turn]; a model_reply sets the end and the output tokens of the model span of its turn."
  ],
  "id": "C12-spans",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef spans(events):\n    ...\n",
  "minutes": 30,
  "module": "C12",
  "objectives": [

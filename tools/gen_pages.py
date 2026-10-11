@@ -130,9 +130,12 @@ PAGES: dict[str, tuple[str, ...]] = {
     "design.html": DESIGN_REGIONS + CHROME_REGIONS,
     "glossary.html": CHROME_REGIONS,
     "readiness.html": CHROME_REGIONS,
+    "oncall.html": CHROME_REGIONS,
 }
 # The top-level pages, in the order they are written.
-TOP_PAGES: tuple[str, ...] = ("index.html", "design.html", "glossary.html", "readiness.html")
+TOP_PAGES: tuple[str, ...] = (
+    "index.html", "design.html", "glossary.html", "readiness.html", "oncall.html",
+)
 # Regions another generator owns on a page this module also writes: gen_glossary fills the list on
 # glossary.html.
 FOREIGN_REGIONS: dict[str, tuple[str, ...]] = {"glossary.html": ("glossary",)}
@@ -542,12 +545,8 @@ def continue_lines(d: Data) -> list[str]:
 def shift_lines(d: Data) -> list[str]:
     mod = next_module(d)
     fam = families_by_id(d)[mod["family"]]
-    built = mod["slug"] in d.built
-    link = (
-        f'<a class="btn" data-family-link href="modules/{mod["slug"]}.html">Start shift</a>'
-        if built
-        else '<a class="btn" data-family-link aria-disabled="true">Start shift</a>'
-    )
+    # Today's shift is one page for the whole course (oncall.html, BP-5.4 §4), not a module's page.
+    link = '<a class="btn" data-family-link href="oncall.html">Start shift</a>'
     return [
         '<ul class="shift-list">',
         f'  <li>1 incident: <span data-slot="family-name">{esc(fam["name"])}</span></li>',
@@ -659,6 +658,7 @@ CURRENT_NAV: dict[str, str | None] = {
     "glossary.html": "glossary",
     "readiness.html": "readiness",
     "design.html": None,
+    "oncall.html": None,
 }
 TOPBAR_BLOCK = re.compile(
     r'[ \t]*<header class="topbar"[^>]*>.*?</header>\n'
@@ -872,6 +872,7 @@ def main(argv: list[str] | None = None) -> int:
             "design.html": render_design(data),
             "glossary.html": render_chrome(data, "glossary.html"),
             "readiness.html": render_chrome(data, "readiness.html"),
+            "oncall.html": render_chrome(data, "oncall.html"),
         }
         results: list[tuple[str, str, str]] = []
         for page in TOP_PAGES:

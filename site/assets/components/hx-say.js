@@ -1,5 +1,6 @@
 // hx-say: say it out loud (BP-2.2). A prompt, a timer you run yourself, the model answer, a rubric self-grade.
 //   <hx-say src="B2"></hx-say>                        site/data/say/B2.json (COMPONENTS §11: demo pages use a .json path)
+//   <hx-say src="bank"></hx-say>                      the question bank (BP-5.4 §1): a filter, unanswered prompts first
 // Evidence: "say" {item, ticked, total, seconds} with the item's objectives from the YAML (not data-objective).
 // "Last time" is the result the store held when the page loaded, or the one saved in this visit.
 import { HxElement } from "./lib/hx-element.js";
@@ -18,6 +19,28 @@ export function timerView(seconds) {
 }
 
 export const resultLine = (ticked, total) => `You covered ${ticked} of ${total}. Try it again tomorrow.`;
+
+/** The bank's filters: all prompts, one course wire, or one of the three kinds only the I5 prompts carry (BP-5.4 §1). */
+export const BANK_FILTERS = ["all", "control", "context", "loop", "errors", "tools", "permissions", "verify", "observe",
+  "design", "debugging", "behavioral"];
+const FILTER_LABELS = { all: "All prompts", design: "Design", debugging: "Debugging", behavioral: "Behavioral" };
+export const filterLabel = (value) => FILTER_LABELS[value] ?? value[0].toUpperCase() + value.slice(1);
+
+/**
+ * The bank in the order a learner meets it: the prompts not answered yet first (in bank order), then the answered ones,
+ * the one answered longest ago first. `evidence` is the store's list; a prompt's last entry there is its latest answer.
+ * A filter keeps one wire or one kind of prompt.
+ */
+export function bankOrder(prompts, evidence = [], filter = "all") {
+  const last = new Map();
+  evidence.forEach((entry, i) => {
+    if (entry?.kind === "say" && entry.detail?.item) last.set(entry.detail.item, i);
+  });
+  const shown = prompts.filter((p) => filter === "all" || p.wire === filter);
+  const fresh = shown.filter((p) => !last.has(p.id));
+  const answered = shown.filter((p) => last.has(p.id)).sort((a, b) => last.get(a.id) - last.get(b.id));
+  return [...fresh, ...answered];
+}
 export const lastLine = (result) => `Last time: ${result.ticked} of ${result.total}`;
 
 /** The index after a move of `delta`, kept inside the prompts. */
@@ -59,12 +82,15 @@ export class HxSay extends HxElement {
     const prompts = await getContent("say", src);
     if (!Array.isArray(prompts) || prompts.length === 0) throw new Error("hx-say: no prompts");
     prompts.forEach(checkSay);
-    this.prompts = prompts;
+    this.bank = src === "bank";
+    this.all = prompts;
+    this.filter = "all";
+    this.prompts = this.bank ? bankOrder(prompts, this.store?.state?.evidence ?? [], "all") : prompts;
     this.prior = {};
     for (const entry of this.store?.state?.evidence ?? []) {
       if (entry.kind === "say" && entry.detail) this.prior[entry.detail.item] = { ticked: entry.detail.ticked, total: entry.detail.total };
     }
-    this.state = { index: 0, phase: "ready", now: 0, elapsed: null, ticks: blank(prompts[0]), saved: {}, cleared: {} };
+    this.state = { index: 0, phase: "ready", now: 0, elapsed: null, ticks: blank(this.prompts[0]), saved: {}, cleared: {} };
   }
 
   // phases: ready -> timing -> timed (stopped or skipped) -> revealed -> saved
@@ -137,6 +163,20 @@ export class HxSay extends HxElement {
     return this.state.saved[item.id] ?? this.prior[item.id] ?? null;
   }
 
+  // The bank's filter: the same bank in a new order, from its first prompt. A filter with no prompts is refused.
+  setFilter(filter) {
+    const next = bankOrder(this.all, this.store?.state?.evidence ?? [], filter);
+    if (next.length === 0) {
+      this.dom.filter.value = this.filter;
+      return;
+    }
+    clearInterval(this.timer);
+    this.timer = null;
+    this.filter = filter;
+    this.prompts = next;
+    this.setState({ index: 0, phase: "ready", now: 0, elapsed: null, ticks: blank(next[0]) });
+  }
+
   // "Try again" after a save: a fresh attempt, with the timer, the ticks and the result line reset.
   tryAgain() {
     if (this.state.phase !== "saved") return;
@@ -203,6 +243,11 @@ export class HxSay extends HxElement {
     const dom = { sig: null, boxes: [] };
     this.dom = dom;
     dom.count = el("p", { class: "say-count" });
+    dom.filter = this.bank
+      ? el("select", { class: "say-filter", "data-key": "filter", "aria-label": "Prompts to show" },
+        ...BANK_FILTERS.map((value) => el("option", { value, text: filterLabel(value) })))
+      : null;
+    if (dom.filter) dom.filter.addEventListener("change", () => this.setFilter(dom.filter.value));
     dom.prev = el("button", { class: "key", type: "button", "data-key": "prev", text: "Previous" });
     dom.next = el("button", { class: "key", type: "button", "data-key": "next", text: "Next" });
     dom.prev.addEventListener("click", () => this.onNav(-1));
@@ -233,7 +278,7 @@ export class HxSay extends HxElement {
       el("div", { class: "say-actions" }, dom.save, dom.again));
     dom.result = el("p", { class: "say-result", hidden: "" });
     this.ui.append(el("section", { class: "say" },
-      el("div", { class: "say-head" }, dom.count, el("div", { class: "say-nav" }, dom.prev, dom.next)),
+      el("div", { class: "say-head" }, dom.count, dom.filter, el("div", { class: "say-nav" }, dom.prev, dom.next)),
       dom.prompt,
       el("p", { class: "say-instruction", text: "Say your answer out loud, as if in an interview. Aim for 60 to 90 seconds." }),
       el("div", { class: "say-timer" }, dom.readout, dom.plenty,

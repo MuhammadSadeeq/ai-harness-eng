@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   moduleStatus, partMarks, continueTarget, shiftFor, dueCards, oldestFactDate,
-  formatDay, factChipLabel, filterRegistry, termEntry, splitLoads,
+  formatDay, factChipLabel, filterRegistry, termEntry, splitLoads, closedDetailsOf,
 } from "../shell/pure.js";
 
 const course = JSON.parse(readFileSync(new URL("../../../data/course.json", import.meta.url), "utf8"));
@@ -48,6 +48,49 @@ test("continueTarget: the first unfinished path module, with its page address", 
 test("continueTarget skips finished modules in path order", () => {
   const doc = { modules: { [course.path[0]]: { status: "done" }, [course.path[1]]: { status: "done" } } };
   assert.equal(continueTarget(course, doc).id, course.path[2]);
+});
+
+test("continueTarget with no evidence is S0, the first module", () => {
+  assert.equal(continueTarget(course, { modules: {}, evidence: [] }).id, "S0");
+});
+
+test("continueTarget after A4 is done as the last evidence goes to A5", () => {
+  const doc = {
+    modules: { A4: { status: "done" } },
+    evidence: [{ kind: "check", module: "A4", objectives: ["A4.o1"], at: "2026-10-05T10:00:00.000Z" }],
+  };
+  assert.equal(continueTarget(course, doc).id, "A5");
+});
+
+test("continueTarget halfway through A4 goes back to A4, not on to A5", () => {
+  const doc = {
+    modules: { A4: { status: "started" } },
+    evidence: [{ kind: "check", module: "A4", objectives: ["A4.o1"], at: "2026-10-05T10:00:00.000Z" }],
+  };
+  assert.equal(continueTarget(course, doc).id, "A4");
+});
+
+test("continueTarget takes the most recent evidence by time, not the furthest module", () => {
+  // A prediction on G4 was made first; A4 was finished later. Continue goes to A5, not past G4.
+  const doc = {
+    modules: { A4: { status: "done" }, G4: { status: "started" } },
+    evidence: [
+      { kind: "prediction", module: "G4", objectives: [], at: "2026-10-04T09:00:00.000Z" },
+      { kind: "check", module: "A4", objectives: ["A4.o1"], at: "2026-10-05T10:00:00.000Z" },
+    ],
+  };
+  assert.equal(continueTarget(course, doc).id, "A5");
+  const reversed = { ...doc, evidence: [...doc.evidence].reverse() };
+  assert.equal(continueTarget(course, reversed).id, "A5", "the list order does not matter when the times differ");
+});
+
+test("continueTarget with the last module done and the rest unfinished wraps to the first module", () => {
+  const last = course.path[course.path.length - 1];
+  const doc = {
+    modules: { [last]: { status: "done" } },
+    evidence: [{ kind: "check", module: last, objectives: [], at: "2026-10-05T10:00:00.000Z" }],
+  };
+  assert.equal(continueTarget(course, doc).id, "S0");
 });
 
 test("shiftFor: the current module's failure family, from course.json", () => {
@@ -118,4 +161,19 @@ test("termEntry: reads terms.json as gen_data writes it, an object keyed by id",
   assert.equal(termEntry(terms, "missing"), null);
   assert.equal(termEntry(terms, "toString"), null);
   assert.equal(termEntry(null, "agent-loop"), null);
+});
+
+test("closedDetailsOf: the nearest closed details around an element, or null", () => {
+  const node = (localName, parentElement, open = false) => ({ localName, parentElement, open });
+  const page = node("main", null);
+  const openOuter = node("details", page, true);
+  const closedInner = node("details", openOuter, false);
+  const component = node("hx-say", closedInner);
+  assert.equal(closedDetailsOf(component), closedInner, "a component in a closed details waits for it");
+  assert.equal(closedDetailsOf(node("hx-say", openOuter)), null, "a component in an open details loads at once");
+  assert.equal(closedDetailsOf(node("hx-say", page)), null, "a component with no details around it loads at once");
+  const closedOuter = node("details", page, false);
+  const openInner = node("details", closedOuter, true);
+  assert.equal(closedDetailsOf(node("hx-say", openInner)), closedOuter, "a closed outer details hides an open inner one");
+  assert.equal(closedDetailsOf(null), null);
 });

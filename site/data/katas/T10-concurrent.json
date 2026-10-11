@@ -6,6 +6,7 @@
   "Nearly the code: results = [''] * len(calls); for index, (ok, run) in enumerate(calls): if not ok: results[index] = await run(). Then safe = [...], outputs = await asyncio.gather(*(run() for _, run in safe)), and zip the outputs back into results."
  ],
  "id": "T10-concurrent",
+ "memory_blank": "# Write it from memory. The tests import these names.\nfrom __future__ import annotations\nasync def run_tool_calls(calls: list[Call]) -> list[str]:\n    ...\n",
  "minutes": 25,
  "module": "T10",
  "objectives": [

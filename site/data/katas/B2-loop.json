@@ -6,6 +6,7 @@
   "Nearly the code: while True: if calls >= max_turns, return max_turns. If used >= max_tokens, return budget. Call the model, add its input and output tokens to used, append its content as the assistant message. If stop_reason is end_turn, return done. If it is not tool_use, return it. Otherwise build the results and append them as one user message."
  ],
  "id": "B2-loop",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef run_loop(model, tools, task, max_turns, max_tokens):\n    ...\n",
  "minutes": 20,
  "module": "B2",
  "objectives": [

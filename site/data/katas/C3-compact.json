@@ -1,11 +1,12 @@
 {
- "from_memory": false,
+ "from_memory": true,
  "hints": [
   "Keep only the notes whose kind is in the keep list and whose turn is before the current turn. Drop the raw tool output: it is not a note.",
   "The summary starts with 'Summary of the work so far:' and then one line per kept note, '- kind: text'. With nothing kept, the one line is '- (nothing kept)'. The new history is that summary as one user message, then the last two messages as they were.",
   "Nearly the code: kept = [n for n in notes if n['turn'] < current_turn and n['kind'] in keep]. summary = 'Summary of the work so far:' then add '\\n- ' + kind + ': ' + text for each kept note, or '\\n- (nothing kept)' if none. new_history: if fewer than five messages or the last one is not a user message, return messages; otherwise return [{'role': 'user', 'content': summary}] + messages[-2:]."
  ],
  "id": "C3-compact",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef compact(notes, keep, current_turn):\n    ...\n\ndef new_history(messages, notes, keep, current_turn):\n    ...\n",
  "minutes": 25,
  "module": "C3",
  "objectives": [

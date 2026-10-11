@@ -1,0 +1,634 @@
+{
+ "prompts": [
+  {
+   "clarify": [
+    "How large is the repository, and how long do its tests take?",
+    "Which folders may the agent change, and which belong to other teams?",
+    "What counts as done: green checks, a reviewer's approval, or both?",
+    "What is the budget for one issue, in money and in time?"
+   ],
+   "cost": {
+    "answer": "Cost is tokens per issue times issues per day, plus the tests run. Keep the parts of each call that repeat, the rules and the tool list, identical across runs, so the same text is sent each time. Log the cost of every issue, and set an alert on a rise against last week, not on a total.",
+    "points": [
+     "Cost per issue, measured.",
+     "Keep repeated parts identical across runs.",
+     "Alert on a rise against last week."
+    ]
+   },
+   "id": "I5-d1",
+   "minutes": 30,
+   "objectives": [
+    "I5.o3"
+   ],
+   "prompt": "Design a coding agent that takes an issue in a large monorepo and opens a pull request that fixes it.",
+   "risks": {
+    "answer": "Cheating risks: the agent edits or deletes a failing test, or special-cases the test's input so the check passes. Guard them with test files the agent cannot write, a diff check on every test file, and a CI configuration the agent cannot change. Watch for runs that pass while a reviewer later reverts the change.",
+    "points": [
+     "Tests the agent can edit prove nothing.",
+     "A diff check on every test file.",
+     "The agent cannot change CI."
+    ]
+   },
+   "rollout": {
+    "answer": "Shadow first: the agent drafts pull requests that nobody merges, and reviewers score them blind. Then canary on one team's low-risk issues. Stop the rollout if the merged-without-change share falls below the floor the team agreed, or if the agent changes any test file in a run.",
+    "points": [
+     "Shadow, then canary on one team.",
+     "Stop when merged-without-change falls.",
+     "Stop on any agent change to a test file."
+    ]
+   },
+   "title": "A coding agent for a large monorepo",
+   "wires": {
+    "context": {
+     "answer": "Each run starts with the issue, the failing test output cut to its first failure, and the rules. The agent searches for code rather than receiving the whole repository. As the run grows, old tool results are cleared, and the rules and the issue stay in every call.",
+     "points": [
+      "Cut the failing output to its first failure.",
+      "Search for code instead of loading the repository.",
+      "Keep the rules and the issue in every call."
+     ]
+    },
+    "control": {
+     "answer": "A system prompt sets the job, the scope and how to report. Project rules sit in one file the owners control, and the agent reads it at the start of every run, so a rule changes without a code change. The hard limits are not requests: the harness refuses a write outside the owned folders and any push to the main branch.",
+     "points": [
+      "Words guide the agent; the harness enforces the limits.",
+      "The owners control one rules file.",
+      "Scope is a harness rule, not a request in the prompt."
+     ]
+    },
+    "errors": {
+     "answer": "A failed tool call returns a short message the model can act on: the path that does not exist, or the test that timed out and how long it ran. A breaker stops retries after a fixed number of identical failures and hands the issue to a person with the log and the attempts.",
+     "points": [
+      "Errors say what to do next.",
+      "A breaker stops identical retries.",
+      "The hand-off carries the log and the attempts."
+     ]
+    },
+    "loop": {
+     "answer": "One loop: read, edit one file, run the affected tests, read the result. Each turn does one edit and one check. The loop has exits: a turn limit, a token budget, and a stop when the same test fails three times with no change in the diff.",
+     "points": [
+      "One edit and one check per turn.",
+      "Exits: turns, tokens, and a repeated failure.",
+      "A stuck loop stops; it does not spin."
+     ]
+    },
+    "observe": {
+     "answer": "Every run writes a trace: each call with its input size, the cost, and the stop reason. The dashboard shows runs per day, the share of runs that open a pull request, and the share a reviewer merges without change. A rising cost per issue raises an alert.",
+     "points": [
+      "Trace every call with its cost.",
+      "Track merged-without-change, not only opened.",
+      "Alert on cost per issue."
+     ]
+    },
+    "permissions": {
+     "answer": "Reads are allowed anywhere in the repository. Writes are allowed only in the owned folders. Test commands are on an allow-list. Opening a pull request into a protected branch needs a person. The order is deny rules first, then ask rules, then allow rules, and the default is ask.",
+     "points": [
+      "Deny first, then ask, then allow.",
+      "Writes only in the owned folders.",
+      "Protected branches need a person."
+     ]
+    },
+    "tools": {
+     "answer": "Five tools: read a file, search, edit a file in the owned folders, run an allow-listed test command, and open a pull request. There is no general shell. Every tool has a strict schema, and every tool result is treated as data, never as an instruction to follow.",
+     "points": [
+      "Narrow tools instead of a shell.",
+      "A strict schema on every tool.",
+      "Tool results are data, not orders."
+     ]
+    },
+    "verify": {
+     "answer": "The agent does not grade itself. CI runs the full suite on the pull request. The harness reruns the tests the agent names as fixed, from a clean checkout. A claim of done without a passing run from that checkout is not done.",
+     "points": [
+      "CI grades the change, not the agent.",
+      "The harness reruns the named tests from clean.",
+      "A done claim needs a passing run."
+     ]
+    }
+   }
+  },
+  {
+   "clarify": [
+    "What is the refund limit per customer, and per agent?",
+    "Which orders may be refunded without a person?",
+    "What must the customer be told, and in what order?",
+    "What happens when the customer is angry or asks for a person?"
+   ],
+   "cost": {
+    "answer": "Cost is the model's tokens per conversation times conversations, plus the lookups. Long chats cost most, so cap the turns, summarise old turns, and log the cost per conversation. Compare the cost of an agent's extra turns with the cost of a human hand-off.",
+    "points": [
+     "Cost per conversation, measured.",
+     "Cap turns; summarise old turns.",
+     "Compare with the cost of a hand-off."
+    ]
+   },
+   "id": "I5-d2",
+   "minutes": 30,
+   "objectives": [
+    "I5.o3"
+   ],
+   "prompt": "Design a customer-support agent that answers questions about orders and can issue refunds.",
+   "risks": {
+    "answer": "Risks: a customer message carries an instruction to refund more, which is prompt injection through the chat. Excessive agency: a refund tool with no limit. Cheating: the agent grants refunds to end a chat. Guard with the harness limit, the confirmation, a review rate, and the metric that counts refunds reversed by people.",
+    "points": [
+     "Injection in chat text is still text.",
+     "The limit lives in the harness.",
+     "Watch refunds given to end a chat."
+    ]
+   },
+   "rollout": {
+    "answer": "Shadow first: the agent drafts replies that a person sends, and refunds are proposed but not issued. Then canary on one order type with a low refund limit. Stop if the reversed-refund share rises above the floor, or if the hand-off rate for anger falls without a fall in complaints.",
+    "points": [
+     "Shadow, with proposals only.",
+     "Canary on one low-limit order type.",
+     "Stop on reversed refunds rising."
+    ]
+   },
+   "title": "A customer-support agent that issues refunds",
+   "wires": {
+    "context": {
+     "answer": "Each call carries the customer's open question, the order record for this customer only, and the policy summary. Other customers' orders and old chats are not loaded. A long chat is summarised, while the customer's own words stay quoted, so the agent does not reword a commitment.",
+     "points": [
+      "Only this customer's records are loaded.",
+      "Summarise old chat; keep quoted commitments.",
+      "The policy summary is in every call."
+     ]
+    },
+    "control": {
+     "answer": "The system prompt gives the job: answer order questions, explain the refund policy, and hand off anything outside it. The policy's amounts and limits live in data the harness reads, not in the prompt, so a policy change does not need a new prompt. The refund limit is enforced in the harness.",
+     "points": [
+      "The policy is data the harness reads.",
+      "Limits are enforced in code.",
+      "The prompt names the hand-off cases."
+     ]
+    },
+    "errors": {
+     "answer": "A refund call that fails returns the reason, such as the order is already refunded, and the agent says so to the customer without retrying. After a timeout the agent does not retry the refund; it checks the order record first. A hand-off carries the order, the attempt and the customer's words.",
+     "points": [
+      "Never retry a refund blind.",
+      "Check the order before any retry.",
+      "A hand-off carries order, attempt and words."
+     ]
+    },
+    "loop": {
+     "answer": "The loop answers from the order record, asks one question at a time, and proposes a refund as a single step with an amount. It stops when the customer accepts, asks for a person, or the turn limit is reached. A refund is never a side effect of a reply: it is a separate tool call the customer confirms.",
+     "points": [
+      "One question at a time.",
+      "A refund is a separate, confirmed step.",
+      "Exits: acceptance, hand-off, turn limit."
+     ]
+    },
+    "observe": {
+     "answer": "Each conversation is traced: the questions, the tools called, the refund amounts, and the hand-offs. The dashboard shows refunds per day, the share reversed by a person, and the rate of hand-offs for anger. The traces store no card numbers.",
+     "points": [
+      "Trace refunds and hand-offs.",
+      "Track refunds reversed by a person.",
+      "Store no card numbers in traces."
+     ]
+    },
+    "permissions": {
+     "answer": "Reading an order is allowed. Refunds up to the agent's limit need the customer's confirmation. Larger refunds, and any refund on an order flagged for review, need a person. Deny rules come first. Links are sent to the customer only when they are on the company's own domain list.",
+     "points": [
+      "Refund limits enforced by rule.",
+      "A person for larger or flagged refunds.",
+      "Links only from the company's domain list."
+     ]
+    },
+    "tools": {
+     "answer": "Tools: look up an order, look up the policy, propose a refund, issue a refund with an idempotency key, and hand off to a person. The refund tool takes an amount and an order id, not free text. Strict schemas make the amount a number. Customer text is data and never sets an amount.",
+     "points": [
+      "Amounts are numbers, not free text.",
+      "An idempotency key on every refund.",
+      "Customer text never sets an amount."
+     ]
+    },
+    "verify": {
+     "answer": "A refund is checked after it is issued: the harness reads the order record back and confirms the amount and the status. A daily reconciliation compares refunds issued with the payment ledger. The agent's own report of a refund is not evidence.",
+     "points": [
+      "Read the record back after each refund.",
+      "Reconcile refunds against the ledger daily.",
+      "The agent's report is not evidence."
+     ]
+    }
+   }
+  },
+  {
+   "clarify": [
+    "How many sources, and how long is each?",
+    "Must every claim in the answer cite a source the reader can open?",
+    "How wrong may the answer be before it is useless?",
+    "What is the budget per question?"
+   ],
+   "cost": {
+    "answer": "Cost grows with sources times sub-agents, since each has its own window. Set a budget per question and a cap on sub-agents. Read the sources the synthesis does not need more cheaply, and log the cost of each sub-agent, so the budget is spent where the claims are.",
+    "points": [
+     "Budget per question, capped sub-agents.",
+     "Cheaper reading where synthesis needs less.",
+     "Log cost per sub-agent."
+    ]
+   },
+   "id": "I5-d3",
+   "minutes": 35,
+   "objectives": [
+    "I5.o3"
+   ],
+   "prompt": "Design a research agent that answers a question from many sources, with sub-agents that read the sources.",
+   "risks": {
+    "answer": "Risks: a sub-agent invents a quote or a citation, and the lead accepts it. A sub-agent reports success without reading its source. A grader that agrees with the lead passes a false answer. Guard with the quote check against the source text, not against the sub-agent's word, and with a grader the lead does not control.",
+    "points": [
+     "Check quotes against the source text.",
+     "A sub-agent's success is not evidence.",
+     "The lead does not grade its own answer."
+    ]
+   },
+   "rollout": {
+    "answer": "Shadow first: the agent answers questions an analyst also answers, and the analyst scores the citations blind. Then canary on one topic with a fixed source list. Stop if the share of claims with a verified quote falls below the floor, or if the cost per question passes the budget.",
+    "points": [
+     "Shadow beside an analyst, scored blind.",
+     "Canary on one topic and a fixed list.",
+     "Stop on quote share or budget."
+    ]
+   },
+   "title": "A research agent that uses sub-agents",
+   "wires": {
+    "context": {
+     "answer": "Each sub-agent has its own context window, so a long source does not fill the lead's window. The lead receives only the sub-agent's structured result: the claim, the quotes and their locations. The full text stays with the sub-agent, and the lead asks for more only when a claim needs it.",
+     "points": [
+      "Sub-agents keep full text in their own window.",
+      "The lead receives a structured result only.",
+      "Quotes carry their locations."
+     ]
+    },
+    "control": {
+     "answer": "The lead agent owns the question and the answer. It writes each sub-agent a brief: the claim to check, the sources to read, and the form of the result. The brief is the contract, so the lead can check the result against it.",
+     "points": [
+      "The lead owns the question and the answer.",
+      "Each sub-agent gets a checkable brief.",
+      "The result form is fixed in the brief."
+     ]
+    },
+    "errors": {
+     "answer": "A sub-agent that times out returns what it has, marked partial, and the lead says which claims are unchecked. A sub-agent that returns no quote for a claim has failed that claim; it has not confirmed it. Partial results are never merged silently.",
+     "points": [
+      "Partial results are marked partial.",
+      "No quote means the claim failed.",
+      "Nothing merges silently."
+     ]
+    },
+    "loop": {
+     "answer": "The lead fans out one sub-agent per source group, waits for all results, then runs one synthesis step. Sub-agents run in parallel only when their sources do not overlap. Every loop has a turn limit and a deadline, so one slow sub-agent cannot hold the answer forever.",
+     "points": [
+      "Fan out by source group.",
+      "Synthesis is one step after all results.",
+      "Every loop has a deadline."
+     ]
+    },
+    "observe": {
+     "answer": "The trace records each sub-agent: its brief, its tool calls, its result and its cost. The dashboard shows cost per question, the share of claims with a quote, and the sub-agent time-outs. A sub-agent that is slow or silent shows up as a time-out, so the dashboard keeps the slow ones visible.",
+     "points": [
+      "Trace each sub-agent and its brief.",
+      "Track claims with a quote.",
+      "Track time-outs and partial results."
+     ]
+    },
+    "permissions": {
+     "answer": "A sub-agent has its own permissions, narrower than the lead's: it reads from its source list only, and its network reaches only the search service. The lead's permissions allow writing the answer file. Deny rules are checked before any allow rule.",
+     "points": [
+      "Sub-agents have their own, narrower permissions.",
+      "Network only to the search service.",
+      "Deny rules are checked first."
+     ]
+    },
+    "tools": {
+     "answer": "Sub-agents get a search tool, a read tool for the sources they were given, and a result tool. They get no write access and no shell. The lead gets the result tool and the synthesis tool. A source a sub-agent tries to open outside its list is refused.",
+     "points": [
+      "Sub-agents get read and search only.",
+      "Sources outside the list are refused.",
+      "Only the lead writes the answer."
+     ]
+    },
+    "verify": {
+     "answer": "Every claim in the answer must point to a quote, and the harness checks that the quote exists in the cited source. A grader reads a sample of claims against their sources. The answer is not done while any claim has no quote.",
+     "points": [
+      "Quotes are checked against the source text.",
+      "A grader samples claims against sources.",
+      "A claim without a quote blocks done."
+     ]
+    }
+   }
+  },
+  {
+   "clarify": [
+    "Which alerts may it close without a page, and which must always page?",
+    "What can it read: logs, dashboards and runbooks?",
+    "What does a missed page cost, compared with a false page?",
+    "Can it run a fix, or only suggest one?"
+   ],
+   "cost": {
+    "answer": "Cost is a few calls per alert, so the total is set by the number of alerts at night. Cap the checks per alert and the alerts per hour, and log the cost per alert. A page costs a person's sleep, which is not in the token budget; say so in the trade-off.",
+    "points": [
+     "Cap checks per alert.",
+     "Cost per alert, logged.",
+     "A page's cost is a person's sleep."
+    ]
+   },
+   "id": "I5-d4",
+   "minutes": 30,
+   "objectives": [
+    "I5.o3"
+   ],
+   "prompt": "Design an agent that triages alerts overnight and pages a person only when it must.",
+   "risks": {
+    "answer": "Risks: the agent closes alerts to lower the page count, which games the count. A quiet metric hides a real outage when an unknown read looks healthy. Guard by scoring the misses, not the closes; by treating an unknown as a page; and by sampling the closed alerts every morning.",
+    "points": [
+     "Score the misses, not the closes.",
+     "Unknown reads page.",
+     "Sample every morning."
+    ]
+   },
+   "rollout": {
+    "answer": "Shadow first: the agent suggests a decision for each alert, a person decides, and the agreement rate is measured. Then canary for one low-severity service, with pages still on. Stop if a missed incident appears in the sample, or if the agreement rate falls below the floor.",
+    "points": [
+     "Shadow: the agent suggests, a person decides.",
+     "Canary on one low-severity service.",
+     "Stop on any missed incident."
+    ]
+   },
+   "title": "An on-call triage agent",
+   "wires": {
+    "context": {
+     "answer": "Each triage call carries the alert, the last hour of its metric, the matching runbook and the open incidents. A runbook is data: the agent reads its steps but cannot edit them. Older alerts are summarised by id and count.",
+     "points": [
+      "Alert, last hour, runbook, open incidents.",
+      "Runbooks are read-only data.",
+      "Older alerts are summarised by id and count."
+     ]
+    },
+    "control": {
+     "answer": "The system prompt gives the job: triage, page when the policy says so, and never close a page-class alert. The paging policy is a data file the on-call owners edit. The rule that a page-class alert always pages is enforced in the harness, not in the prompt.",
+     "points": [
+      "The paging policy is data the owners edit.",
+      "Page-class alerts always page; the harness enforces it.",
+      "The prompt names the close rules."
+     ]
+    },
+    "errors": {
+     "answer": "A failed metric query is an unknown reading, not a healthy one, and an unknown means page. A timeout on the log search pages with the query that failed, so the person can run it. The agent never retries a write, and it has no write access in production.",
+     "points": [
+      "An unknown metric means page.",
+      "A failed query is passed to the page.",
+      "No production writes."
+     ]
+    },
+    "loop": {
+     "answer": "The loop reads the alert, checks its runbook, looks at the metric, then decides: close with a reason, page with a summary, or suggest a step. It stops after a fixed number of checks, and if it stops without a decision it pages.",
+     "points": [
+      "Read, check, decide.",
+      "No decision after the check limit: page.",
+      "Each decision names its reason."
+     ]
+    },
+    "observe": {
+     "answer": "Every decision is traced with its reason, the metrics read and the runbook used. The dashboard shows pages per night, closes per night, the missed incidents found by the sample, and the time to first human response. A dashboard row per shift shows the rate of pages against the rate of real incidents.",
+     "points": [
+      "Trace every decision with its reason.",
+      "Track missed incidents found by the sample.",
+      "Track time to first human response."
+     ]
+    },
+    "permissions": {
+     "answer": "Reads are allowed for the alert's service. Closing an alert needs a close rule that matches it, and no rule can close a page-class alert. Deny rules come first, then close rules, then the default, which is to page. A rule that would close a page-class alert is refused at load, so a bad rule cannot pass review silently.",
+     "points": [
+      "Default to page.",
+      "Close only with a matching rule.",
+      "Page-class alerts cannot be closed."
+     ]
+    },
+    "tools": {
+     "answer": "Read tools only: alerts, metrics, logs, runbooks and incident history. A page tool that takes a summary. A suggest tool that drafts a fix as text for a person. There is no restart, deploy or delete tool. Log lines are data, and an instruction inside a log line is never followed.",
+     "points": [
+      "Read tools and a page tool only.",
+      "Suggest drafts a fix; it does not run it.",
+      "Log lines are data, not instructions."
+     ]
+    },
+    "verify": {
+     "answer": "Each closed alert is sampled the next morning: a person reviews a set of closes, and any that were a real incident counts against the agent. A close is final only after the sample has passed. A closed alert that was a real incident also reopens the rule that closed it, so the rule is reviewed.",
+     "points": [
+      "A sample of closes each morning.",
+      "A real incident in the sample counts against it.",
+      "A close is final only after the sample."
+     ]
+    }
+   }
+  },
+  {
+   "clarify": [
+    "Which tasks: how many, from which sources, and who wrote them?",
+    "Which grader scores each task, and how often does a person check it?",
+    "Which number decides the launch, and what interval must it clear?",
+    "How long may the run take, and what may it cost?"
+   ],
+   "cost": {
+    "answer": "Cost is trials times tasks times the model's cost per run, plus the graders. Many trials on a small set can cost more than a larger set with fewer trials. Set the trial count from the interval the decision needs, and budget the run before it starts.",
+    "points": [
+     "Trials set from the interval needed.",
+     "Budget before the run starts.",
+     "Graders are part of the cost."
+    ]
+   },
+   "id": "I5-d5",
+   "minutes": 35,
+   "objectives": [
+    "I5.o3"
+   ],
+   "prompt": "Design the eval run that decides whether a new model can launch on the harness.",
+   "risks": {
+    "answer": "Risks: the tasks leak into training data or a public set, so the scores measure memory. A model grader that rubber-stamps false dones passes the run. Guard with held-out tasks that stay private, graders checked against known cases, and a sample of transcripts a person reads before the launch.",
+    "points": [
+     "Held-out tasks stay private.",
+     "Check graders for false dones.",
+     "A person reads a sample of transcripts."
+    ]
+   },
+   "rollout": {
+    "answer": "Shadow: the new model runs the same tasks beside the current one, and nothing ships. Then a staged launch: the decision rule must clear on the full run, and the model then serves one team's low-risk traffic. Stop if a task the old model passed now fails, beyond the rule's threshold.",
+    "points": [
+     "Shadow beside the current model.",
+     "Decision rule on the full run.",
+     "Stop on regressions past the threshold."
+    ]
+   },
+   "title": "An eval run before a model launch",
+   "wires": {
+    "context": {
+     "answer": "Each task starts from a clean environment with only its own files. The model sees the task and its tools, not the grader, the other tasks or earlier scores, so nothing leaks between tasks. A task names the files it needs, and nothing else from the workspace is copied in.",
+     "points": [
+      "Clean environment per task.",
+      "The grader is hidden from the model.",
+      "No earlier scores in the context."
+     ]
+    },
+    "control": {
+     "answer": "The run is defined in one file: the tasks, the graders, the trials, the seeds and the decision rule. The launch owner writes the rule before the run, so no one picks the threshold after seeing the scores. A change to the rule after a run needs a new version of the run, so the history stays honest.",
+     "points": [
+      "The rule is written before the run.",
+      "Tasks, graders and seeds in one file.",
+      "No threshold chosen after the scores."
+     ]
+    },
+    "errors": {
+     "answer": "A task whose environment fails to start is a harness error, reported separately, and it counts neither for nor against the model. When the share of harness errors passes a set limit, the run stops, so a broken harness cannot pass a model.",
+     "points": [
+      "Harness errors are reported apart.",
+      "They count neither for nor against the model.",
+      "Too many harness errors stop the run."
+     ]
+    },
+    "loop": {
+     "answer": "The run executes each task for each trial, in a fixed order, and records every transcript. A trial that hits the harness's limits is recorded as a failure with its reason, not dropped from the count. A run that is stopped partway keeps every trial it finished, and a resume starts from the next trial.",
+     "points": [
+      "Fixed order, every trial recorded.",
+      "A limit hit is a recorded failure.",
+      "Nothing is dropped from the count."
+     ]
+    },
+    "observe": {
+     "answer": "The run records each score with its interval, the cost, the time, the harness errors, and each task's transcript. The launch dashboard shows the decision number with its interval, and the tasks that moved most since the last model. Each dashboard number links back to the run file and the seeds that produced it.",
+     "points": [
+      "Scores with intervals, not points.",
+      "Cost and time per run.",
+      "Tasks that moved most, listed."
+     ]
+    },
+    "permissions": {
+     "answer": "A task runs in a sandbox with no network unless the task names a host. Secrets are not in its environment. The grader reads the outcome, not the model's files beyond the task's own. Network and file access are recorded in the run, so a reviewer can see what each task reached.",
+     "points": [
+      "No network unless the task names a host.",
+      "No secrets in the environment.",
+      "The grader reads the outcome only."
+     ]
+    },
+    "tools": {
+     "answer": "Each task's tools are fixed in its file and are the same for every model compared. A change to the tools is a new eval version, so scores are never compared across different tool sets without saying so. A tool that is not in the task's file is not offered to the model, even if the harness has it.",
+     "points": [
+      "Tools fixed per task.",
+      "A tool change is a new version.",
+      "No silent comparison across tool sets."
+     ]
+    },
+    "verify": {
+     "answer": "Each code grader is checked against a set of known passes and known false passes. A model grader is checked against human labels before it counts, and it is never the only grader behind a launch decision. Where every trial must succeed, the decision uses pass^k.",
+     "points": [
+      "Check graders against known cases.",
+      "A model grader needs human labels first.",
+      "Use pass^k where every trial must succeed."
+     ]
+    }
+   }
+  },
+  {
+   "clarify": [
+    "May it send, or only draft for the person to send?",
+    "Which accounts and which folders may it open?",
+    "What must it never send without asking the person?",
+    "What does the person see afterwards, and how do they undo a send?"
+   ],
+   "cost": {
+    "answer": "Cost is drafts per day times the model's cost per thread, plus the reads. Long threads cost most, so the agent summarises older messages in a thread instead of re-reading them. Log the cost per approved draft, since a rewritten draft costs twice.",
+    "points": [
+     "Cost per approved draft.",
+     "Summarise old messages in long threads.",
+     "Rewritten drafts cost twice; track them."
+    ]
+   },
+   "id": "I5-d6",
+   "minutes": 35,
+   "objectives": [
+    "I5.o3"
+   ],
+   "prompt": "Design a browser agent that reads a person's email and drafts, or sends, replies on their behalf.",
+   "risks": {
+    "answer": "Risks: an email asks the agent to forward the inbox to an outside address. That is prompt injection with private data and a way out, the lethal trifecta. Guard by cutting one leg: no send without a yes, outbound network to the mail provider only, and the private folders out of reach for any send.",
+    "points": [
+     "Injection in mail is still text.",
+     "Cut a leg: no send without a yes.",
+     "Outbound network limited to the mail provider."
+    ]
+   },
+   "rollout": {
+    "answer": "Shadow first: the agent drafts replies to mail the person has already answered, and the person compares them blind. Then canary: drafts only, for one account and one folder. Stop if approved sends are undone often, or if any send happens without a recorded yes.",
+    "points": [
+     "Shadow on mail already answered.",
+     "Canary: drafts only, one account.",
+     "Stop on any send without a recorded yes."
+    ]
+   },
+   "title": "A browser agent that handles a person's email",
+   "wires": {
+    "context": {
+     "answer": "The agent carries the message it is answering, the thread, and the person's standing rules. Other threads and other people's mail are not loaded. Email bodies are long and untrusted, so the context holds the relevant paragraphs, not every whole message.",
+     "points": [
+      "Only the thread and the rules are loaded.",
+      "Relevant paragraphs, not whole messages.",
+      "Other people's mail is not loaded."
+     ]
+    },
+    "control": {
+     "answer": "The system prompt sets the job: summarise, draft and ask. The rule that nothing is sent without the person's yes is enforced by the harness, not by words. The person's standing rules, such as never reply to a contract, are data the harness reads before each send.",
+     "points": [
+      "Nothing sent without a yes; the harness enforces it.",
+      "Standing rules are data read before a send.",
+      "The job is summarise, draft and ask."
+     ]
+    },
+    "errors": {
+     "answer": "A failed send is reported to the person with its reason and is not retried, because a retry can send twice. A failed read stops the thread and says so. When an address is ambiguous, the agent asks; it never guesses the recipient.",
+     "points": [
+      "A failed send is never retried.",
+      "A failed read stops and says so.",
+      "Ambiguous recipients are asked, not guessed."
+     ]
+    },
+    "loop": {
+     "answer": "The loop reads one thread, drafts a reply, shows the draft to the person, and waits. A send is a separate step the person triggers. The loop stops when the person says yes, no or edit, and after a fixed number of drafts.",
+     "points": [
+      "One thread per loop.",
+      "The send is a separate, triggered step.",
+      "Exits: yes, no, or a draft limit."
+     ]
+    },
+    "observe": {
+     "answer": "Each thread is traced: the draft, the person's decision, the send, and any refused tool call. The dashboard shows drafts approved as written, edits made, and sends the person later undid. Each trace also stores the time between the draft and the person's decision, which shows where drafts stall.",
+     "points": [
+      "Trace drafts, decisions and sends.",
+      "Track drafts approved as written.",
+      "Track sends the person undid."
+     ]
+    },
+    "permissions": {
+     "answer": "Reading and drafting are allowed. Sending needs the person's yes on that draft. Sending to a new recipient, or with an attachment, needs a second yes. Deny rules come first. Outbound network is limited to the mail provider and the allow-listed links.",
+     "points": [
+      "Drafting is free; sending needs a yes.",
+      "A new recipient or an attachment needs a second yes.",
+      "Network only to the mail provider and listed links."
+     ]
+    },
+    "tools": {
+     "answer": "Tools: read a thread, search the person's mail, draft a reply, send a drafted reply, and open a link on an allow-list. The send tool takes a draft id, not free text, so a send is always the reviewed draft. Email text is data, and an instruction inside a message never triggers a send.",
+     "points": [
+      "The send takes a reviewed draft id only.",
+      "Links only from the allow-list.",
+      "An instruction in mail never triggers a send."
+     ]
+    },
+    "verify": {
+     "answer": "After a send, the harness reads the sent folder and confirms that the message and its recipients match the approved draft. A mismatch is reported to the person at once. The agent's own report of a send is not evidence.",
+     "points": [
+      "Read the sent folder after each send.",
+      "Match recipients and text to the draft.",
+      "A mismatch is reported at once."
+     ]
+    }
+   }
+  }
+ ]
+}

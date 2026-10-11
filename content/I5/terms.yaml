@@ -1,0 +1,18 @@
+- id: system-design-interview
+  term: system design interview
+  aliases:
+  - system design interview
+  - system design interviews
+  strict: true
+  wire: control
+  definition: A session in which you design a system out loud with an interviewer, and are judged on the decisions
+    and trade-offs, not on a single right answer.
+- id: take-home
+  term: take-home
+  aliases:
+  - take-home
+  - take-home project
+  - take-home projects
+  strict: false
+  wire: control
+  definition: A small project with a fixed brief and time limit, done alone and written up for review.

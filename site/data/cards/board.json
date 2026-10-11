@@ -1,0 +1,3504 @@
+[
+ {
+  "back": "Everything around the model: the loop, the tools, the permissions, the checks and the limits.",
+  "front": "What is a harness?",
+  "id": "S0-c1",
+  "module": "S0",
+  "objective": "S0.o1",
+  "type": "term"
+ },
+ {
+  "back": "The record of a run, in order: each model call, reply, permission, tool call and check.",
+  "front": "What is a trace?",
+  "id": "S0-c2",
+  "module": "S0",
+  "objective": "S0.o1",
+  "type": "term"
+ },
+ {
+  "back": "A trial is one run with one seed. A bench runs many trials of the same setup and reports the pass rate.",
+  "front": "How is a trial different from a run?",
+  "id": "S0-c3",
+  "module": "S0",
+  "objective": "S0.o3",
+  "type": "term"
+ },
+ {
+  "back": "It sets the random draws of a scripted run. The same seed gives the same run, so a bench repeats exactly.",
+  "front": "What does a seed do?",
+  "id": "S0-c4",
+  "module": "S0",
+  "objective": "S0.o3",
+  "type": "term"
+ },
+ {
+  "back": "The share of trials that pass their checks. It measures many runs, not one run.",
+  "front": "What is a pass rate?",
+  "id": "S0-c5",
+  "module": "S0",
+  "objective": "S0.o3",
+  "type": "term"
+ },
+ {
+  "back": "Verification and evals. A done claim stays a claim until a check runs and confirms it.",
+  "front": "Which wire checks a done claim before the run is accepted?",
+  "id": "S0-c6",
+  "module": "S0",
+  "objective": "S0.o4",
+  "type": "wire-question",
+  "wire": "verify"
+ },
+ {
+  "back": "Verification and evals. The harness took the model's word, so nothing checked the done claim.",
+  "front": "The model says the tests pass, but no test ran. Which wire is that?",
+  "id": "S0-c7",
+  "module": "S0",
+  "objective": "S0.o2",
+  "type": "which-wire",
+  "wire": "verify"
+ },
+ {
+  "back": "A named kind of failure that recurs across runs, such as a false done. Each module teaches one.",
+  "front": "What is a failure family?",
+  "id": "S0-c8",
+  "module": "S0",
+  "objective": "S0.o4",
+  "type": "term"
+ },
+ {
+  "back": "A model that reads a text and scores the possible next tokens. A harness calls it again and again.",
+  "front": "What is a language model, in this course?",
+  "id": "A1-k1",
+  "module": "A1",
+  "objective": "A1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Every possible next token. Nothing in that step checks whether a token is true.",
+  "front": "What does next-token prediction score?",
+  "id": "A1-k2",
+  "module": "A1",
+  "objective": "A1.o1",
+  "type": "term"
+ },
+ {
+  "back": "It picks one token from the scored options, by the rules it is given. The model scores; the sampler picks.",
+  "front": "What does sampling do?",
+  "id": "A1-k3",
+  "module": "A1",
+  "objective": "A1.o1",
+  "type": "term"
+ },
+ {
+  "back": "It spreads the choice over more tokens, so less likely tokens get more chances. At zero, the top token always wins.",
+  "front": "What does a higher temperature do to the choice?",
+  "id": "A1-k4",
+  "module": "A1",
+  "objective": "A1.o2",
+  "type": "term"
+ },
+ {
+  "back": "A fluent, specific claim that is false. It reads the same as a true claim.",
+  "front": "What is a hallucination?",
+  "id": "A1-k5",
+  "module": "A1",
+  "objective": "A1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Training sets the weights, before any chat. Inference reads them and leaves them the same.",
+  "front": "What sets the weights, and what only reads them?",
+  "id": "A1-k6",
+  "module": "A1",
+  "objective": "A1.o4",
+  "type": "term"
+ },
+ {
+  "back": "Verification. The harness took the reply's word, so nothing checked the claim.",
+  "front": "A reply says all tests pass, and no test ran. Which wire is that?",
+  "id": "A1-k7",
+  "module": "A1",
+  "objective": "A1.o3",
+  "type": "which-wire",
+  "wire": "verify"
+ },
+ {
+  "back": "No. Fluency shows how the reply reads. Only a check shows whether the claim is true.",
+  "front": "Does a fluent reply show that it is true?",
+  "id": "A1-k8",
+  "module": "A1",
+  "objective": "A1.o3",
+  "type": "term"
+ },
+ {
+  "back": "The part that cuts text into tokens. Real tokenizers differ, so a count from the course is an estimate.",
+  "front": "What is a tokenizer?",
+  "id": "A2-k1",
+  "module": "A2",
+  "objective": "A2.o1",
+  "type": "term"
+ },
+ {
+  "back": "About four characters per token. It is an estimate, and the Tokenizer labels it that way.",
+  "front": "What is the course's rule of thumb for tokens?",
+  "id": "A2-k2",
+  "module": "A2",
+  "objective": "A2.o1",
+  "type": "term"
+ },
+ {
+  "back": "No. A token can be a word, part of a word, or a punctuation mark.",
+  "front": "Is a token always a word?",
+  "id": "A2-k3",
+  "module": "A2",
+  "objective": "A2.o1",
+  "type": "term"
+ },
+ {
+  "back": "The fixed-size desk the model reads on each call. Instructions, earlier messages, tool results and the reply share it.",
+  "front": "What is a context window?",
+  "id": "A2-k4",
+  "module": "A2",
+  "objective": "A2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Context. The desk is full, and the harness has no cap on what went onto it.",
+  "front": "One tool result fills most of the window, so the next prompt cannot be sent. Which wire is that?",
+  "id": "A2-k5",
+  "module": "A2",
+  "objective": "A2.o2",
+  "type": "which-wire",
+  "wire": "context"
+ },
+ {
+  "back": "The most tokens one reply may use. A reply that reaches it stops there.",
+  "front": "What is the output limit?",
+  "id": "A2-k6",
+  "module": "A2",
+  "objective": "A2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Input tokens are what the model reads on a call. Output tokens are what it writes. Both use the window.",
+  "front": "What is the difference between input tokens and output tokens?",
+  "id": "A2-k7",
+  "module": "A2",
+  "objective": "A2.o3",
+  "type": "term"
+ },
+ {
+  "back": "More tokens in and out. Each token is work for the model, and prices are set per million tokens.",
+  "front": "What makes a call slower and more costly?",
+  "id": "A2-k8",
+  "module": "A2",
+  "objective": "A2.o4",
+  "type": "term"
+ },
+ {
+  "back": "The call starts from what it is sent, and nothing else. The model keeps nothing between calls.",
+  "front": "What does stateless mean for a model call?",
+  "id": "A3-c1",
+  "module": "A3",
+  "objective": "A3.o1",
+  "type": "term"
+ },
+ {
+  "back": "The ordered list of messages sent with each call. It is the conversation the model can see.",
+  "front": "What is the messages array?",
+  "id": "A3-c2",
+  "module": "A3",
+  "objective": "A3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Whether it is from the user or from the assistant.",
+  "front": "What does a role tell you about a message?",
+  "id": "A3-c3",
+  "module": "A3",
+  "objective": "A3.o2",
+  "type": "term"
+ },
+ {
+  "back": "The earlier messages in the list. The harness keeps them and decides how much each call sends.",
+  "front": "What is conversation history?",
+  "id": "A3-c4",
+  "module": "A3",
+  "objective": "A3.o3",
+  "type": "term"
+ },
+ {
+  "back": "In the system prompt, kept apart from the messages. The harness sends it with every call.",
+  "front": "Where does the system prompt go?",
+  "id": "A3-c5",
+  "module": "A3",
+  "objective": "A3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Context and memory. It decides what stays in the window and what the model sees on each call.",
+  "front": "Which wire decides what the next call sends from the history?",
+  "id": "A3-c6",
+  "module": "A3",
+  "objective": "A3.o4",
+  "type": "wire-question",
+  "wire": "context"
+ },
+ {
+  "back": "What is in the window and what is in saved files. The model's weights are not the harness's to change.",
+  "front": "Which kind of memory does the harness control?",
+  "id": "A3-c7",
+  "module": "A3",
+  "objective": "A3.o4",
+  "type": "term"
+ },
+ {
+  "back": "What the harness sends for one model call: the system prompt, the tools and the messages.",
+  "front": "What is a request?",
+  "id": "A4-c1",
+  "module": "A4",
+  "objective": "A4.o1",
+  "type": "term"
+ },
+ {
+  "back": "One typed part of a response: text, or a tool request. Its type says what fields it has.",
+  "front": "What is a content block?",
+  "id": "A4-c2",
+  "module": "A4",
+  "objective": "A4.o2",
+  "type": "term"
+ },
+ {
+  "back": "Why the model stopped: end_turn, tool_use, max_tokens and a few others. The harness acts on each one.",
+  "front": "What does stop_reason tell the harness?",
+  "id": "A4-c3",
+  "module": "A4",
+  "objective": "A4.o3",
+  "type": "term"
+ },
+ {
+  "back": "The response hit the request's length limit, so it may be cut off. Do not run a half-written tool request.",
+  "front": "What is max_tokens as a stop reason?",
+  "id": "A4-c4",
+  "module": "A4",
+  "objective": "A4.o3",
+  "type": "term"
+ },
+ {
+  "back": "The counts in a response: the input and output tokens of the call. The cost of a call comes from them.",
+  "front": "What is usage?",
+  "id": "A4-c5",
+  "module": "A4",
+  "objective": "A4.o4",
+  "type": "term"
+ },
+ {
+  "back": "A reply that arrives as a sequence of events. The events build the same message, in order.",
+  "front": "What is streaming?",
+  "id": "A4-c6",
+  "module": "A4",
+  "objective": "A4.o5",
+  "type": "term"
+ },
+ {
+  "back": "Because a reply can mix text and tool requests. Each block says which it is, so the harness reads them one by one.",
+  "front": "Why is a reply a list of typed blocks, not one string?",
+  "id": "A4-c7",
+  "module": "A4",
+  "objective": "A4.o2",
+  "type": "wire-question",
+  "wire": "loop"
+ },
+ {
+  "back": "A way to write down the shape of a JSON object: its fields, their types, which are required and which values are allowed.",
+  "front": "What is JSON Schema?",
+  "id": "A5-c1",
+  "module": "A5",
+  "objective": "A5.o1",
+  "type": "term"
+ },
+ {
+  "back": "It refuses a field the schema does not name. This course's checker refuses it.",
+  "front": "What does additionalProperties false do?",
+  "id": "A5-c2",
+  "module": "A5",
+  "objective": "A5.o1",
+  "type": "term"
+ },
+ {
+  "back": "A field that may take only one of a short list of values.",
+  "front": "What is an enum?",
+  "id": "A5-c3",
+  "module": "A5",
+  "objective": "A5.o1",
+  "type": "term"
+ },
+ {
+  "back": "Checking a value against a schema before the harness uses it. It returns the first reason the value fails.",
+  "front": "What is schema validation?",
+  "id": "A5-c4",
+  "module": "A5",
+  "objective": "A5.o2",
+  "type": "term"
+ },
+ {
+  "back": "A reply in a shape you asked for. The shape can be right and the values still wrong.",
+  "front": "What is a structured output?",
+  "id": "A5-c5",
+  "module": "A5",
+  "objective": "A5.o4",
+  "type": "term"
+ },
+ {
+  "back": "Tools. The check is on the call's input, before the tool runs.",
+  "front": "A schema check on each tool call's input runs before the tool. Which wire is that?",
+  "id": "A5-c6",
+  "module": "A5",
+  "objective": "A5.o2",
+  "type": "which-wire",
+  "wire": "tools"
+ },
+ {
+  "back": "Generating a reply so that only the tokens a schema allows can be chosen. A method, compared with the other two.",
+  "front": "What is constrained decoding?",
+  "id": "A5-c7",
+  "module": "A5",
+  "objective": "A5.o3",
+  "type": "term"
+ },
+ {
+  "back": "Extra tokens the model writes before it answers, to work a problem out. They are billed as output.",
+  "front": "What is extended thinking?",
+  "id": "A6-k1",
+  "module": "A6",
+  "objective": "A6.o1",
+  "type": "term"
+ },
+ {
+  "back": "It goes back to the model complete and unmodified, with the tool call that it belongs to.",
+  "front": "What must happen to a thinking block during a tool loop?",
+  "id": "A6-k2",
+  "module": "A6",
+  "objective": "A6.o3",
+  "type": "term"
+ },
+ {
+  "back": "A setting that tells the model how much to work before it answers. The harness sets it on each request.",
+  "front": "What is effort?",
+  "id": "A6-k3",
+  "module": "A6",
+  "objective": "A6.o2",
+  "type": "term"
+ },
+ {
+  "back": "The cost of a task's calls, divided by the share of tasks that finish. A cheap call that often fails is not cheap.",
+  "front": "What is cost per completed task?",
+  "id": "A6-k4",
+  "module": "A6",
+  "objective": "A6.o4",
+  "type": "term"
+ },
+ {
+  "back": "Control. The harness decides how much the model works before it answers.",
+  "front": "The board sets effort to low for every call. Which wire is that setting on?",
+  "id": "A6-k5",
+  "module": "A6",
+  "objective": "A6.o2",
+  "type": "which-wire",
+  "wire": "control"
+ },
+ {
+  "back": "No. On easy work it can add cost and wait without a better answer.",
+  "front": "Does a higher effort always help?",
+  "id": "A6-k6",
+  "module": "A6",
+  "objective": "A6.o2",
+  "type": "term"
+ },
+ {
+  "back": "A model saying its work is good when it is not. Checking its own work does not catch it.",
+  "front": "What is self-praise, as a failure mode?",
+  "id": "A7-c1",
+  "module": "A7",
+  "objective": "A7.o1",
+  "type": "term"
+ },
+ {
+  "back": "A check that does not depend on the model's words: a test, a file, a number you can look up.",
+  "front": "What is ground truth?",
+  "id": "A7-c2",
+  "module": "A7",
+  "objective": "A7.o1",
+  "type": "term"
+ },
+ {
+  "back": "When each step can fail, the chance that all the steps work falls with every step.",
+  "front": "What is a compounding error?",
+  "id": "A7-c3",
+  "module": "A7",
+  "objective": "A7.o2",
+  "type": "term"
+ },
+ {
+  "back": "From the system around the model, checked from outside the model.",
+  "front": "Where does reliability come from in this course?",
+  "id": "A7-c4",
+  "module": "A7",
+  "objective": "A7.o3",
+  "type": "term"
+ },
+ {
+  "back": "Facts the model holds that have changed since it learned them. The model does not know they are out of date.",
+  "front": "What is stale knowledge?",
+  "id": "A7-c5",
+  "module": "A7",
+  "objective": "A7.o1",
+  "type": "term"
+ },
+ {
+  "back": "Verification and evals. The check is outside the model's words.",
+  "front": "A check that runs the tests after the model says done. Which wire is it?",
+  "id": "A7-c6",
+  "module": "A7",
+  "objective": "A7.o3",
+  "type": "which-wire",
+  "wire": "verify"
+ },
+ {
+  "back": "The model can give different answers to the same prompt, so one good run says little about the next.",
+  "front": "What is randomness, as a failure mode?",
+  "id": "A7-c7",
+  "module": "A7",
+  "objective": "A7.o2",
+  "type": "term"
+ },
+ {
+  "back": "It writes a tool_use block that names the tool and its input. It does not run the tool. The harness does.",
+  "front": "What does the model do when it wants a tool run?",
+  "id": "B1-k1",
+  "module": "B1",
+  "objective": "B1.o1",
+  "type": "term"
+ },
+ {
+  "back": "tool_use. The harness runs the tools, then calls the model again with the results.",
+  "front": "What stop reason tells the harness that a tool run is needed?",
+  "id": "B1-k2",
+  "module": "B1",
+  "objective": "B1.o1",
+  "type": "term"
+ },
+ {
+  "back": "A name, a description and an input schema.",
+  "front": "What three parts make a tool definition?",
+  "id": "B1-k3",
+  "module": "B1",
+  "objective": "B1.o2",
+  "type": "term"
+ },
+ {
+  "back": "The fields the tool takes, their types, and which of them are required.",
+  "front": "What does input_schema say?",
+  "id": "B1-k4",
+  "module": "B1",
+  "objective": "B1.o2",
+  "type": "term"
+ },
+ {
+  "back": "The tool_use_id of the call it answers.",
+  "front": "What must each tool_result carry?",
+  "id": "B1-k5",
+  "module": "B1",
+  "objective": "B1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Set is_error to true and say why in the content.",
+  "front": "How do you mark a failed call?",
+  "id": "B1-k6",
+  "module": "B1",
+  "objective": "B1.o3",
+  "type": "term"
+ },
+ {
+  "back": "All together in one user message, sent after the reply.",
+  "front": "Where do the results of one reply go?",
+  "id": "B1-k7",
+  "module": "B1",
+  "objective": "B1.o3",
+  "type": "term"
+ },
+ {
+  "back": "The model sees only the definition. The name, the description and the schema are its whole picture of the tool, so a poor definition leads to misuse.",
+  "front": "Why is a tool a user interface for a model?",
+  "id": "B1-k8",
+  "module": "B1",
+  "objective": "B1.o4",
+  "type": "term"
+ },
+ {
+  "back": "One call to the model, plus the tool results that follow it.",
+  "front": "What is a turn in the agent loop?",
+  "id": "B2-k1",
+  "module": "B2",
+  "objective": "B2.o1",
+  "type": "term"
+ },
+ {
+  "back": "A cap on the number of model calls in one run. The loop stops when the cap is reached.",
+  "front": "What is a turn limit?",
+  "id": "B2-k2",
+  "module": "B2",
+  "objective": "B2.o3",
+  "type": "term"
+ },
+ {
+  "back": "A cap on the total tokens a run may use, input and output together. The loop checks it before each call.",
+  "front": "What is a token budget?",
+  "id": "B2-k3",
+  "module": "B2",
+  "objective": "B2.o3",
+  "type": "term"
+ },
+ {
+  "back": "The model's own statement that it finished, carried by end_turn. The loop checks it. It is not proof.",
+  "front": "What is a done claim?",
+  "id": "B2-k4",
+  "module": "B2",
+  "objective": "B2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Loop & state. Every run needs more than one exit.",
+  "front": "Which wire asks: what happens next, what do we carry, and when do we stop?",
+  "id": "B2-k5",
+  "module": "B2",
+  "objective": "B2.o5",
+  "type": "wire-question",
+  "wire": "loop"
+ },
+ {
+  "back": "Verification & evals. A done claim stays a claim until a check confirms it.",
+  "front": "Which wire checks the model's done claim before the loop accepts it?",
+  "id": "B2-k6",
+  "module": "B2",
+  "objective": "B2.o5",
+  "type": "which-wire",
+  "wire": "verify"
+ },
+ {
+  "back": "The two results for one reply sit in two user messages. Send all of them together, in one user message.",
+  "bug_path": "/messages/2",
+  "front": "Spot the bug in this history.",
+  "id": "B2-k7",
+  "json": {
+   "messages": [
+    {
+     "content": [
+      {
+       "id": "t1",
+       "input": {
+        "path": "calc.py"
+       },
+       "name": "read_file",
+       "type": "tool_use"
+      },
+      {
+       "id": "t2",
+       "input": {
+        "cmd": "pytest -q"
+       },
+       "name": "run_tests",
+       "type": "tool_use"
+      }
+     ],
+     "role": "assistant"
+    },
+    {
+     "content": [
+      {
+       "content": "def add(a, b): ...",
+       "tool_use_id": "t1",
+       "type": "tool_result"
+      }
+     ],
+     "role": "user"
+    },
+    {
+     "content": [
+      {
+       "content": "2 passed",
+       "tool_use_id": "t2",
+       "type": "tool_result"
+      }
+     ],
+     "role": "user"
+    }
+   ]
+  },
+  "module": "B2",
+  "objective": "B2.o1",
+  "type": "spot-bug-json"
+ },
+ {
+  "back": "The order is the loop: call, read, run, append, repeat.",
+  "front": "Put one turn of the loop in order.",
+  "id": "B2-k8",
+  "items": [
+   "Call the model with the full history.",
+   "Read the stop_reason.",
+   "Run each tool the model asked for.",
+   "Append all results in one user message.",
+   "Call the model again."
+  ],
+  "module": "B2",
+  "objective": "B2.o1",
+  "type": "order-turn"
+ },
+ {
+  "back": "The almost done spiral. The model keeps saying it is almost done and keeps flipping the same line. The loop has no exit but the model's own claim.",
+  "family": "almost-done-spiral",
+  "front": "Name the failure family for this trace.",
+  "id": "B2-k9",
+  "module": "B2",
+  "objective": "B2.o4",
+  "trace": [
+   "Edit calc.py: + 1 becomes - 1. Say: Almost done: one more fix.",
+   "Run the tests: 1 failed, 1 passed: test_total expected 6.",
+   "Edit calc.py: - 1 becomes + 1. Say: One last change should do it.",
+   "Run the tests: 1 failed, 1 passed: test_total expected 6.",
+   "Edit calc.py: + 1 becomes - 1. Say: Almost done. Re-running the tests.",
+   "Run the tests: 1 failed, 1 passed: test_total expected 6."
+  ],
+  "type": "name-family"
+ },
+ {
+  "back": "Choosing the words of the prompt and the instructions. Words guide the model; they do not enforce anything.",
+  "front": "What is prompt engineering?",
+  "id": "B3-k1",
+  "module": "B3",
+  "objective": "B3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Choosing what goes on the desk for each call, and what gets cut or saved.",
+  "front": "What is context engineering?",
+  "id": "B3-k2",
+  "module": "B3",
+  "objective": "B3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Building and tuning the code around the model: the loop, tools, permissions, checks and limits.",
+  "front": "What is harness engineering?",
+  "id": "B3-k3",
+  "module": "B3",
+  "objective": "B3.o2",
+  "type": "term"
+ },
+ {
+  "back": "The harness a vendor ships with its model product, with its own loop, tools and limits.",
+  "front": "What is a product harness?",
+  "id": "B3-k4",
+  "module": "B3",
+  "objective": "B3.o4",
+  "type": "term"
+ },
+ {
+  "back": "The harness you add around a model product or API: your loop, your tools and your checks.",
+  "front": "What is a user harness?",
+  "id": "B3-k5",
+  "module": "B3",
+  "objective": "B3.o4",
+  "type": "term"
+ },
+ {
+  "back": "A process runs the same steps each time. A model writes different text each run, so the harness must check its output.",
+  "front": "Where does the operating-system picture of an agent break down?",
+  "id": "B3-k6",
+  "module": "B3",
+  "objective": "B3.o3",
+  "type": "term"
+ },
+ {
+  "back": "A library of ready-made parts for building a harness. It does not decide your harness for you.",
+  "front": "What is a framework?",
+  "id": "B3-k7",
+  "module": "B3",
+  "objective": "B3.o1",
+  "type": "term"
+ },
+ {
+  "back": "One of the eight parts of a harness. Each wire answers one question about a turn.",
+  "front": "What is a wire?",
+  "id": "B4-k1",
+  "module": "B4",
+  "objective": "B4.o1",
+  "type": "term"
+ },
+ {
+  "back": "One turn of a run as eight wires in order, with the harness settings beside them.",
+  "front": "What does the Turn Clock show?",
+  "id": "B4-k2",
+  "module": "B4",
+  "objective": "B4.o1",
+  "type": "term"
+ },
+ {
+  "back": "Permissions & sandbox.",
+  "front": "Which wire comes right after Tools on the clock?",
+  "id": "B4-k3",
+  "module": "B4",
+  "objective": "B4.o1",
+  "type": "term"
+ },
+ {
+  "back": "What happens next, what do we carry, and when do we stop?",
+  "front": "What does the Loop & state wire answer?",
+  "id": "B4-k4",
+  "module": "B4",
+  "objective": "B4.o2",
+  "type": "term"
+ },
+ {
+  "back": "If it isn't in the trace, it didn't happen.",
+  "front": "Which law goes with Observability?",
+  "id": "B4-k5",
+  "module": "B4",
+  "objective": "B4.o4",
+  "type": "term"
+ },
+ {
+  "back": "A tool is a user interface for a model.",
+  "front": "Which law goes with Tools?",
+  "id": "B4-k6",
+  "module": "B4",
+  "objective": "B4.o4",
+  "type": "term"
+ },
+ {
+  "back": "Verification & evals. Nothing checked the done claim.",
+  "front": "The model says the tests pass, and nothing ran them. Which wire is at fault?",
+  "id": "B4-k7",
+  "module": "B4",
+  "objective": "B4.o3",
+  "type": "which-wire",
+  "wire": "verify"
+ },
+ {
+  "back": "One block of text in the prompt that tells the model what to do: the system prompt, the project rules, the user's message or a tool result.",
+  "front": "What is an instruction layer?",
+  "id": "C1-k1",
+  "module": "C1",
+  "objective": "C1.o1",
+  "type": "term"
+ },
+ {
+  "back": "The instruction hierarchy: who wrote each layer, not what it says. A tool result is data, not an instruction.",
+  "front": "What decides which layer wins when two disagree?",
+  "id": "C1-k2",
+  "module": "C1",
+  "objective": "C1.o1",
+  "type": "term"
+ },
+ {
+  "back": "How specific it is. Too low and it is a lookup table; too high and it is a slogan.",
+  "front": "What is altitude in an instruction?",
+  "id": "C1-k3",
+  "module": "C1",
+  "objective": "C1.o2",
+  "type": "term"
+ },
+ {
+  "back": "Code that runs before each tool call and decides whether it may run. It holds whatever the prompt says.",
+  "front": "What is a pre-tool hook?",
+  "id": "C1-k4",
+  "module": "C1",
+  "objective": "C1.o3",
+  "type": "term"
+ },
+ {
+  "back": "When the check cannot decide, it denies the action. A hook that fails open lets the action through when it breaks.",
+  "front": "What does fail closed mean for a hook?",
+  "id": "C1-k5",
+  "module": "C1",
+  "objective": "C1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Where things live, the commands that check them, and the rules that must hold. Not every case, and not a manual.",
+  "front": "What belongs in a rules file, as a map?",
+  "id": "C1-k6",
+  "module": "C1",
+  "objective": "C1.o4",
+  "type": "term"
+ },
+ {
+  "back": "Control. The rule lives in words, so nothing enforces it; a hook on the permissions wire would.",
+  "front": "The project rules say never touch tests/, and only the prompt holds it. Which wire is that?",
+  "id": "C1-k7",
+  "module": "C1",
+  "objective": "C1.o3",
+  "type": "which-wire",
+  "wire": "control"
+ },
+ {
+  "back": "The fall in answer quality as the window fills, well before the hard limit.",
+  "front": "What is context rot?",
+  "id": "C2-k1",
+  "module": "C2",
+  "objective": "C2.o1",
+  "type": "term"
+ },
+ {
+  "back": "Each part of the context in tokens: instructions, tool definitions, history and tool outputs.",
+  "front": "What does an audit of the desk count?",
+  "id": "C2-k2",
+  "module": "C2",
+  "objective": "C2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Don't load it, shrink it, move it out, summarize it.",
+  "front": "What are the four levers, in order?",
+  "id": "C2-k3",
+  "module": "C2",
+  "objective": "C2.o3",
+  "type": "term"
+ },
+ {
+  "back": "The start and the end of the output, and how many characters were cut, so the reader can ask for a smaller range.",
+  "front": "What does an output cap keep, and what does it say?",
+  "id": "C2-k4",
+  "module": "C2",
+  "objective": "C2.o4",
+  "type": "term"
+ },
+ {
+  "back": "Stable material first, the current task last.",
+  "front": "How should context be ordered for attention?",
+  "id": "C2-k5",
+  "module": "C2",
+  "objective": "C2.o5",
+  "type": "term"
+ },
+ {
+  "back": "Context. The desk is full, and nothing caps what went onto it.",
+  "front": "One tool output fills most of the window, so the next prompt cannot be sent. Which wire is that?",
+  "id": "C2-k6",
+  "module": "C2",
+  "objective": "C2.o4",
+  "type": "which-wire",
+  "wire": "context"
+ },
+ {
+  "back": "No. Quality can fall well before the window is full.",
+  "front": "Does a window that fits mean the model reads all of it equally well?",
+  "id": "C2-k7",
+  "module": "C2",
+  "objective": "C2.o1",
+  "type": "term"
+ },
+ {
+  "back": "Replacing the older messages with a summary, so the desk has room. The summary keeps only what the harness chose to keep.",
+  "front": "What is compaction?",
+  "id": "C3-k1",
+  "module": "C3",
+  "objective": "C3.o1",
+  "type": "term"
+ },
+ {
+  "back": "It loses what matters: a constraint or a decision that the summary did not keep is gone for every later call.",
+  "front": "What is the main failure of compaction?",
+  "id": "C3-k2",
+  "module": "C3",
+  "objective": "C3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Raw tool output. It keeps the goal, the constraints, the decisions, the progress and the file pointers.",
+  "front": "What should a compactor drop?",
+  "id": "C3-k3",
+  "module": "C3",
+  "objective": "C3.o2",
+  "type": "term"
+ },
+ {
+  "back": "When the run has drifted and the goal is clearer as a fresh start. Compaction suits a clear thread that only needs room.",
+  "front": "When is a clean reset with a handoff note the better choice?",
+  "id": "C3-k4",
+  "module": "C3",
+  "objective": "C3.o3",
+  "type": "term"
+ },
+ {
+  "back": "The window, the session log, the project files and the long-term store.",
+  "front": "What are the four memory tiers?",
+  "id": "C3-k5",
+  "module": "C3",
+  "objective": "C3.o4",
+  "type": "term"
+ },
+ {
+  "back": "No. A memory tier is text the harness puts in front of the model or keeps for later. The model's weights do not change.",
+  "front": "Does memory mean the model learns?",
+  "id": "C3-k6",
+  "module": "C3",
+  "objective": "C3.o4",
+  "type": "term"
+ },
+ {
+  "back": "Context. The desk lost the commitment, and the compactor's keep list decided what stayed.",
+  "front": "A summary after compaction drops a constraint, and the model breaks it. Which wire is that?",
+  "id": "C3-k7",
+  "module": "C3",
+  "objective": "C3.o1",
+  "type": "which-wire",
+  "wire": "context"
+ },
+ {
+  "back": "The part of a request before a point. The cache matches a whole prefix or none of it.",
+  "front": "What is a cache prefix?",
+  "id": "C4-k1",
+  "module": "C4",
+  "objective": "C4.o1",
+  "type": "term"
+ },
+ {
+  "back": "Stable first, changing last: the tools, then the system prompt, then the messages, with the new message at the end.",
+  "front": "Put the parts of a request in the order the cache reads them.",
+  "id": "C4-k2",
+  "items": [
+   "Tool definitions",
+   "System prompt",
+   "Earlier messages",
+   "The new message"
+  ],
+  "module": "C4",
+  "objective": "C4.o2",
+  "type": "order-turn"
+ },
+ {
+  "back": "A change that makes earlier cache entries stop matching. The next call writes the request again.",
+  "front": "What is cache invalidation?",
+  "id": "C4-k3",
+  "module": "C4",
+  "objective": "C4.o3",
+  "type": "term"
+ },
+ {
+  "back": "A read takes input from the cache at a low price. A write stores input in the cache at a higher price, once.",
+  "front": "What is a cache read, compared with a cache write?",
+  "id": "C4-k4",
+  "module": "C4",
+  "objective": "C4.o4",
+  "type": "term"
+ },
+ {
+  "back": "The share of the input that was read from the cache. Compute it from the read tokens over all the input tokens.",
+  "front": "What is a cache hit rate?",
+  "id": "C4-k5",
+  "module": "C4",
+  "objective": "C4.o4",
+  "type": "term"
+ },
+ {
+  "back": "The point up to which a request asks to be cached. The course's model uses one, at the end of the request.",
+  "front": "What is a cache breakpoint?",
+  "id": "C4-k6",
+  "module": "C4",
+  "objective": "C4.o1",
+  "type": "term"
+ },
+ {
+  "back": "A block that changes on every call, such as a clock line. Wherever it sits, the blocks after it miss.",
+  "front": "Which block breaks a cache when it changes on every call?",
+  "id": "C4-k7",
+  "module": "C4",
+  "objective": "C4.o3",
+  "type": "term"
+ },
+ {
+  "back": "How long a cache entry lasts after it was last written or read. The default is five minutes.",
+  "front": "What is a cache TTL?",
+  "id": "C4-k8",
+  "module": "C4",
+  "objective": "C4.o1",
+  "type": "term"
+ },
+ {
+  "back": "Everything the run remembers between calls: messages, turn count and status. It lives in one place, and one function changes it.",
+  "front": "What is run state?",
+  "id": "C5-k1",
+  "module": "C5",
+  "objective": "C5.o1",
+  "type": "term"
+ },
+ {
+  "back": "The one word that says how the run ended. A run has one final status, set by one exit.",
+  "front": "What is a final status?",
+  "id": "C5-k2",
+  "module": "C5",
+  "objective": "C5.o2",
+  "type": "term"
+ },
+ {
+  "back": "A tool call with no result after it. The next request holding it is refused, so the harness must answer it.",
+  "front": "What is an orphaned tool call?",
+  "id": "C5-k3",
+  "module": "C5",
+  "objective": "C5.o3",
+  "type": "term"
+ },
+ {
+  "back": "Everything the run needs to start again: the messages, the turn count and the pending calls, saved together.",
+  "front": "What does pause and resume need from the state?",
+  "id": "C5-k4",
+  "module": "C5",
+  "objective": "C5.o4",
+  "type": "term"
+ },
+ {
+  "back": "A history that only grows at the end. A resumed run keeps the same earlier messages.",
+  "front": "What is append-only history?",
+  "id": "C5-k5",
+  "module": "C5",
+  "objective": "C5.o4",
+  "type": "term"
+ },
+ {
+  "back": "Noticing the same action repeated across the last few calls, and stopping the run before the turn limit.",
+  "front": "What is loop detection?",
+  "id": "C5-k6",
+  "module": "C5",
+  "objective": "C5.o5",
+  "type": "term"
+ },
+ {
+  "back": "A stop that a person asks for during a run. The harness answers the pending calls, then ends or resumes the run.",
+  "front": "What is an interrupt?",
+  "id": "C5-k7",
+  "module": "C5",
+  "objective": "C5.o3",
+  "type": "term"
+ },
+ {
+  "back": "A failure likely to pass on its own. A retry may succeed, so the harness retries it with a limit.",
+  "front": "What is a transient error?",
+  "id": "C6-k1",
+  "module": "C6",
+  "objective": "C6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A failure that repeats on every try. The harness does not retry it: it fixes the request, or stops.",
+  "front": "What is a permanent error?",
+  "id": "C6-k2",
+  "module": "C6",
+  "objective": "C6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A wait that doubles after each failed try, up to a cap.",
+  "front": "What is exponential backoff?",
+  "id": "C6-k3",
+  "module": "C6",
+  "objective": "C6.o2",
+  "type": "term"
+ },
+ {
+  "back": "Clients that failed together would retry together. A random part of the wait spreads their retries out.",
+  "front": "Why does jitter matter?",
+  "id": "C6-k4",
+  "module": "C6",
+  "objective": "C6.o2",
+  "type": "term"
+ },
+ {
+  "back": "After a set number of failures in a row, it opens and holds calls back for a cooldown, so retries stop adding load.",
+  "front": "What does a circuit breaker do?",
+  "id": "C6-k5",
+  "module": "C6",
+  "objective": "C6.o3",
+  "type": "term"
+ },
+ {
+  "back": "A limit on the retries a run or client may make, so retries cannot grow without end.",
+  "front": "What is a retry budget?",
+  "id": "C6-k6",
+  "module": "C6",
+  "objective": "C6.o3",
+  "type": "term"
+ },
+ {
+  "back": "A value sent with a request, so a repeated request is recognised and not run twice.",
+  "front": "What is an idempotency key?",
+  "id": "C6-k7",
+  "module": "C6",
+  "objective": "C6.o5",
+  "type": "term"
+ },
+ {
+  "back": "The tools as the model sees them: names, descriptions, inputs and results. Design it for the model, as you would a screen for a person.",
+  "front": "What is an agent-computer interface?",
+  "id": "C7-k1",
+  "module": "C7",
+  "objective": "C7.o1",
+  "type": "term"
+ },
+ {
+  "back": "It tells the model what the tool does and when to use it. The model reads it on every call, so vague words cost calls.",
+  "front": "What is a tool description for?",
+  "id": "C7-k2",
+  "module": "C7",
+  "objective": "C7.o2",
+  "type": "term"
+ },
+ {
+  "back": "It names what went wrong and what to do next, in a few words. A bare 'Invalid input' leaves the model guessing.",
+  "front": "What makes an error actionable?",
+  "id": "C7-k3",
+  "module": "C7",
+  "objective": "C7.o3",
+  "type": "term"
+ },
+ {
+  "back": "A tool that does not change its environment. A read-only hint says so, and a hint is not a check.",
+  "front": "What is a read-only tool?",
+  "id": "C7-k4",
+  "module": "C7",
+  "objective": "C7.o4",
+  "type": "term"
+ },
+ {
+  "back": "A tool that may change or delete things. Treat its call as a decision, not a read.",
+  "front": "What is a destructive tool?",
+  "id": "C7-k5",
+  "module": "C7",
+  "objective": "C7.o4",
+  "type": "term"
+ },
+ {
+  "back": "When neither writes a resource the other reads or writes. A read and an edit of the same file are not.",
+  "front": "When are two tool calls parallel-safe?",
+  "id": "C7-k6",
+  "module": "C7",
+  "objective": "C7.o5",
+  "type": "term"
+ },
+ {
+  "back": "The tools wire: the definitions are sent with every call.",
+  "front": "On which wire does a tool description sit?",
+  "id": "C7-k7",
+  "module": "C7",
+  "objective": "C7.o2",
+  "type": "which-wire",
+  "wire": "tools"
+ },
+ {
+  "back": "A hint a tool server gives about a tool. Clients should not make tool-use decisions on untrusted annotations.",
+  "front": "What is a tool annotation?",
+  "id": "C7-k8",
+  "module": "C7",
+  "objective": "C7.o4",
+  "type": "term"
+ },
+ {
+  "back": "Tools, resources and prompts. The client reaches them through a transport.",
+  "front": "What does an MCP server offer to a client?",
+  "id": "C8-k1",
+  "module": "C8",
+  "objective": "C8.o1",
+  "type": "term"
+ },
+ {
+  "back": "How messages move between a client and a server. Stdio sends newline-delimited messages over a subprocess's standard streams.",
+  "front": "What is a transport?",
+  "id": "C8-k2",
+  "module": "C8",
+  "objective": "C8.o1",
+  "type": "term"
+ },
+ {
+  "back": "The name and description load first. The full procedure loads only when the task needs it.",
+  "front": "What is progressive disclosure for a skill?",
+  "id": "C8-k3",
+  "module": "C8",
+  "objective": "C8.o2",
+  "type": "term"
+ },
+ {
+  "back": "YAML frontmatter, then the procedure in Markdown. The frontmatter carries the name and the description.",
+  "front": "What is a SKILL.md file?",
+  "id": "C8-k4",
+  "module": "C8",
+  "objective": "C8.o2",
+  "type": "term"
+ },
+ {
+  "back": "Finding a tool's definition by keyword and loading it for the next call, instead of sending every definition each time.",
+  "front": "What is tool search?",
+  "id": "C8-k5",
+  "module": "C8",
+  "objective": "C8.o3",
+  "type": "term"
+ },
+ {
+  "back": "Tokens on every call, and a harder choice for the model. Measure both before you add a tool.",
+  "front": "What does a long list of tool definitions cost?",
+  "id": "C8-k6",
+  "module": "C8",
+  "objective": "C8.o3",
+  "type": "term"
+ },
+ {
+  "back": "Many round trips, each with its own result, with one program that calls several tools and returns one result.",
+  "front": "What does programmatic tool calling replace?",
+  "id": "C8-k7",
+  "module": "C8",
+  "objective": "C8.o4",
+  "type": "term"
+ },
+ {
+  "back": "As untrusted hints. Do not make a permission decision on them alone.",
+  "front": "How should you treat a server's tool annotations?",
+  "id": "C8-k8",
+  "module": "C8",
+  "objective": "C8.o5",
+  "type": "term"
+ },
+ {
+  "back": "One of allow, ask or deny, always with a reason.",
+  "front": "What must every permission decision carry?",
+  "id": "C9-k1",
+  "module": "C9",
+  "objective": "C9.o1",
+  "type": "term"
+ },
+ {
+  "back": "As action times target. The same command can be safe in one place and dangerous in another.",
+  "front": "How is risk judged?",
+  "id": "C9-k2",
+  "module": "C9",
+  "objective": "C9.o2",
+  "type": "term"
+ },
+ {
+  "back": "The loss of care after many prompts, so that the one dangerous prompt is approved without a look.",
+  "front": "What is approval fatigue?",
+  "id": "C9-k3",
+  "module": "C9",
+  "objective": "C9.o3",
+  "type": "term"
+ },
+ {
+  "back": "All deny rules, then all ask rules, then all allow rules, then the mode's default.",
+  "front": "What is the decision order of a policy?",
+  "id": "C9-k4",
+  "module": "C9",
+  "objective": "C9.o4",
+  "type": "term"
+ },
+ {
+  "back": "Test it with a table of cases, each with the decision it must give.",
+  "front": "How do you show a permission policy holds?",
+  "id": "C9-k5",
+  "module": "C9",
+  "objective": "C9.o5",
+  "type": "term"
+ },
+ {
+  "back": "Permissions. A decision in code holds; a line in the prompt only asks.",
+  "front": "A rule must hold whatever the prompt says. Which wire is the enforcement on?",
+  "id": "C9-k6",
+  "module": "C9",
+  "objective": "C9.o1",
+  "type": "which-wire",
+  "wire": "permissions"
+ },
+ {
+  "back": "Allow them, so that the prompts left are the ones that matter.",
+  "front": "What should a policy do with harmless read-only calls?",
+  "id": "C9-k7",
+  "module": "C9",
+  "objective": "C9.o3",
+  "type": "term"
+ },
+ {
+  "back": "How bad a mistake can get, whatever the permissions said.",
+  "front": "What does a sandbox limit?",
+  "id": "C10-k1",
+  "module": "C10",
+  "objective": "C10.o1",
+  "type": "term"
+ },
+ {
+  "back": "It normalizes the path, then refuses it if it lands outside the workspace root.",
+  "front": "What does the sandbox do with a ../ path?",
+  "id": "C10-k2",
+  "module": "C10",
+  "objective": "C10.o2",
+  "type": "term"
+ },
+ {
+  "back": "The link's own folder.",
+  "front": "Where does a link's target start from?",
+  "id": "C10-k3",
+  "module": "C10",
+  "objective": "C10.o2",
+  "type": "term"
+ },
+ {
+  "back": "It refuses a network call to a host that is not on the list.",
+  "front": "What does an egress allow-list do?",
+  "id": "C10-k4",
+  "module": "C10",
+  "objective": "C10.o3",
+  "type": "term"
+ },
+ {
+  "back": "A secret leaves through a network call. Refuse the call, and the secret stays inside.",
+  "front": "Why does an allow-list on the network stop a leak?",
+  "id": "C10-k5",
+  "module": "C10",
+  "objective": "C10.o3",
+  "type": "term"
+ },
+ {
+  "back": "The trace: listed text shows as [REDACTED]. The files and the calls do not change.",
+  "front": "What does the redact module change?",
+  "id": "C10-k6",
+  "module": "C10",
+  "objective": "C10.o4",
+  "type": "term"
+ },
+ {
+  "back": "No. The sandbox rules still apply. A container is one wall among others.",
+  "front": "Does a container replace the sandbox rules?",
+  "id": "C10-k7",
+  "module": "C10",
+  "objective": "C10.o5",
+  "type": "term"
+ },
+ {
+  "back": "No. It holds whatever the permissions said.",
+  "front": "Does the blast wall depend on the permissions?",
+  "id": "C10-k8",
+  "module": "C10",
+  "objective": "C10.o1",
+  "type": "term"
+ },
+ {
+  "back": "Between the model's done claim and the run's success. A claim passes only when the gate runs and passes.",
+  "front": "Where does a verification gate sit?",
+  "id": "C11-k1",
+  "module": "C11",
+  "objective": "C11.o1",
+  "type": "term"
+ },
+ {
+  "back": "A check a program can run and decide, such as tests, a linter or a type check.",
+  "front": "What is a computational check?",
+  "id": "C11-k2",
+  "module": "C11",
+  "objective": "C11.o2",
+  "type": "term"
+ },
+ {
+  "back": "A guide steers before the work. A sensor checks after it.",
+  "front": "What is the difference between a guide and a sensor?",
+  "id": "C11-k3",
+  "module": "C11",
+  "objective": "C11.o3",
+  "type": "term"
+ },
+ {
+  "back": "The task and the diff, not the author's reasoning.",
+  "front": "What should an independent reviewer see?",
+  "id": "C11-k4",
+  "module": "C11",
+  "objective": "C11.o4",
+  "type": "term"
+ },
+ {
+  "back": "Changing the tests so they pass for the wrong reason: an edited assertion, a cleared marker, or a special-cased answer.",
+  "front": "What is test tampering?",
+  "id": "C11-k5",
+  "module": "C11",
+  "objective": "C11.o5",
+  "type": "term"
+ },
+ {
+  "back": "Verification. The self-report is a claim until a gate confirms it.",
+  "front": "The model says the tests pass, and no run backs it. Which wire is that?",
+  "id": "C11-k6",
+  "module": "C11",
+  "objective": "C11.o1",
+  "type": "which-wire",
+  "wire": "verify"
+ },
+ {
+  "back": "No. It is a claim, and only a gate that runs can confirm it.",
+  "front": "Is a self-report evidence that the work is done?",
+  "id": "C11-k7",
+  "module": "C11",
+  "objective": "C11.o1",
+  "type": "term"
+ },
+ {
+  "back": "One record the harness writes as it runs, with a sequence number and a time: a model call, a tool call, a permission decision.",
+  "front": "What is an event in this course's trace?",
+  "id": "C12-k1",
+  "module": "C12",
+  "objective": "C12.o1",
+  "type": "term"
+ },
+ {
+  "back": "A timed piece of work with a name, a start, an end, attributes and a parent. A tool call is a span under its turn.",
+  "front": "What is a span?",
+  "id": "C12-k2",
+  "module": "C12",
+  "objective": "C12.o2",
+  "type": "term"
+ },
+ {
+  "back": "It ties the spans and events of one run together, so you can read one run from start to finish.",
+  "front": "What does a trace id do?",
+  "id": "C12-k3",
+  "module": "C12",
+  "objective": "C12.o2",
+  "type": "term"
+ },
+ {
+  "back": "chat followed by the model name, such as chat claude-sonnet-5-5, following the convention for the inference span.",
+  "front": "What is the GenAI name for a model call span?",
+  "id": "C12-k4",
+  "module": "C12",
+  "objective": "C12.o3",
+  "type": "term"
+ },
+ {
+  "back": "gen_ai.usage.input_tokens. The response's tokens are gen_ai.usage.output_tokens.",
+  "front": "Which attribute counts the prompt's tokens?",
+  "id": "C12-k5",
+  "module": "C12",
+  "objective": "C12.o3",
+  "type": "term"
+ },
+ {
+  "back": "The trace. The placeholder replaces the secret in the stored event; the model still gets the text it was sent.",
+  "front": "What does redaction protect?",
+  "id": "C12-k6",
+  "module": "C12",
+  "objective": "C12.o4",
+  "type": "term"
+ },
+ {
+  "back": "In the cost event after each model reply: top_part names the largest part of the request, and top_tokens counts its tokens.",
+  "front": "Where does cost attribution name the expensive part?",
+  "id": "C12-k7",
+  "module": "C12",
+  "objective": "C12.o5",
+  "type": "term"
+ },
+ {
+  "back": "A log line is a message. A trace keeps which call it belongs to, when it ran, and what it cost, so you can read the order of events.",
+  "front": "Why do logs alone fall short of a trace?",
+  "id": "C12-k8",
+  "module": "C12",
+  "objective": "C12.o1",
+  "type": "term"
+ },
+ {
+  "back": "The task, its environment, the trials, the grader, the transcript and the outcome.",
+  "front": "What are the parts of an eval?",
+  "id": "D1-k1",
+  "module": "D1",
+  "objective": "D1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Whether a run passed. Every eval has one, and it can be wrong in its own way.",
+  "front": "What does the grader decide?",
+  "id": "D1-k2",
+  "module": "D1",
+  "objective": "D1.o1",
+  "type": "term"
+ },
+ {
+  "back": "It can pass a claim it never checked. A judge that reads the reply and not the file rubber-stamps it.",
+  "front": "How can a model grader fail?",
+  "id": "D1-k3",
+  "module": "D1",
+  "objective": "D1.o2",
+  "type": "term"
+ },
+ {
+  "back": "It only checks what it was written to check. It cannot tell a true done from a claim the checks never test.",
+  "front": "What is the code grader's weak point?",
+  "id": "D1-k4",
+  "module": "D1",
+  "objective": "D1.o2",
+  "type": "term"
+ },
+ {
+  "back": "A regression eval. A capability eval asks what the agent can do yet.",
+  "front": "Which kind of eval guards a fix you already shipped?",
+  "id": "D1-k5",
+  "module": "D1",
+  "objective": "D1.o4",
+  "type": "term"
+ },
+ {
+  "back": "The record of each reply and tool result in a run. It is where you see why a grader passed or failed a run.",
+  "front": "What is a transcript, and why keep it?",
+  "id": "D1-k6",
+  "module": "D1",
+  "objective": "D1.o3",
+  "type": "term"
+ },
+ {
+  "back": "The chance that at least one of k tries passes. It shows what a harness can reach when it may retry.",
+  "front": "What does pass@k measure?",
+  "id": "D2-k1",
+  "module": "D2",
+  "objective": "D2.o1",
+  "type": "term"
+ },
+ {
+  "back": "The chance that all k tries pass. It shows how reliable one try is, so it tells the opposite story.",
+  "front": "What does pass^k measure, and how does it differ from pass@k?",
+  "id": "D2-k2",
+  "module": "D2",
+  "objective": "D2.o1",
+  "type": "term"
+ },
+ {
+  "back": "A confidence interval for a pass rate that stays inside 0 and 1 and stays honest at small counts.",
+  "front": "What is a Wilson interval?",
+  "id": "D2-k3",
+  "module": "D2",
+  "objective": "D2.o2",
+  "type": "term"
+ },
+ {
+  "back": "When their intervals do not overlap. A gap between the two point estimates is not enough.",
+  "front": "When do two results really differ?",
+  "id": "D2-k4",
+  "module": "D2",
+  "objective": "D2.o2",
+  "type": "term"
+ },
+ {
+  "back": "It shrinks, roughly with the square root of the trials. Four times the trials roughly halves it.",
+  "front": "What happens to a confidence interval's width when the trials grow?",
+  "id": "D2-k5",
+  "module": "D2",
+  "objective": "D2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Infrastructure noise, a time limit that cuts slow runs, or a flaky check that fails for reasons unrelated to the work.",
+  "front": "Name noise that is not sampling.",
+  "id": "D2-k6",
+  "module": "D2",
+  "objective": "D2.o4",
+  "type": "term"
+ },
+ {
+  "back": "When the new interval sits fully below the old one's. A drop of a few points inside the noise is not a regression.",
+  "front": "When does a regression eval block a change in CI?",
+  "id": "D3-k1",
+  "module": "D3",
+  "objective": "D3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Checking a model grader against human labels you trust: how often the two agree, and which way the grader errs.",
+  "front": "What is calibration?",
+  "id": "D3-k2",
+  "module": "D3",
+  "objective": "D3.o2",
+  "type": "term"
+ },
+ {
+  "back": "It does not say which way the errors fall. Count the false passes and the false fails apart.",
+  "front": "Why is an agreement rate not enough?",
+  "id": "D3-k3",
+  "module": "D3",
+  "objective": "D3.o2",
+  "type": "term"
+ },
+ {
+  "back": "A test case the model saw while learning or tuning, so the score measures memory, not the task.",
+  "front": "What is contamination?",
+  "id": "D3-k4",
+  "module": "D3",
+  "objective": "D3.o3",
+  "type": "term"
+ },
+ {
+  "back": "Keep a held-out set you never tune on, and do not announce which runs are tests.",
+  "front": "How do you reduce contamination and eval awareness?",
+  "id": "D3-k5",
+  "module": "D3",
+  "objective": "D3.o3",
+  "type": "term"
+ },
+ {
+  "back": "The reply says done while the file's check fails. Read the reply next to the file.",
+  "front": "What is the first sign of a grader passing work for the wrong reason?",
+  "id": "D3-k6",
+  "module": "D3",
+  "objective": "D3.o4",
+  "type": "term"
+ },
+ {
+  "back": "Instructions hidden in content the agent reads. The model may act on them as if the person had asked for them.",
+  "front": "What is prompt injection?",
+  "id": "E1-c1",
+  "module": "E1",
+  "objective": "E1.o1",
+  "type": "term"
+ },
+ {
+  "back": "A stranger who could put text where the agent reads it: a page, a comment, a file. Not the person typing.",
+  "front": "Who wrote the instruction in an indirect prompt injection?",
+  "id": "E1-c2",
+  "module": "E1",
+  "objective": "E1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Private data the agent can read, untrusted content it reads, and a way to send data out.",
+  "front": "What are the three legs of the lethal trifecta?",
+  "id": "E1-c3",
+  "module": "E1",
+  "objective": "E1.o2",
+  "type": "term"
+ },
+ {
+  "back": "Private data. The leg is open because the agent can read the token; the risk needs the other two legs too.",
+  "front": "A tool reads a config file that holds a token. Which leg does it open?",
+  "id": "E1-c4",
+  "module": "E1",
+  "objective": "E1.o2",
+  "type": "term"
+ },
+ {
+  "back": "A harness control that stops the send: an egress allow-list in the sandbox, or a deny rule on the outbound call.",
+  "front": "Which control cuts the send leg?",
+  "id": "E1-c5",
+  "module": "E1",
+  "objective": "E1.o3",
+  "type": "term"
+ },
+ {
+  "back": "No. It lowers the rate at which the model obeys an injected instruction. The leg stays open; only a cut leg stops the attack.",
+  "front": "Does a sentence in the system prompt remove a leg?",
+  "id": "E1-c6",
+  "module": "E1",
+  "objective": "E1.o3",
+  "type": "term"
+ },
+ {
+  "back": "The model may ignore it, but may not. A defense has to hold on the runs where the text is followed.",
+  "front": "Why is 'the model will ignore malicious text' not a defense?",
+  "id": "E1-c7",
+  "module": "E1",
+  "objective": "E1.o4",
+  "type": "term"
+ },
+ {
+  "back": "Not known. No test reads where the data went. Check the three legs and the outbound call.",
+  "front": "The tests pass and the summary is written. Is the run safe?",
+  "id": "E1-c8",
+  "module": "E1",
+  "objective": "E1.o4",
+  "type": "term"
+ },
+ {
+  "back": "Only the thing it is built for. A sandbox egress list stops a send; least privilege stops a write outside its folder. Each layer names what it stops.",
+  "front": "What does a layer stop?",
+  "id": "E2-c1",
+  "module": "E2",
+  "objective": "E2.o1",
+  "type": "term"
+ },
+ {
+  "back": "Every layer fails sometimes. With several layers, one failure does not decide the outcome.",
+  "front": "Why stack defenses instead of relying on one strong one?",
+  "id": "E2-c2",
+  "module": "E2",
+  "objective": "E2.o1",
+  "type": "term"
+ },
+ {
+  "back": "A server that changes what its tools say or do, so the model is steered by the change. A new version is the usual route.",
+  "front": "What is tool poisoning?",
+  "id": "E2-c3",
+  "module": "E2",
+  "objective": "E2.o2",
+  "type": "term"
+ },
+ {
+  "back": "A pin stops a version nobody reviewed from running. It does not read the data the server returns, so an instruction in the data still gets through.",
+  "front": "What does a pin stop, and what does it not?",
+  "id": "E2-c4",
+  "module": "E2",
+  "objective": "E2.o2",
+  "type": "term"
+ },
+ {
+  "back": "An agent that can do more than its task needs. A tidy-up task that can empty an archive has excessive agency.",
+  "front": "What is excessive agency?",
+  "id": "E2-c5",
+  "module": "E2",
+  "objective": "E2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Allow the listing, read in the notes, and write only in the done folder. Refuse everything else by default, including the shell.",
+  "front": "Which policy is least privilege for a task that moves one note?",
+  "id": "E2-c6",
+  "module": "E2",
+  "objective": "E2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Attacking it on purpose with a fixed set of attacks, to find what it lets through before someone else does.",
+  "front": "What is red-teaming your own agent?",
+  "id": "E2-c7",
+  "module": "E2",
+  "objective": "E2.o4",
+  "type": "term"
+ },
+ {
+  "back": "The share of seeded attack runs in which the attack succeeded. It is a measure of the lab's runs, reported with the number of runs.",
+  "front": "What does an attack success rate tell you?",
+  "id": "E2-c8",
+  "module": "E2",
+  "objective": "E2.o4",
+  "type": "term"
+ },
+ {
+  "back": "It starts from the brief, or from the parent's messages with the brief added. So the brief must name the task, the files and the result.",
+  "front": "Why does a sub-agent get a brief?",
+  "id": "F1-k1",
+  "module": "F1",
+  "objective": "F1.o3",
+  "type": "term"
+ },
+ {
+  "back": "The parent that starts workers, gives each one a brief, and reads what they return.",
+  "front": "What is an orchestrator?",
+  "id": "F1-k2",
+  "module": "F1",
+  "objective": "F1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Fewer input tokens on the first request, and no view of the parent's messages.",
+  "front": "What does an isolated context cost against a forked one?",
+  "id": "F1-k3",
+  "module": "F1",
+  "objective": "F1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Parallel work, and keeping a separate piece of work out of the parent's context.",
+  "front": "Name the two honest reasons for many agents.",
+  "id": "F1-k4",
+  "module": "F1",
+  "objective": "F1.o1",
+  "type": "term"
+ },
+ {
+  "back": "No. It is a reader's answer. Check it against the file or the field the brief named before the parent relies on it.",
+  "front": "A sub-agent's answer comes back. Is it a fact?",
+  "id": "F1-k5",
+  "module": "F1",
+  "objective": "F1.o5",
+  "type": "term"
+ },
+ {
+  "back": "Starting several sub-agents at once, one per piece of work, and reading their results together.",
+  "front": "What is a fan-out?",
+  "id": "F1-k6",
+  "module": "F1",
+  "objective": "F1.o2",
+  "type": "term"
+ },
+ {
+  "back": "No. It has what the harness sends: the task, the tools, and any progress file the harness passes in.",
+  "front": "Does a new session remember the last one?",
+  "id": "F2-k1",
+  "module": "F2",
+  "objective": "F2.o1",
+  "type": "term"
+ },
+ {
+  "back": "Each session starts with no memory of the last. The work has to be written down, or the next session redoes it or breaks it.",
+  "front": "What is the shift-worker problem?",
+  "id": "F2-k2",
+  "module": "F2",
+  "objective": "F2.o1",
+  "type": "term"
+ },
+ {
+  "back": "The environment, a feature list and a progress file, with an initial commit that shows what was added.",
+  "front": "What does an initializer agent set up?",
+  "id": "F2-k3",
+  "module": "F2",
+  "objective": "F2.o2",
+  "type": "term"
+ },
+ {
+  "back": "It says what is done, what is next and what is open, so a fresh session finds the state without guessing.",
+  "front": "What is a progress file for?",
+  "id": "F2-k4",
+  "module": "F2",
+  "objective": "F2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Its criteria come from outside the generator's work, so it does not pass its own blind spots.",
+  "front": "Why is the evaluator a separate role?",
+  "id": "F2-k5",
+  "module": "F2",
+  "objective": "F2.o3",
+  "type": "term"
+ },
+ {
+  "back": "The next step on one line, the files to start from, and what is already done.",
+  "front": "What must a handoff note name?",
+  "id": "F2-k6",
+  "module": "F2",
+  "objective": "F2.o4",
+  "type": "term"
+ },
+ {
+  "back": "The brain (the model and its loop), the hands (the sandboxes and tools), and the event log (the record of the run, which only grows at the end).",
+  "front": "What are the three parts of a managed agent?",
+  "id": "F3-k1",
+  "module": "F3",
+  "objective": "F3.o1",
+  "type": "term"
+ },
+ {
+  "back": "It records each turn, call and result as it happens, so a new process can read what already ran.",
+  "front": "What is an event log for?",
+  "id": "F3-k2",
+  "module": "F3",
+  "objective": "F3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Each part can fail and be replaced alone. A new sandbox can take over the hands while the log and the brain keep going.",
+  "front": "Why does the split help when a part fails?",
+  "id": "F3-k3",
+  "module": "F3",
+  "objective": "F3.o2",
+  "type": "term"
+ },
+ {
+  "back": "With the brain, outside the sandbox. The hands run code the model wrote, so a key inside them can be read.",
+  "front": "Where do the credentials stay?",
+  "id": "F3-k4",
+  "module": "F3",
+  "objective": "F3.o3",
+  "type": "term"
+ },
+ {
+  "back": "When you would rather not run the brain, the hands and the log yourself, and the service's terms fit your data.",
+  "front": "When does a managed service fit better than your own harness?",
+  "id": "F3-k5",
+  "module": "F3",
+  "objective": "F3.o4",
+  "type": "term"
+ },
+ {
+  "back": "False, when the log lives outside the process. Without the log, the run starts over and repeats its side effects.",
+  "front": "A crash loses the run. True or false?",
+  "id": "F3-k6",
+  "module": "F3",
+  "objective": "F3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Per completed task: the cost of every run divided by the runs that completed as a true done. Cost per call hides the failures.",
+  "front": "How do you compare two models on cost?",
+  "id": "F4-k1",
+  "module": "F4",
+  "objective": "F4.o1",
+  "type": "term"
+ },
+ {
+  "back": "Predict its effect on cost per call and on cost per completed task. A cache hit lowers the first; only a steady success rate carries it to the second.",
+  "front": "What do you do before you measure a cut in cost?",
+  "id": "F4-k2",
+  "module": "F4",
+  "objective": "F4.o2",
+  "type": "term"
+ },
+ {
+  "back": "A check that stops a run when its token or cost budget is spent, and keeps the trace of what it did.",
+  "front": "What is a budget guard?",
+  "id": "F4-k3",
+  "module": "F4",
+  "objective": "F4.o3",
+  "type": "term"
+ },
+ {
+  "back": "The wait from sending a request to the first token of the reply. It is one part of latency, next to the time to generate the reply and the time tools take.",
+  "front": "What is time to first token?",
+  "id": "F4-k4",
+  "module": "F4",
+  "objective": "F4.o4",
+  "type": "term"
+ },
+ {
+  "back": "A limit on how long a task may take from start to end, set before you measure the work.",
+  "front": "What is a latency budget?",
+  "id": "F4-k5",
+  "module": "F4",
+  "objective": "F4.o3",
+  "type": "term"
+ },
+ {
+  "back": "Its runs cost less each, but fewer of them complete. The cost of the runs that fail is still paid, so it is spread over fewer successes.",
+  "front": "Why can a cheaper model cost more per completed task?",
+  "id": "F4-k6",
+  "module": "F4",
+  "objective": "F4.o1",
+  "type": "term"
+ },
+ {
+  "back": "How many seconds to wait before the retry. Earlier retries fail.",
+  "front": "What does a 429 response's retry-after tell the client?",
+  "id": "F5-k1",
+  "module": "F5",
+  "objective": "F5.o1",
+  "type": "term"
+ },
+ {
+  "back": "Tokens fill at a steady rate. Each call takes one, and an empty bucket means wait.",
+  "front": "How does a token bucket shape a client?",
+  "id": "F5-k2",
+  "module": "F5",
+  "objective": "F5.o1",
+  "type": "term"
+ },
+ {
+  "back": "What is done and what the next step is, saved after each step, outside the process.",
+  "front": "What does a checkpoint hold?",
+  "id": "F5-k3",
+  "module": "F5",
+  "objective": "F5.o2",
+  "type": "term"
+ },
+ {
+  "back": "So the tool can recognise the repeat and return the first result, instead of paying again.",
+  "front": "Why does a retry need the same key as the first try?",
+  "id": "F5-k4",
+  "module": "F5",
+  "objective": "F5.o2",
+  "type": "term"
+ },
+ {
+  "back": "The step, with its amount and target, and a clear yes or no. A spinner is not an approval.",
+  "front": "What must an approval screen show?",
+  "id": "F5-k5",
+  "module": "F5",
+  "objective": "F5.o3",
+  "type": "term"
+ },
+ {
+  "back": "The new harness runs beside the old one. Its results are compared, and only the old one acts.",
+  "front": "What is shadow mode?",
+  "id": "F5-k6",
+  "module": "F5",
+  "objective": "F5.o4",
+  "type": "term"
+ },
+ {
+  "back": "The evals. A wider share of traffic waits until the evals pass at the current share.",
+  "front": "What gates each step of a rollout?",
+  "id": "F5-k7",
+  "module": "F5",
+  "objective": "F5.o4",
+  "type": "term"
+ },
+ {
+  "back": "Tasks, a sandbox, tools, a grader and a reward. The grader turns a run into the reward.",
+  "front": "What does an environment contain?",
+  "id": "F6-k1",
+  "module": "F6",
+  "objective": "F6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A run that earns the reward without solving the task. Editing the test that grades it is one way.",
+  "front": "What is reward hacking?",
+  "id": "F6-k2",
+  "module": "F6",
+  "objective": "F6.o3",
+  "type": "term"
+ },
+ {
+  "back": "The same starting state, so the next run begins from the same workspace and seeds.",
+  "front": "What does a reset give you?",
+  "id": "F6-k3",
+  "module": "F6",
+  "objective": "F6.o2",
+  "type": "term"
+ },
+ {
+  "back": "Judge the work on what the policy cannot edit: a pristine copy of the tests and hidden cases.",
+  "front": "What closes a hack in the grader?",
+  "id": "F6-k4",
+  "module": "F6",
+  "objective": "F6.o3",
+  "type": "term"
+ },
+ {
+  "back": "Its reward trains the policy, so a gamed grader teaches the gaming.",
+  "front": "Why does a training environment need a trusted grader more than an eval?",
+  "id": "F6-k5",
+  "module": "F6",
+  "objective": "F6.o4",
+  "type": "term"
+ },
+ {
+  "back": "No network egress by default, and scoped credentials.",
+  "front": "What is the first containment control?",
+  "id": "F6-k6",
+  "module": "F6",
+  "objective": "F6.o5",
+  "type": "term"
+ },
+ {
+  "back": "A change that makes working code fail or behave differently, with no change on your side.",
+  "front": "What is a breaking change?",
+  "id": "F7-k1",
+  "module": "F7",
+  "objective": "F7.o1",
+  "type": "term"
+ },
+ {
+  "back": "A notice that a parameter or format still works but will be removed. Move the code before it is.",
+  "front": "What is a deprecation?",
+  "id": "F7-k2",
+  "module": "F7",
+  "objective": "F7.o1",
+  "type": "term"
+ },
+ {
+  "back": "It reads the model's profile and drops the parameters the model rejects, or refuses them with the model's name.",
+  "front": "What does a capability check do?",
+  "id": "F7-k3",
+  "module": "F7",
+  "objective": "F7.o2",
+  "type": "term"
+ },
+ {
+  "back": "In one adapter, so a migration is a config change plus a test run.",
+  "front": "Where do model-specific rules live?",
+  "id": "F7-k4",
+  "module": "F7",
+  "objective": "F7.o2",
+  "type": "term"
+ },
+ {
+  "back": "Two pass rates can differ by chance. When the intervals overlap, the eval cannot tell the models apart.",
+  "front": "Why read the intervals, not the pass rates?",
+  "id": "F7-k5",
+  "module": "F7",
+  "objective": "F7.o3",
+  "type": "term"
+ },
+ {
+  "back": "When an eval on the new model passes without it. Keep it where the eval needs it.",
+  "front": "When do you remove a harness part the new model may not need?",
+  "id": "F7-k6",
+  "module": "F7",
+  "objective": "F7.o4",
+  "type": "term"
+ },
+ {
+  "back": "The wire the symptom points at: a wrong answer points at the loop or the tools; a wrong claim of done points at verify.",
+  "front": "What is the first wire to read for a symptom?",
+  "id": "G1-k1",
+  "module": "G1",
+  "objective": "G1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Control, context, loop, errors, tools, permissions, verify and observe.",
+  "front": "What are the eight wires?",
+  "id": "G1-k2",
+  "module": "G1",
+  "objective": "G1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Make the done claim earn its place: a check runs before the run is trusted.",
+  "front": "What is the first lesson worth taking from a product harness?",
+  "id": "G1-k3",
+  "module": "G1",
+  "objective": "G1.o2",
+  "type": "term"
+ },
+ {
+  "back": "Which actions run on their own, which wait for a person, and which are refused.",
+  "front": "What does a permission design decide?",
+  "id": "G1-k4",
+  "module": "G1",
+  "objective": "G1.o2",
+  "type": "term"
+ },
+ {
+  "back": "The symptom, the cause and the fix, which you can map onto a wire and a failure family.",
+  "front": "What does a postmortem give a harness engineer?",
+  "id": "G1-k5",
+  "module": "G1",
+  "objective": "G1.o3",
+  "type": "term"
+ },
+ {
+  "back": "A family says what kind of failure it is, so the fix changes the right wire and not the model.",
+  "front": "Why name the family before the fix?",
+  "id": "G1-k6",
+  "module": "G1",
+  "objective": "G1.o3",
+  "type": "term"
+ },
+ {
+  "back": "The design choice and its trade-off, not a claim from marketing.",
+  "front": "What do you write on each wire when you compare two harnesses?",
+  "id": "G2-k1",
+  "module": "G2",
+  "objective": "G2.o1",
+  "type": "term"
+ },
+ {
+  "back": "As the company's own, with its source, and never as a fact about the field.",
+  "front": "How do you label a company's own number?",
+  "id": "G2-k2",
+  "module": "G2",
+  "objective": "G2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Instructions in a project file, permission or approval modes, and a sandbox. The rest of the course's list is the course's judgment or taste.",
+  "front": "Which ideas do both products' sources show as laws?",
+  "id": "G2-k3",
+  "module": "G2",
+  "objective": "G2.o3",
+  "type": "term"
+ },
+ {
+  "back": "In the Codex repository, Codex collects every AGENTS.md from the project root down to the current working directory and concatenates them.",
+  "front": "What does Codex do with AGENTS.md files?",
+  "id": "G2-k4",
+  "module": "G2",
+  "objective": "G2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Loading a skill's detail only as a task needs it.",
+  "front": "What is progressive disclosure?",
+  "id": "G2-k5",
+  "module": "G2",
+  "objective": "G2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Tool names, prompt wording and the layout of a rules file: they differ, and each can work.",
+  "front": "Which ideas are taste, not law?",
+  "id": "G2-k6",
+  "module": "G2",
+  "objective": "G2.o3",
+  "type": "term"
+ },
+ {
+  "back": "The loop, the model adapter, the tools, the config, then the trace.",
+  "front": "In what order do you read an unfamiliar harness?",
+  "id": "G3-k1",
+  "module": "G3",
+  "objective": "G3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Write it down as missing, with the file you looked in. A missing wire is a finding too.",
+  "front": "What do you do when a wire is missing from a repository?",
+  "id": "G3-k2",
+  "module": "G3",
+  "objective": "G3.o2",
+  "type": "term"
+ },
+ {
+  "back": "From the agent's save step, when an output path is set.",
+  "front": "Where does a trajectory come from in a local run?",
+  "id": "G3-k3",
+  "module": "G3",
+  "objective": "G3.o3",
+  "type": "term"
+ },
+ {
+  "back": "A measure you can run on the same seeds before and after the change.",
+  "front": "What makes a proposed change worth making?",
+  "id": "G3-k4",
+  "module": "G3",
+  "objective": "G3.o4",
+  "type": "term"
+ },
+ {
+  "back": "Every other part is called from it, so the loop shows where each call goes.",
+  "front": "Why start with the loop?",
+  "id": "G3-k5",
+  "module": "G3",
+  "objective": "G3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Not necessarily. Read which loop you are looking at; a part can sit in a subclass.",
+  "front": "Is a file that is not in the default loop missing from the harness?",
+  "id": "G3-k6",
+  "module": "G3",
+  "objective": "G3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Watch, name the failure family, fix the harness, measure.",
+  "front": "What are the four steps of the steering loop?",
+  "id": "G4-k1",
+  "module": "G4",
+  "objective": "G4.o1",
+  "type": "term"
+ },
+ {
+  "back": "The family says which wire is at fault, so the fix changes that wire and not the model.",
+  "front": "Why name the family before choosing a fix?",
+  "id": "G4-k2",
+  "module": "G4",
+  "objective": "G4.o2",
+  "type": "term"
+ },
+ {
+  "back": "A harness part written to be removed when a newer model no longer needs it, with a measure before removal.",
+  "front": "What is build to delete?",
+  "id": "G4-k3",
+  "module": "G4",
+  "objective": "G4.o3",
+  "type": "term"
+ },
+ {
+  "back": "A rule that names a function the code no longer has, so the model follows a stale map.",
+  "front": "What does entropy look like in a rules file?",
+  "id": "G4-k4",
+  "module": "G4",
+  "objective": "G4.o4",
+  "type": "term"
+ },
+ {
+  "back": "A check runs on every change; a reminder depends on someone remembering to read the file.",
+  "front": "Why a mechanical check and not a reminder?",
+  "id": "G4-k5",
+  "module": "G4",
+  "objective": "G4.o4",
+  "type": "term"
+ },
+ {
+  "back": "Fast checks, clear errors, a readable structure and docs that act as a short map.",
+  "front": "What makes a codebase harnessable?",
+  "id": "G4-k6",
+  "module": "G4",
+  "objective": "G4.o5",
+  "type": "term"
+ },
+ {
+  "back": "One function the rest of Rein calls for a reply. A scripted model and a real model sit behind it.",
+  "front": "What is a model interface?",
+  "id": "H1-k1",
+  "module": "H1",
+  "objective": "H1.o1",
+  "type": "term"
+ },
+ {
+  "back": "A Python class with named fields. Rein uses one to hold a reply, so each field has a name.",
+  "front": "What is a dataclass?",
+  "id": "H1-k2",
+  "module": "H1",
+  "objective": "H1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Why the model stopped, such as tool_use or end_turn. The harness decides its next step from it.",
+  "front": "What does stop_reason tell the harness?",
+  "id": "H1-k3",
+  "module": "H1",
+  "objective": "H1.o2",
+  "type": "term"
+ },
+ {
+  "back": "A reply's content is a list of blocks. A tool request can come after text, so the harness reads the blocks, not only the first.",
+  "front": "Why does Reply keep the raw content blocks?",
+  "id": "H1-k4",
+  "module": "H1",
+  "objective": "H1.o2",
+  "type": "term"
+ },
+ {
+  "back": "The stop reason and the input and output token counts, so you can see what each call used.",
+  "front": "What does Rein print with each reply?",
+  "id": "H1-k5",
+  "module": "H1",
+  "objective": "H1.o2",
+  "type": "term"
+ },
+ {
+  "back": "Yes. You send the full history with each request, and the API keeps nothing between requests.",
+  "front": "Is the API stateless?",
+  "id": "H1-k6",
+  "module": "H1",
+  "objective": "H1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Only what its own request includes. Nothing carries over by itself.",
+  "front": "Three runs of one script. What does run three know about run one?",
+  "id": "H1-k7",
+  "module": "H1",
+  "objective": "H1.o3",
+  "type": "term"
+ },
+ {
+  "back": "A table from each tool name to the Python function that runs it.",
+  "front": "What is a tool registry?",
+  "id": "H2-k1",
+  "module": "H2",
+  "objective": "H2.o1",
+  "type": "term"
+ },
+ {
+  "back": "The spec describes the tool to the model. The function is the code the harness runs when the model asks for it.",
+  "front": "What does a tool's spec tell the model, and what does its function do?",
+  "id": "H2-k2",
+  "module": "H2",
+  "objective": "H2.o1",
+  "type": "term"
+ },
+ {
+  "back": "All in one user message, one per tool_use, each with the tool_use_id of its request.",
+  "front": "Where do tool results go?",
+  "id": "H2-k3",
+  "module": "H2",
+  "objective": "H2.o1",
+  "type": "term"
+ },
+ {
+  "back": "A cap on the model calls in one run. The loop stops when the count reaches it.",
+  "front": "What is a turn limit?",
+  "id": "H2-k4",
+  "module": "H2",
+  "objective": "H2.o2",
+  "type": "term"
+ },
+ {
+  "back": "A loop with one exit stops only when that exit is taken. A model that never takes it runs forever.",
+  "front": "Why is one exit not enough?",
+  "id": "H2-k5",
+  "module": "H2",
+  "objective": "H2.o2",
+  "type": "term"
+ },
+ {
+  "back": "A tool_result with is_error set to true and a short reason. The run carries on.",
+  "front": "What does an unknown tool name get back?",
+  "id": "H2-k6",
+  "module": "H2",
+  "objective": "H2.o3",
+  "type": "term"
+ },
+ {
+  "back": "That the result is a failure, so the model can try again or change its plan.",
+  "front": "What does is_error tell the model?",
+  "id": "H2-k7",
+  "module": "H2",
+  "objective": "H2.o3",
+  "type": "term"
+ },
+ {
+  "back": "In Workspace.path(). It turns the path into a real path, follows ../ and links, and refuses anything outside the project folder.",
+  "front": "Where does Rein check a path the model gives?",
+  "id": "H3-k1",
+  "module": "H3",
+  "objective": "H3.o1",
+  "type": "term"
+ },
+ {
+  "back": "It refuses the edit and says how many times the text appears, so the model can include more lines.",
+  "front": "What does edit_file do when old_text appears twice?",
+  "id": "H3-k2",
+  "module": "H3",
+  "objective": "H3.o1",
+  "type": "term"
+ },
+ {
+  "back": "So a check never runs stale cached code: Python would otherwise reuse an old .pyc file written in the same second.",
+  "front": "Why does Rein set PYTHONDONTWRITEBYTECODE for commands?",
+  "id": "H3-k3",
+  "module": "H3",
+  "objective": "H3.o1",
+  "type": "term"
+ },
+ {
+  "back": "It keeps the head and the tail of a result, because the error is usually near the end, and marks how many characters it cut.",
+  "front": "What does the output cap keep, and what does it mark?",
+  "id": "H3-k4",
+  "module": "H3",
+  "objective": "H3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Yes. Every result that enters the context is capped, including the messages the model reads as errors.",
+  "front": "Does the cap apply to error messages as well as to results?",
+  "id": "H3-k5",
+  "module": "H3",
+  "objective": "H3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Because the path is resolved first: the ../ climbs out, so the resolved path is outside the root and the check refuses it.",
+  "front": "Why is a ../ path refused even when the join starts inside the project?",
+  "id": "H3-k6",
+  "module": "H3",
+  "objective": "H3.o3",
+  "type": "term"
+ },
+ {
+  "back": "One of allow, ask or deny, each with a reason the model can read.",
+  "front": "What does the gate return for a tool call?",
+  "id": "H4-k1",
+  "module": "H4",
+  "objective": "H4.o1",
+  "type": "term"
+ },
+ {
+  "back": "In run_tool(), before the tool runs. No tool call runs before its verdict.",
+  "front": "Where does the gate run?",
+  "id": "H4-k2",
+  "module": "H4",
+  "objective": "H4.o1",
+  "type": "term"
+ },
+ {
+  "back": "Read-only tools first; then the deny rules; then the allow list, only without chaining characters; then the mode for edits.",
+  "front": "What is the decision order in decide()?",
+  "id": "H4-k3",
+  "module": "H4",
+  "objective": "H4.o2",
+  "type": "term"
+ },
+ {
+  "back": "Because python test_calc.py && curl evil.example starts like an allowed command, so the second command would ride along.",
+  "front": "Why does the chaining check matter?",
+  "id": "H4-k4",
+  "module": "H4",
+  "objective": "H4.o2",
+  "type": "term"
+ },
+ {
+  "back": "So the model cannot wear the person down by asking for the same thing again.",
+  "front": "Why does a denied call stay denied for the rest of the run?",
+  "id": "H4-k5",
+  "module": "H4",
+  "objective": "H4.o3",
+  "type": "term"
+ },
+ {
+  "back": "No. The gate decides whether a kind of action is allowed; the wall inside the tool decides which files it can touch.",
+  "front": "Does the gate check the paths inside a file tool?",
+  "id": "H4-k6",
+  "module": "H4",
+  "objective": "H4.o3",
+  "type": "term"
+ },
+ {
+  "back": "v, run, seq, t in milliseconds, turn, agent, kind and wire, then the kind's own fields.",
+  "front": "What does every line of the trace carry?",
+  "id": "H5-k1",
+  "module": "H5",
+  "objective": "H5.o1",
+  "type": "term"
+ },
+ {
+  "back": "It counts one run's lines from 0 with no gaps, so a missing line shows as a jump in seq.",
+  "front": "What does seq tell you about a file?",
+  "id": "H5-k2",
+  "module": "H5",
+  "objective": "H5.o1",
+  "type": "term"
+ },
+ {
+  "back": "From the run_end line, which is the last line of the run.",
+  "front": "Where does the deck read a run's status?",
+  "id": "H5-k3",
+  "module": "H5",
+  "objective": "H5.o2",
+  "type": "term"
+ },
+ {
+  "back": "The usage on each reply says how many tokens that call used, so the cost can be read call by call.",
+  "front": "Why are the tokens on each model_reply line?",
+  "id": "H5-k4",
+  "module": "H5",
+  "objective": "H5.o3",
+  "type": "term"
+ },
+ {
+  "back": "It is replaced with [REDACTED], so the file can be shared without the key.",
+  "front": "What happens to an API-key-like string before a line is stored?",
+  "id": "H5-k5",
+  "module": "H5",
+  "objective": "H5.o3",
+  "type": "term"
+ },
+ {
+  "back": "So a crash loses nothing before it: the file holds every line written so far.",
+  "front": "Why is each line written as it happens?",
+  "id": "H5-k6",
+  "module": "H5",
+  "objective": "H5.o1",
+  "type": "term"
+ },
+ {
+  "back": "It measures the characters of the messages as JSON and divides by four. A rough guess, good enough to decide when to act.",
+  "front": "How does estimate_tokens() count a request?",
+  "id": "H6-k1",
+  "module": "H6",
+  "objective": "H6.o1",
+  "type": "term"
+ },
+ {
+  "back": "Because a request that is too big fails only when it is sent, and by then the harness has already built it. The harness decides first, from its own count.",
+  "front": "Why estimate before the call rather than after?",
+  "id": "H6-k2",
+  "module": "H6",
+  "objective": "H6.o1",
+  "type": "term"
+ },
+ {
+  "back": "The head and the tail of a result, and a line that says how many characters it cut.",
+  "front": "What does truncate() keep, and what does it say?",
+  "id": "H6-k3",
+  "module": "H6",
+  "objective": "H6.o2",
+  "type": "term"
+ },
+ {
+  "back": "The newest messages. The older history is swapped for a short summary of the task and the tools used.",
+  "front": "What does compact() keep word for word?",
+  "id": "H6-k4",
+  "module": "H6",
+  "objective": "H6.o2",
+  "type": "term"
+ },
+ {
+  "back": "Never between a tool request and its result: the cut lands on one of the model's messages.",
+  "front": "Where does compact() never cut?",
+  "id": "H6-k5",
+  "module": "H6",
+  "objective": "H6.o2",
+  "type": "term"
+ },
+ {
+  "back": "A compaction event: the tokens before and after, how many messages were dropped, and the notes that were kept.",
+  "front": "What does the trace record when old history is summarized?",
+  "id": "H6-k6",
+  "module": "H6",
+  "objective": "H6.o2",
+  "type": "term"
+ },
+ {
+  "back": "It moves the clock forward by the wait and returns at once. Nothing waits in real time.",
+  "front": "What does sleep() do on the virtual clock?",
+  "id": "H7-k1",
+  "module": "H7",
+  "objective": "H7.o1",
+  "type": "term"
+ },
+ {
+  "back": "Jitter spreads the retries of clients that failed together. Under --fake the random source is seeded, so the same waits come out on every run.",
+  "front": "What is jitter for, and why is it seeded under --fake?",
+  "id": "H7-k2",
+  "module": "H7",
+  "objective": "H7.o1",
+  "type": "term"
+ },
+ {
+  "back": "About half a second, scaled by a random share between half and all of it. Then one second, then two, never above the cap.",
+  "front": "What does with_retries() wait after the first failure?",
+  "id": "H7-k3",
+  "module": "H7",
+  "objective": "H7.o1",
+  "type": "term"
+ },
+ {
+  "back": "Failed calls in a row. A successful call resets the count to zero.",
+  "front": "What does CircuitBreaker count?",
+  "id": "H7-k4",
+  "module": "H7",
+  "objective": "H7.o2",
+  "type": "term"
+ },
+ {
+  "back": "After three failed calls in a row. The run ends with the status circuit_open.",
+  "front": "When does the breaker open, and how does the run end?",
+  "id": "H7-k5",
+  "module": "H7",
+  "objective": "H7.o2",
+  "type": "term"
+ },
+ {
+  "back": "A model_error line for each failed call, a retry_wait line for each wait, and a breaker line when the breaker opens.",
+  "front": "What does the trace record for an outage?",
+  "id": "H7-k6",
+  "module": "H7",
+  "objective": "H7.o2",
+  "type": "term"
+ },
+ {
+  "back": "Calls arrive together every time, and the outage lasts longer. Backoff with jitter and a breaker stop sending the calls into it.",
+  "front": "What does the outage tape show about fixed waits?",
+  "id": "H7-k7",
+  "module": "H7",
+  "objective": "H7.o3",
+  "type": "term"
+ },
+ {
+  "back": "The max_turns status. It writes a guard line with the limit and the turn count first.",
+  "front": "What does the turn guard end the run with, and what does it record?",
+  "id": "H8-k1",
+  "module": "H8",
+  "objective": "H8.o1",
+  "type": "term"
+ },
+ {
+  "back": "The input and output tokens spent so far against the budget, before each new call.",
+  "front": "What does the token budget guard compare, and when?",
+  "id": "H8-k2",
+  "module": "H8",
+  "objective": "H8.o1",
+  "type": "term"
+ },
+ {
+  "back": "It answers with an error and does not run the call, so the model is told to try something else.",
+  "front": "What does the loop detector do on the third identical call?",
+  "id": "H8-k3",
+  "module": "H8",
+  "objective": "H8.o1",
+  "type": "term"
+ },
+ {
+  "back": "When the model repeats the same call after the redirect. The run ends with the loop status.",
+  "front": "When does the loop guard end the run?",
+  "id": "H8-k4",
+  "module": "H8",
+  "objective": "H8.o1",
+  "type": "term"
+ },
+ {
+  "back": "A tool result for every pending tool request, saying it was interrupted before it ran.",
+  "front": "What does close_open_calls() add after an interrupt?",
+  "id": "H8-k5",
+  "module": "H8",
+  "objective": "H8.o2",
+  "type": "term"
+ },
+ {
+  "back": "A request with no result right after it fails with the standard tool_use error, so the run cannot resume.",
+  "front": "Why must every tool request get a result?",
+  "id": "H8-k6",
+  "module": "H8",
+  "objective": "H8.o2",
+  "type": "term"
+ },
+ {
+  "back": "An interrupt after an edit leaves a tool request with no result, and the next prompt is rejected.",
+  "front": "What does the interrupt tape show?",
+  "id": "H8-k7",
+  "module": "H8",
+  "objective": "H8.o3",
+  "type": "term"
+ },
+ {
+  "back": "The clock's time since the run began, against --max-seconds, before each model call. Under --fake the clock moves only by the waits.",
+  "front": "What does the time guard compare, and on which clock?",
+  "id": "H8-k8",
+  "module": "H8",
+  "objective": "H8.o1",
+  "type": "term"
+ },
+ {
+  "back": "The check command, through run_command's own path, in the project folder. It is the harness's command, not the model's.",
+  "front": "What does verify() run?",
+  "id": "H9-k1",
+  "module": "H9",
+  "objective": "H9.o1",
+  "type": "term"
+ },
+ {
+  "back": "The return code. 0 passes; anything else fails.",
+  "front": "What decides whether a check passed?",
+  "id": "H9-k2",
+  "module": "H9",
+  "objective": "H9.o1",
+  "type": "term"
+ },
+ {
+  "back": "When a reply has no tool calls: the model is claiming it is done.",
+  "front": "When does the gate run?",
+  "id": "H9-k3",
+  "module": "H9",
+  "objective": "H9.o1",
+  "type": "term"
+ },
+ {
+  "back": "The failure output, as the next message, with an instruction to fix the problem and check it yourself.",
+  "front": "What does the gate send back on a failure?",
+  "id": "H9-k4",
+  "module": "H9",
+  "objective": "H9.o2",
+  "type": "term"
+ },
+ {
+  "back": "As unverified. Never as done.",
+  "front": "How does a run end when the check still fails after the last fix round?",
+  "id": "H9-k5",
+  "module": "H9",
+  "objective": "H9.o2",
+  "type": "term"
+ },
+ {
+  "back": "Two, in max_fix_rounds. After the last one, a failing check ends the run as unverified.",
+  "front": "How many fix rounds does the gate allow by default?",
+  "id": "H9-k6",
+  "module": "H9",
+  "objective": "H9.o2",
+  "type": "term"
+ },
+ {
+  "back": "A model says the tests pass without running them. The gate runs the check, catches the claim, and sends the failure back.",
+  "front": "What does the false-done tape show?",
+  "id": "H9-k7",
+  "module": "H9",
+  "objective": "H9.o3",
+  "type": "term"
+ },
+ {
+  "back": "Builds agents into a product, with tools, evals and guardrails, then watches them run. In this course's terms, it is most of the work.",
+  "front": "What does an applied AI engineer do?",
+  "id": "I1-k1",
+  "module": "I1",
+  "objective": "I1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Fits an agent into a customer's codebase and workflow, often working with the customer directly.",
+  "front": "What does a forward-deployed engineer do?",
+  "id": "I1-k2",
+  "module": "I1",
+  "objective": "I1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Designs the tasks, scoring checks and experiments that measure an agent, and reads the noise in the results.",
+  "front": "What does an evals engineer do?",
+  "id": "I1-k3",
+  "module": "I1",
+  "objective": "I1.o1",
+  "type": "term"
+ },
+ {
+  "back": "The environments, sandboxes and scoring checks that measure and train models.",
+  "front": "What does a research engineer build?",
+  "id": "I1-k4",
+  "module": "I1",
+  "objective": "I1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Permissions, for which actions are allowed and which need a yes first.",
+  "front": "A posting asks for a tool that asks before it writes files. Which wire is that?",
+  "id": "I1-k5",
+  "module": "I1",
+  "objective": "I1.o2",
+  "type": "term"
+ },
+ {
+  "back": "Building, measuring and debugging, shown in public: a repository with tests, a results table and a write-up.",
+  "front": "What evidence do labs look for, in the course's reading?",
+  "id": "I1-k6",
+  "module": "I1",
+  "objective": "I1.o3",
+  "type": "term"
+ },
+ {
+  "back": "It shows you finished a course. It does not show that you can build or measure. Show the work instead.",
+  "front": "Is a certificate evidence?",
+  "id": "I1-k7",
+  "module": "I1",
+  "objective": "I1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Can explain: every built module on the wire is explained, and there is at least one.",
+  "front": "What does L1 mean on a wire?",
+  "id": "I2-k1",
+  "module": "I2",
+  "objective": "I2.o1",
+  "type": "term"
+ },
+ {
+  "back": "A passing kata or step on a module of the wire.",
+  "front": "What does L2 need, beyond L1?",
+  "id": "I2-k2",
+  "module": "I2",
+  "objective": "I2.o1",
+  "type": "term"
+ },
+ {
+  "back": "A credited bench or par experiment on a module of the wire, or a credited design drill.",
+  "front": "What does L3 need, beyond L2?",
+  "id": "I2-k3",
+  "module": "I2",
+  "objective": "I2.o1",
+  "type": "term"
+ },
+ {
+  "back": "One line of words per wire, such as explaining every module that is still open, or passing a kata. Take it next.",
+  "front": "What is the radar's next step for a wire?",
+  "id": "I2-k4",
+  "module": "I2",
+  "objective": "I2.o2",
+  "type": "term"
+ },
+ {
+  "back": "No. The level comes from your evidence. What you control is the claim you make: never claim a level the evidence does not show.",
+  "front": "Can you set a level by hand?",
+  "id": "I2-k5",
+  "module": "I2",
+  "objective": "I2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Only what your evidence shows: your levels, the modules you explained, your passed katas and steps, bench results, design drills and the date.",
+  "front": "What goes on a brag sheet?",
+  "id": "I2-k6",
+  "module": "I2",
+  "objective": "I2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Cut it until two weeks can finish one measured result. A smaller project you measure beats a larger one you only describe.",
+  "front": "What does it mean to scope a project to two weeks?",
+  "id": "I3-k1",
+  "module": "I3",
+  "objective": "I3.o1",
+  "type": "term"
+ },
+ {
+  "back": "With a documentation fix or a reproduction of a failing test, then one small bug fix. A merged pull request is the evidence.",
+  "front": "How do you start a contribution to a real harness?",
+  "id": "I3-k2",
+  "module": "I3",
+  "objective": "I3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Task, passed of trials, the Wilson 95% interval, tokens, cost, and whether the numbers are scripted.",
+  "front": "What columns does the results table have?",
+  "id": "I3-k3",
+  "module": "I3",
+  "objective": "I3.o2",
+  "type": "term"
+ },
+ {
+  "back": "A count is not a result on its own. The interval says how far luck could move it.",
+  "front": "Why show the interval next to the count of passes?",
+  "id": "I3-k4",
+  "module": "I3",
+  "objective": "I3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Scripted runs repeat exactly, and real model runs vary. The table says which in a line of its own.",
+  "front": "Why say whether the numbers are scripted?",
+  "id": "I3-k5",
+  "module": "I3",
+  "objective": "I3.o2",
+  "type": "term"
+ },
+ {
+  "back": "The question, the method, the command that reproduces the numbers, the results table and the limits.",
+  "front": "What must a write-up contain for a reviewer?",
+  "id": "I3-k6",
+  "module": "I3",
+  "objective": "I3.o3",
+  "type": "term"
+ },
+ {
+  "back": "It ends in a link you can check: a merged pull request, a results table or a write-up. 'Practice more' is not a goal you can check.",
+  "front": "What makes a weekly goal evidence?",
+  "id": "I6-k1",
+  "module": "I6",
+  "objective": "I6.o1",
+  "type": "term"
+ },
+ {
+  "back": "Real evals for Rein: ten tasks, baseline numbers, and a README table.",
+  "front": "What is the output of weeks 1 to 2 in the plan?",
+  "id": "I6-k2",
+  "module": "I6",
+  "objective": "I6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A practice interview in which someone else asks the questions and grades your answers against a rubric.",
+  "front": "What is a mock interview?",
+  "id": "I6-k3",
+  "module": "I6",
+  "objective": "I6.o2",
+  "type": "term"
+ },
+ {
+  "back": "The questions, your answer to each, and what to improve next time. A mock with no notes repeats its mistakes.",
+  "front": "What should you write down after a mock interview?",
+  "id": "I6-k4",
+  "module": "I6",
+  "objective": "I6.o2",
+  "type": "term"
+ },
+ {
+  "back": "The course's plan: about ten minutes, with one incident, the due cards, and one micro-kata or say-it drill.",
+  "front": "What is the daily on-call shift?",
+  "id": "I6-k5",
+  "module": "I6",
+  "objective": "I6.o3",
+  "type": "term"
+ },
+ {
+  "back": "Start again the next day, and do not try to clear the backlog in one sitting.",
+  "front": "You miss several days of the daily shift. What is the advice?",
+  "id": "I6-k6",
+  "module": "I6",
+  "objective": "I6.o3",
+  "type": "term"
+ },
+ {
+  "back": "The value is an int, or None.",
+  "front": "What does int | None mean in a hint?",
+  "id": "T1-k1",
+  "module": "T1",
+  "objective": "T1.o1",
+  "type": "term"
+ },
+ {
+  "back": "After each parameter name, and after the arrow for the return type.",
+  "front": "Where does a type hint go on a function?",
+  "id": "T1-k2",
+  "module": "T1",
+  "objective": "T1.o1",
+  "type": "term"
+ },
+ {
+  "back": "A class that holds named fields. The reply in the next modules is one.",
+  "front": "What is a dataclass?",
+  "id": "T1-k3",
+  "module": "T1",
+  "objective": "T1.o2",
+  "type": "term"
+ },
+ {
+  "back": "No. Leave it out and done is False.",
+  "front": "Task has done: bool = False. Must you pass done to make a Task?",
+  "id": "T1-k4",
+  "module": "T1",
+  "objective": "T1.o2",
+  "type": "term"
+ },
+ {
+  "back": "mypy, on your own machine. Fix the first error it reports, then run the tests again.",
+  "front": "What do you run to check the hints in your file?",
+  "id": "T1-k5",
+  "module": "T1",
+  "objective": "T1.o3",
+  "type": "term"
+ },
+ {
+  "back": "A coroutine. Its body has not run yet, as the first example shows.",
+  "front": "What does calling an async def function return?",
+  "id": "T2-k1",
+  "module": "T2",
+  "objective": "T2.o1",
+  "type": "term"
+ },
+ {
+  "back": "The value 8. The second example awaits double and returns what it gives.",
+  "front": "What does await give you when the coroutine returns 8?",
+  "id": "T2-k2",
+  "module": "T2",
+  "objective": "T2.o1",
+  "type": "term"
+ },
+ {
+  "back": "One fetch coroutine per job, in the order of jobs.",
+  "front": "What does fetch_all pass to asyncio.gather?",
+  "id": "T2-k3",
+  "module": "T2",
+  "objective": "T2.o2",
+  "type": "term"
+ },
+ {
+  "back": "In asyncio.wait_for, around the gather call. A TimeoutError from it reaches the caller.",
+  "front": "Where does the timeout go?",
+  "id": "T2-k4",
+  "module": "T2",
+  "objective": "T2.o2",
+  "type": "term"
+ },
+ {
+  "back": "They time three jobs of 0.2 s each and expect less than 0.4 s in total.",
+  "front": "How do the tests check that the jobs overlap?",
+  "id": "T2-k5",
+  "module": "T2",
+  "objective": "T2.o2",
+  "type": "term"
+ },
+ {
+  "back": "The list ['python3', '-c', 'print(1)', '4']. The value is text in the list.",
+  "front": "What does build_argv return for the script print(1) and the value 4?",
+  "id": "T3-k1",
+  "module": "T3",
+  "objective": "T3.o1",
+  "type": "term"
+ },
+ {
+  "back": "capture_output=True, text=True and timeout=timeout, in that one call.",
+  "front": "Which keyword arguments does run_checked pass to the runner?",
+  "id": "T3-k2",
+  "module": "T3",
+  "objective": "T3.o1",
+  "type": "term"
+ },
+ {
+  "back": "(3, ''). A non-zero exit code is a result, so it is returned, not raised.",
+  "front": "What does run_checked return for exit code 3 with no output?",
+  "id": "T3-k3",
+  "module": "T3",
+  "objective": "T3.o1",
+  "type": "term"
+ },
+ {
+  "back": "(None, 'timed out'). It catches subprocess.TimeoutExpired.",
+  "front": "What does run_checked return when the timeout passes?",
+  "id": "T3-k4",
+  "module": "T3",
+  "objective": "T3.o2",
+  "type": "term"
+ },
+ {
+  "back": "On your machine, in your own code, with the same keyword arguments. The kata's tests use a fake runner and start no child process.",
+  "front": "Where does the real subprocess.run call go in this module?",
+  "id": "T3-k5",
+  "module": "T3",
+  "objective": "T3.o2",
+  "type": "term"
+ },
+ {
+  "back": "A property whose own schema is an object or an array, with its own properties or items.",
+  "front": "What makes a schema nested?",
+  "id": "T4-k1",
+  "module": "T4",
+  "objective": "T4.o1",
+  "type": "term"
+ },
+ {
+  "back": "The value must be one of the listed values.",
+  "front": "What does a list of allowed values say?",
+  "id": "T4-k2",
+  "module": "T4",
+  "objective": "T4.o1",
+  "type": "term"
+ },
+ {
+  "back": "The listed fields must be present in the value.",
+  "front": "What does required say?",
+  "id": "T4-k3",
+  "module": "T4",
+  "objective": "T4.o2",
+  "type": "term"
+ },
+ {
+  "back": "It rejects any field that the schema does not list in its properties.",
+  "front": "What does additionalProperties false do?",
+  "id": "T4-k4",
+  "module": "T4",
+  "objective": "T4.o2",
+  "type": "term"
+ },
+ {
+  "back": "None. Without a required list, no field is required.",
+  "front": "A schema has no required list. Which fields must a value have?",
+  "id": "T4-k5",
+  "module": "T4",
+  "objective": "T4.o2",
+  "type": "term"
+ },
+ {
+  "back": "The path to the bad value, such as $.user.name, then a colon and the problem.",
+  "front": "What does each error in the course's checker start with?",
+  "id": "T4-k6",
+  "module": "T4",
+  "objective": "T4.o3",
+  "type": "term"
+ },
+ {
+  "back": "A status code and headers, sent before the body.",
+  "front": "What does a response have besides its body?",
+  "id": "T5-k1",
+  "module": "T5",
+  "objective": "T5.o1",
+  "type": "term"
+ },
+ {
+  "back": "529, with the error type overloaded_error.",
+  "front": "Which status code says the API is temporarily overloaded?",
+  "id": "T5-k2",
+  "module": "T5",
+  "objective": "T5.o2",
+  "type": "term"
+ },
+ {
+  "back": "429.",
+  "front": "Which status code carries the error type rate_limit_error?",
+  "id": "T5-k3",
+  "module": "T5",
+  "objective": "T5.o2",
+  "type": "term"
+ },
+ {
+  "back": "The request has a format or content problem. Fix the request; a retry without a change fails again.",
+  "front": "What does a 400 mean?",
+  "id": "T5-k4",
+  "module": "T5",
+  "objective": "T5.o2",
+  "type": "term"
+ },
+ {
+  "back": "A blank line. Only an event with data is returned.",
+  "front": "What ends a server-sent event?",
+  "id": "T5-k5",
+  "module": "T5",
+  "objective": "T5.o3",
+  "type": "term"
+ },
+ {
+  "back": "A comment, such as a keep-alive. The parser skips it.",
+  "front": "What is a line that starts with a colon?",
+  "id": "T5-k6",
+  "module": "T5",
+  "objective": "T5.o3",
+  "type": "term"
+ },
+ {
+  "back": "It raises AssertionError, and the test fails.",
+  "front": "What does a plain assert do when it is false?",
+  "id": "T6-k1",
+  "module": "T6",
+  "objective": "T6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A helper that builds the setup for a test, fresh each time.",
+  "front": "What is a fixture?",
+  "id": "T6-k2",
+  "module": "T6",
+  "objective": "T6.o2",
+  "type": "term"
+ },
+ {
+  "back": "A list of inputs and expected outputs, checked in one loop.",
+  "front": "What is a case table?",
+  "id": "T6-k3",
+  "module": "T6",
+  "objective": "T6.o2",
+  "type": "term"
+ },
+ {
+  "back": "A test that passes for a broken function proves nothing, so run it against one first.",
+  "front": "Why check that a test fails on purpose?",
+  "id": "T6-k4",
+  "module": "T6",
+  "objective": "T6.o3",
+  "type": "term"
+ },
+ {
+  "back": "docker, then run.",
+  "front": "What does the argument list start with?",
+  "id": "T7-k1",
+  "module": "T7",
+  "objective": "T7.o2",
+  "type": "term"
+ },
+ {
+  "back": "--network, then none, in that order.",
+  "front": "Which two list items set the network to none?",
+  "id": "T7-k2",
+  "module": "T7",
+  "objective": "T7.o2",
+  "type": "term"
+ },
+ {
+  "back": "--read-only.",
+  "front": "Which item makes the root filesystem read-only?",
+  "id": "T7-k3",
+  "module": "T7",
+  "objective": "T7.o2",
+  "type": "term"
+ },
+ {
+  "back": "One: one -v item with the folder.",
+  "front": "How many mounts does this module's list have?",
+  "id": "T7-k4",
+  "module": "T7",
+  "objective": "T7.o3",
+  "type": "term"
+ },
+ {
+  "back": "After the flags and the mount, and before the command.",
+  "front": "Where does the image go in the list?",
+  "id": "T7-k5",
+  "module": "T7",
+  "objective": "T7.o3",
+  "type": "term"
+ },
+ {
+  "back": "It returns a list of strings. Nothing runs, and no container starts.",
+  "front": "What does build_args do when the kata runs?",
+  "id": "T7-k6",
+  "module": "T7",
+  "objective": "T7.o1",
+  "type": "term"
+ },
+ {
+  "back": "One change you can explain in one line.",
+  "front": "What makes a commit small?",
+  "id": "T8-k1",
+  "module": "T8",
+  "objective": "T8.o1",
+  "type": "term"
+ },
+ {
+  "back": "The line is new in the file after the change.",
+  "front": "In this course's diff, what does a line that starts with + mean?",
+  "id": "T8-k2",
+  "module": "T8",
+  "objective": "T8.o1",
+  "type": "term"
+ },
+ {
+  "back": "Read the diff, so you know what the undo will remove.",
+  "front": "What is the first step before you undo an agent's change?",
+  "id": "T8-k3",
+  "module": "T8",
+  "objective": "T8.o2",
+  "type": "term"
+ },
+ {
+  "back": "So its changes can be reviewed on their own.",
+  "front": "Why keep an agent's work apart from yours?",
+  "id": "T8-k4",
+  "module": "T8",
+  "objective": "T8.o3",
+  "type": "term"
+ },
+ {
+  "back": "A separate folder for one line of work.",
+  "front": "What is a worktree in this course?",
+  "id": "T8-k5",
+  "module": "T8",
+  "objective": "T8.o3",
+  "type": "term"
+ },
+ {
+  "back": "The lines a change adds, removes or leaves alone, file by file.",
+  "front": "What does a diff show?",
+  "id": "T8-k6",
+  "module": "T8",
+  "objective": "T8.o1",
+  "type": "term"
+ },
+ {
+  "back": "PPID.",
+  "front": "Which column names a process's parent in the course's table?",
+  "id": "T9-k1",
+  "module": "T9",
+  "objective": "T9.o1",
+  "type": "term"
+ },
+ {
+  "back": "CWD.",
+  "front": "Which column holds a process's working folder?",
+  "id": "T9-k2",
+  "module": "T9",
+  "objective": "T9.o1",
+  "type": "term"
+ },
+ {
+  "back": "The owner's triple, the first three letters of the mode.",
+  "front": "Which triple applies when the user is the owner?",
+  "id": "T9-k3",
+  "module": "T9",
+  "objective": "T9.o2",
+  "type": "term"
+ },
+ {
+  "back": "The group's triple, the middle three letters.",
+  "front": "Which triple applies to a user who is in the file's group?",
+  "id": "T9-k4",
+  "module": "T9",
+  "objective": "T9.o2",
+  "type": "term"
+ },
+ {
+  "back": "No. It lists the children and grandchildren above the limit.",
+  "front": "Does runaway_children list the parent?",
+  "id": "T9-k5",
+  "module": "T9",
+  "objective": "T9.o3",
+  "type": "term"
+ },
+ {
+  "back": "No. The limit is strict: only a process over it is listed.",
+  "front": "Is a process exactly at the cpu limit listed?",
+  "id": "T9-k6",
+  "module": "T9",
+  "objective": "T9.o3",
+  "type": "term"
+ },
+ {
+  "back": "A call that mostly waits, such as a web request.",
+  "front": "What kind of call fits async?",
+  "id": "T10-k1",
+  "module": "T10",
+  "objective": "T10.o1",
+  "type": "term"
+ },
+ {
+  "back": "The safe calls, which are started together.",
+  "front": "Which calls may overlap in run_tool_calls?",
+  "id": "T10-k2",
+  "module": "T10",
+  "objective": "T10.o2",
+  "type": "term"
+ },
+ {
+  "back": "The unsafe calls, which change shared state, in the order given.",
+  "front": "Which calls run one at a time?",
+  "id": "T10-k3",
+  "module": "T10",
+  "objective": "T10.o2",
+  "type": "term"
+ },
+ {
+  "back": "The order the calls were given, whatever finished first.",
+  "front": "In what order do results come back?",
+  "id": "T10-k4",
+  "module": "T10",
+  "objective": "T10.o2",
+  "type": "term"
+ },
+ {
+  "back": "A bug where the result depends on which of two steps runs first.",
+  "front": "What is a race condition?",
+  "id": "T10-k5",
+  "module": "T10",
+  "objective": "T10.o3",
+  "type": "term"
+ },
+ {
+  "back": "Both read 0 before either wrote, so the second write overwrote the first.",
+  "front": "Why did the two increments in the snippet end at 1?",
+  "id": "T10-k6",
+  "module": "T10",
+  "objective": "T10.o3",
+  "type": "term"
+ },
+ {
+  "back": "Say the answer out loud for 60 to 90 seconds, then compare it with the model answer and the rubric.",
+  "front": "What do you do with a say prompt before you answer?",
+  "id": "I5-c1",
+  "module": "I5",
+  "objective": "I5.o1",
+  "type": "term"
+ },
+ {
+  "back": "When you save it. The rubric lines you covered are the record; the rest of the screen is for you.",
+  "front": "When does a self-grade count as evidence?",
+  "id": "I5-c2",
+  "module": "I5",
+  "objective": "I5.o1",
+  "type": "term"
+ },
+ {
+  "back": "A blank file and a timer, checked by the same tests as the practice kata. No hints are shown.",
+  "front": "What is a from-memory kata?",
+  "id": "I5-c3",
+  "module": "I5",
+  "objective": "I5.o2",
+  "type": "term"
+ },
+ {
+  "back": "A decision and its trade-off for each of the eight wires, then the risks, the cost and the rollout.",
+  "front": "What does a design answer cover, wire by wire?",
+  "id": "I5-c4",
+  "module": "I5",
+  "objective": "I5.o3",
+  "type": "term"
+ },
+ {
+  "back": "A way the system could pass its own check without doing the job, such as an agent that edits its own tests.",
+  "front": "What is a cheating risk in a design?",
+  "id": "I5-c5",
+  "module": "I5",
+  "objective": "I5.o3",
+  "type": "term"
+ },
+ {
+  "back": "What did the run claim, and what did the checks actually see of the final state?",
+  "front": "What is the first question in a failing trace?",
+  "id": "I5-c6",
+  "module": "I5",
+  "objective": "I5.o4",
+  "type": "term"
+ },
+ {
+  "back": "The situation, what you built, the number and the window it came from, and what you would change.",
+  "front": "What makes a behavioral story usable?",
+  "id": "I5-c7",
+  "module": "I5",
+  "objective": "I5.o5",
+  "type": "term"
+ },
+ {
+  "back": "The interval and the trial count, not only the point estimate.",
+  "front": "What do you say about a result you measured?",
+  "id": "I5-c8",
+  "module": "I5",
+  "objective": "I5.o5",
+  "type": "term"
+ }
+]

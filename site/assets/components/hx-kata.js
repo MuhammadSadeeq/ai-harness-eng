@@ -28,6 +28,8 @@ const TIMER_IDLE_COPY = "The timer starts when you type.";
 const UNSAVED_COPY = "Your code is not saved in this browser. Copy it before you leave.";
 const SOLUTION_NOTE = "Compare it with yours; the tests are the judge, not the text.";
 const MEMORY_BLANK = "# Write it from memory.\n";
+// A from-memory kata starts from its memory_blank: the names its tests import, stubbed (gen_data; tools/lib/kata_blank.py).
+const memoryBlank = (kata) => (typeof kata?.memory_blank === "string" ? kata.memory_blank : MEMORY_BLANK);
 const WORDS = { passed: "pass", failed: "fail", error: "error" };
 
 const python = sharedPython();
@@ -104,7 +106,7 @@ export class HxKata extends HxElement {
     this.objectives = kata.objectives.map((objectiveId) => texts.get(objectiveId) ?? objectiveId);
     this.uid = `hxk${++uidCount}`;
     const draft = this.readDraft();
-    this.startCode = draft?.code ?? (mode === "memory" ? MEMORY_BLANK : kata.starter);
+    this.startCode = draft?.code ?? (mode === "memory" ? memoryBlank(kata) : kata.starter);
     if (mode === "memory" && Number.isFinite(draft?.elapsed_ms)) {
       // The timer resumes at the stored time; it runs again from the next keystroke.
       this.#clock = { started: false, banked: draft.elapsed_ms, since: null, paused: false };
@@ -445,7 +447,7 @@ export class HxKata extends HxElement {
   }
 
   replaceWithStarter() {
-    const text = this.mode === "memory" ? MEMORY_BLANK : this.kata.starter;
+    const text = this.mode === "memory" ? memoryBlank(this.kata) : this.kata.starter;
     this.setCode(text);
     clearTimeout(this.#draftTimer);
     this.#pending = false;

@@ -125,6 +125,37 @@ function markCurrentBeat(doc, onCurrent = () => {}) {
   for (const section of doc.querySelectorAll("section[data-beat]")) observer.observe(section);
 }
 
+/**
+ * A jump to a beat (a beat-strip link, or any link to a beat's id) moves focus to that beat's heading, so the next Tab
+ * continues inside the beat (WCAG 2.4.3). The browser still makes the jump and the history entry; this only follows it.
+ * A click (Enter on a link is a click) is followed after the browser's jump, because a link to the hash already in
+ * place fires no hashchange. A hash or link that is not a beat does nothing.
+ */
+export function focusBeatOnJump(win = window, doc = win.document) {
+  const focusBeat = (id) => {
+    const section = id ? doc.getElementById(id) : null;
+    if (!section || !section.matches("section[data-beat]")) return;
+    const heading = section.querySelector("h2");
+    if (!heading) return;
+    heading.setAttribute("tabindex", "-1");
+    heading.focus({ preventScroll: true });
+  };
+  const onHash = () => focusBeat(decodeURIComponent(win.location.hash.slice(1)));
+  const onClick = (event) => {
+    const link = event.target instanceof Element ? event.target.closest('a[href^="#"]') : null;
+    const href = link?.getAttribute("href") ?? "";
+    if (href.length < 2) return;
+    const id = decodeURIComponent(href.slice(1));
+    win.setTimeout(() => focusBeat(id), 0);
+  };
+  win.addEventListener("hashchange", onHash);
+  doc.addEventListener("click", onClick);
+  return () => {
+    win.removeEventListener("hashchange", onHash);
+    doc.removeEventListener("click", onClick);
+  };
+}
+
 /** Margin notes: on phones each aside.note also gets a tap-to-expand copy (CSS shows one or the other). */
 function upgradeNotes(doc) {
   for (const note of doc.querySelectorAll("aside.note")) {
@@ -178,6 +209,7 @@ export function mountModule(store, doc = document) {
     store.subscribe(() => paintProgress(store, doc, id, total));
   }
   markCurrentBeat(doc, nextBeatLine(doc));
+  if (doc === document) focusBeatOnJump(window, document);
   upgradeNotes(doc);
   decorateLaw(doc);
   // B-13: the Run key under a pre[data-run]. Only a page with one loads run.js; Python loads on the key's first Run.

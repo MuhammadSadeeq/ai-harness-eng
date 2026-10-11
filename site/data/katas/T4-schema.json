@@ -6,6 +6,7 @@
   "Nearly the code: in _check_object, loop over schema['required'] and append a message when the name is not in value. Then loop over the properties, and when additionalProperties is False, report each name not in properties."
  ],
  "id": "T4-schema",
+ "memory_blank": "# Write it from memory. The tests import these names.\nfrom typing import Any\ndef check(value: Any, schema: dict[str, Any], path: str = \"$\") -> list[str]:\n    ...\n",
  "minutes": 20,
  "module": "T4",
  "objectives": [

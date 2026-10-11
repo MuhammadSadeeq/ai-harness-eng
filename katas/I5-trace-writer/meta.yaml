@@ -1,0 +1,94 @@
+id: I5-trace-writer
+module: I5
+title: Write trace events as JSON lines, with a redacted key
+objectives: [I5.o2]
+minutes: 20
+hints:
+  - "seq is the position of the event in the list, counted from 0 across the whole run, not per turn."
+  - "A key-shaped string is sk- followed by 16 or more letters, digits, - or _. re.sub replaces each one in the text with [redacted]."
+  - "Nearly the code: enumerate the events; build a dict with v set to 1, run, seq, t, turn, kind, wire and the redacted text; json.dumps each dict and collect the strings."
+from_memory: true
+wrong_solutions:
+  - name: seq-from-one
+    code: |
+      import json
+      import re
+
+      KEY = re.compile(r"sk-[A-Za-z0-9_-]{16,}")
+
+
+      def trace_lines(run, events):
+          lines = []
+          for seq, event in enumerate(events, 1):
+              record = {"v": 1, "run": run, "seq": seq, "t": event["t"], "turn": event["turn"],
+                        "kind": event["kind"], "wire": event["wire"],
+                        "text": KEY.sub("[redacted]", event.get("text", ""))}
+              lines.append(json.dumps(record))
+          return lines
+  - name: seq-per-turn
+    code: |
+      import json
+      import re
+
+      KEY = re.compile(r"sk-[A-Za-z0-9_-]{16,}")
+
+
+      def trace_lines(run, events):
+          lines = []
+          seq = 0
+          turn = None
+          for event in events:
+              if event["turn"] != turn:
+                  turn = event["turn"]
+                  seq = 0
+              record = {"v": 1, "run": run, "seq": seq, "t": event["t"], "turn": event["turn"],
+                        "kind": event["kind"], "wire": event["wire"],
+                        "text": KEY.sub("[redacted]", event.get("text", ""))}
+              lines.append(json.dumps(record))
+              seq += 1
+          return lines
+  - name: no-redaction
+    code: |
+      import json
+
+
+      def trace_lines(run, events):
+          lines = []
+          for seq, event in enumerate(events):
+              record = {"v": 1, "run": run, "seq": seq, "t": event["t"], "turn": event["turn"],
+                        "kind": event["kind"], "wire": event["wire"],
+                        "text": event.get("text", "")}
+              lines.append(json.dumps(record))
+          return lines
+  - name: short-key-redacted
+    code: |
+      import json
+      import re
+
+      KEY = re.compile(r"sk-[A-Za-z0-9_-]{8,}")
+
+
+      def trace_lines(run, events):
+          lines = []
+          for seq, event in enumerate(events):
+              record = {"v": 1, "run": run, "seq": seq, "t": event["t"], "turn": event["turn"],
+                        "kind": event["kind"], "wire": event["wire"],
+                        "text": KEY.sub("[redacted]", event.get("text", ""))}
+              lines.append(json.dumps(record))
+          return lines
+  - name: no-version
+    code: |
+      import json
+      import re
+
+      KEY = re.compile(r"sk-[A-Za-z0-9_-]{16,}")
+
+
+      def trace_lines(run, events):
+          lines = []
+          for seq, event in enumerate(events):
+              record = {"run": run, "seq": seq, "t": event["t"], "turn": event["turn"],
+                        "kind": event["kind"], "wire": event["wire"],
+                        "text": KEY.sub("[redacted]", event.get("text", ""))}
+              lines.append(json.dumps(record))
+          return lines

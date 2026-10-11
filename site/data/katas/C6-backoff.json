@@ -6,6 +6,7 @@
   "Nearly the code: should_retry is error_type in TRANSIENT and attempt < max_attempts; backoff_ms caps before it jitters; breaker_open is failures >= threshold."
  ],
  "id": "C6-backoff",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef should_retry(error_type, attempt, max_attempts):\n    ...\n\ndef backoff_ms(attempt, base_ms, cap_ms, jitter, draw=0):\n    ...\n\ndef breaker_open(failures_in_a_row, threshold):\n    ...\n",
  "minutes": 25,
  "module": "C6",
  "objectives": [

@@ -118,17 +118,56 @@ export function readiness(course, core, evidence) {
   return { wires, explained, summary: summarize(wires) };
 }
 
+export const REASON_MAX = 140;
+
+/**
+ * A learner's lowered level for one wire (BP-5.4 §5, I2.o2): at most the evidence level, never above it, with a
+ * reason of one line. Throws with the rule that failed, so the control can say why.
+ */
+export function adjustment(evidenceLevel, chosen, reason) {
+  if (!Number.isInteger(chosen) || chosen < 0 || chosen > evidenceLevel) {
+    throw new Error(`A level can only be lowered: choose L0 to L${evidenceLevel}.`);
+  }
+  const text = String(reason ?? "").trim();
+  if (text === "" || /[\r\n]/.test(text) || text.length > REASON_MAX) {
+    throw new Error(`Give one line of reason, up to ${REASON_MAX} characters.`);
+  }
+  return { level: chosen, reason: text };
+}
+
+/**
+ * The level a wire shows: its evidence level, or the learner's lower level when that is valid for the evidence.
+ * A stored level above the evidence, or without a reason, is ignored: adjustments never raise a level.
+ */
+export function shownLevel(wire, adjustments) {
+  const a = adjustments?.[wire.id];
+  const valid = a && Number.isInteger(a.level) && a.level >= 0 && a.level < wire.level
+    && typeof a.reason === "string" && a.reason.trim() !== "" && !/[\r\n]/.test(a.reason);
+  if (!valid) return { level: wire.level, adjusted: false, reason: "" };
+  return { level: a.level, adjusted: true, reason: a.reason.trim() };
+}
+
 /**
  * The brag sheet's figures: the levels, the modules explained, katas and steps passed, bench results (old and new pass
  * counts) and design drills (ticked of total), and the date. Ruling: katas and steps count every passing entry, credited
  * or not, because the sheet reports what was done.
  */
-export function bragData(course, model, evidence, name, todayIso) {
+export function bragData(course, model, evidence, name, todayIso, adjustments = {}) {
   const titles = course.modules.filter((mod) => model.explained.has(mod.id)).map((mod) => ({ id: mod.id, title: mod.title }));
   return {
     name,
     date: formatDay(todayIso),
-    levels: model.wires.map((wire) => ({ short: wire.short, level: wire.level, word: wire.word })),
+    levels: model.wires.map((wire) => {
+      const shown = shownLevel(wire, adjustments);
+      return {
+        short: wire.short,
+        evidence: wire.level,
+        level: shown.level,
+        word: LEVEL_WORDS[shown.level],
+        adjusted: shown.adjusted,
+        reason: shown.reason,
+      };
+    }),
     explained: titles,
     katasPassed: evidence.filter((entry) => entry.kind === "kata" && entry.detail?.passed === true).length,
     stepsPassed: evidence.filter((entry) => entry.kind === "step" && entry.detail?.match === true).length,

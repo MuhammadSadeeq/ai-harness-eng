@@ -1,0 +1,40 @@
+- id: I5-c1
+  type: term
+  objective: I5.o1
+  front: What do you do with a say prompt before you answer?
+  back: Say the answer out loud for 60 to 90 seconds, then compare it with the model answer and the rubric.
+- id: I5-c2
+  type: term
+  objective: I5.o1
+  front: When does a self-grade count as evidence?
+  back: When you save it. The rubric lines you covered are the record; the rest of the screen is for you.
+- id: I5-c3
+  type: term
+  objective: I5.o2
+  front: What is a from-memory kata?
+  back: A blank file and a timer, checked by the same tests as the practice kata. No hints are shown.
+- id: I5-c4
+  type: term
+  objective: I5.o3
+  front: What does a design answer cover, wire by wire?
+  back: A decision and its trade-off for each of the eight wires, then the risks, the cost and the rollout.
+- id: I5-c5
+  type: term
+  objective: I5.o3
+  front: What is a cheating risk in a design?
+  back: A way the system could pass its own check without doing the job, such as an agent that edits its own tests.
+- id: I5-c6
+  type: term
+  objective: I5.o4
+  front: What is the first question in a failing trace?
+  back: What did the run claim, and what did the checks actually see of the final state?
+- id: I5-c7
+  type: term
+  objective: I5.o5
+  front: What makes a behavioral story usable?
+  back: The situation, what you built, the number and the window it came from, and what you would change.
+- id: I5-c8
+  type: term
+  objective: I5.o5
+  front: What do you say about a result you measured?
+  back: The interval and the trial count, not only the point estimate.

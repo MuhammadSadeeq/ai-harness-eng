@@ -6,6 +6,7 @@
   "Nearly the code: target = posixpath.normpath(posixpath.join(posixpath.dirname(current), links[current])). Check the target with the same outside test, then set current = target."
  ],
  "id": "C10-confine",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef confine(path: str, links: dict[str, str]) -> str:\n    ...\n",
  "minutes": 25,
  "module": "C10",
  "objectives": [

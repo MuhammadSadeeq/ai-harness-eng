@@ -6,6 +6,7 @@
   "Nearly the code: text = '\\n'.join(b['text'] for b in blocks if b['type'] == 'text'); calls = [(b['id'], b['name'], b['input']) for b in blocks if b['type'] == 'tool_use']; then if stop == 'tool_use' and calls: run_tools, elif stop == 'end_turn': done, else stop."
  ],
  "id": "A4-parse",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef read_reply(reply):\n    ...\n",
  "minutes": 20,
  "module": "A4",
  "objectives": [

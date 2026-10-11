@@ -6,6 +6,7 @@
   "Nearly the code: the fields are text: str, stop_reason: str and output_tokens: int = 0. is_done returns reply.stop_reason == 'end_turn'. first_text returns replies[0].text, or None when the list is empty."
  ],
  "id": "T1-dataclass",
+ "memory_blank": "# Write it from memory. The tests import these names.\nfrom dataclasses import dataclass\n@dataclass\nclass Reply:\n    ...\n\ndef is_done(reply: Reply) -> bool:\n    ...\n\ndef first_text(replies: list[Reply]) -> str | None:\n    ...\n",
  "minutes": 15,
  "module": "T1",
  "objectives": [

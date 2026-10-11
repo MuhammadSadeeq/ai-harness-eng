@@ -3168,6 +3168,18 @@
   "term": "symlink",
   "wire": "permissions"
  },
+ "system-design-interview": {
+  "aliases": [
+   "system design interview",
+   "system design interviews"
+  ],
+  "definition": "A session in which you design a system out loud with an interviewer, and are judged on the decisions and trade-offs, not on a single right answer.",
+  "id": "system-design-interview",
+  "module": "I5",
+  "strict": true,
+  "term": "system design interview",
+  "wire": "control"
+ },
  "system-prompt": {
   "aliases": [
    "system prompt",
@@ -3191,6 +3203,19 @@
   "strict": false,
   "term": "taint",
   "wire": "permissions"
+ },
+ "take-home": {
+  "aliases": [
+   "take-home",
+   "take-home project",
+   "take-home projects"
+  ],
+  "definition": "A small project with a fixed brief and time limit, done alone and written up for review.",
+  "id": "take-home",
+  "module": "I5",
+  "strict": false,
+  "term": "take-home",
+  "wire": "control"
  },
  "task": {
   "aliases": [

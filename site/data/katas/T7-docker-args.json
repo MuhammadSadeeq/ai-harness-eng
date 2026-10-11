@@ -6,6 +6,7 @@
   "Nearly the code: return [\"docker\", \"run\", \"--network\", \"none\", \"--read-only\", \"-v\", f\"{folder}:/work\", image, *command]."
  ],
  "id": "T7-docker-args",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef build_args(folder: str, image: str, command: list[str]) -> list[str]:\n    ...\n",
  "minutes": 25,
  "module": "T7",
  "objectives": [

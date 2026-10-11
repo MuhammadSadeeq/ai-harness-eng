@@ -1,0 +1,2069 @@
+[
+ {
+  "id": "S0-s1",
+  "model_answer": "I changed the verify retries and ran the bench on the same seeds. With no retries, the new board passed fewer trials, because a false done was accepted. With one retry, every trial passed. The model was the same in both runs, so the change came from the harness. That is the course thesis: same model, different harness, different results. I would report the pass rate with its trial count.",
+  "module": "S0",
+  "objectives": [
+   "S0.o3",
+   "S0.o4"
+  ],
+  "prompt": "Change one harness setting and tell me what it did to the pass rate, with your numbers.",
+  "rubric": [
+   "Names the one setting that changed, and the value before and after",
+   "Reports the pass rate for each value, with the number of trials",
+   "Says what the result does not show: other tasks and real models",
+   "Says the model was the same, so the harness made the difference"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "S0-s2",
+  "model_answer": "First I check whether anything ran the checks. If the model says the tests pass but no test ran, the claim is only a claim. I look at the trace for the tool call that ran the tests, read its result, and check that the result matches the claim. Only then do I accept the run.",
+  "module": "S0",
+  "objectives": [
+   "S0.o2"
+  ],
+  "prompt": "A run says it is done. What do you check before you believe it?",
+  "rubric": [
+   "Looks for the tool call that ran the checks, in the trace",
+   "Reads the result of that call, not the model's words",
+   "Says a done claim is only a claim until a check runs",
+   "Says a done claim is not proof until a check confirms it"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "A1-s1",
+  "model_answer": "The model reads the text so far and scores every possible next token. The sampler then turns those scores into probabilities and picks one token. Temperature sets how much the scores count: a higher temperature spreads the choice over more tokens, and at zero the top token always wins. The model does not check whether the token is true. That check has to come from the harness.",
+  "module": "A1",
+  "objectives": [
+   "A1.o1",
+   "A1.o2"
+  ],
+  "prompt": "Walk me through how a model picks its next token, and what temperature changes.",
+  "rubric": [
+   "Says the model scores every possible next token",
+   "Says the sampler picks one token from the scores",
+   "Says a higher temperature spreads the choice, and zero picks the top token",
+   "Says the model does not check whether its output is true"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "A1-s2",
+  "model_answer": "I check that the function exists in this project, before I trust the reply. Fluency is not evidence, and a made-up name reads just as well as a real one. I run the tests, and I read the result of that run, not the reply's claim that they pass. Only a run that I can see confirms it.",
+  "module": "A1",
+  "objectives": [
+   "A1.o3"
+  ],
+  "prompt": "A reply sounds sure and names a function that you do not recognise. What do you check before you use it?",
+  "rubric": [
+   "Checks that the named function exists in this project",
+   "Says fluency is not evidence that the claim is true",
+   "Runs a check and reads its result, rather than trusting the reply",
+   "Says a made-up name reads as well as a real one"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "A2-s1",
+  "model_answer": "First I estimate the tokens, with the course's rule of thumb of about four characters per token. A log that size is many thousands of tokens. Then I compare that with the window, because the instructions, the earlier messages, the tool results and the reply all share it. One big result can fill the window on its own, so the next prompt may not fit. I would cap the result before it goes back.",
+  "module": "A2",
+  "objectives": [
+   "A2.o1",
+   "A2.o2"
+  ],
+  "prompt": "A tool returns a 40 KB log. Walk me through what it does to the desk, and what you estimate first.",
+  "rubric": [
+   "Estimates the tokens with a stated rule, and says it is an estimate",
+   "Says the window is shared by instructions, earlier messages, tool results and the reply",
+   "Says one large tool result can fill the window and block the next prompt",
+   "Names a cap on each tool result as a way to keep the window from filling"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "A2-s2",
+  "model_answer": "The reply reached its output limit, so it stopped there, and the API says so. That is the output limit, not the window. The limit is on what the model writes. Each token it reads or writes is work, so a longer call takes longer and costs more. A harness can keep a reply short, or raise the limit and accept the longer wait.",
+  "module": "A2",
+  "objectives": [
+   "A2.o3",
+   "A2.o4"
+  ],
+  "prompt": "A reply stops because it reached its output limit. What happened, and what does a longer reply cost?",
+  "rubric": [
+   "Says the reply stopped at the output limit, not the window",
+   "Says what the limit covers: the tokens the model writes",
+   "Says tokens drive both latency and cost",
+   "Says each token is work, so a longer call takes longer and costs more"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "A3-s1",
+  "model_answer": "On the third call the harness sends the system prompt, the tool definitions and the whole messages array: the task, the first reply, the tool result, the second reply and its result. The model has no memory of its own, so anything it should know has to be in that list. If the harness dropped the earlier messages, the model would be answering a fresh question with no history.",
+  "module": "A3",
+  "objectives": [
+   "A3.o2",
+   "A3.o3"
+  ],
+  "prompt": "Walk me through what the model sees on the third call of a conversation.",
+  "rubric": [
+   "Says the call sends the whole messages array, not only the newest message",
+   "Says what happens when the harness drops the earlier messages",
+   "Names the earlier replies and tool results as part of what is sent",
+   "Says the model keeps nothing between calls, so the list is its memory"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "A3-s2",
+  "model_answer": "The window holds what the model reads in one call. Saved files hold what the harness writes to disk and reads back later. The weights hold what the model learned in training. The harness controls the window and the saved files. It does not control the weights.",
+  "module": "A3",
+  "objectives": [
+   "A3.o4"
+  ],
+  "prompt": "Name three kinds of memory a run can use, and say which one the harness controls.",
+  "rubric": [
+   "Names the window, saved files and the weights",
+   "Says the harness controls the window and the saved files",
+   "Says the harness does not control the weights",
+   "Says the saved files are a memory the harness keeps, and reads back"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "A4-s1",
+  "model_answer": "I read every content block in order and keep the text blocks and the tool requests separately. Then I read the stop reason. If it is tool_use, I run each tool request and send one result for each, matched by id. If it is end_turn, I treat the reply as a done claim and check the work. For max_tokens, I do not run a half-written request. Every other stop reason gets its own rule, and none is ignored.",
+  "module": "A4",
+  "objectives": [
+   "A4.o2",
+   "A4.o3"
+  ],
+  "prompt": "A reply has a text block and then a tool request. Walk me through how your harness reads it.",
+  "rubric": [
+   "Reads every content block, not only the first",
+   "Separates the text from the tool requests",
+   "Handles the stop reason on purpose, with a rule for each value it can take",
+   "Does not run a tool request from a reply cut off by max_tokens"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "A4-s2",
+  "model_answer": "The usage counts give the input and output tokens, and the prices turn them into a cost. For a streamed reply, the harness adds each event to the message as it arrives, and it reads the stop reason at the end. The cost is the same when the events have built the same message.",
+  "module": "A4",
+  "objectives": [
+   "A4.o4",
+   "A4.o5"
+  ],
+  "prompt": "How does your harness know what a call cost, and what changes if the reply streams?",
+  "rubric": [
+   "Takes the cost from the usage counts and the prices",
+   "Says a stream is events that build one message",
+   "Reads the stop reason once the message is complete",
+   "Says the stream's events must be read in order before the stop reason is used"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "A5-s1",
+  "model_answer": "The harness checks the input against the tool's schema before it runs anything. A wrong field name fails the check with a reason, such as a missing required field. The harness sends that reason back as an error result, so the model can send the call again with the right fields. A passing check still does not prove the values are right, so the work is checked as well.",
+  "module": "A5",
+  "objectives": [
+   "A5.o2",
+   "A5.o4"
+  ],
+  "prompt": "A tool call comes back with the wrong field name. Walk me through what your harness does.",
+  "rubric": [
+   "Checks the input against the schema before the tool runs",
+   "Sends the reason back as an error the model can act on",
+   "Says a valid shape does not make the values correct",
+   "Says the wrong field becomes an error result, not a run of the tool"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "A5-s2",
+  "model_answer": "Asking in the prompt is cheap and often works, but nothing enforces it. Validating afterwards checks each reply and sends failures back, so the harness is in charge of the shape. Constrained decoding limits what the model can produce, so the shape is enforced while the reply is made. I would start with validation, because it works with any model and shows me each failure.",
+  "module": "A5",
+  "objectives": [
+   "A5.o3"
+  ],
+  "prompt": "Compare asking for JSON in the prompt, validating afterwards, and constrained decoding.",
+  "rubric": [
+   "Says the prompt asks but does not enforce",
+   "Says validation checks each reply and sends failures back",
+   "Says constrained decoding enforces the shape while the reply is made",
+   "Gives a reason for the choice"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "A6-s1",
+  "model_answer": "Low. A rename is easy work, so extra thinking adds cost and wait without a better answer. I would measure cost per completed task at low and at high on a few renames. If the tests pass at low, and the tasks finish at the same rate, the lower cost per completed task wins.",
+  "module": "A6",
+  "objectives": [
+   "A6.o4"
+  ],
+  "prompt": "Pick an effort level for easy rename work, and justify it with cost per completed task.",
+  "rubric": [
+   "Chooses a level and says it fits easy work",
+   "Says extra thinking adds cost and wait, and that the answer may not change",
+   "Justifies the choice with cost per completed task, not cost per call",
+   "Says the choice holds only if the tasks still finish at the same rate"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "A6-s2",
+  "model_answer": "Extended thinking is extra output the model writes before it answers, and the docs say it is billed as output. In a tool loop, the thinking block must go back to the model complete and unmodified, with the tool call it belongs to. If the harness trims it, the next call is built on a changed history.",
+  "module": "A6",
+  "objectives": [
+   "A6.o1",
+   "A6.o3"
+  ],
+  "prompt": "What is extended thinking, and what must happen to a thinking block during a tool loop?",
+  "rubric": [
+   "Says extended thinking is extra output written before the answer, billed as output",
+   "Says the thinking block goes back complete and unmodified in a tool loop",
+   "Says the thinking is billed as output, so it has a cost",
+   "Says a harness that edits the block changes what the model sees next"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "A7-s1",
+  "model_answer": "For the claim: a better model makes fewer slips in each step, so a long task fails less often, and some checks may become unnecessary. Against it: fewer slips per step still compound over many steps, and a check from outside is the only way to know a result is right. I would settle it with evidence: the same task on two models, with and without a check, and the pass rate of each.",
+  "module": "A7",
+  "objectives": [
+   "A7.o4"
+  ],
+  "prompt": "Argue both sides of: models keep getting better, so harnesses matter less.",
+  "rubric": [
+   "States the case for the claim with a reason",
+   "States the case against, with the compounding of steps",
+   "Names evidence that would settle it, such as runs with and without a check",
+   "Says that a check which does not depend on the model settles more than an opinion"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "A7-s2",
+  "model_answer": "It can run the tests on the files, so the result does not depend on what the model says. It can compare a file with its expected content, or look up a number in the source. Each check is outside the model's words, so the model cannot argue its way past it.",
+  "module": "A7",
+  "objectives": [
+   "A7.o3"
+  ],
+  "prompt": "Name two things a harness can check from outside the model.",
+  "rubric": [
+   "Names a check that runs outside the model, such as the tests",
+   "Names a second check that does not depend on the model's words",
+   "Says why a check outside the model is stronger than the model's own review",
+   "Says a check outside the model can fail, and the model cannot argue it away"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "B1-s1",
+  "model_answer": "The model replies with one or more tool_use blocks and a stop reason of tool_use. The harness reads every block, runs each named tool with its input, and collects one tool_result per call, each with its tool_use_id. It sends them all back together in one user message, after the assistant's reply, and calls the model again. Any failed call gets is_error set to true, so the model knows it failed.",
+  "module": "B1",
+  "objectives": [
+   "B1.o1",
+   "B1.o3"
+  ],
+  "prompt": "Walk me through one tool round trip, from the model's reply to the next request.",
+  "rubric": [
+   "Says the model only asks, and the harness runs the tool",
+   "Names the tool_use_id match between each call and its result",
+   "Says all results go back together in one user message",
+   "Mentions is_error for a failed call"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "B1-s2",
+  "model_answer": "I read the tool definition the model sees: the name, the description and the input schema. A vague name or a description that does not say when to use the tool, or parameters with no description, make the model guess. I fix the definition before I change the prompt, because the definition is the tool's whole interface to the model.",
+  "module": "B1",
+  "objectives": [
+   "B1.o2",
+   "B1.o4"
+  ],
+  "prompt": "A tool keeps being misused. What do you check first, and why?",
+  "rubric": [
+   "Starts with the definition the model actually sees",
+   "Names the three parts: name, description, input schema",
+   "Says a missing description or unclear parameters invite misuse",
+   "Treats the definition as the tool's interface, not the prompt"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "B2-s1",
+  "model_answer": "The loop keeps the whole history in one list, starting with the task. Each turn I call the model with that full history. I read the stop_reason. If it is tool_use, I run only the tools the model asked for, after a permission check, and I match each result to its tool_use_id. Then I append all of the results in one user message, so the next call sees everything. If the reply is end_turn, I treat it as a done claim and check the work before I return. If it is max_tokens, I do not run the half-written call. Every turn also counts against a turn limit and a token budget, so the loop has more than one way out.",
+  "module": "B2",
+  "objectives": [
+   "B2.o1",
+   "B2.o2"
+  ],
+  "prompt": "Walk me through one iteration of an agent loop.",
+  "rubric": [
+   "Calls the model with the full history on every turn",
+   "Runs only the tools the model requested, after a permission check",
+   "Returns all tool results in one user message, matched by tool_use_id",
+   "Names at least two exits besides a plain end_turn"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "B2-s2",
+  "model_answer": "First I check whether the loop has a turn limit and a token budget. If it has neither, that is the first change. Then I read the replay and look for the first event where the run went wrong. It is usually an earlier ordinary mistake that the harness let through, not the last thing the run did. Next I look at the done claims. If the model keeps saying it is almost done, the loop is trusting its own words. I add a turn limit and a token budget, then run the same seeds on both boards and compare the pass rate and the worst case. I also add a check outside the model, such as the test run, so a done claim has to pass it before the loop accepts it.",
+  "module": "B2",
+  "objectives": [
+   "B2.o3",
+   "B2.o4"
+  ],
+  "prompt": "A run never stops. How do you debug it, and what do you change?",
+  "rubric": [
+   "Finds the first bad event in the history, not the last one",
+   "Treats end_turn as a claim and checks it outside the model",
+   "Adds a turn limit and a token budget, and tests them on the same seeds",
+   "Says what the change should show, and how it will be measured"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "B3-s1",
+  "model_answer": "The same model, on the same tasks and the same seeds, gave a different pass rate with a different harness. The harness was the only change. A fair counterpoint is that a harness change can move one kind of task and not another, so the effect depends on the task as well as the harness.",
+  "module": "B3",
+  "objectives": [
+   "B3.o5"
+  ],
+  "prompt": "Name one piece of evidence that a harness change alone moves results, and one counterpoint.",
+  "rubric": [
+   "Names a comparison that changes only the harness, with the model, tasks and seeds kept the same",
+   "Says what the pass rate was on each side",
+   "Gives one counterpoint that limits the claim",
+   "Says the comparison holds the model, tasks and seeds the same"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "B3-s2",
+  "model_answer": "The picture says the harness schedules and guards the model the way an operating system does for a program. A program runs the same steps each time. A model writes different text on each run, so the harness has to check what the model produced. The picture hides that check.",
+  "module": "B3",
+  "objectives": [
+   "B3.o3"
+  ],
+  "prompt": "Where does the operating-system picture of an agent break down?",
+  "rubric": [
+   "Uses the operating-system picture and says what it gets right",
+   "Names the place it breaks: the model's output is text that changes each run",
+   "Says the harness must check the output",
+   "Says a program and a model differ in whether the same steps give the same text"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "B4-s1",
+  "model_answer": "Control first: what the model is told, and which instruction wins. Then context: what is on the desk this call, and what is saved. Loop: what happens next, and when the run stops. Errors: how a failure is handled without spinning. Tools: what the model can do, and whether each tool is easy to use. Permissions: which actions are allowed, and how bad a mistake can get. Verification: whether a done claim is really done. Observability: what happened, and where time and money went.",
+  "module": "B4",
+  "objectives": [
+   "B4.o2"
+  ],
+  "prompt": "Walk one turn around the clock, out loud. Say what each wire does, starting at the control plane.",
+  "rubric": [
+   "Goes around the clock in order, starting at the control plane",
+   "Says what each wire does in its own words",
+   "Names the wires in order without skipping any of the eight",
+   "Says what each wire answers in its own words, not the course wording alone"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "B4-s2",
+  "model_answer": "Verification is at fault: the done claim was never checked. I would add a check on the final workspace, read its result before I accept the run, and send any failure back to the model.",
+  "module": "B4",
+  "objectives": [
+   "B4.o3"
+  ],
+  "prompt": "A run says done, and nothing checked it. Which wire is at fault, and what would you add?",
+  "rubric": [
+   "Names Verification & evals as the wire at fault",
+   "Says the done claim was never checked",
+   "Proposes a check that runs before the run is accepted",
+   "Says the failure is the claim, not the model's wording"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "C1-s1",
+  "model_answer": "The project rules win, because they are the team's standing decision and one request does not change them. Which layer wins follows from who wrote it, not from what it says. A rule that must hold does not depend on the model reading it: I would put it in code, as a pre-tool hook that denies the call and fails closed.",
+  "module": "C1",
+  "objectives": [
+   "C1.o1",
+   "C1.o3"
+  ],
+  "prompt": "A rule in the project file conflicts with a user request. Which layer wins, and what makes the rule hold?",
+  "rubric": [
+   "Names the winning layer and why it wins",
+   "Says a tool result or a user message does not override the standing rules",
+   "Says a rule that must hold goes in code, not only in words",
+   "Names a pre-tool hook and what fail closed means for it"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "C1-s2",
+  "model_answer": "A short map: where the tests live, the command that runs them, and the few rules that must hold, each with its reason. I would keep it at the altitude of a checkable rule, not a slogan. I would version it, review changes to it, and test the rules that must hold, as I test code.",
+  "module": "C1",
+  "objectives": [
+   "C1.o2",
+   "C1.o4",
+   "C1.o5"
+  ],
+  "prompt": "How would you write the rules file for a repo, and how would you know a rule line works?",
+  "rubric": [
+   "Describes a short map, not a manual",
+   "Gives the rule's altitude: specific enough to act on, general enough to transfer",
+   "Says prompt lines are versioned, reviewed and tested, like code",
+   "Says a rule that must hold is tested or enforced, not just written"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "C2-s1",
+  "model_answer": "First, don't load it: if the log is not needed for this call, it stays out of the desk. Second, shrink it: cap it to its start and its end, and say how much was cut. Third, move it out: leave a pointer the model can fetch when it needs a line. Fourth, summarize it: keep what the run needs and drop the rest. Each lever costs something: a missing log can hide a cause, a cap can hide the middle, a pointer costs a fetch, and a summary can lose a detail.",
+  "module": "C2",
+  "objectives": [
+   "C2.o3",
+   "C2.o4"
+  ],
+  "prompt": "Walk through the four levers in order for a 40 KB log, and say what each one costs you.",
+  "rubric": [
+   "Names the four levers in order",
+   "Ties each lever to a desk action: leave it out, cap it, leave a pointer, summarize it",
+   "Says what each lever can cost, not only what it saves",
+   "Says the cap keeps the start and the end and names the cut"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "C2-s2",
+  "model_answer": "Quality can fall well before the window is full, so a window that fits is not the same as a window the model reads well. The more material is on the desk, the more the model has to draw on. I would put stable material first, the system prompt and the project rules, and the current task last, so the newest and most specific instruction is closest to the reply.",
+  "module": "C2",
+  "objectives": [
+   "C2.o1",
+   "C2.o5"
+  ],
+  "prompt": "Why can a long context make the model worse, and how would you order it?",
+  "rubric": [
+   "Says quality can fall before the window is full",
+   "Says more material means more to draw on",
+   "Orders stable material first and the current task last",
+   "Says a window that fits does not mean every part is read equally well"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "C3-s1",
+  "model_answer": "I would keep the goal, the constraints, the decisions, the progress and the file pointers. Those are the commitments the next calls need. I would drop the raw tool output, because it is the bulk and the commitments are already written down in the notes. The keep list is the part to check: a constraint that is missing from it is gone after the next compaction.",
+  "module": "C3",
+  "objectives": [
+   "C3.o1",
+   "C3.o2"
+  ],
+  "prompt": "Write the compactor's keep list for a long task, and say what it drops and why.",
+  "rubric": [
+   "Keeps the goal, constraints, decisions, progress and file pointers",
+   "Drops raw tool output and says why",
+   "Says a constraint missing from the keep list is lost after compaction",
+   "Says the keep list is the part to check after each compaction"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "C3-s2",
+  "model_answer": "I would start a clean reset with a handoff note, because the run has drifted and a fresh start is clearer than a summary of a tangled thread. The handoff note goes to a file, so the next run reads it first. The session log keeps the record of what happened, the project files keep the standing facts, and the window holds only what this call needs.",
+  "module": "C3",
+  "objectives": [
+   "C3.o3",
+   "C3.o4"
+  ],
+  "prompt": "A run has drifted off its goal after many turns. Compact it, or start a clean reset with a handoff note? Where does each fact live?",
+  "rubric": [
+   "Chooses compaction or a clean reset and gives a reason",
+   "Says what goes in the handoff note",
+   "Places facts in the memory tiers: window, session log, project files, long-term store",
+   "Says a drifted run is not repaired by a summary of its tangle"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "C4-s1",
+  "model_answer": "I check whether anything before the end of the request changes between calls. A clock line or a random id in the system prompt breaks the cache at that point. I move the changing text to the newest message and keep the tools and the system prompt byte for byte the same. Then I read the usage fields to see whether reads appear.",
+  "module": "C4",
+  "objectives": [
+   "C4.o1",
+   "C4.o2"
+  ],
+  "prompt": "Your agent pays full price for the same system prompt on every call. What do you check first, and what do you change?",
+  "rubric": [
+   "Names the changing block and where it sits in the request",
+   "Keeps the tools and the system prompt stable and moves the changing text to the end",
+   "Says that one changed byte invalidates everything after it",
+   "Checks the usage fields to confirm that reads now appear"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "C4-s2",
+  "model_answer": "The hit rate is 960 out of 1,000 input tokens, so 96 percent. To make it cheaper still, keep the prefix stable for longer than the cache lifetime allows, so that fewer calls write again, and make sure the changing parts sit after the last breakpoint.",
+  "module": "C4",
+  "objectives": [
+   "C4.o3",
+   "C4.o4"
+  ],
+  "prompt": "A response shows 40 input tokens and 960 cache read tokens. What is the hit rate, and what would make the cache cheaper still?",
+  "rubric": [
+   "Computes the hit rate from the read tokens over all input tokens (96 percent)",
+   "Counts the write tokens in the total when there are any",
+   "Names one thing that keeps the prefix stable across calls",
+   "Says what a changing block after the breakpoint costs, and what it does not"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "C5-s1",
+  "model_answer": "All the run's state is in one object. Each way out of the loop is an exit: the done claim, the turn limit, the budget, a loop detected, an interrupt and an error. Each exit sets the final status once, and a second exit is refused. Nothing else writes the status.",
+  "module": "C5",
+  "objectives": [
+   "C5.o1",
+   "C5.o2"
+  ],
+  "prompt": "Walk me through how your loop decides to stop, and where the run's status is set.",
+  "rubric": [
+   "Keeps the run's state in one object, changed in one place",
+   "Lists every exit the loop can take, each with its own status",
+   "Sets the final status once, and refuses a second exit",
+   "Names the turn limit and the budget as exits, not as errors"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "C5-s2",
+  "model_answer": "On an interrupt I answer every pending tool call with an error result, in one message, so the history stays valid. I save the state and the history, and on resume I continue from the saved turn without rewriting earlier messages. For loops, I compare the last few calls, and stop the run when they are the same.",
+  "module": "C5",
+  "objectives": [
+   "C5.o3",
+   "C5.o4",
+   "C5.o5"
+  ],
+  "prompt": "A person interrupts a run in the middle of a tool call. How do you resume it safely, and how do you spot a run that is going in circles?",
+  "rubric": [
+   "Answers each pending tool call with an error result before anything else",
+   "Saves the state and the history together, and resumes from the saved turn",
+   "Never rewrites an earlier message to make the history look clean",
+   "Detects a loop by comparing recent calls, and stops it on purpose"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "C6-s1",
+  "model_answer": "An overloaded error is transient, so I retry it with exponential backoff, a cap and jitter, up to a set number of attempts. A bad request is a permanent error: a retry sends the same request and gets the same refusal, so I return the error to the model or stop, and do not retry it.",
+  "module": "C6",
+  "objectives": [
+   "C6.o1",
+   "C6.o2"
+  ],
+  "prompt": "A call fails with an overloaded error on the first try. How does your harness handle it, and what does it do with a bad request?",
+  "rubric": [
+   "Classifies the overloaded error as transient and retries it",
+   "Classifies a bad request as permanent and does not retry it",
+   "Names exponential backoff, a cap and jitter for the wait",
+   "Sets a limit on the attempts"
+  ],
+  "wire": "errors"
+ },
+ {
+  "id": "C6-s2",
+  "model_answer": "I add a circuit breaker that opens after a few failures in a row, and a retry budget that caps the retries. When a tool fails, I keep the error text in the context as a tool result marked as an error, so the model can correct itself. For an action that might run twice, I send an idempotency key.",
+  "module": "C6",
+  "objectives": [
+   "C6.o3",
+   "C6.o4",
+   "C6.o5"
+  ],
+  "prompt": "Your provider is down, and every client retries at once. What brakes do you add, and what do you keep in the context when a tool fails?",
+  "rubric": [
+   "Names a circuit breaker that opens after failures in a row",
+   "Names a retry budget, and says why retries need a limit",
+   "Keeps the error text in context, marked as an error",
+   "Uses an idempotency key where a retried action could run twice"
+  ],
+  "wire": "errors"
+ },
+ {
+  "id": "C7-s1",
+  "model_answer": "First I read the tool's definition as the model sees it. The name and description do not say when to use it, and the fields are not described, so I rewrite the description with the use and each parameter, and I add the required fields. Then I run the same task again and read the calls. Only after that do I touch the prompt, and only if a rule still fails.",
+  "module": "C7",
+  "objectives": [
+   "C7.o1",
+   "C7.o2"
+  ],
+  "prompt": "A tool keeps failing because the model sends the wrong fields. Walk me through what you change, and in what order.",
+  "rubric": [
+   "Reads the definition as the model sees it, before changing anything",
+   "Names when to use the tool in the description",
+   "Describes each parameter and marks the required ones",
+   "Re-runs the same task and reads the calls to check the change"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "C7-s2",
+  "model_answer": "I make the error say what went wrong and what to send next, in a few words. For the calls, I check which ones read and write the same resource. The reads that touch nothing another call writes can go in one round together, and anything that conflicts waits for the next round.",
+  "module": "C7",
+  "objectives": [
+   "C7.o3",
+   "C7.o5"
+  ],
+  "prompt": "A tool returns a bare error, and the model runs five tools one after another that could have run together. What do you change?",
+  "rubric": [
+   "Changes the error to name the problem and the next step",
+   "Keeps the error short, so it does not spend the context",
+   "Checks which calls read or write the same resource before batching",
+   "Puts only calls that do not conflict in the same round"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "C8-s1",
+  "model_answer": "A server adds its tools, resources and prompts as the client asks for them, over a transport the client starts. A skill adds only its name and description up front, and loads the full procedure when a task needs it. So a server is the cost you pay per tool, and a skill is cheap until it is used. I would check what the server can reach before I connect it.",
+  "module": "C8",
+  "objectives": [
+   "C8.o1",
+   "C8.o2"
+  ],
+  "prompt": "A colleague wants to connect a new server and add a skill for deploy checks. Walk me through what each one puts into the context, and when.",
+  "rubric": [
+   "Names what a server offers: tools, resources and prompts",
+   "Says how the client reaches the server: a transport",
+   "Says what a skill loads up front, and what waits until it is used",
+   "Says to check what a server can reach before connecting it"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "C8-s2",
+  "model_answer": "I load each tool only when a step needs it, by keyword, so each call carries a few definitions. For the five round trips, I would ask whether one short program could call the tools and return one result. Before a new server connects, I read what it can reach and treat its annotations as hints, not as permissions.",
+  "module": "C8",
+  "objectives": [
+   "C8.o3",
+   "C8.o4",
+   "C8.o5"
+  ],
+  "prompt": "Your run sends forty tool definitions with every call, and a lookup step takes five round trips. What do you change, and what do you check before you connect a new server?",
+  "rubric": [
+   "Loads tools on demand instead of sending every definition",
+   "Measures the tokens and the accuracy before and after",
+   "Names programmatic calling as a way to cut round trips, without a product claim",
+   "Checks what a server can reach, and does not trust its annotations alone"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "C9-s1",
+  "model_answer": "rm build/ inside the project is a cleanup I can reverse by rebuilding, so I would ask or allow it depending on the policy. rm ../data reaches outside the workspace and can destroy what the project does not own, so I would deny it with the reason outside the workspace. The command is the same word in both; the target is what makes them differ.",
+  "module": "C9",
+  "objectives": [
+   "C9.o1",
+   "C9.o2"
+  ],
+  "prompt": "Give a permission decision for rm build/ and for rm ../data, with reasons, and say why they differ.",
+  "rubric": [
+   "Gives a decision and a reason for each command",
+   "Says the target decides the risk, not the command name alone",
+   "Denies the call that reaches outside the workspace",
+   "Says the same command can be safe in one place and dangerous in another"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "C9-s2",
+  "model_answer": "Approval fatigue: after many prompts a person approves without reading, so the dangerous one slips through with the rest. I would order the policy by decision: deny what must never run, ask only for what matters, and allow the harmless read-only calls, so the prompts left are rare and each one gets a look. The mode is the default for what no rule matches.",
+  "module": "C9",
+  "objectives": [
+   "C9.o3",
+   "C9.o4"
+  ],
+  "prompt": "Why do ask prompts fail after many harmless calls, and how would you order a policy to fix it?",
+  "rubric": [
+   "Names approval fatigue and what it does to the one dangerous prompt",
+   "Orders the policy: deny, then ask, then allow, then the mode's default",
+   "Says harmless calls should be allowed, so asks stay rare",
+   "Says a prompt is worth a person's attention only when the action or its target matters"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "C10-s1",
+  "model_answer": "The sandbox normalizes the path first, so ../ segments are resolved. Then it checks where the normal form lands. If it lands outside the workspace root, the call is refused before it runs. A link is followed the same way: its target is resolved from the link's own folder, and the final path must still be inside the root. The order matters because a check on the raw text can be fooled by a path that looks inside but leaves the root once normalized.",
+  "module": "C10",
+  "objectives": [
+   "C10.o1",
+   "C10.o2"
+  ],
+  "prompt": "A model's file tool gets a path with ../ in it. Walk me through what the sandbox does with it, and why the order of the steps matters.",
+  "rubric": [
+   "Normalizes before checking",
+   "Says the final path must stay inside the root",
+   "Covers links, with their target resolved from the link's folder",
+   "Explains why a check on the raw text is not enough"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "C10-s2",
+  "model_answer": "The allow-list refuses a network call to a host that is not listed, so a secret cannot leave through that call. The redact module replaces listed text with [REDACTED] in the trace. It does not change the files the model wrote or the calls it made, so a secret in a file, or a call the allow-list allows, still holds the secret. Only the sandbox's path check stops a read from reaching the secret in the first place.",
+  "module": "C10",
+  "objectives": [
+   "C10.o3",
+   "C10.o4"
+  ],
+  "prompt": "The harness has an egress allow-list and the redact module. What does each stop, and what does neither stop?",
+  "rubric": [
+   "Says the allow-list refuses calls to unlisted hosts",
+   "Says the redact module changes the trace, not the files",
+   "Says the path check is what stops the read",
+   "Does not claim the redact module stops a leak"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "C11-s1",
+  "model_answer": "A gate that runs the original tests and refuses the claim unless they pass. It is computational because a program decides: the tests pass or they fail, whoever asks. A review of the diff would be an inferential check, useful where no program can decide, but the first gate should be the run.",
+  "module": "C11",
+  "objectives": [
+   "C11.o1",
+   "C11.o2"
+  ],
+  "prompt": "A run says done. What gate do you put in front of the claim, and what makes it computational?",
+  "rubric": [
+   "Puts a gate between the done claim and the success",
+   "Names the tests as a computational check and says why it decides",
+   "Says a review of the diff is inferential, and when it fits",
+   "Does not accept the model's own report as the check"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "C11-s2",
+  "model_answer": "The reviewer sees the task and the diff, not the author's reasoning, so it judges the result. To spot tampering I would compare the tests the gate runs with the original ones: a changed assertion, a cleared marker or a special case is a diff in the tests, and it fails the gate until someone reads it.",
+  "module": "C11",
+  "objectives": [
+   "C11.o4",
+   "C11.o5"
+  ],
+  "prompt": "How would you set up an independent reviewer, and how would you spot a test edited to pass?",
+  "rubric": [
+   "Gives the reviewer the task and the diff, not the reasoning",
+   "Says a reviewer that shares the same context is not independent",
+   "Compares the gate's tests with the original to spot a change",
+   "Names the tampering forms: an edited assertion, a cleared marker, a special case"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "C12-s1",
+  "model_answer": "I start with the run's total and the cost event of each turn, and find the turn where the cost jumps. Then I read the largest part that cost event names, and go back to the event that put that part into the request. I do not guess from the model's price. The first event that shows the change is the one I report.",
+  "module": "C12",
+  "objectives": [
+   "C12.o1",
+   "C12.o2"
+  ],
+  "prompt": "A run cost much more than you expected. Walk me through how you find the cause from the trace, and in what order.",
+  "rubric": [
+   "Starts from the total and the cost event of each turn",
+   "Finds the first turn where the cost jumps",
+   "Reads the largest part the cost event names, not the model's price",
+   "Goes back to the event that put that part into the request"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "C12-s2",
+  "model_answer": "A model call span has its model name and its input and output token counts, from the GenAI attributes. A secret must be redacted before the event is stored, because the trace is read by others. To answer where the money went, I read the cost attribution of each call and add up the largest parts by turn.",
+  "module": "C12",
+  "objectives": [
+   "C12.o3",
+   "C12.o4",
+   "C12.o5"
+  ],
+  "prompt": "What does a span record for a model call, and what must never reach the trace? How would you answer where the money went?",
+  "rubric": [
+   "Names the model and the input and output tokens of a model call span",
+   "Says a secret is redacted before the event is stored",
+   "Redaction changes the stored trace, not what the model is sent",
+   "Answers from the cost event of each call and its largest part"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "D1-s1",
+  "model_answer": "An eval has tasks with their environments, a number of trials per task, a grader that decides each run, a transcript of each run and an outcome. A model grader reads the run and gives a verdict, so it can pass a claim that the files do not support. I would check its verdicts against a code check on the same runs before I trusted it.",
+  "module": "D1",
+  "objectives": [
+   "D1.o1",
+   "D1.o2"
+  ],
+  "prompt": "Name the parts of an eval, and say how a model grader can fail.",
+  "rubric": [
+   "Names the task, the environment, the trials, the grader, the transcript and the outcome",
+   "Says the grader decides whether a run passed",
+   "Says a model grader can pass a claim it never checked",
+   "Proposes checking the grader against a code check or a human on the same runs"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "D1-s2",
+  "model_answer": "I would run the eval over held-out tasks as well as the examples, with a code grader and seeded trials, on the old and the new board. It is a regression eval: it guards what already works, so a drop in its pass rate is the signal.",
+  "module": "D1",
+  "objectives": [
+   "D1.o3",
+   "D1.o4"
+  ],
+  "prompt": "A harness change passes the two examples you picked. What do you run before you ship it, and which kind of eval is it?",
+  "rubric": [
+   "Runs held-out tasks, not only the examples",
+   "Uses a code grader over seeded trials on both boards",
+   "Names the kind as a regression eval and says why",
+   "Says the examples alone cannot show a cut"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "D2-s1",
+  "model_answer": "Pass@3 is the chance that at least one of three tries passes, so a retrying harness looks good on it. Pass^3 is the chance that all three pass, so it shows how reliable one try is. They disagree because the first grows with retries and the second shrinks. To tell two rates apart I would compare their Wilson intervals and call them different only when the intervals do not overlap.",
+  "module": "D2",
+  "objectives": [
+   "D2.o1",
+   "D2.o2"
+  ],
+  "prompt": "Explain why pass@3 and pass^3 can disagree, and how you would tell two pass rates apart.",
+  "rubric": [
+   "Defines pass@k as at least one of k passes and pass^k as all k pass",
+   "Says why the two numbers can disagree for the same tries",
+   "Compares Wilson intervals, not the point estimates",
+   "Calls two rates different only when the intervals do not overlap"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "D2-s2",
+  "model_answer": "I would run enough trials that the interval around each rate is narrower than the gain, and the width shrinks only with the square root of the trials, so the count can be large. Beyond sampling, infrastructure, time limits and flaky checks make runs differ, and a change that looks like a gain can be one of them.",
+  "module": "D2",
+  "objectives": [
+   "D2.o3",
+   "D2.o4"
+  ],
+  "prompt": "How many trials would you run before you believe a ten-point gain? What else makes two runs differ?",
+  "rubric": [
+   "Ties the count of trials to the width of the interval",
+   "Says the width shrinks with the square root of the trials, so the count can be large",
+   "Names at least two noise sources beyond sampling",
+   "Says a difference inside the noise is not an improvement"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "D3-s1",
+  "model_answer": "I would label a golden set with humans I trust, run the grader on the same cases, and count the agreement rate. I would report the false passes and the false fails apart, not one number, because they cost different things. In CI I would block a change only when the new interval sits fully below the old one's.",
+  "module": "D3",
+  "objectives": [
+   "D3.o1",
+   "D3.o2"
+  ],
+  "prompt": "How do you calibrate a model grader, and what do you report?",
+  "rubric": [
+   "Labels a golden set with humans before trusting the grader",
+   "Reports the agreement rate and counts the false passes and false fails apart",
+   "Says which way the grader errs matters more than one agreement number",
+   "Blocks in CI only when the new interval sits fully below the old one's"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "D3-s2",
+  "model_answer": "Contamination is a test case the model saw while it learned or while I tuned, so the score measures memory. I keep a held-out set I never tune on. To catch a grader that passes for the wrong reason, I read each passing transcript next to the file: a reply that says done while the check fails is the sign.",
+  "module": "D3",
+  "objectives": [
+   "D3.o3",
+   "D3.o4"
+  ],
+  "prompt": "What is contamination, and how would you read transcripts to catch a grader that passes for the wrong reason?",
+  "rubric": [
+   "Defines contamination as a test case the model saw, so the score measures memory",
+   "Keeps a held-out set that is never tuned on",
+   "Reads the reply next to the file or the check",
+   "Names a reply that says done while the check fails as the sign"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "E1-s1",
+  "model_answer": "Private data, untrusted content and exfiltration. A config reader opens private data: it returns a token the model can see. A page fetcher opens untrusted content: someone outside wrote the text. A report or post tool opens exfiltration: it sends data to a host the attacker can reach. With all three open, an instruction in the page can make the agent read the token and send it out. Cutting any one leg breaks the attack.",
+  "module": "E1",
+  "objectives": [
+   "E1.o1",
+   "E1.o2"
+  ],
+  "prompt": "Name the three legs of the lethal trifecta, and give one tool that opens each.",
+  "rubric": [
+   "Names all three legs: private data, untrusted content and exfiltration",
+   "Gives one tool for each leg",
+   "Says that all three open together is the risk",
+   "Says that cutting one leg breaks the attack"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "E1-s2",
+  "model_answer": "The sentence is text the model reads, so it lowers the rate at which the model obeys an injected instruction. It does not remove a leg. A control in the harness does: an egress allow-list the send cannot pass, a deny rule on the outbound call, or no untrusted content in reach. The model may still follow the injected text, so the defense has to make the send fail whatever the model decides.",
+  "module": "E1",
+  "objectives": [
+   "E1.o3",
+   "E1.o4"
+  ],
+  "prompt": "Why is a sentence in the system prompt not enough to stop an injected page? What would be enough?",
+  "rubric": [
+   "Says the wording lowers the rate and removes no leg",
+   "Names one harness control that cuts a leg",
+   "Says the model may still follow injected text, so the defense must hold then",
+   "Says that a control the model cannot argue with is what makes the send fail"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "E2-s1",
+  "model_answer": "A sandbox egress list stops the send: the connection to the collector host is refused before it runs, whatever the model asked. A deny rule on the outbound tool does the same at the permission step, and needs a person to say yes. Least privilege limits the other tools: a task that writes only to its done folder cannot empty the archive. None of the three stops an instruction from being read. Each layer stops one thing, so the answer is the stack.",
+  "module": "E2",
+  "objectives": [
+   "E2.o1",
+   "E2.o3"
+  ],
+  "prompt": "Name two layers that stop a poisoned tool from sending data out, and say what each one stops.",
+  "rubric": [
+   "Names a sandbox egress allow-list and says what it stops",
+   "Names a permission rule on the outbound tool and says what it stops",
+   "Names least privilege and says what it stops",
+   "Says that no single layer covers every route"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "E2-s2",
+  "model_answer": "Write a small suite of attacks: a poisoned description in a new version, and an instruction hidden in the data a tool returns. Run each attack over seeded trials on the board you have and on the board with the pin and the other layers. Report the attack success rate for each board, with the number of runs it came from. A pin should stop the new version, but it will not stop the instruction in the data; the report should show that.",
+  "module": "E2",
+  "objectives": [
+   "E2.o2",
+   "E2.o4"
+  ],
+  "prompt": "How would you red-team your own agent for tool poisoning, and what number would you report?",
+  "rubric": [
+   "Builds the attack suite from two routes: a new version and the data",
+   "Runs the suite on a board with and without the layers",
+   "Reports the attack success rate with the number of runs",
+   "Notes that a pin stops the version but not the data"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "F1-s1",
+  "model_answer": "Add them when the reading is separate and long, so the parent's context stays clear. Against: each reader is a loop with its own bill, and a reader can fail, time out or repeat work. I would start with one parent, give each reader a brief that names its file and its field, and check each answer before I rely on it.",
+  "module": "F1",
+  "objectives": [
+   "F1.o1",
+   "F1.o5"
+  ],
+  "prompt": "Your task needs five files read. Would you add sub-agents? Argue for and against, and say what you would check.",
+  "rubric": [
+   "Gives an honest reason: separate, long work, or context isolation",
+   "Names the cost of a sub-agent: its own loop and input",
+   "Says what happens when a sub-agent fails or times out",
+   "Says how the parent checks the answers it gets back"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "F1-s2",
+  "model_answer": "One agent is cheaper and easier to follow, but its one context fills with every step. An orchestrator with workers spreads reading across several contexts, and it adds cost and new failures: a brief that drops a constraint, and workers that repeat each other. Workers get an isolated context when they need only their brief; they get a forked one when the parent's messages decide their work.",
+  "module": "F1",
+  "objectives": [
+   "F1.o2",
+   "F1.o3"
+  ],
+  "prompt": "Compare one agent with an orchestrator and workers on cost and failure. Which context do the workers get, and why?",
+  "rubric": [
+   "Compares cost and the failure modes of the two shapes",
+   "Names a failure of the orchestrator shape: a dropped constraint or repeated work",
+   "Chooses isolated or forked for a stated reason",
+   "Says what the parent gets back, and how it checks it"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "F2-s1",
+  "model_answer": "Each session starts with no memory, so it needs a record of the state: what is done, what is next and what is open. The first session sets up the files, a feature list and a progress file, and makes an initial commit. The harness passes the progress file into each later session, so no session starts from a guess.",
+  "module": "F2",
+  "objectives": [
+   "F2.o1",
+   "F2.o2"
+  ],
+  "prompt": "A long task spans three sessions. What does each session need from the one before it, and what does the first session set up?",
+  "rubric": [
+   "Says a new session has no memory of the last one",
+   "Names the progress file and what it records",
+   "Says what the initializer sets up in the first session",
+   "Says what a fresh session has to read before it acts"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "F2-s2",
+  "model_answer": "A separate evaluator grades each step against criteria the generator did not write; the generator does the work and the planner orders it. A handoff note names the next step on one line, the files to start from, and what is already done, so the next session does not have to guess.",
+  "module": "F2",
+  "objectives": [
+   "F2.o3",
+   "F2.o4"
+  ],
+  "prompt": "Who grades the work of a long task, and what does a handoff note have to say so the next session can act?",
+  "rubric": [
+   "Separates the generator from the evaluator, and says why",
+   "Names the next step, the files and the done items in the handoff",
+   "Says what the next session would have to guess without them",
+   "Says who grades the work, and why the grader is not the generator"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "F3-s1",
+  "model_answer": "I would split the agent into three parts. The brain is the model and its loop, the hands are the sandbox and the tools, and the event log is the record of every call and result. If the sandbox host fails, I would replace the hands and keep the log and the brain, so the run can carry on from what it already finished.",
+  "module": "F3",
+  "objectives": [
+   "F3.o1",
+   "F3.o2"
+  ],
+  "prompt": "Describe an agent you would run for a week: its brain, its hands and its log. Which part would you replace first, and why?",
+  "rubric": [
+   "Names the brain, the hands and the event log",
+   "Says which part fails and how the others survive",
+   "Explains that the log is what makes the replacement possible",
+   "Says what the new part must read from the log before it acts"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "F3-s2",
+  "model_answer": "The key stays with the brain, outside the sandbox, so code the model wrote cannot read it. The brain makes the call and passes back the result. I would use a managed service when I would rather not run the brain, the hands and the log myself, and when the service's terms fit my data. Otherwise I would keep the harness, because I want to see every line of the loop.",
+  "module": "F3",
+  "objectives": [
+   "F3.o3",
+   "F3.o4"
+  ],
+  "prompt": "Your agent needs an API key for an email tool. Where does the key go, and when would you hand the whole run to a managed service?",
+  "rubric": [
+   "Keeps the key with the brain, outside the sandbox",
+   "Names one case where a managed service fits",
+   "Names one case where it does not",
+   "Explains why the key never enters the place where generated code runs"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "F4-s1",
+  "model_answer": "A cheaper model's runs cost less each, but if fewer of them complete, the cost of the failed runs is spread over the few successes. I would divide the total cost by the completed runs and compare that. To budget a run I would set a token or cost limit before it starts, and a budget guard that stops the run when the limit is spent and keeps the trace, so that the failure is visible.",
+  "module": "F4",
+  "objectives": [
+   "F4.o1",
+   "F4.o3"
+  ],
+  "prompt": "Why can a cheaper model cost more per completed task, and how would you budget a run?",
+  "rubric": [
+   "Divides the total cost by the runs that completed, not by the calls",
+   "Says the failed runs' cost is paid and spread over fewer completions",
+   "Sets the budget before the run and says what happens when it is spent",
+   "Keeps the trace of a stopped run, so the cost can be read"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "F4-s2",
+  "model_answer": "A cache hit lowers the input cost of each call, and I would predict a lower cost per call with the same success. A cheaper model I would predict to cost more per completed task unless its success holds. In a trace I would read the time of each model call and each tool call, find the largest part, and change that part first. This course's trace does not split a call into its first token and its generation, so I would not claim that split.",
+  "module": "F4",
+  "objectives": [
+   "F4.o2",
+   "F4.o4"
+  ],
+  "prompt": "Name two cuts and predict each one's effect before you measure, and say where latency comes from in a trace.",
+  "rubric": [
+   "Names two cuts, such as caching, effort or routing",
+   "Predicts each one's effect on cost per call and on cost per completed task",
+   "Says the effect of a cut waits on the success rate staying the same",
+   "Finds the largest part of latency from the trace's timestamps, and claims no split the trace does not record"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "F5-s1",
+  "model_answer": "The reply was lost, so the harness retries with the same key. The tool applies the key once and returns the first result on a repeat. The harness must never retry a side effect with a new key, because the second call would pay again. A retry also waits the time the provider asks for, when it sends a retry-after value.",
+  "module": "F5",
+  "objectives": [
+   "F5.o1",
+   "F5.o2"
+  ],
+  "prompt": "A payment call times out, and your harness does not know whether the payment went through. What does the harness do, and what must it never do?",
+  "rubric": [
+   "Retries with the same key, not a new one",
+   "Never retries a side effect without a key",
+   "Honors retry-after when the provider sends it",
+   "Says that a lost reply is not a failed payment"
+  ],
+  "wire": "errors"
+ },
+ {
+  "id": "F5-s2",
+  "model_answer": "I run the new harness in shadow mode first, then send a small canary share of real traffic to it. Each wider rollout step waits until the evals pass at the current share. An approval screen for a charge shows the amount, the target and what the step will do, with a yes and a no. It never shows only a spinner.",
+  "module": "F5",
+  "objectives": [
+   "F5.o3",
+   "F5.o4"
+  ],
+  "prompt": "You have a new harness that passes its evals. How do you ship it, and what does the approval screen show for a step that charges money?",
+  "rubric": [
+   "Starts in shadow mode before real traffic",
+   "Gates each rollout step with the evals",
+   "Shows the amount, the target and a clear yes or no for a charge",
+   "Names the eval that opens each wider step"
+  ],
+  "wire": "errors"
+ },
+ {
+  "id": "F6-s1",
+  "model_answer": "The pass only says the grader's checks held. I would read what the grader checks: the test it runs, and whether the policy could have edited it. I would judge the work against a pristine copy of the tests and against hidden cases, and treat a changed test as a failure of the grader, not a pass of the task.",
+  "module": "F6",
+  "objectives": [
+   "F6.o1",
+   "F6.o3"
+  ],
+  "prompt": "A policy says its task is done, and the grader passes. How do you know the task is solved, and what would you change in the grader?",
+  "rubric": [
+   "Says a pass is what the grader checked, not proof of the task",
+   "Names a way the policy could have edited the grader's inputs",
+   "Proposes a pristine copy or hidden cases as the fix",
+   "Says what the grader reads, and whether the policy could edit it"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "F6-s2",
+  "model_answer": "A reproducible environment resets to the same workspace and seeds, so the same inputs give the same run. A training environment needs a grader it can trust, because its reward trains the policy; an eval scores a model once. Both need containment: no network egress by default and scoped credentials, so a run cannot reach what it should not.",
+  "module": "F6",
+  "objectives": [
+   "F6.o2",
+   "F6.o4",
+   "F6.o5"
+  ],
+  "prompt": "How do you make an environment reproducible, and what does a training environment need that an eval does not?",
+  "rubric": [
+   "Says reset and determinism make a result repeatable",
+   "Says a training reward shapes the policy, so the grader must be trusted",
+   "Names one containment control: network or credentials",
+   "Says what a reset restores between runs"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "F7-s1",
+  "model_answer": "I read the request the harness sent and the error the model returned. A permanent error that names a parameter is a breaking change, so I look at the model's changes and at the parameter the harness sends. I put the model's rules in one adapter with a capability check, so the harness drops or refuses the parameters the model rejects, and the change is a config change plus a test run.",
+  "module": "F7",
+  "objectives": [
+   "F7.o1",
+   "F7.o2"
+  ],
+  "prompt": "Your team moves the harness to a new model, and the first request fails. How do you find the cause, and where do the model's rules go afterwards?",
+  "rubric": [
+   "Reads the request and the error before changing anything",
+   "Names the parameter as a breaking change",
+   "Puts the model's rules in one adapter with a capability check",
+   "Checks the new model on one request before changing the harness"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "F7-s2",
+  "model_answer": "I do not switch on a difference the intervals do not show. I add tasks or trials until the intervals separate, then decide. I remove a harness part only after an eval on the new model passes without it, and keep it where the eval needs it, with the run that shows why.",
+  "module": "F7",
+  "objectives": [
+   "F7.o3",
+   "F7.o4"
+  ],
+  "prompt": "The regression eval says the new model passes fewer tasks, but the intervals overlap. What do you do, and when do you remove a part of the harness?",
+  "rubric": [
+   "Reads the intervals, not the rates",
+   "Adds tasks or trials when they overlap",
+   "Removes a part only with an eval that passes without it",
+   "Says which tasks or trials were added before the decision"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "G1-s1",
+  "model_answer": "I start with the observe wire, to see where the cost went: the call count and the tokens each turn used. Then I read the loop for a turn limit or a budget that did not hold, because a loop without brakes can keep spending. The lesson is to measure cost per finished task, not per call, and to hold the budget in the harness rather than in the model's good intentions. Before I trust a fix, I run the same tasks again on both versions.",
+  "module": "G1",
+  "objectives": [
+   "G1.o1",
+   "G1.o2"
+  ],
+  "prompt": "A product harness made one run cost far more than the last. Which wires do you read, and which lesson does it teach?",
+  "rubric": [
+   "Names the observe wire as the first place to read",
+   "Names the loop as the place for turn and budget limits",
+   "States the lesson as cost per finished task, not per call",
+   "Says how the fix is measured on the same tasks"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "G1-s2",
+  "model_answer": "The wire is permissions. A destructive action ran without anyone being asked, so the harness let a risky action through. The family is the one where an action with real effects runs unasked. The fix changes the harness: a question before any delete, and a refusal for paths outside the project. Before it ships, I run the same task with the fix and check that the delete is now asked or refused.",
+  "module": "G1",
+  "objectives": [
+   "G1.o3"
+  ],
+  "prompt": "Read a postmortem that says a run deleted a folder. Name the wire and the failure family behind it, and the fix.",
+  "rubric": [
+   "Names the permissions wire",
+   "Names the failure family for unasked risky actions",
+   "Proposes a fix in the harness, not in the model",
+   "Says how the fix is tested before it ships"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "G2-s1",
+  "model_answer": "I compare them on the permissions wire. For each harness I write the design choice: who approves a write, what waits for a person, and what the waiting costs in time. The trade-off is the comparison, not a verdict. For a company's own numbers I say whose they are, cite the source, and do not present them as settled facts about the field. A number from one company's own test is evidence about that test.",
+  "module": "G2",
+  "objectives": [
+   "G2.o1",
+   "G2.o2"
+  ],
+  "prompt": "Two harnesses differ on who approves a write. How do you compare them, and how do you report a company's numbers about its own harness?",
+  "rubric": [
+   "Compares the harnesses on the permissions wire, with the trade-off named",
+   "Names a company's numbers as the company's own",
+   "Cites a source for any number",
+   "Does not turn one company's test into a claim about the whole field"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "G2-s2",
+  "model_answer": "Both sources show a project instructions file, permission or approval modes, and a sandbox, so the course treats those as laws. That a done claim is checked before it is trusted is the course's judgment: the comparison does not show both products doing it. Tool names and the layout of a rules file are taste, and two harnesses can differ on both and still work.",
+  "module": "G2",
+  "objectives": [
+   "G2.o3"
+  ],
+  "prompt": "Name the features both sources show as laws, one item that is the course's judgment, and one idea that is only taste.",
+  "rubric": [
+   "Names a feature both sources show: a project instructions file, a permission or approval mode, or a sandbox",
+   "Names the done-claim check as the course's judgment, not a shared feature",
+   "Names one idea that is taste, and says why",
+   "Bases the laws on the comparison, not on a survey of products"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "G3-s1",
+  "model_answer": "I find the loop first, because every other part is called from it. Then I read the model adapter, the tools, the config and the trace, in that order. For each wire I write down the file where it lives, or note that it is missing and where I looked. A part that sits in a subclass is not missing from the harness, so I check which loop I am reading. I keep the notes beside the regression report, so each finding points to a file.",
+  "module": "G3",
+  "objectives": [
+   "G3.o1",
+   "G3.o2"
+  ],
+  "prompt": "You open an unfamiliar harness repository after a regression report. Walk me through your first hour.",
+  "rubric": [
+   "Follows the order: loop, model adapter, tools, config, trace",
+   "Names a file for each wire, or notes it missing with where it looked",
+   "Says a part can sit in a subclass",
+   "Ties each finding to the regression report"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "G3-s2",
+  "model_answer": "I read the trajectory the save step wrote, turn by turn, to find the first event that is wrong. The save step writes the messages, the cost and the exit status, so the file says what the run did and how it ended. Then I propose one change, such as a check on the done claim, and I measure it on the same tasks and seeds before and after. If the measure does not move, I drop the change.",
+  "module": "G3",
+  "objectives": [
+   "G3.o3",
+   "G3.o4"
+  ],
+  "prompt": "You ran the harness on a toy task and the run looks wrong. What do you read, and what change would you propose?",
+  "rubric": [
+   "Reads the trajectory written by the save step",
+   "Finds the first wrong event before proposing anything",
+   "Proposes one change, not several at once",
+   "Measures the change on the same tasks before and after"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "G4-s1",
+  "model_answer": "I watch the run and find the first wrong event: here, a call to a function the code no longer has. I name the family before I choose a fix. It is a stale map, a rule that names something the code lost. I fix the source, the rule, and add a check that finds stale names on every change. Then I measure the same tasks on the same seeds before I call the fix done.",
+  "module": "G4",
+  "objectives": [
+   "G4.o1",
+   "G4.o2"
+  ],
+  "prompt": "A run ends done and the summary is missing. Walk me through the steering loop for it.",
+  "rubric": [
+   "Starts from the first wrong event in the run",
+   "Names the stale-map family before choosing the fix",
+   "Fixes the source of the stale rule, not only the symptom",
+   "Measures on the same seeds before calling the fix done"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "G4-s2",
+  "model_answer": "The retry was built to delete. I measure the runs without it on the same seeds, and remove it if the measure holds, because a part kept without a reason adds cost and hides what the model now does. For the rules file I add a mechanical check that finds names the code no longer defines, since a reminder depends on someone remembering it. A codebase with fast checks and clear errors is easy to harness, so I keep those checks fast and their errors plain.",
+  "module": "G4",
+  "objectives": [
+   "G4.o3",
+   "G4.o4",
+   "G4.o5"
+  ],
+  "prompt": "You added a retry for a model that no longer fails that way. What do you do, and how do you keep a rules file honest as the code changes?",
+  "rubric": [
+   "Measures the runs without the retry before removing it",
+   "Names a mechanical check for stale names in the rules",
+   "Explains why a reminder is weaker than a check",
+   "Connects fast checks and clear errors to a harnessable codebase"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "H1-s1",
+  "model_answer": "Rein calls one function for a reply, and the rest of the code never asks which model is behind it. A scripted model answers from a fixed list, so every run repeats exactly, and no key is needed. A real model makes the same call and returns the same kind of reply. I keep the raw content blocks, because a tool request can come after text. Then the loop reads the stop reason and the blocks, not just the first one.",
+  "module": "H1",
+  "objectives": [
+   "H1.o1",
+   "H1.o2"
+  ],
+  "prompt": "Show me the one interface your code calls for a reply. What changes when the model is scripted?",
+  "rubric": [
+   "Names one model interface that both implementations sit behind",
+   "Says a scripted model repeats exactly and needs no key",
+   "Notes that the reply's content is a list of blocks, so the first block is not always the tool request",
+   "Names stop_reason as the field that says why the model stopped"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "H1-s2",
+  "model_answer": "The API is stateless. Each request carries only the messages I send in it, so a second run knows nothing about the first unless its request includes those messages. To make a run remember, the harness has to send the history with every call. That costs input tokens, because the whole history is sent again each time.",
+  "module": "H1",
+  "objectives": [
+   "H1.o3"
+  ],
+  "prompt": "Three runs of one script never remember each other. Why, and what would change that?",
+  "rubric": [
+   "Says the API is stateless and each request carries only what it sends",
+   "Says a run remembers only if its request includes the earlier messages",
+   "Mentions that resending the history costs input tokens",
+   "Says each run is a new request, not a continued session"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "H2-s1",
+  "model_answer": "I call the model with the history so far, and I read the stop reason. If it is tool_use, I look up each requested name in the registry and run its function. Each result carries the tool_use_id of its request. I send all the results in one user message, then call the model again. If the reply is end_turn, the loop stops. Every pass also counts against the turn limit, so the loop has an exit that does not depend on the model.",
+  "module": "H2",
+  "objectives": [
+   "H2.o1",
+   "H2.o2"
+  ],
+  "prompt": "Walk me through one pass of your loop, from the model's reply to the next call.",
+  "rubric": [
+   "Calls the model with the history so far on every pass",
+   "Looks up each requested tool in the registry and runs it",
+   "Returns all results in one user message, each with its tool_use_id",
+   "Names the turn limit as an exit that does not depend on the model"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "H2-s2",
+  "model_answer": "It sends a tool_result for that tool_use, with is_error set to true and a short reason, such as that no tool has that name. The request still needs an answer, and the model can see the error and change its plan. Raising an exception would stop the whole run for a mistake the model can recover from.",
+  "module": "H2",
+  "objectives": [
+   "H2.o3"
+  ],
+  "prompt": "The model asks for a tool that does not exist. What does your loop send back, and why?",
+  "rubric": [
+   "Sends a tool_result for the unknown tool_use, not nothing",
+   "Sets is_error to true and gives a short reason",
+   "Says the model can recover from the error, so the run should continue",
+   "Says the loop keeps going after the error, rather than stopping the run"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "H3-s1",
+  "model_answer": "The path is resolved first, and resolve() follows the link. The real path is outside the project folder, so Workspace.path() raises a ToolError with a message the model can act on. The model reads that error and tries another path. The check is on the real path, not on the text the model wrote, so a name inside the project does not help a link that points out.",
+  "module": "H3",
+  "objectives": [
+   "H3.o1",
+   "H3.o3"
+  ],
+  "prompt": "The model asks to read a file that is a link to a file outside the project. What does your wall do, and why?",
+  "rubric": [
+   "Names resolve() as the step that follows the link",
+   "Says the check is on the real path, not on the typed name",
+   "Says the refusal is a ToolError written for the model",
+   "Names the project folder as the only place the check allows"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "H3-s2",
+  "model_answer": "Rein cuts the result to tool_output_chars before it enters the context. The cut keeps the head and the tail, because the error is usually near the end, and a marker says how many characters were removed. The model knows the start, the end, and that the middle was cut, so it can ask for a smaller slice.",
+  "module": "H3",
+  "objectives": [
+   "H3.o2"
+  ],
+  "prompt": "A tool returns a 50,000-character log. What does Rein send the model, and what does the model still know?",
+  "rubric": [
+   "Says the result is capped before it enters the context",
+   "Says the head and the tail are kept",
+   "Says the marker states how much was removed",
+   "Says the model can ask for a smaller part"
+  ],
+  "wire": "tools"
+ },
+ {
+  "id": "H4-s1",
+  "model_answer": "The gate calls decide(). The command is not read-only, so it checks the deny list first, and nothing there matches. It then checks the allow list, and the test command matches, but the chaining check finds &&. A command with chaining characters is never allow-listed, so the verdict is ask. The gate asks the person, and the answer decides the call. The verdict and its reason go back to the model either way.",
+  "module": "H4",
+  "objectives": [
+   "H4.o1",
+   "H4.o2"
+  ],
+  "prompt": "Walk me through what the gate does with a run_command that chains two commands with &&.",
+  "rubric": [
+   "Runs the deny list before the allow list",
+   "Says the chaining check stops an allow-listed prefix from carrying a second command",
+   "Says the verdict is ask, so the person decides",
+   "Says the verdict and its reason go back to the model"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "H4-s2",
+  "model_answer": "The gate returns deny, because the command matches the destructive-command rule, and the reason says so. The denial goes back to the model as an error that says not to retry it. The model should find another way to finish, such as skipping the cleanup and saying so, and it must not try the same command again, because the denial stays for the run.",
+  "module": "H4",
+  "objectives": [
+   "H4.o3"
+  ],
+  "prompt": "A model asks politely to run rm -rf build to clean up. What does the gate return, and what should the model do next?",
+  "rubric": [
+   "Says the gate returns deny without asking the person",
+   "Names the reason the model reads",
+   "Says the model should find another way, not retry",
+   "Says the denial stays for the rest of the run"
+  ],
+  "wire": "permissions"
+ },
+ {
+  "id": "H5-s1",
+  "model_answer": "Each line is one JSON object with v, run, seq, t in milliseconds, turn, agent, kind and wire, and the kind's own fields. The deck checks each line against the schema, then checks that seq counts up from 0 and that every line carries the same run. It reads the status from run_end and the cost and tokens from model_reply, so the run can be replayed line by line.",
+  "module": "H5",
+  "objectives": [
+   "H5.o1",
+   "H5.o2"
+  ],
+  "prompt": "Walk me through one line of your trace: which fields it carries, and how the Replay Deck reads the run from the lines.",
+  "rubric": [
+   "Lists the common fields of each line",
+   "Names seq as the check for gaps, counted from 0",
+   "Says the deck reads the status from run_end",
+   "Says the deck checks each line against the schema before it shows anything"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "H5-s2",
+  "model_answer": "I check that no key is in the file: anything that looked like an API key should show as [REDACTED]. I check that the lines are complete, seq with no gaps and a run_end last. I check that the tokens and cost are there, so the cost can be read call by call. Then I send the file, not the screen, because the screen shows what the model said and the file is what was stored.",
+  "module": "H5",
+  "objectives": [
+   "H5.o3"
+  ],
+  "prompt": "A colleague wants your trace to debug a run. What do you check before you send it?",
+  "rubric": [
+   "Checks that a key is replaced by [REDACTED] in the file",
+   "Checks that seq has no gaps and run_end is last",
+   "Checks the tokens and cost on the reply lines",
+   "Sends the file, which is what was stored"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "H6-s1",
+  "model_answer": "It caps the result with truncate(), keeping the head and the tail and marking the cut. Then it estimates the size of the messages with estimate_tokens(). If the estimate is over the limit, it compacts the older history with compact(), keeping the newest messages word for word, and records a compaction event in the trace. The estimate is rough, so the limit leaves room for it.",
+  "module": "H6",
+  "objectives": [
+   "H6.o1",
+   "H6.o2"
+  ],
+  "prompt": "The window is 8,000 tokens and a tool result is 40,000 characters. What does your harness do before the next call?",
+  "rubric": [
+   "Caps the result before it enters the context, keeping the head and the tail",
+   "Estimates the size before the call, from the messages",
+   "Compacts old history and keeps the newest messages",
+   "Records what was dropped in the trace"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "H6-s2",
+  "model_answer": "A tool result has to answer a request with the same id (tool_use_id). If the request is cut away and its result stays, the next request has a result with nothing to answer, and the request fails with the standard error about tool_use ids found without tool_result blocks. So compact() moves the cut back until it lands on one of the model's messages, and the request and its result stay together.",
+  "module": "H6",
+  "objectives": [
+   "H6.o2"
+  ],
+  "prompt": "Why must compaction never cut between a tool request and its result?",
+  "rubric": [
+   "Says a result must answer a request with the same id",
+   "Says a result with no request fails the next call",
+   "Says the cut lands on one of the model's messages",
+   "Names the standard error for a request sent without its result"
+  ],
+  "wire": "context"
+ },
+ {
+  "id": "H7-s1",
+  "model_answer": "A transient error is retried after a wait that grows: half a second, then one, then two, never above the cap. Each wait is a random share of that, so clients do not retry together. Each wait is a retry_wait line, and a failed call is a model_error line. After three failed calls in a row the breaker opens, the trace gets a breaker line, and the run ends with circuit_open instead of retrying forever.",
+  "module": "H7",
+  "objectives": [
+   "H7.o1",
+   "H7.o2"
+  ],
+  "prompt": "Walk me through one failing call in your Rein: the waits, the trace lines, and how the run ends if the provider stays down.",
+  "rubric": [
+   "Says the wait grows after each failed try and is capped",
+   "Says the jitter is a random share, so clients do not retry together",
+   "Names the retry_wait, model_error and breaker lines in the trace",
+   "Says the run ends with circuit_open after the breaker opens"
+  ],
+  "wire": "errors"
+ },
+ {
+  "id": "H7-s2",
+  "model_answer": "A real-time test waits for every backoff, so an eight-second wait costs eight seconds, and a suite of retry tests becomes slow enough that people stop running it. On a virtual clock sleep() only moves time forward, so the test runs at once. The seeded random source makes the waits repeat exactly, so the test checks the same numbers on every run.",
+  "module": "H7",
+  "objectives": [
+   "H7.o1"
+  ],
+  "prompt": "Why should a test of retries run on a virtual clock, and what would a real-time test cost?",
+  "rubric": [
+   "Says a real-time test waits for every wait it tests",
+   "Says the virtual clock moves forward without waiting",
+   "Says the seeded random source makes the waits repeat",
+   "Says the test asserts the waits themselves, not the time they take"
+  ],
+  "wire": "errors"
+ },
+ {
+  "id": "H8-s1",
+  "model_answer": "A run ends done when the model answers without a tool call. The turn limit ends it with max_turns, the token budget with budget, and a repeated call that ignores the redirect with loop. Ctrl+C ends it with interrupted, after closing the books. A breaker that stays open ends it with circuit_open. Each guard writes a guard line, then the run_end line with its status.",
+  "module": "H8",
+  "objectives": [
+   "H8.o1",
+   "H8.o2"
+  ],
+  "prompt": "Name every way a run in your Rein can end, and the status each one writes.",
+  "rubric": [
+   "Names done for a reply with no tool call",
+   "Names max_turns, budget, loop and interrupted, each with its guard",
+   "Says the guard line is written before run_end",
+   "Says the run ends with its own status and a valid history"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "H8-s2",
+  "model_answer": "A turn limit does not stop a model that repeats one call, or a run that spends its tokens in a few long replies, and an interrupt leaves a tool request with no result. I show the loop run, where the model ignores the redirect, and the budget run stopping at 701 of 700, and the interrupt tape, where the next request is rejected without the result.",
+  "module": "H8",
+  "objectives": [
+   "H8.o1",
+   "H8.o3"
+  ],
+  "prompt": "A colleague says a turn limit is all a harness needs. What do you show them?",
+  "rubric": [
+   "Says a turn limit does not stop a repeated call",
+   "Says a token budget stops a run that spends its tokens early",
+   "Says an interrupt must leave every tool request with a result",
+   "Says the guard line and the run_end status tell a reader which guard fired"
+  ],
+  "wire": "loop"
+ },
+ {
+  "id": "H9-s1",
+  "model_answer": "The loop sees a reply with no tool calls and treats it as a claim. It runs the check through run_command's path, and the return code decides. A failure goes back as the next message with its output, and the loop carries on. The model fixes the work and claims done again, and the gate checks again. After the last fix round a failing check ends the run as unverified, never as done.",
+  "module": "H9",
+  "objectives": [
+   "H9.o1",
+   "H9.o2"
+  ],
+  "prompt": "Walk me through what happens when your model says done and the check fails.",
+  "rubric": [
+   "Says the done reply is treated as a claim, not a result",
+   "Says the harness runs the check and the return code decides",
+   "Says the failure output goes back as the next message",
+   "Says a run that still fails ends as unverified, never done"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "H9-s2",
+  "model_answer": "The model's run of the tests is itself a claim: it can run the wrong command, edit the test, or report a pass it did not see. The gate runs the command the harness chose, records a verify line for each claim, and only a pass ends the run as done. On the false-done tape the model says the tests pass without running them, and the gate catches that claim.",
+  "module": "H9",
+  "objectives": [
+   "H9.o2",
+   "H9.o3"
+  ],
+  "prompt": "A teammate says the model ran the tests itself, so the gate is redundant. What do you say?",
+  "rubric": [
+   "Says the model's own test run is a claim the harness should check",
+   "Says the gate runs a command the harness chose",
+   "Says each claim gets a verify line in the trace",
+   "Names the false-done tape as the case the gate catches"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "I1-s1",
+  "model_answer": "I would read the duties before the title. The posting asks for tools, evals and guardrails, so I read it as an applied role. I would show a repository with tests and a results table, linked from a write-up that gives the method and the interval. A certificate would not answer any of the duties, so I would not lead with one.",
+  "module": "I1",
+  "objectives": [
+   "I1.o1",
+   "I1.o3"
+  ],
+  "prompt": "Read me a job posting you would apply for. Which duties matter most, and what evidence would you show?",
+  "rubric": [
+   "Reads the duties before the title",
+   "Names the evidence for each main duty, with a link",
+   "Does not offer a certificate as proof of building or measuring",
+   "Says which duty it cannot evidence yet, and why"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "I1-s2",
+  "model_answer": "Take a requirement such as retrying rate limits. It touches the errors wire: retry with backoff, and stop after a limit. To prove it I would show a run where the rate limit is injected, the retries and the stop, and the trace of each attempt. That is evidence a reviewer can check.",
+  "module": "I1",
+  "objectives": [
+   "I1.o2"
+  ],
+  "prompt": "Take one requirement from a posting. Which wire does it touch, and what would you show to prove it?",
+  "rubric": [
+   "Names the wire the requirement touches",
+   "Names one piece of evidence that a reviewer could check",
+   "Says what would count as failure",
+   "Says what a reviewer would open to check the answer"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "I2-s1",
+  "model_answer": "My strongest wire is Loop, at L2. Its level rests on a passing kata on a loop module, and the row lists the module and the date. I am at L1 on Permissions, because I have explained its modules but have no passing kata there. My next step is the one the radar gives for Permissions: pass a kata or step on a permissions module. I would not claim L3 on anything until a bench or design drill backs it.",
+  "module": "I2",
+  "objectives": [
+   "I2.o1",
+   "I2.o2"
+  ],
+  "prompt": "Walk me through your radar: which level is strongest, what evidence backs it, and what you would do next.",
+  "rubric": [
+   "Names the strongest wire and its level",
+   "Points to the evidence behind the level, not to a feeling",
+   "Takes the next step the radar names, and claims no level above the evidence",
+   "Says the next step in the radar's own words"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "I2-s2",
+  "model_answer": "I would defend the line about the passing kata on the tools wire. The sheet names the module and the date, and I can open the kata and run its tests in front of the interviewer. I would not defend any line I could not open. A claim without a module behind it does not belong on the sheet.",
+  "module": "I2",
+  "objectives": [
+   "I2.o3"
+  ],
+  "prompt": "Which line on your brag sheet would you defend in an interview, and how would you show the evidence?",
+  "rubric": [
+   "Chooses a line that has evidence behind it",
+   "Can show the evidence, not describe it",
+   "Removes any claim that has no module or entry behind it",
+   "Names the module and date behind the line"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "I3-s1",
+  "model_answer": "I would pick the eval study, and cut it to one harness question with a small task set. I would drop any second question. The result I would show is one comparison, with its pass rate, its interval and its cost, from a run I can repeat. Two weeks is enough for one measured answer, not for four.",
+  "module": "I3",
+  "objectives": [
+   "I3.o1"
+  ],
+  "prompt": "Pick one of the four projects. What would you cut to finish it in two weeks, and what result would you show?",
+  "rubric": [
+   "Picks one project and names what it cuts",
+   "Names one measured result it will show within two weeks",
+   "Says why the cut makes the result more trustworthy",
+   "Says what the scoped project leaves out, and why"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "I3-s2",
+  "model_answer": "I would defend every column. Each row names the task, the passes out of the trials, the Wilson interval for that count, the tokens and cost from the trace, and whether the run was scripted. A reviewer reproduces one row with the command in the write-up, the same tape or seed, and the same board, and checks that the same counts come back.",
+  "module": "I3",
+  "objectives": [
+   "I3.o2",
+   "I3.o3"
+  ],
+  "prompt": "Show me a results table you would publish. Which columns would you defend, and how would a reviewer reproduce one row?",
+  "rubric": [
+   "Defends each column of the results table",
+   "Says what the interval adds to the count",
+   "Names the command and seed a reviewer would run",
+   "Says which numbers are scripted, and why that matters"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "I6-s1",
+  "model_answer": "The first two weeks end with real evals on Rein: ten tasks, baseline numbers and a README table. Weeks three and four end with one experiment and its write-up. Each block ends with an output I can link, so I can check the week, not just report that I worked.",
+  "module": "I6",
+  "objectives": [
+   "I6.o1"
+  ],
+  "prompt": "Set out your plan for the next twelve weeks. What evidence does each block end with?",
+  "rubric": [
+   "Gives each block an output that can be linked",
+   "Puts the goals in evidence, not hours",
+   "Names the block that comes next, and what it ends with",
+   "Names what the first block ends with, as a link"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "I6-s2",
+  "model_answer": "Your Rein results show the baseline pass rate, the interval around it and the cost per run. The change I would make next is the task where the interval is widest, because more trials there would show whether the change helped. I would write the question I was asked and my answer to it in my notes, so the next mock starts from them.",
+  "module": "I6",
+  "objectives": [
+   "I6.o2",
+   "I6.o3"
+  ],
+  "prompt": "Run a two-minute mock. Walk me through Rein results and name the one change you would make next.",
+  "rubric": [
+   "Walks through the results with their interval, not the count alone",
+   "Names one change and the evidence it needs",
+   "Says what goes into the notes after the mock",
+   "Says what the next mock will test"
+  ],
+  "wire": "observe"
+ },
+ {
+  "id": "I5-s1",
+  "model_answer": "Start with the job and its limits. The agent reads an issue, searches for the code, edits files in the folders its team owns, runs the affected tests, and opens a pull request. The system prompt says what it is for; a rules file the owners control says what it may touch. The harness enforces the hard limits: no write outside the owned folders, no push to the main branch. The tools are narrow: read, search, edit, allow-listed tests, open a pull request. CI grades the change, and the harness reruns the named tests from a clean checkout. Every call is traced with its cost. I would ship it shadow first, then canary on one team.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o3"
+  ],
+  "prompt": "Walk me through the harness for a coding agent that works in a large monorepo.",
+  "rubric": [
+   "Names the job and the owned-folder limit",
+   "Says the harness enforces the limits, not the prompt",
+   "Names narrow tools and no general shell",
+   "Says CI grades, and the tests are rerun from clean",
+   "Names the trace or the cost as what gets watched"
+  ],
+  "wire": "design"
+ },
+ {
+  "id": "I5-s2",
+  "model_answer": "The agent answers questions from the customer's own order record and the policy summary, then proposes a refund as its own step. The refund limit lives in the harness, not the prompt. A refund needs the customer's confirmation below the agent's limit, and a person above it or on a flagged order. Each refund carries an idempotency key, so a retry cannot pay twice. Customer text is data; it cannot set an amount. After a refund the harness reads the order back and reconciles against the ledger. I would shadow the proposals first, then canary one low-limit order type, watching reversed refunds.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o3"
+  ],
+  "prompt": "Walk me through the harness for a customer-support agent that can issue refunds.",
+  "rubric": [
+   "Separates the proposal from the issued refund",
+   "Puts the limit in the harness",
+   "Names the idempotency key or the retry rule",
+   "Says customer text is data and cannot set an amount",
+   "Names a check after the refund"
+  ],
+  "wire": "design"
+ },
+ {
+  "id": "I5-s3",
+  "model_answer": "The lead agent owns the question and the answer. It writes each sub-agent a brief: the claim to check, the sources to read, and the form of the result. Each sub-agent has its own context window, so the full text stays with it, and the lead receives a structured result with quotes and their locations. Sub-agents get read and search only; the lead alone writes. Every claim must point to a quote, and the harness checks the quote against the source text. A sub-agent that times out returns a partial result, and the claims it did not check are marked as unchecked.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o3"
+  ],
+  "prompt": "Walk me through the harness for a research agent that runs sub-agents.",
+  "rubric": [
+   "Names the lead's ownership of the answer",
+   "Says each sub-agent has its own context",
+   "Names the brief and the structured result",
+   "Says quotes are checked against the source text",
+   "Says partial results are marked as partial"
+  ],
+  "wire": "design"
+ },
+ {
+  "id": "I5-s4",
+  "model_answer": "The agent reads the alert, the metric over the last hour, the runbook and the open incidents, then decides: close with a reason, page with a summary, or suggest a step. It has read tools and a page tool, and no write access in production. A page-class alert always pages, enforced in the harness. An unknown metric means page, not healthy. Each decision is traced with its reason. A person samples the closed alerts every morning. The metric to watch is the missed incidents, not the number of closes.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o3"
+  ],
+  "prompt": "Walk me through the harness for an on-call triage agent.",
+  "rubric": [
+   "Names the read-only tools and the page tool",
+   "Says page-class alerts always page, enforced in code",
+   "Says an unknown metric means page",
+   "Names the morning sample of closes",
+   "Names missed incidents as the scored metric"
+  ],
+  "wire": "design"
+ },
+ {
+  "id": "I5-s5",
+  "model_answer": "The run is defined in one file: the tasks, the graders, the trials, the seeds and the decision rule. The owner writes the rule before the run. Each task starts from a clean environment, and the model cannot see the grader or earlier scores. Harness errors are reported apart and do not count for or against the model. Each code grader is checked against known passes and known false passes; a model grader needs human labels before it counts. The decision uses pass^k where every trial must succeed, with its interval, and the run is budgeted before it starts.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o3"
+  ],
+  "prompt": "Walk me through the harness for the eval run before a model launch.",
+  "rubric": [
+   "Says the decision rule is written before the run",
+   "Names clean environments and a hidden grader",
+   "Separates harness errors from model failures",
+   "Checks graders against known cases",
+   "Names an interval and a budget"
+  ],
+  "wire": "design"
+ },
+ {
+  "id": "I5-s6",
+  "model_answer": "The agent reads one thread, drafts a reply, and shows the draft to the person. The send is a separate step the person triggers, and the send tool takes a reviewed draft id, not free text. Standing rules, such as never reply to a contract, are data the harness reads before any send. Email text is untrusted, so an instruction inside a message cannot trigger a send. Outbound network reaches only the mail provider and listed links. The risk I would name first is an email that asks for the inbox to be forwarded, so the harness cuts one leg of that attack: the send.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o3"
+  ],
+  "prompt": "Walk me through the harness for a browser agent that handles a person's email.",
+  "rubric": [
+   "Separates the draft from the send",
+   "Says the send takes a reviewed draft id",
+   "Says email text cannot trigger a send",
+   "Names the outbound network limit",
+   "Names the injection risk and the leg it cuts"
+  ],
+  "wire": "design"
+ },
+ {
+  "id": "I5-s7",
+  "model_answer": "First, the stop reason and the last tool result: did the run claim done without a passing run? Then the check's own output, to see what it compared. The done claim is a claim, not proof. I look for the edit the checks should have caught, and for a turn where the agent stopped testing. I want to know whether the checks ran on the final files or on an earlier snapshot. The fix belongs in the harness: refuse done until the named checks pass on the final state.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o4"
+  ],
+  "prompt": "This trace ends done and the checks fail: what do you look at first?",
+  "rubric": [
+   "Looks at the stop reason and the done claim first",
+   "Reads the check's output to see what it compared",
+   "Asks whether the checks ran on the final files",
+   "Names the harness fix: refuse done without a passing run"
+  ],
+  "wire": "debugging"
+ },
+ {
+  "id": "I5-s8",
+  "model_answer": "No error and an early stop means something ended the loop on purpose or by mistake. I look at the stop reason and the last reply: was it end of turn, or a cut-off inside a tool use? Then the exits: is there a turn limit or a breaker that fired without a log line? The unused budget tells me the budget was not the cause. I check whether a tool result looked final to the loop, and whether the harness logged the decision to stop.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o4"
+  ],
+  "prompt": "This trace stops at turn 3 with no error, and half the token budget is unused: what do you look at first?",
+  "rubric": [
+   "Reads the stop reason and the last reply",
+   "Checks for a cut-off tool use",
+   "Looks for an exit that fired without a log line",
+   "Uses the unused budget to rule something out"
+  ],
+  "wire": "debugging"
+ },
+ {
+  "id": "I5-s9",
+  "model_answer": "I look at the cost by call, not the total. Which call grew, and in what: input tokens, output tokens, or retries? A jump in input often means context that was resent, or a tool result that stopped being cleared. A jump in calls means a loop that did not stop. I check the model and the effort setting, since a changed setting moves cost too. Then I compare the setup with last week's, to see what changed.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o4"
+  ],
+  "prompt": "The same task cost ten times more than last week's run. What do you look at first?",
+  "rubric": [
+   "Breaks the cost down by call",
+   "Separates input, output and retries",
+   "Names resent context or uncleared results",
+   "Checks for a loop that did not stop",
+   "Checks what changed in the setup"
+  ],
+  "wire": "debugging"
+ },
+ {
+  "id": "I5-s10",
+  "model_answer": "Repeated reads mean the model did not keep what it read, or the read did not return what it needed. I look at the tool results: are they empty, truncated or in the wrong format? Then at context: did an earlier result get cleared before the model needed it? I check whether the file is too large for the window, and whether the prompt tells the model to stop reading. The fix is usually in the harness: return the needed part, and keep the result.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o4"
+  ],
+  "prompt": "The model asks for the same file five times in a row. What do you look at first?",
+  "rubric": [
+   "Checks whether the results were empty or truncated",
+   "Checks whether an earlier result was cleared early",
+   "Considers the file's size against the window",
+   "Names a harness fix, not only a prompt fix"
+  ],
+  "wire": "debugging"
+ },
+ {
+  "id": "I5-s11",
+  "model_answer": "A passing test says nothing about where data went. First, where the secret came from: a read the permissions allowed, or a file the sandbox should have refused. Then the path into the summary: which call wrote it. I check whether the secret was ever in a tool result, and which permission let that read run. The leak is a permission or sandbox failure, so the fix is a permission rule or a path confinement, with redaction at the write as a backstop; the tests are not the place to catch it.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o4"
+  ],
+  "prompt": "The tests pass, but a secret appears in the summary. What do you look at first?",
+  "rubric": [
+   "Says a passing test does not show where data went",
+   "Traces the secret's source read",
+   "Finds which permission or sandbox allowed the read",
+   "Names a permission or confinement fix, not only redaction"
+  ],
+  "wire": "debugging"
+ },
+ {
+  "id": "I5-s12",
+  "model_answer": "This is a retry loop without a breaker. I look at the error text: does it say what to do next, or only that it failed? Then the retry policy: is there a maximum number of attempts, and is the wait the same each time? I check whether the error is permanent, such as a missing file, which should not be retried at all. The fix is a breaker that stops after a fixed number of identical failures and hands the task to a person with the attempts.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o4"
+  ],
+  "prompt": "The same tool call fails the same way every retry, and the run keeps going. What do you look at first?",
+  "rubric": [
+   "Notes that the error repeats with no change",
+   "Checks whether the error text says what to do next",
+   "Checks the retry limit and the wait",
+   "Asks whether the error is permanent",
+   "Names a breaker and a hand-off"
+  ],
+  "wire": "debugging"
+ },
+ {
+  "id": "I5-s13",
+  "model_answer": "I built a small evaluation harness for a team's tool-calling agent. It ran a fixed set of tasks and reported a pass rate. What I did not expect was that the agent passed more tasks when the harness was slower, because the timeouts cut off its loops, and the pass rate was measuring the timeouts. I found it by reading transcripts, not the scores. I changed the timeout to count as a failure, and I wrote the decision rule before the next run.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o5"
+  ],
+  "prompt": "Tell me about a harness you built. What did it do that you did not expect?",
+  "rubric": [
+   "Names a concrete harness and its purpose",
+   "Says what happened that was not expected",
+   "Shows how it was found, from transcripts or a trace",
+   "Says what changed, with the result",
+   "Keeps the story to what the speaker did"
+  ],
+  "wire": "behavioral"
+ },
+ {
+  "id": "I5-s14",
+  "model_answer": "An agent I ran for a week closed support tickets that were still open. The tickets reopened, and the close rate looked good until someone counted the reopens. I changed the score: a close counts only if the ticket stays closed for seven days. I also added a permission that stopped the agent from closing a ticket with a refund attached, because that was where the errors were. The reopen rate fell, and I report it with the number and the window it came from.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o5"
+  ],
+  "prompt": "Tell me about an agent failure you ran or shipped. What did you change afterwards?",
+  "rubric": [
+   "Names the failure plainly",
+   "Says how it was noticed",
+   "Says what changed in the harness or the score",
+   "Gives the measure and its window",
+   "Says what the first fix missed, if anything"
+  ],
+  "wire": "behavioral"
+ },
+ {
+  "id": "I5-s15",
+  "model_answer": "A colleague wanted the agent to have a shell, so it could do any task. I thought a narrow set of tools would be safer and easier to test. We wrote both designs for one task and ran them on the same seeds. The narrow one passed fewer tasks, but its failures were easy to read, and the shell version could delete files outside the task. We chose narrow tools for the first release and added a command allow-list later. I was right about the risk, and he was right that the agent needed to do more.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o5"
+  ],
+  "prompt": "Tell me about a time you disagreed with someone about an agent's design. How did it end?",
+  "rubric": [
+   "Names the disagreement and both positions",
+   "Says how it was tested or decided",
+   "Shows what each side got right",
+   "Says how it ended, including what was given up"
+  ],
+  "wire": "behavioral"
+ },
+ {
+  "id": "I5-s16",
+  "model_answer": "We compared two prompts on a set of tasks, with five trials each. The new prompt passed more tasks, but the intervals were wide and overlapped. I said that in the review, and we ran more trials before deciding. With twenty trials the difference held on the same tasks, and I reported the interval and the trial count with the number. I would not have claimed the gain from the first run.",
+  "module": "I5",
+  "objectives": [
+   "I5.o1",
+   "I5.o5"
+  ],
+  "prompt": "Tell me about a result you measured. How sure were you, and what did you measure it with?",
+  "rubric": [
+   "Names the thing measured and its size",
+   "Gives the number with its trials and interval",
+   "Says how sure the speaker was, and why",
+   "Says what was done to be more sure"
+  ],
+  "wire": "behavioral"
+ }
+]

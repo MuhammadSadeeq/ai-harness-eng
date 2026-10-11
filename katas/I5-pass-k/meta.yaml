@@ -1,0 +1,88 @@
+id: I5-pass-k
+module: I5
+title: Compute pass@k and pass^k from trial results
+objectives: [I5.o2]
+minutes: 20
+hints:
+  - "Per task, n is the number of trials and c the number that passed. pass^k is comb(c, k) over comb(n, k). pass@k is 1 minus comb(n - c, k) over comb(n, k)."
+  - "math.comb gives 0 when its second number is bigger than its first, which is exactly what the formulas need: a task with too few passes gets 0 for pass^k, and one with too few failures gets 1 for pass@k."
+  - "Nearly the code: for each row, count n and c, add the two per-task values to two totals, then divide each total by the number of rows and return the pair."
+from_memory: true
+wrong_solutions:
+  - name: hat-is-any
+    code: |
+      import math
+
+
+      def pass_k(rows, k):
+          at_total = 0.0
+          hat_total = 0.0
+          for trials in rows:
+              n = len(trials)
+              c = sum(1 for passed in trials if passed)
+              total = math.comb(n, k)
+              value = 1 - math.comb(n - c, k) / total
+              at_total += value
+              hat_total += value
+          return at_total / len(rows), hat_total / len(rows)
+  - name: swapped
+    code: |
+      import math
+
+
+      def pass_k(rows, k):
+          at_total = 0.0
+          hat_total = 0.0
+          for trials in rows:
+              n = len(trials)
+              c = sum(1 for passed in trials if passed)
+              total = math.comb(n, k)
+              at_total += 1 - math.comb(n - c, k) / total
+              hat_total += math.comb(c, k) / total
+          return hat_total / len(rows), at_total / len(rows)
+  - name: pooled-trials
+    code: |
+      import math
+
+
+      def pass_k(rows, k):
+          at_total = 0.0
+          hat_total = 0.0
+          trials_total = 0
+          for trials in rows:
+              n = len(trials)
+              c = sum(1 for passed in trials if passed)
+              total = math.comb(n, k)
+              at_total += (1 - math.comb(n - c, k) / total) * n
+              hat_total += (math.comb(c, k) / total) * n
+              trials_total += n
+          return at_total / trials_total, hat_total / trials_total
+  - name: k-ignored
+    code: |
+      import math
+
+
+      def pass_k(rows, k):
+          at_total = 0.0
+          hat_total = 0.0
+          for trials in rows:
+              n = len(trials)
+              c = sum(1 for passed in trials if passed)
+              at_total += c / n
+              hat_total += c / n
+          return at_total / len(rows), hat_total / len(rows)
+  - name: off-by-one-in-pass-at-k
+    code: |
+      import math
+
+
+      def pass_k(rows, k):
+          at_total = 0.0
+          hat_total = 0.0
+          for trials in rows:
+              n = len(trials)
+              c = sum(1 for passed in trials if passed)
+              total = math.comb(n, k)
+              at_total += 1 - math.comb(n - c, k - 1) / total
+              hat_total += math.comb(c, k) / total
+          return at_total / len(rows), hat_total / len(rows)

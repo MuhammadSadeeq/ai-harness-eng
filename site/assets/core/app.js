@@ -16,6 +16,8 @@ import { loadComponents } from "./shell/loader.js";
 import { getFactsCore, getTerms } from "../components/lib/data.js";
 import { mountEvidence } from "./shell/evidence.js";
 import { setContext } from "./context.js";
+import { mountShift } from "./shell/shift.js";
+import { mountStations } from "./shell/stations.js";
 
 // Scripts are running: CSS shows the drawn parts of the page only from here on.
 document.documentElement.classList.add("js");
@@ -43,4 +45,7 @@ if (document.querySelector("[data-term]")) mountTerms(getTerms);
 // Components read the store and the announcer through hxContext(); evidence they report is written here.
 setContext({ store, announce });
 mountEvidence(store);
+// The stations (Interview Room) and today's shift (oncall) build their components themselves, on open or on load.
+if (document.querySelector("[data-station]")) mountStations(store);
+mountShift(store);
 loadComponents();

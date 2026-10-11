@@ -39,7 +39,9 @@ def test_pass_hat_k_counts_tasks_where_every_trial_passes():
 
 
 def test_the_order_of_trials_does_not_change_the_counts():
-    assert run_eval(list(reversed(RUNS))) == run_eval(RUNS)
+    counts = run_eval(RUNS)
+    assert counts["runs"] == len(RUNS), "run_eval returns the counts as a dict, with the number of runs"
+    assert run_eval(list(reversed(RUNS))) == counts
 
 
 def test_no_trials_gives_zeros():

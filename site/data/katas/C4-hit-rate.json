@@ -6,6 +6,7 @@
   "Nearly the code: total = input + written + read; hit = 100 * read // total; saving: compare total * 1000 with input * 1000 + written * 1250 + read * 50, then 100 * (no - with) // no."
  ],
  "id": "C4-hit-rate",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef hit_percent(usage):\n    ...\n\ndef saving_percent(usage):\n    ...\n",
  "minutes": 20,
  "module": "C4",
  "objectives": [

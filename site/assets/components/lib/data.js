@@ -59,6 +59,8 @@ export async function getContent(kind, src) {
     }
     return JSON.parse(await cache.get(url));
   }
-  if (typeof src !== "string" || !/^[A-Z][0-9]{1,2}$/.test(src)) throw new Error(`bad module id: ${String(src)}`);
+  // A module id (I5), or one of the named files: the question bank (say/bank.json) and the board (cards/board.json).
+  const named = src === "bank" || src === "board";
+  if (typeof src !== "string" || (!named && !/^[A-Z][0-9]{1,2}$/.test(src))) throw new Error(`bad module id: ${String(src)}`);
   return JSON.parse(await fetchText(`${kind}/${src}.json`));
 }

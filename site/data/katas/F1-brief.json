@@ -6,6 +6,7 @@
   "Nearly the code: files required, fields required, one '- field' line each; then the check: values from each line after the first colon, every field present and non-empty."
  ],
  "id": "F1-brief",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef make_brief(task, files, fields):\n    ...\n\ndef check_result(result, fields):\n    ...\n",
  "minutes": 25,
  "module": "F1",
  "objectives": [

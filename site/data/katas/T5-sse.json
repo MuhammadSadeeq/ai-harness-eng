@@ -6,6 +6,7 @@
   "Nearly the code: for a line that is not blank and not a comment, use line.partition(':'). Set event for the field event, append the value for the field data, and drop one leading space from the value."
  ],
  "id": "T5-sse",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef parse_events(text: str) -> list[dict[str, str]]:\n    ...\n",
  "minutes": 20,
  "module": "T5",
  "objectives": [

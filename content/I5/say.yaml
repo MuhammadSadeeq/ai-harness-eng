@@ -1,0 +1,268 @@
+- id: I5-s1
+  objectives:
+  - I5.o1
+  - I5.o3
+  wire: design
+  prompt: Walk me through the harness for a coding agent that works in a large monorepo.
+  model_answer: 'Start with the job and its limits. The agent reads an issue, searches for the code, edits files
+    in the folders its team owns, runs the affected tests, and opens a pull request. The system prompt says what
+    it is for; a rules file the owners control says what it may touch. The harness enforces the hard limits: no
+    write outside the owned folders, no push to the main branch. The tools are narrow: read, search, edit, allow-listed
+    tests, open a pull request. CI grades the change, and the harness reruns the named tests from a clean checkout.
+    Every call is traced with its cost. I would ship it shadow first, then canary on one team.'
+  rubric:
+  - Names the job and the owned-folder limit
+  - Says the harness enforces the limits, not the prompt
+  - Names narrow tools and no general shell
+  - Says CI grades, and the tests are rerun from clean
+  - Names the trace or the cost as what gets watched
+- id: I5-s2
+  objectives:
+  - I5.o1
+  - I5.o3
+  wire: design
+  prompt: Walk me through the harness for a customer-support agent that can issue refunds.
+  model_answer: The agent answers questions from the customer's own order record and the policy summary, then proposes
+    a refund as its own step. The refund limit lives in the harness, not the prompt. A refund needs the customer's
+    confirmation below the agent's limit, and a person above it or on a flagged order. Each refund carries an idempotency
+    key, so a retry cannot pay twice. Customer text is data; it cannot set an amount. After a refund the harness
+    reads the order back and reconciles against the ledger. I would shadow the proposals first, then canary one
+    low-limit order type, watching reversed refunds.
+  rubric:
+  - Separates the proposal from the issued refund
+  - Puts the limit in the harness
+  - Names the idempotency key or the retry rule
+  - Says customer text is data and cannot set an amount
+  - Names a check after the refund
+- id: I5-s3
+  objectives:
+  - I5.o1
+  - I5.o3
+  wire: design
+  prompt: Walk me through the harness for a research agent that runs sub-agents.
+  model_answer: 'The lead agent owns the question and the answer. It writes each sub-agent a brief: the claim to
+    check, the sources to read, and the form of the result. Each sub-agent has its own context window, so the full
+    text stays with it, and the lead receives a structured result with quotes and their locations. Sub-agents get
+    read and search only; the lead alone writes. Every claim must point to a quote, and the harness checks the quote
+    against the source text. A sub-agent that times out returns a partial result, and the claims it did not check
+    are marked as unchecked.'
+  rubric:
+  - Names the lead's ownership of the answer
+  - Says each sub-agent has its own context
+  - Names the brief and the structured result
+  - Says quotes are checked against the source text
+  - Says partial results are marked as partial
+- id: I5-s4
+  objectives:
+  - I5.o1
+  - I5.o3
+  wire: design
+  prompt: Walk me through the harness for an on-call triage agent.
+  model_answer: 'The agent reads the alert, the metric over the last hour, the runbook and the open incidents, then
+    decides: close with a reason, page with a summary, or suggest a step. It has read tools and a page tool, and
+    no write access in production. A page-class alert always pages, enforced in the harness. An unknown metric means
+    page, not healthy. Each decision is traced with its reason. A person samples the closed alerts every morning.
+    The metric to watch is the missed incidents, not the number of closes.'
+  rubric:
+  - Names the read-only tools and the page tool
+  - Says page-class alerts always page, enforced in code
+  - Says an unknown metric means page
+  - Names the morning sample of closes
+  - Names missed incidents as the scored metric
+- id: I5-s5
+  objectives:
+  - I5.o1
+  - I5.o3
+  wire: design
+  prompt: Walk me through the harness for the eval run before a model launch.
+  model_answer: 'The run is defined in one file: the tasks, the graders, the trials, the seeds and the decision
+    rule. The owner writes the rule before the run. Each task starts from a clean environment, and the model cannot
+    see the grader or earlier scores. Harness errors are reported apart and do not count for or against the model.
+    Each code grader is checked against known passes and known false passes; a model grader needs human labels before
+    it counts. The decision uses pass^k where every trial must succeed, with its interval, and the run is budgeted
+    before it starts.'
+  rubric:
+  - Says the decision rule is written before the run
+  - Names clean environments and a hidden grader
+  - Separates harness errors from model failures
+  - Checks graders against known cases
+  - Names an interval and a budget
+- id: I5-s6
+  objectives:
+  - I5.o1
+  - I5.o3
+  wire: design
+  prompt: Walk me through the harness for a browser agent that handles a person's email.
+  model_answer: 'The agent reads one thread, drafts a reply, and shows the draft to the person. The send is a separate
+    step the person triggers, and the send tool takes a reviewed draft id, not free text. Standing rules, such as
+    never reply to a contract, are data the harness reads before any send. Email text is untrusted, so an instruction
+    inside a message cannot trigger a send. Outbound network reaches only the mail provider and listed links. The
+    risk I would name first is an email that asks for the inbox to be forwarded, so the harness cuts one leg of
+    that attack: the send.'
+  rubric:
+  - Separates the draft from the send
+  - Says the send takes a reviewed draft id
+  - Says email text cannot trigger a send
+  - Names the outbound network limit
+  - Names the injection risk and the leg it cuts
+- id: I5-s7
+  objectives:
+  - I5.o1
+  - I5.o4
+  wire: debugging
+  prompt: 'This trace ends done and the checks fail: what do you look at first?'
+  model_answer: 'First, the stop reason and the last tool result: did the run claim done without a passing run?
+    Then the check''s own output, to see what it compared. The done claim is a claim, not proof. I look for the
+    edit the checks should have caught, and for a turn where the agent stopped testing. I want to know whether the
+    checks ran on the final files or on an earlier snapshot. The fix belongs in the harness: refuse done until the
+    named checks pass on the final state.'
+  rubric:
+  - Looks at the stop reason and the done claim first
+  - Reads the check's output to see what it compared
+  - Asks whether the checks ran on the final files
+  - 'Names the harness fix: refuse done without a passing run'
+- id: I5-s8
+  objectives:
+  - I5.o1
+  - I5.o4
+  wire: debugging
+  prompt: 'This trace stops at turn 3 with no error, and half the token budget is unused: what do you look at first?'
+  model_answer: 'No error and an early stop means something ended the loop on purpose or by mistake. I look at the
+    stop reason and the last reply: was it end of turn, or a cut-off inside a tool use? Then the exits: is there
+    a turn limit or a breaker that fired without a log line? The unused budget tells me the budget was not the cause.
+    I check whether a tool result looked final to the loop, and whether the harness logged the decision to stop.'
+  rubric:
+  - Reads the stop reason and the last reply
+  - Checks for a cut-off tool use
+  - Looks for an exit that fired without a log line
+  - Uses the unused budget to rule something out
+- id: I5-s9
+  objectives:
+  - I5.o1
+  - I5.o4
+  wire: debugging
+  prompt: The same task cost ten times more than last week's run. What do you look at first?
+  model_answer: 'I look at the cost by call, not the total. Which call grew, and in what: input tokens, output tokens,
+    or retries? A jump in input often means context that was resent, or a tool result that stopped being cleared.
+    A jump in calls means a loop that did not stop. I check the model and the effort setting, since a changed setting
+    moves cost too. Then I compare the setup with last week''s, to see what changed.'
+  rubric:
+  - Breaks the cost down by call
+  - Separates input, output and retries
+  - Names resent context or uncleared results
+  - Checks for a loop that did not stop
+  - Checks what changed in the setup
+- id: I5-s10
+  objectives:
+  - I5.o1
+  - I5.o4
+  wire: debugging
+  prompt: The model asks for the same file five times in a row. What do you look at first?
+  model_answer: 'Repeated reads mean the model did not keep what it read, or the read did not return what it needed.
+    I look at the tool results: are they empty, truncated or in the wrong format? Then at context: did an earlier
+    result get cleared before the model needed it? I check whether the file is too large for the window, and whether
+    the prompt tells the model to stop reading. The fix is usually in the harness: return the needed part, and keep
+    the result.'
+  rubric:
+  - Checks whether the results were empty or truncated
+  - Checks whether an earlier result was cleared early
+  - Considers the file's size against the window
+  - Names a harness fix, not only a prompt fix
+- id: I5-s11
+  objectives:
+  - I5.o1
+  - I5.o4
+  wire: debugging
+  prompt: The tests pass, but a secret appears in the summary. What do you look at first?
+  model_answer: 'A passing test says nothing about where data went. First, where the secret came from: a read the
+    permissions allowed, or a file the sandbox should have refused. Then the path into the summary: which call wrote
+    it. I check whether the secret was ever in a tool result, and which permission let that read run. The leak is
+    a permission or sandbox failure, so the fix is a permission rule or a path confinement, with redaction at the
+    write as a backstop; the tests are not the place to catch it.'
+  rubric:
+  - Says a passing test does not show where data went
+  - Traces the secret's source read
+  - Finds which permission or sandbox allowed the read
+  - Names a permission or confinement fix, not only redaction
+- id: I5-s12
+  objectives:
+  - I5.o1
+  - I5.o4
+  wire: debugging
+  prompt: The same tool call fails the same way every retry, and the run keeps going. What do you look at first?
+  model_answer: 'This is a retry loop without a breaker. I look at the error text: does it say what to do next,
+    or only that it failed? Then the retry policy: is there a maximum number of attempts, and is the wait the same
+    each time? I check whether the error is permanent, such as a missing file, which should not be retried at all.
+    The fix is a breaker that stops after a fixed number of identical failures and hands the task to a person with
+    the attempts.'
+  rubric:
+  - Notes that the error repeats with no change
+  - Checks whether the error text says what to do next
+  - Checks the retry limit and the wait
+  - Asks whether the error is permanent
+  - Names a breaker and a hand-off
+- id: I5-s13
+  objectives:
+  - I5.o1
+  - I5.o5
+  wire: behavioral
+  prompt: Tell me about a harness you built. What did it do that you did not expect?
+  model_answer: I built a small evaluation harness for a team's tool-calling agent. It ran a fixed set of tasks
+    and reported a pass rate. What I did not expect was that the agent passed more tasks when the harness was slower,
+    because the timeouts cut off its loops, and the pass rate was measuring the timeouts. I found it by reading
+    transcripts, not the scores. I changed the timeout to count as a failure, and I wrote the decision rule before
+    the next run.
+  rubric:
+  - Names a concrete harness and its purpose
+  - Says what happened that was not expected
+  - Shows how it was found, from transcripts or a trace
+  - Says what changed, with the result
+  - Keeps the story to what the speaker did
+- id: I5-s14
+  objectives:
+  - I5.o1
+  - I5.o5
+  wire: behavioral
+  prompt: Tell me about an agent failure you ran or shipped. What did you change afterwards?
+  model_answer: 'An agent I ran for a week closed support tickets that were still open. The tickets reopened, and
+    the close rate looked good until someone counted the reopens. I changed the score: a close counts only if the
+    ticket stays closed for seven days. I also added a permission that stopped the agent from closing a ticket with
+    a refund attached, because that was where the errors were. The reopen rate fell, and I report it with the number
+    and the window it came from.'
+  rubric:
+  - Names the failure plainly
+  - Says how it was noticed
+  - Says what changed in the harness or the score
+  - Gives the measure and its window
+  - Says what the first fix missed, if anything
+- id: I5-s15
+  objectives:
+  - I5.o1
+  - I5.o5
+  wire: behavioral
+  prompt: Tell me about a time you disagreed with someone about an agent's design. How did it end?
+  model_answer: A colleague wanted the agent to have a shell, so it could do any task. I thought a narrow set of
+    tools would be safer and easier to test. We wrote both designs for one task and ran them on the same seeds.
+    The narrow one passed fewer tasks, but its failures were easy to read, and the shell version could delete files
+    outside the task. We chose narrow tools for the first release and added a command allow-list later. I was right
+    about the risk, and he was right that the agent needed to do more.
+  rubric:
+  - Names the disagreement and both positions
+  - Says how it was tested or decided
+  - Shows what each side got right
+  - Says how it ended, including what was given up
+- id: I5-s16
+  objectives:
+  - I5.o1
+  - I5.o5
+  wire: behavioral
+  prompt: Tell me about a result you measured. How sure were you, and what did you measure it with?
+  model_answer: We compared two prompts on a set of tasks, with five trials each. The new prompt passed more tasks,
+    but the intervals were wide and overlapped. I said that in the review, and we ran more trials before deciding.
+    With twenty trials the difference held on the same tasks, and I reported the interval and the trial count with
+    the number. I would not have claimed the gain from the first run.
+  rubric:
+  - Names the thing measured and its size
+  - Gives the number with its trials and interval
+  - Says how sure the speaker was, and why
+  - Says what was done to be more sure

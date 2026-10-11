@@ -7,7 +7,7 @@ hints:
   - "A run passes the code grader only as a true done: the status is done and the checks passed."
   - "Count each run once for passes. For tasks, a task passes at least once when any of its trials passes, and passes every time when all of them do."
   - "passes sums the runs where status is done and passed is True. Group the trials by task, then count the groups with any True and the groups with all True."
-from_memory: false
+from_memory: true
 wrong_solutions:
   - name: counts-passed-alone
     code: |

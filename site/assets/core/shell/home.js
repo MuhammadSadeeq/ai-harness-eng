@@ -90,7 +90,8 @@ export function renderHome(store, doc = document) {
     }
     for (const el of doc.querySelectorAll("[data-slot=\"family-name\"]")) el.textContent = shift?.familyName ?? "No incident for this module";
     for (const el of doc.querySelectorAll("[data-slot=\"family-summary\"]")) el.textContent = shift?.familySummary ?? "";
-    for (const el of doc.querySelectorAll("[data-family-link]")) setOpens(el, href);
+    // The on-call card opens today's shift (oncall.html) whether or not the next module is built.
+    for (const el of doc.querySelectorAll("[data-family-link]")) setOpens(el, "oncall.html");
     const night = resolvedTheme(store.state.prefs.theme) === "night";
     const shiftCard = doc.querySelector("[data-shift]");
     const pageCard = doc.querySelector("[data-page-card]");

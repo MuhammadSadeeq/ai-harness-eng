@@ -6,7 +6,7 @@
 import { HxElement } from "./lib/hx-element.js";
 import { getCourse, getCourseCore } from "./lib/data.js";
 import { formatInt, plural } from "./lib/format.js";
-import { bragData, LEVEL_WORDS, readiness } from "./lib/readiness.js";
+import { adjustment, bragData, LEVEL_WORDS, readiness, shownLevel } from "./lib/readiness.js";
 import { continueTarget, formatDay } from "../core/shell/pure.js";
 
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
@@ -81,6 +81,10 @@ export class HxReadiness extends HxElement {
     this.core = core;
     this.built = new Set(core.modules.filter((mod) => mod.built).map((mod) => mod.id));
     this.testEvidence = null;
+    // An import of progress (the footer), or a change made elsewhere on the page, changes the evidence: draw it again.
+    this.store?.subscribe?.(() => {
+      if (this.course) this.render();
+    });
   }
 
   evidence() {
@@ -134,17 +138,87 @@ export class HxReadiness extends HxElement {
   table(model) {
     const rows = [];
     for (const wire of model.wires) {
-      rows.push(el("tr", { "data-wire": wire.id, "data-level": wire.level },
+      const shown = shownLevel(wire, this.adjustments);
+      const levelText = shown.adjusted
+        ? `L${shown.level}: ${LEVEL_WORDS[shown.level]} (set by you; evidence L${wire.level})`
+        : `L${wire.level}: ${wire.word}`;
+      rows.push(el("tr", { "data-wire": wire.id, "data-level": shown.level, "data-evidence": wire.level },
         el("th", { scope: "row" }, el("span", { class: `wire w-${wire.id}` }, glyph(wire.glyph), el("span", { text: wire.name }))),
-        el("td", { class: "level", text: `L${wire.level}: ${wire.word}` }),
+        el("td", { class: "level", text: levelText }),
         el("td", { text: wire.next })));
       rows.push(el("tr", { class: "evidence-row" },
         el("td", { colspan: "3" }, this.evidenceDisclosure(wire))));
+      rows.push(el("tr", { class: "adjust-row" },
+        el("td", { colspan: "3" }, this.adjustDisclosure(wire, shown))));
     }
     return el("table", { class: "readiness-table" },
       el("caption", { text: "Levels by wire" }),
       el("thead", {}, el("tr", {}, el("th", { scope: "col", text: "Wire" }), el("th", { scope: "col", text: "Level" }), el("th", { scope: "col", text: "Next step" }))),
       el("tbody", {}, ...rows));
+  }
+
+  // A learner may set a wire lower than its evidence, never higher, with one line of reason (I2.o2).
+  adjustDisclosure(wire, shown) {
+    // The evidence is the top of the scale: a learner lowers it, so the choices stop one level below it.
+    if (wire.level === 0) {
+      return el("details", { class: "adjust" },
+        el("summary", { text: `Set ${wire.short} lower than the evidence` }),
+        el("p", { class: "adjust-note", text: "The evidence is L0, so there is no lower level to set." }));
+    }
+    // The default choice is the highest lower level; a set adjustment shows its own level. A false attribute would still
+    // count as selected, so the attribute is written only on the chosen option.
+    const current = shown.adjusted ? shown.level : wire.level - 1;
+    const select = el("select", { "data-key": `adjust-level-${wire.id}`, id: `adj-${wire.id}` },
+      ...Array.from({ length: wire.level }, (_, level) => el("option", { value: level, selected: level === current ? "" : null, text: `L${level}: ${LEVEL_WORDS[level]}` })));
+    const reason = el("input", { type: "text", maxlength: "140", "data-key": `adjust-reason-${wire.id}`, id: `adj-reason-${wire.id}`, value: shown.adjusted ? shown.reason : "", placeholder: "One line: why you are lower" });
+    const error = el("p", { class: "adjust-error", role: "alert" });
+    const save = el("button", { type: "button", class: "key", "data-key": `adjust-save-${wire.id}`, text: "Set this level" });
+    save.addEventListener("click", () => this.saveAdjust(wire.id, select, reason, error));
+    const undo = shown.adjusted ? el("button", { type: "button", class: "key", "data-key": `adjust-undo-${wire.id}`, text: "Back to the evidence" }) : null;
+    if (undo) undo.addEventListener("click", () => this.clearAdjust(wire.id));
+    // A rebuilt row keeps the disclosure the learner had open (saving must not close the form they just used).
+    const open = (this.openAdjusts ??= new Set());
+    const details = el("details", { class: "adjust", open: open.has(wire.id) ? "" : null },
+      el("summary", { text: `Set ${wire.short} lower than the evidence` }),
+      el("p", { class: "adjust-note", text: `You can set L0 to L${wire.level - 1}. A level never goes above the evidence.` }),
+      el("label", { class: "adjust-field" }, el("span", { text: "Level" }), select),
+      el("label", { class: "adjust-field" }, el("span", { text: "Reason" }), reason),
+      error,
+      el("div", { class: "adjust-actions" }, save, undo));
+    details.addEventListener("toggle", () => (details.open ? open.add(wire.id) : open.delete(wire.id)));
+    return details;
+  }
+
+  saveAdjust(wireId, select, input, error) {
+    const wire = this.model.wires.find((w) => w.id === wireId);
+    let next;
+    try {
+      next = adjustment(wire.level, Number(select.value), input.value);
+    } catch (problem) {
+      error.textContent = problem.message;
+      return;
+    }
+    try {
+      this.store?.update((doc) => {
+        doc.prefs = { ...doc.prefs, readiness_adjust: { ...(doc.prefs?.readiness_adjust ?? {}), [wireId]: next } };
+      });
+    } catch {
+      // A store that cannot save keeps the level on this page only.
+    }
+    this.render();
+  }
+
+  clearAdjust(wireId) {
+    try {
+      this.store?.update((doc) => {
+        const rest = { ...(doc.prefs?.readiness_adjust ?? {}) };
+        delete rest[wireId];
+        doc.prefs = { ...doc.prefs, readiness_adjust: rest };
+      });
+    } catch {
+      // As saveAdjust: on this page only.
+    }
+    this.render();
   }
 
   evidenceDisclosure(wire) {
@@ -164,6 +238,18 @@ export class HxReadiness extends HxElement {
   }
 
   brag(sheet) {
+    // The evidence level and the learner's own level sit side by side, one row per wire (BP-5.4 §5).
+    const levelTable = (levels) => (levels.length === 0
+      ? el("p", { class: "sheet-empty", text: "No wires yet." })
+      : el("div", { class: "sheet-table" }, el("table", { class: "sheet-levels" },
+        el("thead", {}, el("tr", {},
+          el("th", { scope: "col", text: "Wire" }), el("th", { scope: "col", text: "Evidence" }),
+          el("th", { scope: "col", text: "Set by you" }), el("th", { scope: "col", text: "Reason" }))),
+        el("tbody", {}, ...levels.map((l) => el("tr", {},
+          el("th", { scope: "row", text: l.short }),
+          el("td", { text: `L${l.evidence}: ${LEVEL_WORDS[l.evidence]}` }),
+          el("td", { text: l.adjusted ? `L${l.level}: ${LEVEL_WORDS[l.level]}` : "not set" }),
+          el("td", { text: l.adjusted ? l.reason : "" })))))));
     const dataList = (items, empty) => items.length === 0
       ? el("p", { class: "sheet-empty", text: empty })
       : el("ul", { class: "sheet-list" }, ...items.map((text) => el("li", { text })));
@@ -172,7 +258,7 @@ export class HxReadiness extends HxElement {
       sheet.name ? el("p", { class: "sheet-name", text: sheet.name }) : null,
       el("p", { class: "sheet-date", text: `Date: ${sheet.date}` }),
       el("h4", { text: "Levels by wire" }),
-      dataList(sheet.levels.map((l) => `${l.short}: L${l.level}, ${l.word}`), "No wires yet."),
+      levelTable(sheet.levels),
       el("h4", { text: `Modules explained (${formatInt(sheet.explained.length)})` }),
       dataList(sheet.explained.map((m) => `${m.id} · ${m.title}`), "No module is explained yet."),
       el("h4", { text: "Katas and steps passed" }),
@@ -186,8 +272,10 @@ export class HxReadiness extends HxElement {
   render() {
     const evidence = this.evidence();
     const model = readiness(this.course, this.core, evidence);
+    this.model = model;
+    this.adjustments = this.store?.state?.prefs?.readiness_adjust ?? {};
     const name = String(this.store?.state?.prefs?.brag_name ?? "");
-    const sheet = bragData(this.course, model, evidence, name, todayIso());
+    const sheet = bragData(this.course, model, evidence, name, todayIso(), this.adjustments);
     const empty = evidence.length === 0;
     let intro = null;
     if (empty) {
@@ -214,7 +302,7 @@ export class HxReadiness extends HxElement {
         el("h2", { id: "brag-title", text: "Brag sheet" }),
         el("label", { class: "brag-field" }, el("span", { text: "Name for the sheet" }), nameInput),
         el("div", { class: "brag-actions" }, print),
-        el("p", { class: "brag-note", text: "The sheet prints on one page in black on white, with no buttons." }),
+        el("p", { class: "brag-note", text: "The sheet prints in black on white, with no buttons." }),
         this.brag(sheet))));
   }
 
@@ -249,6 +337,26 @@ export class HxReadiness extends HxElement {
     if (!this.summaryText().startsWith("Strongest: Loop (L3)")) return false;
     const listed = this.ui.querySelectorAll('tr[data-wire="loop"] + tr.evidence-row li').length;
     if (listed < 3) return false;
+    // The honest adjustment: the choices stop below the evidence, a lower level needs one line of reason, and undo
+    // returns to the evidence. The adjustment is stored in the learner's preferences, so the test clears it at the end.
+    const select = () => this.ui.querySelector('select[data-key="adjust-level-loop"]');
+    const reason = () => this.ui.querySelector('input[data-key="adjust-reason-loop"]');
+    const save = () => this.ui.querySelector('button[data-key="adjust-save-loop"]');
+    const undo = () => this.ui.querySelector('button[data-key="adjust-undo-loop"]');
+    if (!select() || !reason() || !save()) return false;
+    if (select().options.length !== this.levelOf("loop")) return false;
+    select().value = "1";
+    reason().value = "";
+    save().click();
+    if (this.levelOf("loop") !== 3 || !save().closest("details").querySelector(".adjust-error")?.textContent) return false;
+    reason().value = "The exits are not clear to me yet";
+    select().value = "1";
+    save().click();
+    if (this.levelOf("loop") !== 1) return false;
+    if (this.ui.querySelector('tr[data-wire="loop"]')?.dataset.evidence !== "3") return false;
+    undo()?.click();
+    if (this.levelOf("loop") !== 3) return false;
+    this.clearAdjust("loop");
     this.testEvidence = null;
     this.render();
     return this.levelOf("loop") === 0;

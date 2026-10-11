@@ -6,6 +6,7 @@
   "Nearly the code: in can_write, pick mode[0:3] for the owner, mode[3:6] for the group, mode[6:9] for others, and return triple[1] == 'w'. In runaway_children, return sorted(pid for pid in found if cpu[pid] > cpu_limit)."
  ],
  "id": "T9-procs",
+ "memory_blank": "# Write it from memory. The tests import these names.\nfrom __future__ import annotations\ndef parse_table(text: str) -> list[Row]:\n    ...\n\ndef runaway_children(rows: list[Row], parent: int, cpu_limit: float) -> list[int]:\n    ...\n\ndef can_write(mode: str, owner: str, group: str, user: str, user_groups: list[str]) -> bool:\n    ...\n",
  "minutes": 25,
  "module": "T9",
  "objectives": [

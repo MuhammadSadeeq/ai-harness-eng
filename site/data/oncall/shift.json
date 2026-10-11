@@ -1,0 +1,520 @@
+{
+ "board_cards": 427,
+ "incidents": [
+  {
+   "family": "false-done",
+   "module": "S0",
+   "tape": "s0-false-done",
+   "title": "Same model, different harness"
+  },
+  {
+   "family": "confident-lie",
+   "module": "A1",
+   "tape": "a1-confident-lie",
+   "title": "What a model does"
+  },
+  {
+   "family": "context-flood",
+   "module": "A2",
+   "tape": "c2-flood",
+   "title": "Tokens and the context window"
+  },
+  {
+   "family": "forgetful-harness",
+   "module": "A3",
+   "tape": "a3-forgetful",
+   "title": "The stateless model"
+  },
+  {
+   "family": "first-block-only",
+   "module": "A4",
+   "tape": "h1-first-block",
+   "title": "The API call on the wire"
+  },
+  {
+   "family": "schema-drift",
+   "module": "A5",
+   "tape": "a5-schema-drift",
+   "title": "Structured outputs and schemas"
+  },
+  {
+   "family": "effort-mismatch",
+   "module": "A6",
+   "tape": "a6-effort",
+   "title": "Reasoning and effort as harness knobs"
+  },
+  {
+   "family": "long-chain-collapse",
+   "module": "A7",
+   "tape": "a7-long-chain",
+   "title": "Why a model alone is unreliable"
+  },
+  {
+   "family": "split-tool-results",
+   "module": "B1",
+   "tape": "b1-split",
+   "title": "Tools give the model hands"
+  },
+  {
+   "family": "almost-done-spiral",
+   "module": "B2",
+   "tape": "b2-spiral",
+   "title": "The agent loop"
+  },
+  {
+   "family": "harness-regression",
+   "module": "B3",
+   "tape": "b3-regression",
+   "title": "What a harness is"
+  },
+  {
+   "family": "false-done",
+   "module": "B4",
+   "tape": "s0-false-done",
+   "title": "The Turn Clock"
+  },
+  {
+   "family": "rule-ignored",
+   "module": "C1",
+   "tape": "c1-ignored-rule",
+   "title": "Control plane: instructions as law"
+  },
+  {
+   "family": "context-flood",
+   "module": "C2",
+   "tape": "c2-flood",
+   "title": "Context budget"
+  },
+  {
+   "family": "compaction-amnesia",
+   "module": "C3",
+   "tape": "c3-amnesia",
+   "title": "Compaction and memory"
+  },
+  {
+   "family": "cold-cache",
+   "module": "C4",
+   "tape": "c4-cold-cache",
+   "title": "Prompt caching"
+  },
+  {
+   "family": "orphaned-tool-call",
+   "module": "C5",
+   "tape": "c5-interrupt",
+   "title": "Loop state and stopping well"
+  },
+  {
+   "family": "retry-storm",
+   "module": "C6",
+   "tape": "c6-outage",
+   "title": "Errors are the main path"
+  },
+  {
+   "family": "tool-confusion",
+   "module": "C7",
+   "tape": "c7-tool-confusion",
+   "title": "Tool design is agent UX"
+  },
+  {
+   "family": "tool-overload",
+   "module": "C8",
+   "tape": "c8-tool-overload",
+   "title": "MCP, skills and tool scale"
+  },
+  {
+   "family": "approval-fatigue",
+   "module": "C9",
+   "tape": "c9-approval",
+   "title": "Permissions"
+  },
+  {
+   "family": "sandbox-escape",
+   "module": "C10",
+   "tape": "c10-escape",
+   "title": "Sandboxes: blast walls"
+  },
+  {
+   "family": "false-done",
+   "module": "C11",
+   "tape": "c11-tamper",
+   "title": "Verification: done is a claim"
+  },
+  {
+   "family": "unexplained-bill",
+   "module": "C12",
+   "tape": "c12-unexplained-bill",
+   "title": "Observability: traces you can read"
+  },
+  {
+   "family": "silent-regression",
+   "module": "D1",
+   "tape": "d1-held-out-a",
+   "title": "Eval anatomy"
+  },
+  {
+   "family": "reviewer-rubber-stamp",
+   "module": "D3",
+   "tape": "d3-false-done-a",
+   "title": "Evals in practice"
+  },
+  {
+   "family": "injected-page",
+   "module": "E1",
+   "tape": "e1-injected-page",
+   "title": "Prompt injection and the lethal trifecta"
+  },
+  {
+   "family": "poisoned-tool",
+   "module": "E2",
+   "tape": "e2-poisoned-tool",
+   "title": "Defense in layers"
+  },
+  {
+   "family": "sub-agent-sprawl",
+   "module": "F1",
+   "tape": "f1-sprawl",
+   "title": "Many agents: when and how"
+  },
+  {
+   "family": "shift-amnesia",
+   "module": "F2",
+   "tape": "f2-shift-amnesia",
+   "title": "Long-running agents"
+  },
+  {
+   "family": "lost-session",
+   "module": "F3",
+   "tape": "f3-lost-session",
+   "title": "Managed agents: the harness as a service"
+  },
+  {
+   "family": "cheap-model-trap",
+   "module": "F4",
+   "tape": "f4-cheap-model-trap",
+   "title": "Cost and latency engineering"
+  },
+  {
+   "family": "double-charge",
+   "module": "F5",
+   "tape": "f5-double-charge",
+   "title": "Production: agents that survive real traffic"
+  },
+  {
+   "family": "reward-hack",
+   "module": "F6",
+   "tape": "f6-reward-hack",
+   "title": "Environments: harnesses that train and test models"
+  },
+  {
+   "family": "migration-break",
+   "module": "F7",
+   "tape": "f7-migration-break",
+   "title": "Model migrations: when the model changes under you"
+  },
+  {
+   "family": "harness-regression",
+   "module": "G1",
+   "tape": "b3-regression",
+   "title": "Inside Claude Code, wire by wire"
+  },
+  {
+   "family": "stale-map",
+   "module": "G2",
+   "tape": "g4-stale-map",
+   "title": "Codex and open harnesses: what everyone agrees on"
+  },
+  {
+   "family": "harness-regression",
+   "module": "G3",
+   "tape": "b3-regression",
+   "title": "Reading a real harness repository"
+  },
+  {
+   "family": "stale-map",
+   "module": "G4",
+   "tape": "g4-stale-map",
+   "title": "The daily craft"
+  },
+  {
+   "family": "first-block-only",
+   "module": "H1",
+   "tape": "h1-first-block",
+   "title": "Rein 1: talk to a model"
+  },
+  {
+   "family": "sandbox-escape",
+   "module": "H3",
+   "tape": "c10-escape",
+   "title": "Rein 3: real tools inside a wall"
+  },
+  {
+   "family": "approval-fatigue",
+   "module": "H4",
+   "tape": "c9-approval",
+   "title": "Rein 4: the permission gate"
+  },
+  {
+   "family": "unexplained-bill",
+   "module": "H5",
+   "tape": "c12-unexplained-bill",
+   "title": "Rein 5: a trace"
+  },
+  {
+   "family": "context-flood",
+   "module": "H6",
+   "tape": "c2-flood",
+   "title": "Rein 6: a context budget"
+  },
+  {
+   "family": "retry-storm",
+   "module": "H7",
+   "tape": "c6-outage",
+   "title": "Rein 7: retries and a breaker"
+  },
+  {
+   "family": "orphaned-tool-call",
+   "module": "H8",
+   "tape": "c5-interrupt",
+   "title": "Rein 8: guards that stop the run well"
+  },
+  {
+   "family": "false-done",
+   "module": "H9",
+   "tape": "s0-false-done",
+   "title": "Rein 9: the verification gate"
+  }
+ ],
+ "memory_katas": [
+  {
+   "id": "A3-messages",
+   "module": "A3",
+   "title": "Keep the messages array"
+  },
+  {
+   "id": "A4-parse",
+   "module": "A4",
+   "title": "Read every block and every stop reason"
+  },
+  {
+   "id": "A5-validate",
+   "module": "A5",
+   "title": "Check the input before the tool runs"
+  },
+  {
+   "id": "B1-results",
+   "module": "B1",
+   "title": "Answer every tool_use in one message"
+  },
+  {
+   "id": "B2-loop",
+   "module": "B2",
+   "title": "Write the agent loop"
+  },
+  {
+   "id": "C10-confine",
+   "module": "C10",
+   "title": "Confine file paths to the workspace root"
+  },
+  {
+   "id": "C11-gate",
+   "module": "C11",
+   "title": "Write a verification gate that reruns the original tests"
+  },
+  {
+   "id": "C12-spans",
+   "module": "C12",
+   "title": "Turn a trace into spans"
+  },
+  {
+   "id": "C3-compact",
+   "module": "C3",
+   "title": "Write a compactor that keeps the commitments"
+  },
+  {
+   "id": "C4-hit-rate",
+   "module": "C4",
+   "title": "Read the cache from the usage fields"
+  },
+  {
+   "id": "C5-state",
+   "module": "C5",
+   "title": "Close the books: one state, one exit"
+  },
+  {
+   "id": "C6-backoff",
+   "module": "C6",
+   "title": "Backoff, jitter, a cap and a breaker"
+  },
+  {
+   "id": "C7-errors",
+   "module": "C7",
+   "title": "Errors that say what to do next"
+  },
+  {
+   "id": "C8-search",
+   "module": "C8",
+   "title": "Load a tool by its keywords"
+  },
+  {
+   "id": "C9-policy",
+   "module": "C9",
+   "title": "Write a permission policy as code, tested with a table"
+  },
+  {
+   "id": "D1-eval",
+   "module": "D1",
+   "title": "Run an eval with a code grader over seeded trials"
+  },
+  {
+   "id": "F1-brief",
+   "module": "F1",
+   "title": "A sub-agent brief whose result can be checked"
+  },
+  {
+   "id": "F2-handoff",
+   "module": "F2",
+   "title": "A progress note the next session can act on"
+  },
+  {
+   "id": "F5-idempotent",
+   "module": "F5",
+   "title": "A retry wrapper that sends one key per logical action"
+  },
+  {
+   "id": "F6-grader",
+   "module": "F6",
+   "title": "A grader that the listed hacks cannot pass"
+  },
+  {
+   "id": "F7-adapter",
+   "module": "F7",
+   "title": "One adapter with capability checks"
+  },
+  {
+   "id": "G4-entropy",
+   "module": "G4",
+   "title": "A mechanical check for stale references in a rules file"
+  },
+  {
+   "id": "H4-policy",
+   "module": "H4",
+   "title": "The policy table, as one function"
+  },
+  {
+   "id": "I5-pass-k",
+   "module": "I5",
+   "title": "Compute pass@k and pass^k from trial results"
+  },
+  {
+   "id": "I5-trace-writer",
+   "module": "I5",
+   "title": "Write trace events as JSON lines, with a redacted key"
+  },
+  {
+   "id": "T1-dataclass",
+   "module": "T1",
+   "title": "Write a dataclass and two typed functions"
+  },
+  {
+   "id": "T10-concurrent",
+   "module": "T10",
+   "title": "Run tool calls: safe ones together, unsafe ones in turn"
+  },
+  {
+   "id": "T2-gather",
+   "module": "T2",
+   "title": "Gather coroutines under one timeout"
+  },
+  {
+   "id": "T3-timeout",
+   "module": "T3",
+   "title": "Run a command with a timeout"
+  },
+  {
+   "id": "T4-schema",
+   "module": "T4",
+   "title": "Check a value against a small schema"
+  },
+  {
+   "id": "T5-sse",
+   "module": "T5",
+   "title": "Parse a stream of server-sent events"
+  },
+  {
+   "id": "T6-fixtures",
+   "module": "T6",
+   "title": "Test a discount with a fixture and a list of cases"
+  },
+  {
+   "id": "T7-docker-args",
+   "module": "T7",
+   "title": "Build a docker run argument list"
+  },
+  {
+   "id": "T8-diff",
+   "module": "T8",
+   "title": "Read a diff into the lines it changes"
+  },
+  {
+   "id": "T9-procs",
+   "module": "T9",
+   "title": "Read a process table and check who may write"
+  }
+ ],
+ "say_modules": [
+  "S0",
+  "A1",
+  "A2",
+  "A3",
+  "A4",
+  "A5",
+  "A6",
+  "A7",
+  "B1",
+  "B2",
+  "B3",
+  "B4",
+  "C1",
+  "C2",
+  "C3",
+  "C4",
+  "C5",
+  "C6",
+  "C7",
+  "C8",
+  "C9",
+  "C10",
+  "C11",
+  "C12",
+  "D1",
+  "D2",
+  "D3",
+  "E1",
+  "E2",
+  "F1",
+  "F2",
+  "F3",
+  "F4",
+  "F5",
+  "F6",
+  "F7",
+  "G1",
+  "G2",
+  "G3",
+  "G4",
+  "H1",
+  "H2",
+  "H3",
+  "H4",
+  "H5",
+  "H6",
+  "H7",
+  "H8",
+  "H9",
+  "I1",
+  "I2",
+  "I3",
+  "I5",
+  "I6"
+ ]
+}

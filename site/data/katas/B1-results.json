@@ -6,6 +6,7 @@
   "Nearly the code: wrap run in try. On an exception, add is_error: True and content f\"Error: {exc}\". Return {\"role\": \"user\", \"content\": blocks}."
  ],
  "id": "B1-results",
+ "memory_blank": "# Write it from memory. The tests import these names.\nfrom __future__ import annotations\nfrom typing import Any, Callable\ndef results_message(tool_uses: list[dict[str, Any]], run: Runner) -> Message:\n    ...\n",
  "minutes": 15,
  "module": "B1",
  "objectives": [

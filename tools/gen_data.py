@@ -5,7 +5,8 @@ Usage: python tools/gen_data.py [--check]
 
 Writes (D-020): site/data/course.json, course-core.json (the slim course the components read),
 facts.json (verified facts only), facts-core.json (the facts the components read), terms.json,
-site/data/{cards,say,checks}/<ID>.json, site/data/placement/<ID>.json
+site/data/{cards,say,checks,design}/<ID>.json, site/data/say/bank.json (BP-5.4 §1: every built
+module's say prompts and content/I5/say.yaml), site/data/placement/<ID>.json
 (from content/<ID>/placement.yaml), site/data/labs/<ID>/<name>.json (a module's lab data, from
 content/<ID>/labs/<name>.json, re-serialized), site/data/katas/<id>.json (from katas/<id>/), and
 byte-for-byte copies of the scenario tapes and boards (site/data/scenarios/<id>.json,
@@ -21,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from dataclasses import dataclass, field
 from datetime import date, datetime
@@ -30,10 +32,13 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.lib.course import REPO, Problem, display_path, load_yaml_file  # noqa: E402
+from tools.lib.kata_blank import BlankError, memory_blank  # noqa: E402
 
 BEGIN_COUNTS = "<!-- BEGIN GENERATED: counts -->"
 END_COUNTS = "<!-- END GENERATED -->"
-CONTENT_KINDS = ("cards", "say", "checks")
+CONTENT_KINDS = ("cards", "say", "checks", "design")
+# BP-5.4 §1: the wires a bank prompt may carry besides the eight course wires.
+BANK_EXTRA_WIRES = ("design", "debugging", "behavioral")
 
 
 @dataclass
@@ -421,18 +426,160 @@ def _kata(kata_dir: Path, plan: Plan) -> dict[str, Any] | None:
             plan.problems.append(Problem(display_path(path), 0, f"cannot read: {exc.strerror}"))
     if missing or len(texts) < len(KATA_FILES):
         return None
-    return {
+    compiled: dict[str, Any] = {
         **{key: data[key] for key in KATA_KEYS},
         "starter": texts["starter.py"],
         "solution": texts["solution.py"],
         "tests": texts["test_kata.py"],
     }
+    if data.get("from_memory") is True:
+        # The blank a from-memory kata starts from: the names its tests import (kata_blank).
+        try:
+            compiled["memory_blank"] = memory_blank(
+                texts["solution.py"], texts["test_kata.py"], kata_dir.name
+            )
+        except (BlankError, SyntaxError) as exc:
+            shown = display_path(kata_dir / "solution.py")
+            plan.problems.append(Problem(shown, 0, f"memory blank: {exc}"))
+            return None
+    return compiled
 
 
 # What the components read from course.json (site/data/course-core.json; lib/data.js getCourseCore).
 # A module's objectives are not here: hx-kata reads them, from the full course.json.
 COURSE_CORE_KEYS = ("wires", "failure_families", "parts", "path", "counts")
 COURSE_CORE_MODULE_KEYS = ("id", "slug", "title", "kind", "part", "tag", "minutes", "wires")
+
+
+def _say_bank(root: Path, course: dict[str, Any] | None, plan: Plan) -> None:
+    """BP-5.4 §1: site/data/say/bank.json.
+
+    The say prompts of every built module, each tagged with the module's wire, then the prompts
+    of content/I5/say.yaml, each tagged with its own wire. A module is built when its page exists
+    (as gen_pages decides). A prompt keeps its module's id, so the bank and the page share evidence.
+    """
+    rel = "site/data/say/bank.json"
+    if course is None:
+        plan.skipped.add(rel)
+        return
+    bank: list[dict[str, Any]] = []
+    for module in course.get("modules", []):
+        if not isinstance(module, dict) or module.get("id") == "I5":
+            continue  # I5's prompts come from its own block below, each with its own wire
+        mid = str(module.get("id", ""))
+        page = root / "site" / "modules" / f"{module.get('slug', '')}.html"
+        path = root / "content" / mid / "say.yaml"
+        if not page.is_file() or not path.is_file():
+            continue
+        entries = _yaml_entries(path, plan)
+        if entries is None:
+            continue
+        wire = (module.get("tag") or {}).get("wire") or next(iter(module.get("wires") or []), None)
+        if wire is None:
+            plan.problems.append(Problem(display_path(path), 0,
+                                         "a built module needs a tag or a wire for its prompts"))
+            continue
+        bank.extend({**entry, "module": mid, "wire": wire}
+                    for entry in entries if isinstance(entry, dict))
+    i5 = root / "content" / "I5" / "say.yaml"
+    if i5.is_file():
+        for entry in _yaml_entries(i5, plan) or []:
+            if not isinstance(entry, dict):
+                continue
+            if entry.get("wire") not in BANK_EXTRA_WIRES:
+                plan.problems.append(Problem(
+                    display_path(i5), 0,
+                    f"{entry.get('id')}: an I5 prompt needs wire design, debugging or behavioral"))
+                continue
+            bank.append({**entry, "module": "I5"})
+    plan.outputs.append(Output(rel, dump_json(bank)))
+
+
+def _built(root: Path, module: dict[str, Any]) -> bool:
+    return (root / "site" / "modules" / f"{module.get('slug', '')}.html").is_file()
+
+
+INCIDENT_TAPE = re.compile(r'<hx-incident\b[^>]*\btape="([^"]+)"')
+
+
+def _board_entries(root: Path, course: dict[str, Any], plan: Plan) -> list[dict[str, Any]]:
+    """The cards of every built module and of I5, each tagged with its module (BP-5.4 §4)."""
+    sources: list[tuple[str, Path]] = [
+        (str(m.get("id", "")), root / "content" / str(m.get("id", "")) / "cards.yaml")
+        for m in course.get("modules", [])
+        if isinstance(m, dict) and m.get("id") != "I5" and _built(root, m)
+    ]
+    sources.append(("I5", root / "content" / "I5" / "cards.yaml"))
+    board: list[dict[str, Any]] = []
+    for mid, path in sources:
+        if not path.is_file():
+            continue
+        for entry in _yaml_entries(path, plan) or []:
+            if isinstance(entry, dict):
+                board.append({**entry, "module": mid})
+    return board
+
+
+def _cards_board(board: list[dict[str, Any]], course: dict[str, Any] | None, plan: Plan) -> None:
+    """BP-5.4 §4: site/data/cards/board.json, the shift's board (see _board_entries)."""
+    rel = "site/data/cards/board.json"
+    if course is None:
+        plan.skipped.add(rel)
+        return
+    plan.outputs.append(Output(rel, dump_json(board)))
+
+
+def _oncall(root: Path, course: dict[str, Any] | None, plan: Plan, board_cards: int) -> None:
+    """BP-5.4 §4: site/data/oncall/shift.json. The incidents a shift can pick (each built module's
+    hx-incident tapes that carry an incident block, read from its page) and the memory katas
+    of built modules."""
+    rel = "site/data/oncall/shift.json"
+    if course is None:
+        plan.skipped.add(rel)
+        return
+    built: set[str] = set()
+    say_modules: list[str] = []
+    incidents: list[dict[str, Any]] = []
+    for module in course.get("modules", []):
+        if not isinstance(module, dict) or not _built(root, module):
+            continue
+        mid = str(module.get("id", ""))
+        built.add(mid)
+        if (root / "content" / mid / "say.yaml").is_file():
+            say_modules.append(mid)
+        page = root / "site" / "modules" / f"{module.get('slug', '')}.html"
+        for tape in dict.fromkeys(INCIDENT_TAPE.findall(page.read_text(encoding="utf-8"))):
+            scenario = root / "scenarios" / f"{tape}.json"
+            if not scenario.is_file():
+                continue
+            data = _read_json(scenario, display_path(scenario), plan)
+            incident = data.get("incident") if isinstance(data, dict) else None
+            if isinstance(incident, dict):
+                incidents.append({
+                    "module": mid,
+                    "tape": tape,
+                    "family": str(incident.get("family", "")),
+                    "title": str(module.get("title", "")),
+                })
+    memory: list[dict[str, Any]] = []
+    for meta_path in sorted((root / "katas").glob("*/meta.yaml")):
+        meta, problems = load_yaml_file(meta_path, display_path(meta_path))
+        plan.problems.extend(problems)
+        if not isinstance(meta, dict) or meta.get("from_memory") is not True:
+            continue
+        module_id = str(meta.get("module", ""))
+        if module_id in built:
+            memory.append({
+                "id": str(meta.get("id", "")),
+                "module": module_id,
+                "title": str(meta.get("title", "")),
+            })
+    plan.outputs.append(Output(rel, dump_json({
+        "incidents": incidents,
+        "memory_katas": memory,
+        "say_modules": say_modules,
+        "board_cards": board_cards,
+    })))
 
 
 def _course_core(course: dict[str, Any], root: Path) -> dict[str, Any]:
@@ -493,7 +640,9 @@ def build_plan(root: Path) -> Plan:
                 if entries is None:
                     plan.skipped.add(rel)
                 else:
-                    plan.outputs.append(Output(rel, dump_json(entries)))
+                    # hx-design reads {"prompts": [...]}; the other kinds are a bare list.
+                    payload = {"prompts": entries} if kind == "design" else entries
+                    plan.outputs.append(Output(rel, dump_json(payload)))
             placement = folder / "placement.yaml"
             if placement.is_file() and course is not None:
                 rel = f"site/data/placement/{folder.name}.json"
@@ -514,6 +663,10 @@ def build_plan(root: Path) -> Plan:
                         plan.skipped.add(rel)
                     else:
                         plan.outputs.append(Output(rel, dump_json(data)))
+    _say_bank(root, course, plan)
+    board = _board_entries(root, course, plan) if course is not None else []
+    _cards_board(board, course, plan)
+    _oncall(root, course, plan, len(board))
     _katas(root, plan)
     _steps(root, plan)
     _scenarios(root, plan)

@@ -23,6 +23,7 @@ INPUTS = (
     "site/design.html",
     "site/glossary.html",
     "site/readiness.html",
+    "site/oncall.html",
 )
 
 
@@ -235,7 +236,7 @@ def test_a_module_page_for_no_course_module_is_an_error(
     assert "no-such-module" in capsys.readouterr().err
 
 
-TOP_PAGES = ("index.html", "design.html", "glossary.html", "readiness.html")
+TOP_PAGES = ("index.html", "design.html", "glossary.html", "readiness.html", "oncall.html")
 
 
 def test_the_chrome_is_added_once_and_a_second_run_changes_nothing(tmp_path: Path) -> None:

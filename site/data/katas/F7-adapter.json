@@ -6,6 +6,7 @@
   "Nearly the code: for name, value in params.items(): if name in self.rejects: (refuse with the model id, or append to self.dropped and continue); else fields[name] = value."
  ],
  "id": "F7-adapter",
+ "memory_blank": "# Write it from memory. The tests import these names.\nclass Adapter:\n    ...\n",
  "minutes": 25,
  "module": "F7",
  "objectives": [

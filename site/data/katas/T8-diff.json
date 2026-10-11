@@ -6,6 +6,7 @@
   "Nearly the code: after a line that starts with '@@ ', set new_line to the number after '+' in the header. For each + line, append new_line and add one. For each space line, add one."
  ],
  "id": "T8-diff",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef changed_lines(diff: str) -> dict[str, list[int]]:\n    ...\n",
  "minutes": 20,
  "module": "T8",
  "objectives": [

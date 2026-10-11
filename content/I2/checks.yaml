@@ -36,3 +36,16 @@
     - text: "Finished the course."
       why: "Wrong. Finishing a course is not readiness. The course's advice is to show evidence."
   answer: 0
+
+- id: I2-c4
+  objective: I2.o2
+  mode: check
+  question: "The radar says L3 on Verification, but you can not defend that level yet. What does the course advise?"
+  options:
+    - text: "Lower the level to one you can defend, and write one line of reason."
+      why: "Right. The control lowers a level and asks for one line of reason. It never raises a level above the evidence."
+    - text: "Set it to L4 by hand, since you feel stronger than the radar says."
+      why: "Wrong. The control never raises a level above its evidence. Earn the level by doing the work."
+    - text: "Clear your progress so the radar starts again from zero."
+      why: "Wrong. Clearing progress is not an honest adjustment. Lower the one level and keep the evidence on the sheet."
+  answer: 0

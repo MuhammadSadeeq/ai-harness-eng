@@ -26,6 +26,9 @@ from typing import Any
 
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from tools.lib.kata_blank import BlankError, memory_blank  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_KATAS = REPO_ROOT / "katas"
 DEFAULT_COURSE = REPO_ROOT / "course.json"
@@ -238,6 +241,14 @@ def _check_kata(
         Candidate(folder.name, f"wrong solution '{name}'", code, tests, where)
         for name, code in wrong
     )
+    if meta.get("from_memory") is True:
+        # A from-memory kata's blank (what the learner starts from) must import and fail every test.
+        try:
+            blank = memory_blank(solution, tests, folder.name)
+        except (BlankError, SyntaxError) as exc:
+            report.error(_display(folder / "solution.py"), 0, f"memory blank: {exc}")
+        else:
+            candidates.append(Candidate(folder.name, "memory blank", blank, tests, where))
     for candidate in candidates:
         if _import_problems(candidate.code, frozenset()):
             continue
@@ -253,6 +264,12 @@ def _expect(label: str, outcomes: Outcomes, where: str, report: Report) -> None:
         failing = sorted(name for name, passed in outcomes.items() if not passed)
         if failing:
             report.error(where, 0, f"solution fails: {', '.join(failing)}")
+    elif label == "memory blank":
+        # The blank is what the learner starts from, not a solution: it must import and fail a test.
+        if COLLECTION in outcomes:
+            report.error(where, 0, "memory blank does not import cleanly")
+        elif all(outcomes.values()):
+            report.error(where, 0, "memory blank passes every test; it must fail at least one")
     elif all(outcomes.values()):
         report.error(where, 0, f"{label} passes every test; it must fail at least one")
 

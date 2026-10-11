@@ -53,4 +53,5 @@ def test_the_key_is_the_same_on_every_run_of_the_same_action():
     second, keys_second = scripted([(True, "Paid.")])
     keyed_call(first, "invoice-77", 3)
     keyed_call(second, "invoice-77", 3)
+    assert keys_first, "the call must send a key"
     assert keys_first == keys_second, "the key comes from the action, not from chance or the clock"

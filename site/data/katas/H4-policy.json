@@ -6,6 +6,7 @@
   "Nearly the code: if read_only: return \"allow\"; then loop over BLOCKED with re.search on the stripped command and return \"deny\" on a match; then return \"allow\" only when an ALLOWED pattern matches and CHAINING does not; otherwise return \"ask\"."
  ],
  "id": "H4-policy",
+ "memory_blank": "# Write it from memory. The tests import these names.\ndef decide(tool_name, read_only, args, mode):\n    ...\n",
  "minutes": 25,
  "module": "H4",
  "objectives": [

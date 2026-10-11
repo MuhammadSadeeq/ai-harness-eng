@@ -6,6 +6,7 @@
   "Nearly the code: calls = [fetch(n, d) for n, d in jobs], then return await asyncio.wait_for(asyncio.gather(*calls), timeout). fetch is async def, awaits asyncio.sleep(delay), and returns name."
  ],
  "id": "T2-gather",
+ "memory_blank": "# Write it from memory. The tests import these names.\nasync def fetch(name: str, delay: float) -> str:\n    ...\n\nasync def fetch_all(\n    jobs: list[tuple[str, float]], timeout: float\n) -> list[str]:\n    ...\n",
  "minutes": 20,
  "module": "T2",
  "objectives": [
