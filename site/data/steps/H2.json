@@ -9,6 +9,7 @@
    "expected": "task     Find the bug in demo/calc.py\nturn 1   model: I will read the code first.\n         tool   read_file {\"path\": \"demo/calc.py\"}\n         result def add(a, b): | return a - b\nturn 2   model: Now the test.\n         tool   read_file {\"path\": \"demo/test_calc.py\"}\n         result from calc import add | def test_add(): | result = add(2, 3) | assert result == 5, f\"\nstopped  turn limit reached (2 model calls)\n",
    "explain": "Set max_turns to 2 in Config and run again. The last line becomes stopped  turn limit reached (2 model calls). The run ended on the harness's terms.",
    "id": "small-limit",
+   "local": false,
    "run": {
     "argv": [
      "Find the bug in demo/calc.py",
@@ -20,6 +21,7 @@
      "scenarios/02_read.json": "{\n \"replies\": [\n  {\"say\": \"I will read the code first.\", \"tools\": [[\"read_file\", {\"path\": \"demo/calc.py\"}]]},\n  {\"say\": \"Now the test.\", \"tools\": [[\"read_file\", {\"path\": \"demo/test_calc.py\"}]]},\n  {\"say\": \"Found it: add() returns a - b, but the test expects a + b. I can only read, so I cannot fix it yet.\"}\n ]\n}\n"
     }
    },
+   "stdin": [],
    "title": "A smaller turn limit"
   },
   {
@@ -60,6 +62,7 @@
    "expected": "task     Find the bug in demo/calc.py\nturn 1   model: I will read the code first.\n         tool   read_file {\"path\": \"demo/nope.py\"}\n         error  FileNotFoundError: [Errno 2] No such file or directory: 'demo/nope.py'\nturn 2   model: Now the test.\n         tool   read_file {\"path\": \"demo/test_calc.py\"}\n         result from calc import add | def test_add(): | result = add(2, 3) | assert result == 5, f\"\nturn 3   model: Found it: add() returns a - b, but the test expects a + b. I can only read, so I can\ndone     after 3 model calls\n",
    "explain": "Change the first path in the script to demo/nope.py. The result line says FileNotFoundError, as an error the model can read, not a crash. Would a model know what to do next from that message? Step 3 writes better ones.",
    "id": "missing-path",
+   "local": false,
    "run": {
     "argv": [
      "Find the bug in demo/calc.py",
@@ -71,6 +74,7 @@
      "scenarios/02_read.json": "{\n \"replies\": [\n  {\n   \"say\": \"I will read the code first.\",\n   \"tools\": [\n    [\n     \"read_file\",\n     {\n      \"path\": \"demo/nope.py\"\n     }\n    ]\n   ]\n  },\n  {\n   \"say\": \"Now the test.\",\n   \"tools\": [\n    [\n     \"read_file\",\n     {\n      \"path\": \"demo/test_calc.py\"\n     }\n    ]\n   ]\n  },\n  {\n   \"say\": \"Found it: add() returns a - b, but the test expects a + b. I can only read, so I cannot fix it yet.\"\n  }\n ]\n}\n"
     }
    },
+   "stdin": [],
    "title": "A missing path"
   },
   {
@@ -111,6 +115,7 @@
    "expected": "task     Find the bug in demo/calc.py\nturn 1   model: I will read the code first.\n         tool   delete_file {\"path\": \"demo/calc.py\"}\n         error  KeyError: 'delete_file'\nturn 2   model: Now the test.\n         tool   read_file {\"path\": \"demo/test_calc.py\"}\n         result from calc import add | def test_add(): | result = add(2, 3) | assert result == 5, f\"\nturn 3   model: Found it: add() returns a - b, but the test expects a + b. I can only read, so I can\ndone     after 3 model calls\n",
    "explain": "Change read_file in the first reply to delete_file. The error is KeyError: 'delete_file', which tells a model nothing useful. Step 3 fixes this too.",
    "id": "unknown-tool",
+   "local": false,
    "run": {
     "argv": [
      "Find the bug in demo/calc.py",
@@ -122,6 +127,7 @@
      "scenarios/02_read.json": "{\n \"replies\": [\n  {\n   \"say\": \"I will read the code first.\",\n   \"tools\": [\n    [\n     \"delete_file\",\n     {\n      \"path\": \"demo/calc.py\"\n     }\n    ]\n   ]\n  },\n  {\n   \"say\": \"Now the test.\",\n   \"tools\": [\n    [\n     \"read_file\",\n     {\n      \"path\": \"demo/test_calc.py\"\n     }\n    ]\n   ]\n  },\n  {\n   \"say\": \"Found it: add() returns a - b, but the test expects a + b. I can only read, so I cannot fix it yet.\"\n  }\n ]\n}\n"
     }
    },
+   "stdin": [],
    "title": "A tool that does not exist"
   }
  ],
@@ -134,6 +140,7 @@
   "command": "python rein.py \"Find the bug in demo/calc.py\" --fake scenarios/02_read.json",
   "expected": "task     Find the bug in demo/calc.py\nturn 1   model: I will read the code first.\n         tool   read_file {\"path\": \"demo/calc.py\"}\n         result def add(a, b): | return a - b\nturn 2   model: Now the test.\n         tool   read_file {\"path\": \"demo/test_calc.py\"}\n         result from calc import add | def test_add(): | result = add(2, 3) | assert result == 5, f\"\nturn 3   model: Found it: add() returns a - b, but the test expects a + b. I can only read, so I can\ndone     after 3 model calls\n",
   "explain": "Three model calls. In turn 1, the model asked for demo/calc.py. Rein read it, and the result went back into messages. In turn 2 it asked for the test. In turn 3 it answered without asking for tools, so the loop ended. Notice who did what: the model only asked, and the harness did every read. Notice also that the paths start with demo/. This read_file reads from wherever you run Rein, so it could read any file on your computer. Step 3 fixes that.",
+  "local": false,
   "run": {
    "argv": [
     "Find the bug in demo/calc.py",
@@ -147,7 +154,8 @@
   },
   "setup": [
    "reset_demo"
-  ]
+  ],
+  "stdin": []
  },
  "chunks": [
   {

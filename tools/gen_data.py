@@ -305,7 +305,8 @@ def _step_json(step: Any, shared: dict[str, str]) -> dict[str, Any]:
         files, argv = cs.apply_change(step, brk.change)
         breaks.append(
             {"id": brk.id, "title": brk.title, "explain": brk.explain, "expected": brk.expected,
-             "change": brk.change, "run": {"files": files, "argv": argv}}
+             "change": brk.change, "run": {"files": files, "argv": argv},
+             "stdin": brk.stdin, "local": brk.local}
         )
     chunks = []
     for chunk in step.chunks:
@@ -322,6 +323,7 @@ def _step_json(step: Any, shared: dict[str, str]) -> dict[str, Any]:
         "chunks": chunks,
         "checkpoint": {"command": _step_command(step.argv), "argv": step.argv, "setup": step.setup,
                        "expected": step.expected, "explain": step.explain,
+                       "stdin": step.stdin, "local": step.local,
                        "run": {"files": {"rein.py": step.text, **step.scenarios},
                                "argv": step.argv}},
         "breaks": breaks,
@@ -472,6 +474,14 @@ def build_plan(root: Path) -> Plan:
         plan.skipped.add("site/data/terms.json")
     else:
         plan.outputs.append(Output("site/data/terms.json", dump_json(terms)))
+    # The trace schema the Replay Deck's "Open a trace" checks against (BP-4.0 §4), the file the
+    # simulator's tests use.
+    schema_path = root / "scenarios" / "trace.schema.json"
+    if schema_path.is_file():
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        plan.outputs.append(Output("site/data/trace.schema.json", dump_json(schema)))
+    else:
+        plan.skipped.add("site/data/trace.schema.json")
     if (root / "content").is_dir():
         for folder in sorted(p for p in (root / "content").glob("*") if p.is_dir()):
             for kind in CONTENT_KINDS:

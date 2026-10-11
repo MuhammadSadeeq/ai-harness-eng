@@ -1,0 +1,139 @@
+{
+ "breaks": [
+  {
+   "change": {
+    "argv": [
+     "python test_bad.py"
+    ]
+   },
+   "expected": "exit code 1\n1 failed\n",
+   "explain": "The test file exits with one.",
+   "id": "failing-test",
+   "local": false,
+   "run": {
+    "argv": [
+     "python test_bad.py"
+    ],
+    "files": {
+     "rein.py": "import subprocess\nimport sys\nfrom pathlib import Path\n\n\ndef run_command(command):\n    done = subprocess.run(command, shell=True, cwd=\"demo\", capture_output=True, text=True, timeout=60)\n    return f\"exit code {done.returncode}\\n{(done.stdout + done.stderr).strip() or '(no output)'}\"\n\n\nargv = sys.argv[1:]\nif argv[0] == \"edit-then-test\":\n    print(run_command(\"python test_calc.py\"))\n    Path(\"demo/calc.py\").write_text(\"def add(a, b):\\n    return a - b\\n\")\n    print(run_command(\"python test_calc.py\"))\nelif argv[0] == \"ask\":\n    answer = input(\"allow run_command? [y/N] \")\n    print(\"allowed\" if answer.strip().lower() == \"y\" else \"denied\")\nelse:\n    print(run_command(argv[0]))\n"
+    }
+   },
+   "stdin": [],
+   "title": "A failing test"
+  },
+  {
+   "change": {
+    "argv": [
+     "edit-then-test"
+    ]
+   },
+   "expected": "exit code 0\n1 passed\nexit code 1\n1 failed\n",
+   "explain": "The second run reads the edited module.",
+   "id": "edit-module",
+   "local": false,
+   "run": {
+    "argv": [
+     "edit-then-test"
+    ],
+    "files": {
+     "rein.py": "import subprocess\nimport sys\nfrom pathlib import Path\n\n\ndef run_command(command):\n    done = subprocess.run(command, shell=True, cwd=\"demo\", capture_output=True, text=True, timeout=60)\n    return f\"exit code {done.returncode}\\n{(done.stdout + done.stderr).strip() or '(no output)'}\"\n\n\nargv = sys.argv[1:]\nif argv[0] == \"edit-then-test\":\n    print(run_command(\"python test_calc.py\"))\n    Path(\"demo/calc.py\").write_text(\"def add(a, b):\\n    return a - b\\n\")\n    print(run_command(\"python test_calc.py\"))\nelif argv[0] == \"ask\":\n    answer = input(\"allow run_command? [y/N] \")\n    print(\"allowed\" if answer.strip().lower() == \"y\" else \"denied\")\nelse:\n    print(run_command(argv[0]))\n"
+    }
+   },
+   "stdin": [],
+   "title": "Edit between two runs"
+  },
+  {
+   "change": {
+    "argv": [
+     "ask"
+    ]
+   },
+   "expected": "allow run_command? [y/N] denied\n",
+   "explain": "The learner types n.",
+   "id": "answer-no",
+   "local": false,
+   "run": {
+    "argv": [
+     "ask"
+    ],
+    "files": {
+     "rein.py": "import subprocess\nimport sys\nfrom pathlib import Path\n\n\ndef run_command(command):\n    done = subprocess.run(command, shell=True, cwd=\"demo\", capture_output=True, text=True, timeout=60)\n    return f\"exit code {done.returncode}\\n{(done.stdout + done.stderr).strip() or '(no output)'}\"\n\n\nargv = sys.argv[1:]\nif argv[0] == \"edit-then-test\":\n    print(run_command(\"python test_calc.py\"))\n    Path(\"demo/calc.py\").write_text(\"def add(a, b):\\n    return a - b\\n\")\n    print(run_command(\"python test_calc.py\"))\nelif argv[0] == \"ask\":\n    answer = input(\"allow run_command? [y/N] \")\n    print(\"allowed\" if answer.strip().lower() == \"y\" else \"denied\")\nelse:\n    print(run_command(argv[0]))\n"
+    }
+   },
+   "stdin": [
+    "n"
+   ],
+   "title": "Answer the prompt"
+  },
+  {
+   "change": {
+    "argv": [
+     "ls"
+    ]
+   },
+   "expected": "exit code 0\ncalc.py\ntest_bad.py\ntest_calc.py\n",
+   "explain": "ls is not available in the browser.",
+   "id": "list-folder",
+   "local": true,
+   "run": {
+    "argv": [
+     "ls"
+    ],
+    "files": {
+     "rein.py": "import subprocess\nimport sys\nfrom pathlib import Path\n\n\ndef run_command(command):\n    done = subprocess.run(command, shell=True, cwd=\"demo\", capture_output=True, text=True, timeout=60)\n    return f\"exit code {done.returncode}\\n{(done.stdout + done.stderr).strip() or '(no output)'}\"\n\n\nargv = sys.argv[1:]\nif argv[0] == \"edit-then-test\":\n    print(run_command(\"python test_calc.py\"))\n    Path(\"demo/calc.py\").write_text(\"def add(a, b):\\n    return a - b\\n\")\n    print(run_command(\"python test_calc.py\"))\nelif argv[0] == \"ask\":\n    answer = input(\"allow run_command? [y/N] \")\n    print(\"allowed\" if answer.strip().lower() == \"y\" else \"denied\")\nelse:\n    print(run_command(argv[0]))\n"
+    }
+   },
+   "stdin": [],
+   "title": "Run ls on the learner's machine"
+  }
+ ],
+ "checkpoint": {
+  "argv": [
+   "python test_calc.py"
+  ],
+  "command": "python rein.py \"python test_calc.py\"",
+  "expected": "exit code 0\n1 passed\n",
+  "explain": "The test passes.",
+  "local": false,
+  "run": {
+   "argv": [
+    "python test_calc.py"
+   ],
+   "files": {
+    "rein.py": "import subprocess\nimport sys\nfrom pathlib import Path\n\n\ndef run_command(command):\n    done = subprocess.run(command, shell=True, cwd=\"demo\", capture_output=True, text=True, timeout=60)\n    return f\"exit code {done.returncode}\\n{(done.stdout + done.stderr).strip() or '(no output)'}\"\n\n\nargv = sys.argv[1:]\nif argv[0] == \"edit-then-test\":\n    print(run_command(\"python test_calc.py\"))\n    Path(\"demo/calc.py\").write_text(\"def add(a, b):\\n    return a - b\\n\")\n    print(run_command(\"python test_calc.py\"))\nelif argv[0] == \"ask\":\n    answer = input(\"allow run_command? [y/N] \")\n    print(\"allowed\" if answer.strip().lower() == \"y\" else \"denied\")\nelse:\n    print(run_command(argv[0]))\n"
+   }
+  },
+  "setup": [
+   "project"
+  ],
+  "stdin": []
+ },
+ "chunks": [
+  {
+   "explain": "The whole fixture file.",
+   "hunks": [
+    {
+     "diff": "+import subprocess\n+import sys\n+from pathlib import Path\n+\n+\n+def run_command(command):\n+    done = subprocess.run(command, shell=True, cwd=\"demo\", capture_output=True, text=True, timeout=60)\n+    return f\"exit code {done.returncode}\\n{(done.stdout + done.stderr).strip() or '(no output)'}\"\n+\n+\n+argv = sys.argv[1:]\n+if argv[0] == \"edit-then-test\":\n+    print(run_command(\"python test_calc.py\"))\n+    Path(\"demo/calc.py\").write_text(\"def add(a, b):\\n    return a - b\\n\")\n+    print(run_command(\"python test_calc.py\"))\n+elif argv[0] == \"ask\":\n+    answer = input(\"allow run_command? [y/N] \")\n+    print(\"allowed\" if answer.strip().lower() == \"y\" else \"denied\")\n+else:\n+    print(run_command(argv[0]))\n",
+     "where": "new code"
+    }
+   ],
+   "id": "1a",
+   "title": "Start the file"
+  }
+ ],
+ "goal": "Run the tests with subprocess.run, answer a prompt, and edit a module between two runs.",
+ "id": "FX1",
+ "lines_after": 20,
+ "module": "FX1",
+ "number": 1,
+ "rein": "import subprocess\nimport sys\nfrom pathlib import Path\n\n\ndef run_command(command):\n    done = subprocess.run(command, shell=True, cwd=\"demo\", capture_output=True, text=True, timeout=60)\n    return f\"exit code {done.returncode}\\n{(done.stdout + done.stderr).strip() or '(no output)'}\"\n\n\nargv = sys.argv[1:]\nif argv[0] == \"edit-then-test\":\n    print(run_command(\"python test_calc.py\"))\n    Path(\"demo/calc.py\").write_text(\"def add(a, b):\\n    return a - b\\n\")\n    print(run_command(\"python test_calc.py\"))\nelif argv[0] == \"ask\":\n    answer = input(\"allow run_command? [y/N] \")\n    print(\"allowed\" if answer.strip().lower() == \"y\" else \"denied\")\nelse:\n    print(run_command(argv[0]))\n",
+ "requires_python": "",
+ "runs_in_browser": true,
+ "scenarios": {},
+ "shared": {
+  "project": "from pathlib import Path\n\nPath(\"demo\").mkdir(exist_ok=True)\nPath(\"demo/calc.py\").write_text(\"def add(a, b):\\n    return a + b\\n\")\nPath(\"demo/test_calc.py\").write_text(\n    \"from calc import add\\n\"\n    \"if add(2, 3) == 5:\\n\"\n    \"    print('1 passed')\\n\"\n    \"else:\\n\"\n    \"    print('1 failed')\\n\"\n    \"    raise SystemExit(1)\\n\"\n)\nPath(\"demo/test_bad.py\").write_text(\"print('1 failed')\\nraise SystemExit(1)\\n\")\n"
+ },
+ "size": "",
+ "theory": "",
+ "title": "A fixture step that runs tests through subprocess"
+}

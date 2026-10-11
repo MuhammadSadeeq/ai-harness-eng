@@ -35,6 +35,7 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_STEPS = REPO_ROOT / "steps"
 DEFAULT_COURSE = REPO_ROOT / "course.json"
+HXSHELL = REPO_ROOT / "site" / "assets" / "py" / "hxshell.py"
 PYTHON_MIN = (3, 11)
 RUN_TIMEOUT = 30.0
 SHARED = "_shared"
@@ -53,6 +54,9 @@ const pyodide = await loadPyodide({
   stdout: () => {},
   stderr: () => {},
 });
+pyodide.FS.mkdirTree("/hx");
+pyodide.FS.writeFile("/hx/hxshell.py", readFileSync(request.hxshell, "utf8"));
+pyodide.runPython("import sys\\nsys.path.insert(0, '/hx')");
 pyodide.runPython(request.runner);
 const results = request.jobs.map((job) => {
   try {
@@ -69,8 +73,33 @@ writeFileSync(request.result, JSON.stringify(results));
 # run, then rein.py with sys.argv set, stdout captured, and the exception's name as the error.
 RUNNER = """
 import contextlib, io, json, os, runpy, sys
+import hxshell
+
+FILE_CAP = 200 * 1024
+
+def collect(root):
+    files = {}
+    total = 0
+    truncated = False
+    for folder, _dirs, names in os.walk(root):
+        for name in sorted(names):
+            path = os.path.join(folder, name)
+            try:
+                with open(path, encoding="utf-8") as handle:
+                    text = handle.read()
+            except (OSError, UnicodeDecodeError):
+                continue
+            size = len(text.encode("utf-8"))
+            if total + size > FILE_CAP:
+                truncated = True
+                continue
+            total += size
+            files[os.path.relpath(path, root)] = text
+    return files, truncated
 
 def run_job(job):
+    hxshell.install()
+    hxshell.clear_refused()
     os.makedirs("/work", exist_ok=True)
     root = "/work/" + job["name"]
     os.makedirs(root, exist_ok=True)
@@ -83,27 +112,41 @@ def run_job(job):
             handle.write(text)
     out = io.StringIO()
     error = ""
-    for name in job["setup"]:
-        # the setup scripts run in their own process under CPython: their output is not the step's
-        try:
-            with (
-                contextlib.redirect_stdout(io.StringIO()),
-                contextlib.redirect_stderr(io.StringIO()),
-            ):
-                sys.argv = [name + ".py"]
-                runpy.run_path(name + ".py", run_name="__main__")
-        except BaseException as exc:
-            return json.dumps({"stdout": "", "error": type(exc).__name__})
-    with contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
-        try:
-            sys.argv = ["rein.py"] + job["argv"]
-            runpy.run_path("rein.py", run_name="__main__")
-        except SystemExit as exc:
-            if exc.code not in (None, 0):
-                error = "SystemExit"
-        except BaseException as exc:
-            error = type(exc).__name__
-    return json.dumps({"stdout": out.getvalue(), "error": error})
+    saved_stdin = sys.stdin
+    try:
+        for name in job["setup"]:
+            # the setup scripts run in their own process under CPython: their output is not the
+            # step's
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    with contextlib.redirect_stderr(io.StringIO()):
+                        sys.stdin = io.StringIO("")
+                    sys.argv = [name + ".py"]
+                    runpy.run_path(name + ".py", run_name="__main__")
+            except BaseException as exc:
+                refused = hxshell.refused_commands()
+                return json.dumps({
+                    "stdout": "", "error": type(exc).__name__, "refused": refused,
+                    "files": {}, "truncated": False,
+                })
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
+            sys.stdin = io.StringIO(job.get("stdin", ""))
+            try:
+                sys.argv = ["rein.py"] + job["argv"]
+                runpy.run_path("rein.py", run_name="__main__")
+            except SystemExit as exc:
+                if exc.code not in (None, 0):
+                    error = "SystemExit"
+            except BaseException as exc:
+                error = type(exc).__name__
+    finally:
+        sys.stdin = saved_stdin
+    files, truncated = collect(root)
+    refused = hxshell.refused_commands()
+    return json.dumps({
+        "stdout": out.getvalue(), "error": error, "refused": refused,
+        "files": files, "truncated": truncated,
+    })
 """
 
 
@@ -136,6 +179,8 @@ class Break:
     change: dict[str, Any]
     expected: str
     explain: str = ""
+    stdin: list[str] = field(default_factory=list)
+    local: bool = False
 
 
 @dataclass
@@ -152,6 +197,8 @@ class Step:
     runs_in_browser: bool
     path: Path
     scenarios: dict[str, str] = field(default_factory=dict)
+    stdin: list[str] = field(default_factory=list)
+    local: bool = False
     text: str = ""
     goal: str = ""
     theory: str = ""
@@ -278,6 +325,8 @@ def parse_step(data: Any, folder: Path) -> Step:
                 change,
                 item["expected"],
                 str(item.get("explain", "")),
+                _stdin(item, f"break {item['id']}"),
+                _local(item, f"break {item['id']}"),
             )
         )
     scenarios = {}
@@ -307,7 +356,25 @@ def parse_step(data: Any, folder: Path) -> Step:
         requires_python=str(data.get("requires_python", "")),
         size=str(data.get("size", "")),
         explain=str(check.get("explain", "")),
+        stdin=_stdin(check, "checkpoint"),
+        local=_local(check, "checkpoint"),
     )
+
+
+def _stdin(item: dict[str, Any], where: str) -> list[str]:
+    """The run's standard input, one entry per line the learner types (BP-4.0 §2)."""
+    lines = item.get("stdin", [])
+    if not isinstance(lines, list) or not all(isinstance(line, str) for line in lines):
+        raise StepError(f"{where}: stdin must be a list of lines")
+    return list(lines)
+
+
+def _local(item: dict[str, Any], where: str) -> bool:
+    """`local: true` runs under CPython only, on the learner's machine (BP-4.0 §2)."""
+    value = item.get("local", False)
+    if not isinstance(value, bool):
+        raise StepError(f"{where}: local must be true or false")
+    return value
 
 
 def load_shared(steps_dir: Path) -> dict[str, str]:
@@ -346,8 +413,13 @@ def error_name_from_stderr(stderr: str) -> str:
 
 
 def run_cpython(
-    files: dict[str, str], setup: dict[str, str], setup_names: list[str], argv: list[str]
+    files: dict[str, str],
+    setup: dict[str, str],
+    setup_names: list[str],
+    argv: list[str],
+    stdin: list[str] | None = None,
 ) -> Outcome:
+    stdin_text = "".join(f"{line}\n" for line in stdin or [])
     with tempfile.TemporaryDirectory(prefix="rein-step-") as scratch:
         work = Path(scratch)
         for path, text in files.items():
@@ -369,6 +441,7 @@ def run_cpython(
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
+                input="",
                 timeout=RUN_TIMEOUT,
                 check=False,
             )
@@ -381,6 +454,7 @@ def run_cpython(
             capture_output=True,
             text=True,
             encoding="utf-8",
+            input=stdin_text,
             timeout=RUN_TIMEOUT,
             check=False,
         )
@@ -427,6 +501,7 @@ def check_pyodide(
         result_path = work / "result.json"
         request = {
             "pyodideDir": str(pyodide_dir),
+            "hxshell": str(HXSHELL),
             "runner": RUNNER,
             "result": str(result_path),
             "jobs": jobs,
@@ -475,10 +550,30 @@ def check_pyodide(
     return data
 
 
+def command_text(argv: list[str]) -> str:
+    """The command as the book prints it: python rein.py, arguments in double quotes when needed."""
+    return " ".join(["python", "rein.py"] + [f'"{arg}"' if " " in arg else arg for arg in argv])
+
+
+def unreproduced(
+    label: str, command: str, cpython: Outcome, browser: Outcome, refused: list[str]
+) -> str:
+    """The message for a browser run that differs from CPython: the command, and local."""
+    text = (
+        f"{label}: the browser run of `{command}` differs from CPython: "
+        f"cpython={cpython.stdout!r}/{cpython.error!r} "
+        f"pyodide={browser.stdout!r}/{browser.error!r}"
+    )
+    if refused:
+        names = ", ".join(f"`{c}`" for c in refused)
+        text += f"; the browser refused {names} (not available in the browser)"
+    return text + "; if the run needs the learner's machine, mark it `local: true`"
+
+
 def run(
     steps_dir: Path, course: Path | None, pyodide: bool = False, pyodide_dir: Path | None = None
-) -> tuple[list[Problem], int, int, int, bool]:
-    """Returns (problems, steps, breaks, checked_in_browser, pyodide_ran)."""
+) -> tuple[list[Problem], int, int, int, bool, int]:
+    """Returns (problems, steps, breaks, checked_in_browser, pyodide_ran, local_runs)."""
     problems: list[Problem] = []
     if sys.version_info < PYTHON_MIN:
         problems.append(
@@ -486,7 +581,7 @@ def run(
                 "tools/check_steps.py", 0, f"needs Python {PYTHON_MIN[0]}.{PYTHON_MIN[1]} or newer"
             )
         )
-        return problems, 0, 0, 0, False
+        return problems, 0, 0, 0, False, 0
     order = module_order(course, steps_dir, problems)
     shared = load_shared(steps_dir)
     steps: list[Step] = []
@@ -523,7 +618,7 @@ def run(
                 )
             )
         check_outcome = run_cpython(
-            {"rein.py": step.text, **step.scenarios}, shared, step.setup, step.argv
+            {"rein.py": step.text, **step.scenarios}, shared, step.setup, step.argv, step.stdin
         )
         if not matches(check_outcome, step.expected):
             problems.append(
@@ -541,7 +636,7 @@ def run(
                     Problem(step.shown, 0, f"break {brk.id} change does not apply: {exc}")
                 )
                 continue
-            outcome = run_cpython(files, shared, step.setup, argv)
+            outcome = run_cpython(files, shared, step.setup, argv, brk.stdin)
             if not matches(outcome, brk.expected):
                 problems.append(
                     Problem(
@@ -558,28 +653,33 @@ def run(
             good.append(step)
         previous = step.text
     breaks = sum(len(step.breaks) for step in steps)
+    local_runs = sum(int(step.local) + sum(int(brk.local) for brk in step.breaks) for step in good)
     in_browser = [step for step in good if step.runs_in_browser]
     ran = False
     if pyodide and in_browser:
         jobs: list[dict[str, Any]] = []
         meta: list[tuple[Step, str, Break | None]] = []
         for step in in_browser:
-            jobs.append(
-                _job(
-                    step,
-                    {"rein.py": step.text, **step.scenarios},
-                    step.argv,
-                    shared,
-                    f"{step.module}-check",
+            if not step.local:
+                jobs.append(
+                    _job(
+                        step,
+                        {"rein.py": step.text, **step.scenarios},
+                        step.argv,
+                        shared,
+                        f"{step.module}-check",
+                        step.stdin,
+                    )
                 )
-            )
-            meta.append((step, "check", None))
+                meta.append((step, "check", None))
             for brk in step.breaks:
+                if brk.local:
+                    continue  # the learner's machine runs it; CPython did (above)
                 try:
                     files, argv = apply_change(step, brk.change)
                 except ChunkError:
                     continue  # reported above
-                jobs.append(_job(step, files, argv, shared, f"{step.module}-{brk.id}"))
+                jobs.append(_job(step, files, argv, shared, f"{step.module}-{brk.id}", brk.stdin))
                 meta.append((step, "break", brk))
         rows = check_pyodide(jobs, pyodide_dir or check_katas_dir(), problems)
         if rows is not None:
@@ -589,16 +689,21 @@ def run(
                 cpython = run_cpython_for(step, kind, target, shared)
                 if same_output(outcome, cpython) is False:
                     label = "checkpoint" if target is None else f"break {target.id}"
+                    argv = step.argv if target is None else apply_change(step, target.change)[1]
                     problems.append(
                         Problem(
                             step.shown,
                             0,
-                            f"{label}: Pyodide and CPython differ: "
-                            f"cpython={cpython.stdout!r}/{cpython.error!r} "
-                            f"pyodide={outcome.stdout!r}/{outcome.error!r}",
+                            unreproduced(
+                                label,
+                                command_text(argv),
+                                cpython,
+                                outcome,
+                                [str(c) for c in row.get("refused", [])],
+                            ),
                         )
                     )
-    return problems, len(good), breaks, len(in_browser), ran
+    return problems, len(good), breaks, len(in_browser), ran, local_runs
 
 
 ERRNO = re.compile(r"\[Errno \d+\]")
@@ -638,17 +743,30 @@ def describe(outcome: Outcome, expected: str) -> str:
 
 
 def _job(
-    step: Step, files: dict[str, str], argv: list[str], shared: dict[str, str], name: str
+    step: Step,
+    files: dict[str, str],
+    argv: list[str],
+    shared: dict[str, str],
+    name: str,
+    stdin: list[str],
 ) -> dict[str, Any]:
     all_files = {**files, **{f"{n}.py": shared[n] for n in step.setup}}
-    return {"name": name, "files": all_files, "setup": list(step.setup), "argv": argv}
+    return {
+        "name": name,
+        "files": all_files,
+        "setup": list(step.setup),
+        "argv": argv,
+        "stdin": "".join(f"{line}\n" for line in stdin),
+    }
 
 
 def run_cpython_for(step: Step, kind: str, brk: Break | None, shared: dict[str, str]) -> Outcome:
     if kind == "check" or brk is None:
-        return run_cpython({"rein.py": step.text, **step.scenarios}, shared, step.setup, step.argv)
+        return run_cpython(
+            {"rein.py": step.text, **step.scenarios}, shared, step.setup, step.argv, step.stdin
+        )
     files, argv = apply_change(step, brk.change)
-    return run_cpython(files, shared, step.setup, argv)
+    return run_cpython(files, shared, step.setup, argv, brk.stdin)
 
 
 def module_order(course: Path | None, steps_dir: Path, problems: list[Problem]) -> list[str]:
@@ -696,16 +814,17 @@ def main(argv: list[str] | None = None) -> int:
         print("check_steps: 0 steps (no steps/ folder yet)")
         return 0
     course = None if args.course == "none" else Path(args.course)
-    problems, steps, breaks, in_browser, ran = run(args.steps, course, args.pyodide)
+    problems, steps, breaks, in_browser, ran, local = run(args.steps, course, args.pyodide)
     for problem in problems:
         print(problem.render())
     if problems:
         print(f"check_steps: FAILED ({len(problems)} problems)")
         return 1
     if ran:
-        print(f"check_steps: {steps} steps OK ({breaks} breaks, CPython and Pyodide agree)")
+        print(f"check_steps: {steps} steps OK ({breaks} breaks, {local} local; "
+              "CPython and Pyodide agree)")
     else:
-        print(f"check_steps: {steps} steps OK ({breaks} breaks, CPython)")
+        print(f"check_steps: {steps} steps OK ({breaks} breaks, {local} local; CPython)")
     return 0
 
 

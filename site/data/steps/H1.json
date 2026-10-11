@@ -14,6 +14,7 @@
    "expected": "you      Say hello\nmodel    \n         stop_reason=end_turn tokens_in=10 tokens_out=0\n",
    "explain": "In the script, change the reply to {}, with no \"say\", and run again. The model line is empty, and nothing crashes. A harness must survive empty replies.",
    "id": "empty-reply",
+   "local": false,
    "run": {
     "argv": [
      "Say hello",
@@ -25,6 +26,7 @@
      "scenarios/01_hello.json": "{\n \"replies\": [\n  {}\n ]\n}\n"
     }
    },
+   "stdin": [],
    "title": "An empty reply"
   },
   {
@@ -38,6 +40,7 @@
    "expected": "error: FileNotFoundError\n",
    "explain": "Point --fake at a file that does not exist. Python stops with a traceback. That is fine for a typo in your own command. A harness only has to be gentle with the model's mistakes, and step 2 starts on that.",
    "id": "missing-file",
+   "local": false,
    "run": {
     "argv": [
      "Say hello",
@@ -49,6 +52,7 @@
      "scenarios/01_hello.json": "{\n \"replies\": [\n  {\"say\": \"Hello! I am a scripted stand-in for Claude. I say what my script says.\"}\n ]\n}\n"
     }
    },
+   "stdin": [],
    "title": "A missing file"
   }
  ],
@@ -61,6 +65,7 @@
   "command": "python rein.py \"Say hello\" --fake scenarios/01_hello.json",
   "expected": "you      Say hello\nmodel    Hello! I am a scripted stand-in for Claude. I say what my script says.\n         stop_reason=end_turn tokens_in=10 tokens_out=25\n",
   "explain": "Rein sent your message to the scripted model, which returned its one reply. stop_reason=end_turn means the model finished on its own, without asking for any tools. tokens_in=10 is the estimated size of what Rein sent, and tokens_out=25 the size of what came back.",
+  "local": false,
   "run": {
    "argv": [
     "Say hello",
@@ -72,7 +77,8 @@
     "scenarios/01_hello.json": "{\n \"replies\": [\n  {\"say\": \"Hello! I am a scripted stand-in for Claude. I say what my script says.\"}\n ]\n}\n"
    }
   },
-  "setup": []
+  "setup": [],
+  "stdin": []
  },
  "chunks": [
   {

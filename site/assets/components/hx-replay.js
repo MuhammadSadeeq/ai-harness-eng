@@ -1,11 +1,16 @@
 // hx-replay: the Replay Deck (BP-1.4 §3, DESIGN §7.2). It steps a real simulator run; every state the
 // learner sees is derived from the run's events and the UI state in render(). Step, scrub and play only
 // move the playhead and the readouts; the transcript is rebuilt only when detail, filter or expansion change.
+// BP-4.0 §4: with accept-trace and no tape, the deck opens a learner's own JSONL trace (checked against
+// scenarios/trace.schema.json, lib/trace-check.js) or the one a hx-step on the page wrote. The trace never leaves the
+// page. Views that need a tape (the Wire view's payloads) are off for a trace.
 import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runTrial } from "../sim/index.js";
+import { checkTrace } from "./lib/trace-check.js";
 import { explain, turnSummary } from "./lib/explain.js";
 import { formatCost, formatMs } from "./lib/format.js";
+import { pricedOn } from "./hx-bench.js";
 import {
   el, glyph, WIRES, visibleIndexes, repeats, transcriptList, laneStrip, setPlayhead, setCurrentRow,
   nearestIndex, sortedJson, ensureSprite, fitAxis,
@@ -13,6 +18,67 @@ import {
 
 const DELAY_MS = { 1: 700, 2: 350, 4: 175 };
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
+const TRACE_SCHEMA = new URL("../../data/trace.schema.json", import.meta.url).href;
+let traceSchema = null;
+// A one-line trace (its run_start, seq 0): the self-test's valid trace, and the smallest one the checker accepts.
+const SELF_TEST_TRACE = JSON.stringify({
+  v: 1, run: "self-test:self-test:1", seq: 0, t: 0, turn: 0, agent: "main", kind: "run_start", wire: "loop",
+  task: "Self-test", board: "self-test", seed: 1, model_id: "self-test",
+}) + "\n";
+function loadTraceSchema() {
+  if (!traceSchema) {
+    traceSchema = fetch(TRACE_SCHEMA).then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status} for trace.schema.json`);
+      return response.json();
+    });
+  }
+  return traceSchema;
+}
+
+/** The desk and cost readouts at each event: the latest context percent and model cost at or before it. */
+export function readoutArrays(events) {
+  const n = events.length;
+  const desk = new Array(n);
+  const cost = new Array(n);
+  let d = 0;
+  let c = 0;
+  events.forEach((e, i) => {
+    if (e.kind === "context_check") d = e.percent;
+    if (e.kind === "model_reply" && Number.isFinite(e.cost)) c = e.cost;
+    desk[i] = d;
+    cost[i] = c;
+  });
+  return { desk, cost };
+}
+
+/**
+ * The cost tile's words. A trace's costs are relative units, written as a tape run with relative units writes them;
+ * when every cost in the trace is 0 the tile says "0" instead of four decimals (BP-4.3 fix: no clipped tile).
+ */
+export function costLabel(nano, { usd = true, allZero = false } = {}) {
+  return allZero ? "0" : formatCost(nano, { usd });
+}
+
+/** True when every cost the trace records (model replies and its end) is 0, or it records none. */
+export function allCostsZero(events) {
+  return events
+    .filter((e) => e.kind === "model_reply" || e.kind === "run_end")
+    .map((e) => e.cost)
+    .filter((cost) => Number.isFinite(cost))
+    .every((cost) => cost === 0);
+}
+
+/** The deck's model for a learner's trace: no tape, no board; the run's end is its run_end line, if it has one. */
+export function modelOfTrace(events) {
+  const { desk, cost } = readoutArrays(events);
+  const end = [...events].reverse().find((e) => e.kind === "run_end");
+  return {
+    tape: null, board: null, seed: null, events,
+    result: end ? { status: end.status, passed: end.passed, turns: end.turns, cost: end.cost } : null,
+    desk, cost, repeatMap: repeats(events), priced: false, tapeId: null, boardId: null,
+    byWire: indexByWire(events), run: events[0].run, allZero: allCostsZero(events),
+  };
+}
 /** event indexes per wire, in step order */
 function indexByWire(events) {
   const byWire = new Map();
@@ -24,11 +90,28 @@ function indexByWire(events) {
 }
 
 export class HxReplay extends HxElement {
-  static observedAttributes = ["tape", "board", "seed", "start", "detail", "wire", "locked"];
+  static observedAttributes = ["tape", "board", "seed", "start", "detail", "wire", "locked", "accept-trace"];
   static styles = new URL("./hx-replay.css", import.meta.url).href;
 
   async setup() {
     const tapeId = this.getAttribute("tape");
+    if (!tapeId && this.hasAttribute("accept-trace")) {
+      // A deck with no tape: it waits for a trace (accept-trace) and shows nothing else until one is accepted.
+      this.model = null;
+      this.built = null;
+      this.refs = null;
+      this.traceResult = null;
+      this.traceBox = null;
+      this.stepTraces = this.stepTraces ?? new Map();
+      this.state = {
+        index: 0, detail: "story", wire: null, view: "friendly", speed: 1, playing: false,
+        finished: false, announcedTurn: null, expanded: new Set(), ver: 0,
+      };
+      this.lastValues = {};
+      await loadTraceSchema();
+      this.listenForSteps();
+      return;
+    }
     if (!tapeId) throw new Error("hx-replay needs a tape attribute");
     await ensureSprite();
     const tape = await getTape(tapeId);
@@ -40,19 +123,10 @@ export class HxReplay extends HxElement {
     const events = run.events;
     const n = events.length;
     // Readout sources, computed once: the latest desk % and cost at or before each event.
-    const desk = new Array(n);
-    const cost = new Array(n);
-    let d = 0;
-    let c = 0;
-    events.forEach((e, i) => {
-      if (e.kind === "context_check") d = e.percent;
-      if (e.kind === "model_reply") c = e.cost;
-      desk[i] = d;
-      cost[i] = c;
-    });
+    const { desk, cost } = readoutArrays(events);
     this.model = {
       tape, board, seed, events, result: run.result, desk, cost,
-      repeatMap: repeats(events), pricedByFact: Boolean(tape.pricing?.fact), tapeId, boardId,
+      repeatMap: repeats(events), priced: pricedOn(tape, board), tapeId, boardId,
       byWire: indexByWire(events),
     };
     const start = clamp(Number(this.getAttribute("start") ?? 0) || 0, 0, Math.max(0, n - 1));
@@ -101,7 +175,7 @@ export class HxReplay extends HxElement {
   }
 
   costText() {
-    return formatCost(this.model.cost[this.state.index], { usd: this.model.pricedByFact });
+    return costLabel(this.model.cost[this.state.index], { usd: this.model.priced, allZero: this.model.allZero === true });
   }
 
   // ---------- movement ----------
@@ -147,7 +221,7 @@ export class HxReplay extends HxElement {
   }
 
   finish() {
-    const { status, passed, turns, cost } = this.model.result;
+    const { status = null, passed = null, turns = null, cost = null } = this.model.result ?? {};
     this.setState({ finished: true });
     this.dispatchEvent(new CustomEvent("hx-result", {
       bubbles: true,
@@ -183,6 +257,77 @@ export class HxReplay extends HxElement {
   disconnectedCallback() {
     clearTimeout(this.timer);
     this.resizeObserver?.disconnect();
+    if (this.stepListener) document.removeEventListener("hx-step-files", this.stepListener);
+    this.stepListener = null;
+  }
+
+  /** Keeps the .jsonl file each hx-step on the page last wrote, for "Use the trace from step N". */
+  listenForSteps() {
+    if (this.stepListener) return;
+    this.stepListener = (event) => {
+      const { step, files = {} } = event.detail ?? {};
+      const name = Object.keys(files).find((file) => file.endsWith(".jsonl"));
+      if (name === undefined) this.stepTraces.delete(step);
+      else this.stepTraces.set(step, { name, text: files[name] });
+      if (this.hasAttribute("accept-trace")) this.setState({});
+    };
+    document.addEventListener("hx-step-files", this.stepListener);
+  }
+
+  /** Reads a trace: accepted when every line checks, else the first bad line is named. */
+  async acceptTrace(text, label) {
+    const schema = await loadTraceSchema();
+    const { events, error } = checkTrace(text, schema);
+    if (!error && events.length === 0) {
+      this.traceResult = { ok: false, message: "The trace is empty: it has no lines to replay.", label };
+    } else if (error) {
+      this.traceResult = { ok: false, message: error.message, label };
+    } else {
+      this.traceResult = { ok: true, count: events.length, run: events[0].run, label };
+      this.model = modelOfTrace(events);
+      this.refs = null;
+      this.built = null;
+      // A trace has no Wire view: the deck opens on the Friendly view, and the Wire choice stays off.
+      this.state = { ...this.state, index: 0, playing: false, finished: false, announcedTurn: null, expanded: new Set(), view: "friendly" };
+      this.lastValues = {};
+    }
+    this.setState({});
+  }
+
+  /** The picker: a file input, the trace of each step on the page, and what the last read said. */
+  renderTrace() {
+    if (!this.traceBox) {
+      const file = el("input", { type: "file", accept: ".jsonl,application/x-ndjson", "data-key": "trace-file", "aria-label": "Your trace file (.jsonl)" });
+      file.addEventListener("change", async () => {
+        const chosen = file.files?.[0];
+        if (chosen) await this.acceptTrace(await chosen.text(), chosen.name);
+      });
+      this.traceFile = file;
+      this.traceSteps = el("div", { class: "trace-steps" });
+      this.traceStatus = el("p", { class: "trace-status", "aria-live": "polite" });
+      this.traceBox = el("section", { class: "trace-open", "aria-label": "Open a trace" },
+        el("h4", { class: "trace-title", text: "Open a trace" }),
+        el("p", { class: "trace-line", text: "The trace never leaves this page: it is read here and sent nowhere." }),
+        el("label", { class: "trace-pick" }, el("span", { text: "Your trace (a .jsonl file)" }), file),
+        this.traceSteps, this.traceStatus);
+    }
+    this.traceSteps.replaceChildren(...[...this.stepTraces].map(([step, saved]) => {
+      const use = el("button", { class: "key", type: "button", "data-key": `use-trace-${step}`, text: `Use the trace from step ${step}` });
+      use.addEventListener("click", () => this.acceptTrace(saved.text, saved.name));
+      return use;
+    }));
+    // Without a model the picker is the whole component; with one, build() places it above the deck.
+    if (!this.model && this.traceBox.parentNode !== this.ui) this.ui.replaceChildren(this.traceBox);
+    const result = this.traceResult;
+    if (!result) {
+      this.traceStatus.textContent = "";
+    } else if (result.ok) {
+      this.traceStatus.replaceChildren(glyph("check"), ` ${result.label}: ${result.count} events from run ${result.run}.`);
+      this.traceStatus.className = "trace-status is-pass";
+    } else {
+      this.traceStatus.replaceChildren(glyph("cross"), ` ${result.label}: ${result.message}`);
+      this.traceStatus.className = "trace-status is-fail";
+    }
   }
 
   attributeChanged(name) {
@@ -277,6 +422,7 @@ export class HxReplay extends HxElement {
       el("div", { class: "transport-row" }, r.back, r.step, r.play),
       el("div", { class: "transport-row" }, speeds, el("span", { class: "counter-wrap" }, r.counter, r.counterSr)));
     r.transcriptRegion = el("div", { class: "transcript-area" }, r.transcriptWrap, r.empty, r.detail);
+    r.traceNote = el("p", { class: "trace-note", text: "The Wire view needs a tape: a trace has no payloads for it, so the Wire view is off." });
     this.refs = r;
     // Row offsets are read once per transcript build and again after a resize (not on every step).
     this.resizeObserver?.disconnect();
@@ -284,6 +430,7 @@ export class HxReplay extends HxElement {
     this.resizeObserver.observe(r.transcriptWrap);
     this.resizeObserver.observe(r.strip);
     this.ui.replaceChildren(
+      ...(this.traceBox ? [this.traceBox] : []),
       el("div", { class: "replay" },
         r.bar,
         r.readouts,
@@ -292,6 +439,7 @@ export class HxReplay extends HxElement {
         el("p", { class: "strip-caption" }, el("span", { class: "cap-phone", text: "Tap or drag to jump" }), el("span", { class: "cap-desk", text: "Click or drag to jump. Arrow keys step." })),
         el("div", { class: "filter-bar" }, r.wireLabel, el("p", { class: "filter-line" }, r.filterLine, " ", r.showAll)),
         r.transcriptRegion,
+        r.traceNote,
         r.transport),
     );
   }
@@ -348,6 +496,7 @@ export class HxReplay extends HxElement {
   // ---------- render ----------
 
   render() {
+    if (this.hasAttribute("accept-trace")) this.renderTrace();
     if (!this.model) return;
     if (!this.refs) {
       this.build();
@@ -372,8 +521,10 @@ export class HxReplay extends HxElement {
     setPlayhead(r.strip, i);
     r.empty.hidden = this.visible().length > 0;
 
-    r.bar.textContent = `Turn ${turn}/${m.result.turns} · Window ${m.desk[i]}% · ${this.costText()}`;
-    r.readoutValues.turn.textContent = `${turn} / ${m.result.turns}`;
+    // A trace with no run_end line has no turn total: the turns are shown without one.
+    const total = m.result ? m.result.turns : "?";
+    r.bar.textContent = `Turn ${turn}/${total} · Window ${m.desk[i]}% · ${this.costText()}`;
+    r.readoutValues.turn.textContent = `${turn} / ${total}`;
     r.readoutValues.desk.textContent = `${m.desk[i]}%`;
     r.readoutValues.cost.textContent = this.costText();
     r.gate.hidden = !locked;
@@ -402,6 +553,10 @@ export class HxReplay extends HxElement {
 
     r.viewFriendly.setAttribute("aria-pressed", String(s.view === "friendly"));
     r.viewWire.setAttribute("aria-pressed", String(s.view === "wire"));
+    // A trace has no tape, so its Wire view has no payloads: the view is off and says why.
+    r.viewWire.disabled = !this.model.tapeId;
+    r.viewWire.setAttribute("aria-disabled", String(!this.model.tapeId));
+    r.traceNote.hidden = Boolean(this.model.tapeId);
     const sentence = r.detail.querySelector(".sentence");
     const json = r.detail.querySelector(".wire-json");
     sentence.hidden = s.view !== "friendly";
@@ -415,7 +570,7 @@ export class HxReplay extends HxElement {
 
     if (s.moved) {
       if (turn !== s.announcedTurn) {
-        this.live(turnSummary(events, turn, m.result.turns));
+        this.live(turnSummary(events, turn, m.result ? m.result.turns : turn));
         s.announcedTurn = turn;
       }
       s.moved = false;
@@ -464,7 +619,34 @@ export class HxReplay extends HxElement {
 
   // ---------- self test (COMPONENTS §7): drives the real UI ----------
 
+  /**
+   * A deck with no tape. A line that is not JSON is refused and named, and no model is made from it. A one-line trace
+   * (its run_start) is accepted: its cost reads "0", no readout or bar is cut at this width, and the Wire view is off.
+   * Then the picker is put back on its own.
+   */
+  async selfTestTrace() {
+    const saved = this.traceResult;
+    await this.acceptTrace("{not json\n", "self-test");
+    const named = this.traceResult?.ok === false && String(this.traceResult.message).startsWith("line 1: not JSON");
+    const picker = Boolean(this.traceBox?.isConnected && this.traceBox.querySelector('input[type="file"]'));
+    const noModel = this.model === null;
+    await this.acceptTrace(SELF_TEST_TRACE, "self-test");
+    const refs = this.refs;
+    const cut = [...this.ui.querySelectorAll(".readout-value, .bar")].filter((node) => node.scrollWidth > node.clientWidth + 1);
+    const costZero = refs?.readoutValues?.cost?.textContent === "0";
+    const wireOff = Boolean(refs?.viewWire?.disabled && refs.viewWire.getAttribute("aria-disabled") === "true");
+    const accepted = this.model !== null;
+    this.model = null;
+    this.refs = null;
+    this.built = null;
+    this.traceResult = saved;
+    this.ui.replaceChildren(this.traceBox);
+    this.setState({});
+    return named && picker && noModel && accepted && cut.length === 0 && costZero && wireOff;
+  }
+
   async selfTest() {
+    if (!this.model && this.hasAttribute("accept-trace")) return this.selfTestTrace();
     const r = this.refs;
     if (this.hasAttribute("locked")) {
       // A locked replay can't be stepped: the test checks that the lock holds (DESIGN §7.3, COMPONENTS §10).

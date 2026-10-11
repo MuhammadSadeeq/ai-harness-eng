@@ -3,10 +3,17 @@
 // script, the checkpoint with Run it here and Check my file, What just happened, Break it on purpose (each break is a
 // toggle that runs the changed version), and the whole file. Python is the page's shared one (lib/py-host.js).
 // Evidence: "step" {step, match: true} when a pasted rein.py gives the expected output (COMPONENTS §5).
+// BP-4.0: the runs go through the browser stand-in for subprocess.run (site/assets/py/hxshell.py) and take the
+// learner's typed answers (stdin). A checkpoint or break marked local has no Run key: it shows the command to run on
+// the learner's machine, with a copy key, the answers and the expected output. After each run the files it wrote are
+// kept and announced: hx-step-files, {step, files}, bubbling.
 import { HxElement } from "./lib/hx-element.js";
 import { mountEditor } from "./lib/editor.js";
 import { sharedPython } from "./lib/py-host.js";
-import { addedLines, diffRows, expectedError, matches, firstDifference, prettyScript } from "./lib/step-logic.js";
+import {
+  addedLines, diffRows, expectedError, matches, firstDifference, prettyScript,
+  commandOf, answersText, usesSubprocess,
+} from "./lib/step-logic.js";
 
 const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -33,16 +40,28 @@ const BROKEN = "Broken";
 const YOUR_FILE_OUTPUT = "Your output";
 const SCROLL_HINT = "Long lines scroll sideways.";
 const COPY_CONFIRM_MS = 2000;
+const COPY_COMMAND = "Copy command";
+const LOCAL_TITLE = "Run this on your machine";
+const LOCAL_NOTE = "This command needs your own machine. It is shown here, not run: run it in your project folder.";
+const CHECK_LOCAL_NOTE = "This checkpoint runs on your machine, so Check my file compares your rein.py with the reference text.";
+const BROWSER_NOTE = "In the browser, Rein's commands run in a stand-in that can only run Python files. On your machine they run for real.";
+const KEEP_EVENT = "hx-step-files";
+let browserNoteShown = false;
 
 const cache = new Map();
 function loadStep(id) {
-  if (!cache.has(id)) {
-    cache.set(id, fetch(stepUrl(id)).then((response) => {
-      if (!response.ok) throw new Error(`HTTP ${response.status} for steps/${id}`);
+  return loadStepFrom(stepUrl(id), `steps/${id}`);
+}
+
+/** A compiled step from a URL (the page's own data: the lab's fixture). Cached per URL. */
+function loadStepFrom(url, label) {
+  if (!cache.has(url)) {
+    cache.set(url, fetch(url).then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status} for ${label}`);
       return response.json();
     }));
   }
-  return cache.get(id);
+  return cache.get(url);
 }
 
 const el = (tag, attrs = {}, ...children) => {
@@ -69,6 +88,22 @@ const glyph = (name) => {
 };
 
 /** What an output block shows: stdout, then the error name as the reference prints it. */
+/** The panel for a run the learner makes on their own machine: the command (copy key), the answers, the expected output. */
+function localPanel(uid, command, answers, expected, onCopy) {
+  const key = `copy-command-${uid}`;
+  const copy = el("button", { class: "key", type: "button", "data-key": key, "data-copy-label": COPY_COMMAND, text: COPY_COMMAND });
+  copy.addEventListener("click", () => onCopy(command, key));
+  return el("div", { class: "step-local" },
+    el("p", { class: "step-local-title", text: LOCAL_TITLE }),
+    el("p", { class: "step-note", text: LOCAL_NOTE }),
+    el("pre", { class: "code step-local-command", role: "region", tabindex: "0", "aria-label": "The command" }, el("code", { text: command })),
+    el("div", { class: "keys" }, copy),
+    answersText(answers) ? el("p", { class: "step-answers", text: answersText(answers) }) : null,
+    el("p", { class: "step-label", text: "You should see exactly this" }),
+    el("pre", { class: "code term", role: "region", tabindex: "0", "aria-label": "The expected output" }, el("code", { text: expected })));
+}
+
+/** What an output block shows: stdout, then the error name as the reference prints it. */
 function showOutput(outcome) {
   return outcome.stdout + (outcome.error ? `error: ${outcome.error}\n` : "");
 }
@@ -86,14 +121,17 @@ export class HxStep extends HxElement {
   #copyTimer = 0;
 
   async setup() {
+    // step="H1" loads the compiled step; src="data/x.json" loads one compiled step from the page (a lab's fixture).
+    const src = this.getAttribute("src");
     const id = this.getAttribute("step") ?? "";
-    if (!SAFE_ID.test(id)) throw new Error(`hx-step needs a step id, got ${id}`);
-    const step = await loadStep(id);
+    if (!src && !SAFE_ID.test(id)) throw new Error(`hx-step needs a step id, got ${id}`);
+    const step = src ? await loadStepFrom(new URL(src, document.baseURI).href, src) : await loadStep(id);
+    const label = src ? src : `steps/${id}`;
     if (!step || !step.checkpoint || !Array.isArray(step.chunks) || !Array.isArray(step.breaks)) {
-      throw new Error(`hx-step: steps/${id} is incomplete`);
+      throw new Error(`hx-step: ${label} is incomplete`);
     }
     this.step = step;
-    this.stepId = id;
+    this.stepId = step.module ?? id;
     this.uid = `hxs${++uidCount}`;
     this.lastCopy = null;
     this.normal = null;
@@ -138,13 +176,22 @@ export class HxStep extends HxElement {
     return { ...shared, ...extra };
   }
 
-  /** Runs rein.py with the given files and argv in Pyodide. Resolves an outcome, or null when Python is not ready. */
-  async execute(files, argv) {
+  /** Runs rein.py with the given files, argv and typed answers in Pyodide. Resolves an outcome, or null when Python is not ready. */
+  async execute(files, argv, stdin = []) {
     if (python.state !== "ready") return null;
     const setup = this.step.checkpoint.setup ?? [];
-    const reply = await python.exec(this.sharedFiles(files), setup, argv);
-    if (reply.result) return reply.result;
+    const reply = await python.exec(this.sharedFiles(files), setup, argv, stdin);
+    if (reply.result) {
+      this.keep(reply.result);
+      return reply.result;
+    }
     return { stdout: "", error: reply.timedOut ? "timed out" : reply.error ?? "no result" };
+  }
+
+  /** Keeps the files the last run wrote and announces them (hx-step-files, bubbling). */
+  keep(outcome) {
+    this.kept = outcome.files ?? {};
+    this.dispatchEvent(new CustomEvent(KEEP_EVENT, { bubbles: true, detail: { step: this.stepId, files: this.kept } }));
   }
 
   // ---- copy ----
@@ -159,10 +206,10 @@ export class HxStep extends HxElement {
 
   // ---- the reference run ----
   runHere() {
-    if (python.state !== "ready" || this.state.running) return null;
+    if (python.state !== "ready" || this.state.running || this.step.checkpoint.local) return null;
     this.patch({ running: true });
     const argv = this.step.checkpoint.argv;
-    const job = this.execute(this.step.checkpoint.run.files, argv).then((outcome) => {
+    const job = this.execute(this.step.checkpoint.run.files, argv, this.step.checkpoint.stdin ?? []).then((outcome) => {
       this.normal = outcome;
       const verdict = matches(outcome, this.step.checkpoint.expected);
       this.patch({ running: false, ran: true, verdict });
@@ -186,9 +233,10 @@ export class HxStep extends HxElement {
       return null;
     }
     this.patch({ breaksOn: [...this.state.breaksOn, brk.id] });
+    if (brk.local) return null; // shown for the learner's machine; nothing runs here
     const job = (async () => {
       await this.ensureNormal();
-      const outcome = await this.execute(brk.run.files, brk.run.argv);
+      const outcome = await this.execute(brk.run.files, brk.run.argv, brk.stdin ?? []);
       if (outcome) this.breakOutputs.set(brk.id, outcome);
       this.patch({});
       return outcome;
@@ -204,10 +252,18 @@ export class HxStep extends HxElement {
   }
 
   checkMine() {
+    if (this.step.checkpoint.local) {
+      // A local checkpoint cannot run here: Check my file compares the text with the reference.
+      const match = this.code() === this.step.rein;
+      this.patch({ checkOutcome: { outcome: null, match, local: true } });
+      if (match) this.evidence("step", { step: this.stepId, match: true });
+      this.live(match ? MATCH_COPY : MISMATCH_COPY);
+      return Promise.resolve({ outcome: null, match });
+    }
     if (python.state !== "ready" || this.state.running) return null;
     this.patch({ running: true });
     const files = { ...this.step.checkpoint.run.files, "rein.py": this.code() };
-    const job = this.execute(files, this.step.checkpoint.argv).then((outcome) => {
+    const job = this.execute(files, this.step.checkpoint.argv, this.step.checkpoint.stdin ?? []).then((outcome) => {
       const expected = this.step.checkpoint.expected;
       const match = matches(outcome, expected);
       this.patch({ running: false, checkOutcome: { outcome, match } });
@@ -274,9 +330,17 @@ export class HxStep extends HxElement {
     dom.expected = el("pre", { class: "code term", role: "region", tabindex: "0", "aria-label": "The expected output" },
       el("code", { text: step.checkpoint.expected }));
     dom.setupNote = el("p", { class: "step-note", text: (step.checkpoint.setup ?? []).length ? "This checkpoint starts with reset_demo.py, so the practice project is ready." : "" });
+    const localCheckpoint = Boolean(step.checkpoint.local);
+    dom.answers = el("p", { class: "step-answers", text: answersText(step.checkpoint.stdin ?? []) });
+    const onCopy = (text, key) => this.copyText(text, key);
+    dom.localCheckpoint = localCheckpoint ? localPanel(uid, step.checkpoint.command, step.checkpoint.stdin ?? [], step.checkpoint.expected, onCopy) : null;
+    const usesStandIn = usesSubprocess([step.rein, ...Object.values(step.scenarios ?? {})]);
+    dom.browserNote = usesStandIn && !browserNoteShown ? el("p", { class: "step-note step-browser", text: BROWSER_NOTE }) : null;
+    if (dom.browserNote) browserNoteShown = true;
     dom.run = el("button", { class: "key key-primary", type: "button", "data-key": "run-here", text: RUN_HERE });
     dom.run.addEventListener("click", () => this.runHere());
     dom.check = el("button", { class: "key", type: "button", "data-key": "check", text: CHECK_MINE });
+
     dom.check.addEventListener("click", () => this.openCheck());
     dom.runVerdict = el("p", { class: "step-verdict" });
     dom.output = el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": `Output of the reference run` });
@@ -305,10 +369,13 @@ export class HxStep extends HxElement {
     for (const brk of step.breaks) {
       const toggle = el("button", { class: "key step-toggle", type: "button", "data-key": `break-${brk.id}`, text: brk.title, "aria-pressed": "false" });
       toggle.addEventListener("click", () => this.toggleBreak(brk));
-      const outputs = el("div", { class: "step-pair", hidden: "" },
-        el("div", {}, el("p", { class: "step-label", text: NORMAL }), el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": `Normal output for ${brk.title}` })),
-        el("div", {}, el("p", { class: "step-label", text: BROKEN }), el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": `Broken output for ${brk.title}` })));
-      dom.breaks.push({ brk, toggle, outputs, explain: el("p", { class: "step-note", text: brk.explain }) });
+      const outputs = brk.local
+        ? localPanel(`${uid}-${brk.id}`, commandOf(brk.run.argv), brk.stdin ?? [], brk.expected, onCopy)
+        : el("div", { class: "step-pair", hidden: "" },
+          el("div", {}, el("p", { class: "step-label", text: NORMAL }), el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": `Normal output for ${brk.title}` })),
+          el("div", {}, el("p", { class: "step-label", text: BROKEN }), el("pre", { class: "code step-output", role: "region", tabindex: "0", "aria-label": `Broken output for ${brk.title}` })));
+      if (brk.local) outputs.hidden = true;
+      dom.breaks.push({ brk, toggle, outputs, explain: el("p", { class: "step-note", text: brk.explain }), answers: el("p", { class: "step-answers", text: answersText(brk.stdin ?? []) }) });
     }
 
     dom.fullTitle = el("summary", { text: `The whole rein.py after step ${step.number} (${step.lines_after} lines)` });
@@ -331,14 +398,17 @@ export class HxStep extends HxElement {
       dom.script,
       el("section", { class: "step-checkpoint", "aria-label": "Checkpoint" },
         el("h4", { text: `Checkpoint: step ${step.number}` }),
-        dom.command, dom.setupNote,
-        el("p", { class: "step-label", text: "You should see exactly this" }),
-        dom.expected,
+        dom.localCheckpoint ?? dom.command,
+        dom.setupNote,
+        dom.localCheckpoint ? null : el("p", { class: "step-label", text: "You should see exactly this" }),
+        dom.localCheckpoint ? null : dom.expected,
         el("div", { class: "keys" }, dom.run, dom.check),
+        dom.answers,
+        dom.browserNote,
         dom.runVerdict, dom.output, dom.explain, dom.checkBlock),
       el("section", { class: "step-breaks", "aria-label": "Break it on purpose" },
         el("h4", { text: "Break it on purpose" }),
-        ...dom.breaks.map((item) => el("div", { class: "step-break" }, el("div", { class: "keys" }, item.toggle), item.explain, item.outputs))),
+        ...dom.breaks.map((item) => el("div", { class: "step-break" }, el("div", { class: "keys" }, item.toggle), item.explain, item.answers, item.outputs))),
       dom.fullfile));
 
     this.#editorReady = null;
@@ -370,11 +440,19 @@ export class HxStep extends HxElement {
     dom.loadingText.textContent = failed ? FAILED_COPY : slow ? SLOW_COPY : LOADING_COPY;
     dom.progress.hidden = failed;
     dom.retry.hidden = !(failed || slow);
+    const localCheckpoint = Boolean(step.checkpoint.local);
+    dom.run.hidden = localCheckpoint;
     dom.run.disabled = py !== "ready";
     dom.run.setAttribute("aria-disabled", String(s.running));
     dom.run.textContent = s.running ? RUNNING_COPY : RUN_HERE;
+    dom.answers.textContent = answersText(step.checkpoint.stdin ?? []);
+    dom.answers.hidden = !(step.checkpoint.stdin ?? []).length;
     dom.runMine.disabled = py !== "ready";
-    dom.runMine.textContent = s.running ? RUNNING_COPY : RUN_MINE;
+    dom.runMine.textContent = s.running ? RUNNING_COPY : localCheckpoint ? CHECK_MINE : RUN_MINE;
+    for (const button of this.ui.querySelectorAll("[data-copy-label]")) {
+      button.textContent = s.copied === button.dataset.key ? COPIED : button.dataset.copyLabel;
+    }
+    if (localCheckpoint) dom.explain.hidden = false;
 
     for (const chunk of step.chunks) {
       const copy = this.ui.querySelector(`[data-key="copy-${chunk.id}"]`);
@@ -392,7 +470,15 @@ export class HxStep extends HxElement {
       dom.explain.hidden = false;
     }
     dom.checkBlock.hidden = !s.check;
-    if (s.check && s.checkOutcome) {
+    if (s.check && s.checkOutcome && s.checkOutcome.local) {
+      dom.mineVerdict.hidden = false;
+      dom.mineVerdict.replaceChildren(glyph(s.checkOutcome.match ? "check" : "cross"), s.checkOutcome.match ? MATCH_COPY : MISMATCH_COPY);
+      dom.mineVerdict.className = `step-verdict ${s.checkOutcome.match ? "is-pass" : "is-fail"}`;
+      dom.mineFirst.hidden = false;
+      dom.mineFirst.textContent = CHECK_LOCAL_NOTE;
+      dom.mineOutput.textContent = "";
+      dom.expectedOutput.textContent = step.checkpoint.expected;
+    } else if (s.check && s.checkOutcome) {
       const { outcome, match } = s.checkOutcome;
       dom.mineVerdict.hidden = false;
       dom.mineVerdict.replaceChildren(glyph(match ? "check" : "cross"), match ? MATCH_COPY : MISMATCH_COPY);
@@ -409,7 +495,7 @@ export class HxStep extends HxElement {
       const on = s.breaksOn.includes(item.brk.id);
       item.toggle.setAttribute("aria-pressed", String(on));
       item.outputs.hidden = !on;
-      if (on) {
+      if (on && !item.brk.local) {
         const [normal, broken] = item.outputs.querySelectorAll("pre");
         normal.textContent = this.normal ? showOutput(this.normal) : "…";
         const outcome = this.breakOutputs.get(item.brk.id);

@@ -55,3 +55,18 @@ export function firstDifference(got, expected) {
 export function prettyScript(text) {
   return JSON.stringify(JSON.parse(text), null, 2) + "\n";
 }
+
+/** The command a learner types for a run with these arguments: python rein.py, arguments in double quotes when needed. */
+export function commandOf(argv) {
+  return ["python", "rein.py", ...argv.map((arg) => (arg.includes(" ") ? `"${arg}"` : arg))].join(" ");
+}
+
+/** The answers a run types, shown beside it as "answers: n", or "" when the run types nothing. */
+export function answersText(lines) {
+  return lines && lines.length ? `answers: ${lines.join(", ")}` : "";
+}
+
+/** True when a step's files call subprocess: its runs go through the browser stand-in (BP-4.0 §3). */
+export function usesSubprocess(texts) {
+  return texts.some((text) => text.includes("subprocess"));
+}

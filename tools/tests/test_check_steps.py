@@ -114,7 +114,7 @@ def messages(problems: list[Any]) -> list[str]:
 
 def test_a_good_two_step_build_passes_on_cpython(tmp_path: Path) -> None:
     steps, course = build(tmp_path)
-    problems, count, breaks, _, ran = checker.run(steps, course)
+    problems, count, breaks, _, ran, _ = checker.run(steps, course)
     assert problems == [], messages(problems)
     assert (count, breaks, ran) == (2, 2, False)
 
@@ -223,22 +223,39 @@ def test_pyodide_disagreement_is_reported(tmp_path: Path, monkeypatch: pytest.Mo
         return [{"stdout": "not what cpython printed\n", "error": ""} for _ in jobs]
 
     monkeypatch.setattr(checker, "check_pyodide", flipped)
-    problems, _, _, in_browser, ran = checker.run(steps, course, pyodide=True)
+    problems, _, _, in_browser, ran, _ = checker.run(steps, course, pyodide=True)
     assert in_browser == 2 and ran is True
-    assert any("Pyodide and CPython differ" in m for m in messages(problems)), messages(problems)
+    assert any("differs from CPython" in m for m in messages(problems)), messages(problems)
 
 
 def test_pyodide_agrees_with_cpython_on_the_two_step_build(tmp_path: Path) -> None:
     steps, course = build(tmp_path)
-    problems, _, _, _, ran = checker.run(steps, course, pyodide=True)
+    problems, _, _, _, ran, _ = checker.run(steps, course, pyodide=True)
     assert problems == [], messages(problems)
     assert ran is True
 
 
+def steps_on_disk(steps_dir: Path) -> tuple[int, int]:
+    """(step folders, breaks), read from steps/ itself: each folder with a step.yaml (not _shared),
+    and the breaks each step.yaml lists. The real steps are not pinned to a number here."""
+    folders = [
+        folder
+        for folder in sorted(steps_dir.iterdir())
+        if folder.is_dir() and folder.name != checker.SHARED and (folder / "step.yaml").is_file()
+    ]
+    breaks = 0
+    for folder in folders:
+        data = yaml.safe_load((folder / "step.yaml").read_text(encoding="utf-8")) or {}
+        breaks += len(data.get("breaks") or [])
+    return len(folders), breaks
+
+
 def test_the_real_steps_pass(tmp_path: Path) -> None:
-    problems, count, breaks, _, _ = checker.run(ROOT / "steps", ROOT / "course.json")
+    folders, expected_breaks = steps_on_disk(ROOT / "steps")
+    assert folders >= 1, "steps/ has no step to prove"
+    problems, count, breaks, _, _, _ = checker.run(ROOT / "steps", ROOT / "course.json")
     assert problems == [], messages(problems)
-    assert count == 2 and breaks == 5
+    assert (count, breaks) == (folders, expected_breaks)
 
 
 def test_no_steps_folder_passes_with_zero_steps(
@@ -246,3 +263,115 @@ def test_no_steps_folder_passes_with_zero_steps(
 ) -> None:
     assert checker.main(["--steps", str(tmp_path / "missing")]) == 0
     assert capsys.readouterr().out.strip() == "check_steps: 0 steps (no steps/ folder yet)"
+
+
+# ---- BP-4.0: the stand-in, stdin, local runs (fixture steps under tools/tests/fixtures/steps) ----
+
+FIXTURES = ROOT / "tools" / "tests" / "fixtures" / "steps"
+RUNNER_JS = ROOT / "site" / "assets" / "components" / "lib" / "py-worker.js"
+
+
+def _fixture_copy(tmp_path: Path, edit: Any = None) -> Path:
+    """A copy of the fixture steps, with step.yaml changed by edit (a function of the mapping)."""
+    import shutil
+
+    target = tmp_path / "steps"
+    shutil.copytree(FIXTURES, target)
+    if edit is not None:
+        path = target / "FX1" / "step.yaml"
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        edit(data)
+        path.write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=True), encoding="utf-8")
+    return target
+
+
+def test_the_fixture_passes_on_cpython_with_one_local_run(tmp_path: Path) -> None:
+    problems, count, breaks, in_browser, ran, local = checker.run(
+        _fixture_copy(tmp_path), None, pyodide=False
+    )
+    assert problems == [], messages(problems)
+    assert (count, breaks, in_browser, ran, local) == (1, 4, 1, False, 1)
+
+
+def test_the_fixture_passes_under_pyodide_and_the_local_break_is_skipped(tmp_path: Path) -> None:
+    problems, count, breaks, in_browser, ran, local = checker.run(
+        _fixture_copy(tmp_path), None, pyodide=True
+    )
+    assert problems == [], messages(problems)
+    assert ran is True and local == 1
+    assert (count, breaks) == (1, 4)
+
+
+def test_a_browser_run_the_stand_in_refuses_names_the_command_and_suggests_local(
+    tmp_path: Path,
+) -> None:
+    def not_local(data: dict[str, Any]) -> None:
+        for brk in data["breaks"]:
+            if brk["id"] == "list-folder":
+                brk.pop("local", None)
+
+    problems, *_ = checker.run(_fixture_copy(tmp_path, not_local), None, pyodide=True)
+    text = " ".join(messages(problems))
+    assert "list-folder" in text
+    assert "the browser run of `python rein.py ls` differs from CPython" in text
+    assert "refused `ls`" in text
+    assert "mark it `local: true`" in text
+
+
+def test_stdin_reaches_input_under_both_runners(tmp_path: Path) -> None:
+    def wrong_answer(data: dict[str, Any]) -> None:
+        for brk in data["breaks"]:
+            if brk["id"] == "answer-no":
+                brk["stdin"] = ["y"]  # the expected output says denied: the run must say allowed
+
+    problems, *_ = checker.run(_fixture_copy(tmp_path, wrong_answer), None, pyodide=False)
+    text = messages(problems)
+    assert any("break answer-no output differs" in m for m in text), text
+
+
+def test_a_break_without_input_runs_out_of_input_the_same_way(tmp_path: Path) -> None:
+    def no_answer(data: dict[str, Any]) -> None:
+        for brk in data["breaks"]:
+            if brk["id"] == "answer-no":
+                brk.pop("stdin", None)
+
+    problems, *_ = checker.run(_fixture_copy(tmp_path, no_answer), None, pyodide=True)
+    text = " ".join(messages(problems))
+    assert "break answer-no output differs" in text
+    assert "Pyodide and CPython" not in text, "both runners end the same way when input runs out"
+
+
+def test_stdin_must_be_a_list_of_lines(tmp_path: Path) -> None:
+    def bad(data: dict[str, Any]) -> None:
+        data["breaks"][2]["stdin"] = "n"
+
+    problems: list[Any] = []
+    assert checker.load_step(_fixture_copy(tmp_path, bad) / "FX1", problems) is None
+    assert any("stdin must be a list of lines" in m for m in messages(problems)), messages(problems)
+
+
+def test_local_must_be_true_or_false(tmp_path: Path) -> None:
+    def bad(data: dict[str, Any]) -> None:
+        data["checkpoint"]["local"] = "yes"
+
+    problems: list[Any] = []
+    assert checker.load_step(_fixture_copy(tmp_path, bad) / "FX1", problems) is None
+    assert any("local must be true or false" in m for m in messages(problems)), messages(problems)
+
+
+def test_the_summary_line_counts_local_runs(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert checker.main(["--steps", str(FIXTURES), "--course", "none", "--pyodide"]) == 0
+    assert capsys.readouterr().out.strip().splitlines()[-1] == (
+        "check_steps: 1 steps OK (4 breaks, 1 local; CPython and Pyodide agree)"
+    )
+
+
+def test_the_browser_runner_is_the_same_text_as_the_checker_runner() -> None:
+    """py-worker.js keeps its own copy of RUNNER (the page runs it); the two must not drift."""
+    source = RUNNER_JS.read_text(encoding="utf-8")
+    start = source.index("const RUNNER = `") + len("const RUNNER = `")
+    end = source.index("`;", start)
+    page_copy = source[start:end].replace("\\`", "`").replace("\\$", "$")
+    assert page_copy.strip() == checker.RUNNER.strip()

@@ -164,9 +164,9 @@ export function createPythonHost({
     run(code, tests) {
       return submit({ type: "run", code, tests });
     },
-    /** Queues one step run: the files in a fresh folder, the setup scripts, then rein.py with argv. */
-    exec(files, setup, argv) {
-      return submit({ type: "exec", files, setup, argv });
+    /** Queues one step run: the files in a fresh folder, the setup scripts, then rein.py with argv and stdin. */
+    exec(files, setup, argv, stdin = []) {
+      return submit({ type: "exec", files, setup, argv, stdin });
     },
     /** Calls back with {state, slow} now and on every change. Returns the unsubscribe. */
     subscribe(listener) {
@@ -185,6 +185,7 @@ export function sharedPython() {
     const workerUrl = new URL("./py-worker.js", import.meta.url).href;
     const pyodideBase = new URL("../../../vendor/pyodide/", import.meta.url).href;
     const hxtestUrl = new URL("../../py/hxtest.py", import.meta.url).href;
+    const hxshellUrl = new URL("../../py/hxshell.py", import.meta.url).href;
     const swUrl = new URL("../../../sw.js", import.meta.url).href;
     let registered = false;
     shared = createPythonHost({
@@ -195,7 +196,7 @@ export function sharedPython() {
         }
         return new Worker(workerUrl, { type: "module" });
       },
-      initMessage: { type: "init", base: pyodideBase, hxtest: hxtestUrl },
+      initMessage: { type: "init", base: pyodideBase, hxtest: hxtestUrl, hxshell: hxshellUrl },
     });
   }
   return shared;
