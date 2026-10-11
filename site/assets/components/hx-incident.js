@@ -26,7 +26,6 @@ export function familyOptions(tapeId, correctId, families) {
   return options;
 }
 
-const reduced = () => globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 let uidCount = 0;
 
 export class HxIncident extends HxElement {
@@ -167,7 +166,7 @@ export class HxIncident extends HxElement {
   focusFound() {
     const heading = this.ui?.querySelector(".found-block h4");
     if (!heading) return;
-    heading.scrollIntoView({ block: "start", behavior: reduced() ? "auto" : "smooth" });
+    heading.scrollIntoView({ block: "start", behavior: this.reducedMotion ? "auto" : "smooth" });
     heading.focus({ preventScroll: true });
   }
 

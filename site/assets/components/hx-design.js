@@ -440,7 +440,7 @@ export class HxDesign extends HxElement {
       }
     }
     for (const part of PARTS) blocks.push(pair(part[0].toUpperCase() + part.slice(1), draft[part], item[part].answer, item[part].points, part));
-    dom.panel.replaceChildren(...blocks);
+    dom.panel.replaceChildren(el("h3", { class: "design-part", tabindex: "-1", "data-key": "model-answer", text: "The model answer" }), ...blocks);
   }
 
   build() {
@@ -476,12 +476,12 @@ export class HxDesign extends HxElement {
       const note = field("What does this wire do in this system?", `note-${wire.id}`, (value) => this.edit(this.current(), (draft) => { draft.wires[wire.id].note = value; }));
       return { wire: wire.id, toggle, mark: toggle.querySelector(".design-mark"), note: note.area, noteNode: note.node, node: el("li", { class: "design-wire-row" }, toggle, note.node) };
     });
-    dom.reveal = el("button", { class: "key key-primary", type: "button", "data-key": "reveal", text: "Show the model answer" });
+    dom.reveal = el("button", { class: "key key-primary", type: "button", "data-key": "reveal", "data-focus-next": "model-answer", text: "Show the model answer" });
     dom.reveal.addEventListener("click", () => this.reveal());
     dom.panel = el("div", { class: "design-reveal", hidden: "" });
     dom.save = el("button", { class: "key key-primary", type: "button", "data-key": "save", text: "Save my grade" });
     dom.save.addEventListener("click", () => this.onSave());
-    dom.again = el("button", { class: "key", type: "button", "data-key": "again", text: "Try again" });
+    dom.again = el("button", { class: "key", type: "button", "data-key": "again", "data-focus-next": "field-clarify", text: "Try again" });
     dom.again.addEventListener("click", () => this.tryAgain());
     dom.result = el("p", { class: "design-result", hidden: "" });
     this.ui.append(el("section", { class: "design" },

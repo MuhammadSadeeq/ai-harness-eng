@@ -317,7 +317,7 @@ export class HxEvalbench extends HxElement {
     this.wired = true;
     this.ui.addEventListener("click", (event) => {
       const button = event.target.closest("button");
-      if (!button || button.disabled) return;
+      if (!button || button.disabled || button.getAttribute("aria-disabled") === "true") return;
       const key = button.dataset.key ?? "";
       if (key === "run") this.run();
       else if (key === "grader-code") this.setState({ grader: "code", result: null, open: null, detail: null });
@@ -393,7 +393,7 @@ export class HxEvalbench extends HxElement {
         trialSelect),
       graderGroup,
       el("div", { class: "eb-actions" },
-        el("button", { type: "button", class: "key key-primary", "data-key": "run", "aria-disabled": !canRun, disabled: !canRun, text: s.running ? "Running…" : runText }))));
+        el("button", { type: "button", class: "key key-primary", "data-key": "run", "aria-disabled": !canRun, text: s.running ? "Running…" : runText }))));
     if (indexes.length === 0) children.push(el("p", { class: "eb-line", text: "Tick at least one task to run the eval." }));
     if (s.error) children.push(el("p", { class: "eb-line eb-error", role: "alert", text: s.error }));
     if (s.progress) children.push(el("p", { class: "eb-line", text: s.progress }));

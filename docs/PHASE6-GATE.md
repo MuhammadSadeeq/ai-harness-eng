@@ -1,7 +1,8 @@
 # Phase 6 gate: the audit
 
-**Status:** round 1 in progress. Audits 1, 2 and 5 are in and their findings
-are fixed or ruled below; audits 3 and 4 are still running. Round 2 (each
+**Status:** round 1 in progress. Audits 1, 2, 3 and 5 are in and their
+findings are fixed, being fixed (BP-6.2) or ruled below; audit 4 is
+finishing. Round 2 (each
 reviewer re-checks its own findings on the fixed commit) follows.
 
 SPEC §10 sets the Phase 6 exit gate: **no blockers; majors are fixed; round 2
@@ -15,7 +16,7 @@ quote; a severity; a `file:line`). Reports: `docs/gate/phase6-audit-*.md`.
 |---|---|---|---|---|
 | 1. Technical accuracy | 1 | 56 (73 counting each no-JS dash) | 1 | phase6-audit-1-accuracy.md |
 | 2. Sequencing and pedagogy | 1 | 10 | 13 groups | phase6-audit-2-pedagogy.md |
-| 3. Interaction QA | — | — | — | running |
+| 3. Interaction QA | 0 | 11 | 3 | phase6-audit-3-interaction.md |
 | 4. Accessibility and mobile | — | 1 so far | — | running |
 | 5. Code and tests | 0 | 12 | 11 | phase6-audit-5-code.md |
 
@@ -57,12 +58,80 @@ quote; a severity; a `file:line`). Reports: `docs/gate/phase6-audit-*.md`.
   hard tokens (known limit in FACTS §6).
 - **A term popover ignored Escape (3cf18ed).**
 
+- **A filtered replay could not be stepped by keyboard (audit 4's blocker,
+  BP-6.2 A1):** the arrow keys and the − and + buttons now pass their
+  direction, so they move to the next event on the filtered wire; a test
+  drives it.
+- **Focus lost to BODY in twelve components (D-063, BP-6.2):** a press that
+  disabled or hid its own control dropped keyboard focus. Busy and
+  range-end controls stay focusable (`aria-disabled`); a control that hides
+  itself names its successor; the base moves focus to the same key, that
+  successor or the component, and also when the pressed control is still
+  focused but hidden. QA walks every lab page by keyboard: 32 losses on the
+  audited commit, none now.
+- **No-JS blanks (64bab50):** the I5 cards and say prompts and the shift's
+  deck had no fallback. They have one; check_content B11 fails an `hx-*`
+  element with no fallback text.
+- **The skip link (64bab50):** 44 px tall, and it moves focus to `<main>`
+  (tabindex -1 on every page; check_content B1 requires it).
+- **"Copied" when the copy failed; the hunt scroll ignored the stored
+  reduce-motion setting (BP-6.2 A6, A7).** Component reduced-motion blocks
+  no longer override a stored "Full" (64bab50).
+
 ### Ruled, not changed
 
 - `katas/lab-turn-limit` is the kata demo page's example, not dead content.
 - The 42 misconceptions the audit called "addressed only by the topic" are
   left as they are (the audit marked the fix optional).
+- A locked run control with `aria-disabled` only (hx-bench) is the intended
+  form (D-063); COMPONENTS §10 now says so.
+- A hunt is saved when it ends, so a reload mid-hunt restarts it (a few
+  taps); COMPONENTS §5 now says so.
+- Term markers alone in a table cell (audit 4): their tap area is already
+  44 px. The audit measured the element box; `.term::before` is the hit
+  area. A hit test at 375 px lands on the term from 0 to 40 px below its
+  top on all five cells, in rows 82 to 235 px tall.
 
 ## Round 2
 
-Not started.
+Each reviewer re-checks its own findings on the fixed commit and reports
+FIXED, NOT FIXED or RULED for each, then any new problem a fix introduced.
+
+| Audit | Commit | Fixed | Not fixed | Ruled | New | Report |
+|---|---|---|---|---|---|---|
+| 1. Technical accuracy | 283d660 | 55 | 3 | 0 | 4 (1 major) | phase6-audit-1-round2.md |
+| 2. Sequencing and pedagogy | 283d660 | 20 | 2 | 2 | 3 (1 major) | phase6-audit-2-round2.md |
+| 3. Interaction QA | — | — | — | — | — | waits on BP-6.2 |
+| 4. Accessibility and mobile | — | — | — | — | — | waits on BP-6.2 |
+| 5. Code and tests | 283d660 | — | — | — | — | running |
+
+No blocker in either report.
+
+### Round 2 findings, and what closed them
+
+- **Audit 1, not fixed (3):** the glossary's done claim and prompt caching
+  now carry facts; B1's "several tools in one reply" is bound to a new
+  fact, `api.parallel-tool-calls-one-response`, quoted from the parallel
+  tool use page today.
+- **Audit 1, new (4):** the spend-cap span had dropped "tier" (major); two
+  SDK spans had dropped "Python"; the 429 span was wider than its
+  rate-limit claim. Each span now says what its claim says.
+- **Audit 2, new major:** a passing on-call drill kata credited I5.o2 under
+  I5 and so started I5, pulling it into the pool ahead of its
+  prerequisites. The drill now credits I5.o2 only once I5 is started
+  (D-062, amended again); a test pins it.
+- **Audit 2, new minor:** the "nothing new" note named a new learner's
+  first module, which was already the pool. It names the next module
+  outside the pool; a replay test pins it.
+- **Audit 2, not fixed:** F6's misconception "more tasks fix a weak
+  grader" now has its sentence.
+
+### Ruled in round 2
+
+- **Term collisions (audit 2, m9):** Rein's "checkpoint" is defined where
+  it first appears (rein-setup.html:91: "a checkpoint that compares your
+  output with the expected output"); "retry policies" is the everyday
+  word. Neither is the strict term the checker reads; left as they are.
+- **A one-module drill (audit 2, N3):** with one module in the pool and no
+  memory kata, the drill is that module's say prompts every day. That is
+  intended: the drill reviews what was seen (D-062).

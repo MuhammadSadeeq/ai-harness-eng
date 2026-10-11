@@ -269,7 +269,7 @@ export class HxEscape extends HxElement {
     this.wired = true;
     this.ui.addEventListener("click", (event) => {
       const button = event.target.closest("button");
-      if (!button || button.disabled) return;
+      if (!button || button.disabled || button.getAttribute("aria-disabled") === "true") return;
       const key = button.dataset.key ?? "";
       if (key === "replay") this.replay();
       else if (key.startsWith("defense-")) {
@@ -351,7 +351,7 @@ export class HxEscape extends HxElement {
     // Replay (primary), the readouts, and the table of the last three replays.
     const r = s.result;
     children.push(el("div", { class: "esc-actions" },
-      el("button", { type: "button", class: "key key-primary", "data-key": "replay", "aria-disabled": s.running, disabled: s.running, text: s.running ? "Replaying…" : "Replay the attack" })));
+      el("button", { type: "button", class: "key key-primary", "data-key": "replay", "aria-disabled": s.running, text: s.running ? "Replaying…" : "Replay the attack" })));
     if (s.error) children.push(el("p", { class: "esc-line esc-error", role: "alert", text: s.error }));
     if (s.progress) children.push(el("p", { class: "esc-line", text: s.progress }));
     if (r) {

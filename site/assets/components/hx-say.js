@@ -146,7 +146,8 @@ export class HxSay extends HxElement {
   }
 
   reveal() {
-    if (this.state.phase === "timed") this.setState({ phase: "revealed" });
+    if (this.state.phase !== "timed") return;
+    this.setState({ phase: "revealed" });
   }
 
   setTick(i, on) {
@@ -276,20 +277,21 @@ export class HxSay extends HxElement {
     dom.plenty = el("p", { class: "say-plenty", text: "90 s is plenty", hidden: "" });
     dom.timerKey = el("button", { class: "key key-primary", type: "button", "data-key": "timer" });
     dom.timerKey.addEventListener("click", () => this.onTimerKey());
-    dom.skip = el("button", { class: "say-skip", type: "button", "data-key": "skip", text: "Skip the timer" });
+    dom.skip = el("button", { class: "say-skip", type: "button", "data-key": "skip", "data-focus-next": "timer", text: "Skip the timer" });
     dom.skip.addEventListener("click", () => this.skip());
     dom.after = el("div", { class: "say-after", hidden: "" });
-    dom.reveal = el("button", { class: "key key-primary", type: "button", "data-key": "reveal", text: "Show the model answer" });
+    dom.reveal = el("button", { class: "key key-primary", type: "button", "data-key": "reveal", "data-focus-next": "model-answer", text: "Show the model answer" });
     dom.reveal.addEventListener("click", () => this.reveal());
     dom.after.append(dom.reveal);
     dom.model = el("p", { class: "say-model" });
     dom.rubric = el("ul", { class: "choices" });
     dom.save = el("button", { class: "key key-primary", type: "button", "data-key": "save", text: "Save my self-grade" });
     dom.save.addEventListener("click", () => this.onSave());
-    dom.again = el("button", { class: "key", type: "button", "data-key": "again", text: "Try again" });
+    dom.again = el("button", { class: "key", type: "button", "data-key": "again", "data-focus-next": "timer", text: "Try again" });
     dom.again.addEventListener("click", () => this.tryAgain());
+    dom.modelHead = el("h3", { class: "say-label", tabindex: "-1", "data-key": "model-answer", text: "Model answer" });
     dom.revealPanel = el("div", { class: "say-reveal", hidden: "" },
-      el("p", { class: "say-label", text: "Model answer" }),
+      dom.modelHead,
       dom.model,
       el("fieldset", { class: "say-set" }, el("legend", { text: "What did your answer include?" }), dom.rubric),
       el("div", { class: "say-actions" }, dom.save, dom.again));

@@ -197,7 +197,7 @@ export class HxShift extends HxElement {
     this.wired = true;
     this.ui.addEventListener("click", (event) => {
       const button = event.target.closest("button");
-      if (!button || button.disabled) return;
+      if (!button || button.disabled || button.getAttribute("aria-disabled") === "true") return;
       if (button.dataset.key === "run") this.run();
       else if (button.dataset.trial) this.setState({ open: Number(button.dataset.trial) });
     });
@@ -221,7 +221,7 @@ export class HxShift extends HxElement {
       el("textarea", { class: "sh-box", id: `${this.uid}-note`, rows: 6, spellcheck: "false", "data-key": "note", disabled: s.running, text: this.note }),
       el("p", { class: "sh-hint", text: `The next shift reads this note at ${data.note_path}. It does not see the session before it.` }),
       el("div", { class: "sh-actions" },
-        el("button", { type: "button", class: "key key-primary", "data-key": "run", disabled: s.running, "aria-disabled": s.running, text: s.running ? "Running…" : "Start the next shift" }))));
+        el("button", { type: "button", class: "key key-primary", "data-key": "run", "aria-disabled": s.running, text: s.running ? "Running…" : "Start the next shift" }))));
     if (s.error) children.push(el("p", { class: "sh-line sh-error", role: "alert", text: s.error }));
     if (s.progress) children.push(el("p", { class: "sh-line", text: s.progress }));
 

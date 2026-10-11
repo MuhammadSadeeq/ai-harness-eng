@@ -251,7 +251,7 @@ export class HxEnvbuilder extends HxElement {
     this.wired = true;
     this.ui.addEventListener("click", (event) => {
       const button = event.target.closest("button");
-      if (!button || button.disabled) return;
+      if (!button || button.disabled || button.getAttribute("aria-disabled") === "true") return;
       const key = button.dataset.key ?? "";
       if (key === "run") this.run();
       else if (key.startsWith("sandbox-")) {
@@ -297,7 +297,7 @@ export class HxEnvbuilder extends HxElement {
       grader,
       sandbox,
       el("div", { class: "ev-actions" },
-        el("button", { type: "button", class: "key key-primary", "data-key": "run", disabled: s.running, "aria-disabled": s.running, text: s.running ? "Running…" : "Run the policy" }))));
+        el("button", { type: "button", class: "key key-primary", "data-key": "run", "aria-disabled": s.running, text: s.running ? "Running…" : "Run the policy" }))));
     children.push(el("p", { class: "ev-line", text: SANDBOX_LINE }));
     if (s.error) children.push(el("p", { class: "ev-line ev-error", role: "alert", text: s.error }));
     if (s.progress) children.push(el("p", { class: "ev-line", text: s.progress }));

@@ -161,7 +161,7 @@ export class HxStack extends HxElement {
       return { id: layer.id, text, more, item, overflow: false };
     });
     dom.total = el("p", { class: "stk-total", text: `≈ ${formatInt(this.total)} tokens in the prompt before the task.` });
-    dom.count = el("p", { class: "stk-count" });
+    dom.count = el("h3", { class: "stk-count", tabindex: "-1", "data-key": "conflict" });
     dom.question = el("legend", { class: "stk-question" });
     dom.list = el("ul", { class: "choices" });
     dom.verdict = el("p", { class: "verdict" });
@@ -172,7 +172,7 @@ export class HxStack extends HxElement {
       el("span", { class: "stk-switch-text", text: "Enforce it in code" }),
       dom.switchState);
     dom.switch.addEventListener("click", () => this.toggleEnforce());
-    dom.next = el("button", { class: "btn btn-primary", type: "button", "data-key": "next" });
+    dom.next = el("button", { class: "btn btn-primary", type: "button", "data-key": "next", "data-focus-next": "conflict" });
     dom.next.addEventListener("click", () => this.next());
     dom.summary = el("p", { class: "stk-summary" });
     this.ui.append(el("section", { class: "stk" },

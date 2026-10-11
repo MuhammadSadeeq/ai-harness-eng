@@ -219,7 +219,7 @@ export class HxTopology extends HxElement {
     // The sub-agent: the same run on the isolated and forked boards, its input tokens from the run.
     children.push(el("h4", { class: "tp-sub", text: "Isolated or forked: the sub-agent's input" }));
     children.push(el("div", { class: "seg tp-seg", role: "group", "aria-label": "Sub-agent context" },
-      ...CONTEXTS.map((c) => el("button", { type: "button", "aria-pressed": s.context === c, "data-context": c, text: c === "isolated" ? "Isolated" : "Forked" }))));
+      ...CONTEXTS.map((c) => el("button", { type: "button", "aria-pressed": s.context === c, "data-context": c, "data-key": `context-${c}`, text: c === "isolated" ? "Isolated" : "Forked" }))));
     const counts = this.contextRuns;
     const chosen = counts[s.context];
     const other = counts[CONTEXTS.find((c) => c !== s.context)];

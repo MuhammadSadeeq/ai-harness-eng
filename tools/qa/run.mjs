@@ -4,10 +4,10 @@
 //   scroll, design tokens and fonts loaded, (1280) same-origin links resolve, text under 14 px (SVG text
 //   at its rendered size), hx-* self-tests, full-page screenshot;
 //   375 and 1280, every theme: axe (serious/critical fail, moderate warn);
-//   1280 light: page weight, CVD screenshots;
+//   1280 light: page weight, CVD screenshots, keyboard walk (lab pages: a press never leaves focus on BODY, D-063);
 //   reduced motion: no running animation longer than 150 ms.
 // Usage: node tools/qa/run.mjs [--only <path>...] [--out <dir>] [--widths 375,768,1280]
-//        [--themes light,dark] [--cvd] [--no-axe]
+//        [--themes light,dark] [--cvd] [--no-axe] [--no-keys]
 // The last stdout line is "qa: <pages> pages, <shots> screenshots, <n> failures".
 
 import { existsSync } from "node:fs";
@@ -79,6 +79,7 @@ function parseArgs(argv) {
     themes: ["light", "dark"],
     cvd: false,
     axe: true,
+    keys: true,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -104,6 +105,8 @@ function parseArgs(argv) {
       opts.cvd = true;
     } else if (arg === "--no-axe") {
       opts.axe = false;
+    } else if (arg === "--no-keys") {
+      opts.keys = false;
     } else {
       throw new Error(`unknown argument: ${arg}`);
     }
@@ -383,6 +386,95 @@ async function checkReducedMotion(browser, url) {
   }
 }
 
+// Keyboard walk (D-063, BP-6.2 A5): one view (1280, light), real keys only (never __test). Tab through the page
+// (at most 80 stops). At each stop inside an hx-* element whose focus is a button or [role="button"] and is not
+// aria-disabled="true", press Enter, wait until the page settles (no DOM change for 200 ms, at most 2 s), and fail
+// when focus is then on BODY. Each control is pressed at most twice (by its data-key, else its name).
+// Walked pages: the lab pages (accepted labs, or the labs named with --only), and the page that mounts each component
+// no lab page mounts (the pairing, walked where it is named or by default; it is not a lab):
+//   hx-filter    -> glossary.html   (the only page that mounts it)
+//   hx-readiness -> readiness.html  (the only page that mounts it)
+const WALK_PAIRS = new Map([["glossary.html", "hx-filter"], ["readiness.html", "hx-readiness"]]);
+const WALK_STOPS = 80;
+const WALK_PRESSES = 2;
+const WALK_QUIET_MS = 200;
+const WALK_SETTLE_MS = 2000;
+
+function walkable(pagePath) {
+  return pagePath.startsWith("labs/") || WALK_PAIRS.has(pagePath);
+}
+
+// The control that has focus, when it is a pressable control inside an hx-* component (else null).
+const FOCUSED_CONTROL = () => {
+  const node = document.activeElement;
+  if (!node || node === document.body) return null;
+  const pressable = node.localName === "button" || node.getAttribute("role") === "button";
+  if (!pressable || node.getAttribute("aria-disabled") === "true") return null;
+  let host = node.parentElement;
+  while (host && !host.localName.startsWith("hx-")) host = host.parentElement;
+  if (!host) return null;
+  const labelledBy = (node.getAttribute("aria-labelledby") ?? "").split(/\s+/).filter(Boolean)
+    .map((id) => document.getElementById(id)?.textContent ?? "").join(" ");
+  const name = (node.getAttribute("aria-label") || labelledBy || node.textContent || node.getAttribute("title") || "")
+    .replace(/\s+/g, " ").trim() || node.dataset.key || node.localName;
+  return { component: host.localName, name, id: `${host.localName}|${node.dataset.key ?? name}` };
+};
+
+// Waits for the page to go quiet after a press: no DOM change for WALK_QUIET_MS, at most WALK_SETTLE_MS.
+async function settleAfterPress(page) {
+  await page.evaluate(({ quiet, cap }) => new Promise((resolve) => {
+    let timer = null;
+    const finish = () => {
+      observer.disconnect();
+      clearTimeout(timer);
+      clearTimeout(limit);
+      resolve();
+    };
+    const wait = () => {
+      clearTimeout(timer);
+      timer = setTimeout(finish, quiet);
+    };
+    const observer = new MutationObserver(wait);
+    observer.observe(document.body, { subtree: true, childList: true, attributes: true, characterData: true });
+    const limit = setTimeout(finish, cap);
+    wait();
+  }), { quiet: WALK_QUIET_MS, cap: WALK_SETTLE_MS });
+}
+
+// Returns { failures, presses, stops } for one page (failures are named without the page; runPage prefixes it).
+async function checkKeyboardWalk(browser, url) {
+  const failures = [];
+  const presses = new Map();
+  let stops = 0;
+  let pressed = 0;
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, colorScheme: "light" });
+  const page = await context.newPage();
+  try {
+    await page.goto(url, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    await settlePage(page);
+    while (stops < WALK_STOPS) {
+      stops += 1;
+      await page.keyboard.press("Tab");
+      const control = await page.evaluate(FOCUSED_CONTROL);
+      if (!control) continue;
+      const seen = presses.get(control.id) ?? 0;
+      if (seen >= WALK_PRESSES) continue;
+      presses.set(control.id, seen + 1);
+      pressed += 1;
+      await page.keyboard.press("Enter");
+      await settleAfterPress(page);
+      const lost = await page.evaluate(() => document.activeElement === null || document.activeElement === document.body);
+      if (lost) failures.push(`focus lost to BODY after Enter on "${control.name}" (${control.component})`);
+    }
+  } catch (error) {
+    failures.push(`keyboard walk failed while stop ${stops}: ${error.message.split("\n")[0]}`);
+  } finally {
+    await context.close().catch(() => {});
+  }
+  return { failures, presses: pressed, stops };
+}
+
 async function runCvd(page, pageSlug, outDir, shots) {
   const failures = [];
   await page.evaluate((matrices) => {
@@ -541,6 +633,16 @@ async function main() {
             }
             await context.close().catch(() => {});
           }
+        }
+      }
+
+      if (opts.keys && walkable(pagePath)) {
+        const walk = await withDeadline(checkKeyboardWalk(browser, url), VIEW_LIMIT_MS);
+        if (walk === TIMED_OUT) {
+          pageFailures.push(`keyboard walk: timed out after ${VIEW_LIMIT_MS / 1000} s`);
+        } else {
+          for (const f of walk.failures) pageFailures.push(f);
+          lines.push(`walk ${pagePath}: ${walk.presses} presses in ${walk.stops} stops, ${walk.failures.length} failures`);
         }
       }
 

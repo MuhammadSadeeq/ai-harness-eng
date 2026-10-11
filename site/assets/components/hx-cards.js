@@ -343,7 +343,7 @@ export class HxCards extends HxElement {
         body.append(el("div", { class: "card-keys" }, next));
       } else {
         const check = el("button", {
-          class: "key key-primary", type: "button", "data-key": "check", text: "Check",
+          class: "key key-primary", type: "button", "data-key": "check", "data-focus-next": "next", text: "Check",
           "aria-disabled": String(!this.canCheck(card, s)),
         });
         check.addEventListener("click", () => this.checkAuto());

@@ -384,7 +384,7 @@ export class HxClock extends HxElement {
     const button = el("button", "key key-primary", this.state.plugged ? "Plugged in" : "Plug it in");
     button.type = "button";
     button.dataset.key = "plug";
-    button.disabled = this.state.plugged;
+    button.setAttribute("aria-disabled", String(this.state.plugged));
     button.addEventListener("click", () => this.plugIn());
     row.append(button);
     return row;
@@ -412,12 +412,12 @@ export class HxClock extends HxElement {
     const back = el("button", "key", "Back");
     back.type = "button";
     back.dataset.key = "back";
-    back.disabled = this.state.step <= 0;
+    back.setAttribute("aria-disabled", String(this.state.step <= 0));
     back.addEventListener("click", () => this.#moveStep(-1));
     const forward = el("button", "key key-primary", "Step");
     forward.type = "button";
     forward.dataset.key = "step";
-    forward.disabled = this.state.step >= events.length - 1;
+    forward.setAttribute("aria-disabled", String(this.state.step >= events.length - 1));
     forward.addEventListener("click", () => this.#moveStep(1));
     row.append(turnLabel, step, counter, back, forward);
     return row;
@@ -427,6 +427,7 @@ export class HxClock extends HxElement {
     const events = turnEvents(this.data.events, this.state.turn);
     const from = events[this.state.step]?.wire ?? null;
     const next = Math.min(events.length - 1, Math.max(0, this.state.step + delta));
+    if (next === this.state.step) return;
     this.pendingPulse = !this.reducedMotion && from && events[next] && events[next].wire !== from
       ? { from, to: events[next].wire } : null;
     this.setState({ step: next });
@@ -507,10 +508,10 @@ export class HxClock extends HxElement {
   async #runSelfTest() {
     if (this.mode === "compare") {
       const button = this.ui?.querySelector('[data-key="plug"]');
-      if (!button || button.disabled) return false;
+      if (!button || button.getAttribute("aria-disabled") === "true") return false;
       button.click();
       const after = this.ui?.querySelector('[data-key="plug"]');
-      return Boolean(after?.disabled) && this.ui.querySelectorAll(".tag-group.plug-in, .tag-group[data-added=\"true\"]").length > 0;
+      return after?.getAttribute("aria-disabled") === "true" && this.ui.querySelectorAll(".tag-group.plug-in, .tag-group[data-added=\"true\"]").length > 0;
     }
     if (this.mode === "turn") {
       this.ui?.querySelector('[data-key="step"]')?.click();

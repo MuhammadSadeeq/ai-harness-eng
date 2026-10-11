@@ -624,3 +624,25 @@ basis for Phase 1, and answered SPEC §14:
   learner's first module. With one module in the pool and no memory kata,
   the drill is that module's say prompts every day; that is intended (the
   drill is review of what was seen).
+
+
+## D-063 A press never leaves focus on BODY
+
+- **Context:** audits 3 and 4 found keyboard focus dropped to BODY across
+  ten components. A control disables itself while busy ("Start the next
+  shift", "Run the policy", "Replay the attack"), at the end of a range
+  ("Previous turn" at turn 1), or hides itself ("Show all", "Show the model
+  answer"), and the base's focus restore found nothing it could focus. The
+  next Tab restarted from the top of the component or the page.
+- **Decision:** three rules, one guarantee.
+  - A control a press can make unavailable uses `aria-disabled="true"` and
+    its handler ignores the press; it never takes the `disabled` attribute,
+    so focus stays on it (the pattern hx-kata, hx-step and hx-say already
+    use).
+  - A control that hides itself on a press names its successor with
+    `data-focus-next="<key>"`.
+  - The base (`HxElement`) guarantees the rest: after a render that took
+    focus away, focus goes to the same key, else the named successor, else
+    the component's UI (tabindex -1). Never BODY.
+  - QA walks every lab page by keyboard and fails a press that leaves focus
+    on BODY, so the rule holds for components written later.

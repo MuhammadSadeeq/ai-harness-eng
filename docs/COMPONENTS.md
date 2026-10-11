@@ -54,7 +54,8 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
 ## 5. Evidence and progress
 - A component keeps its own answers in the store under its own key (for example
   `answers[<item id>]` for hx-check, `hunts[<tape id>]` for hx-incident) and
-  restores them on load. A restore sets the state only: it emits no evidence, and
+  restores them on load. A hunt is saved when it ends: a reload in the middle
+  of one starts it again (a hunt is a few taps). A restore sets the state only: it emits no evidence, and
   it never credits the same thing twice. A saved answer is used only when it still
   fits its item (`lib/restore.js`).
 - When the learner does something that counts (a prediction, a correct
@@ -91,6 +92,13 @@ spec; ENGINE.md is the behavior spec for anything that runs a tape.
   removes travel and tweening (DESIGN §8).
 - Every interactive role has its required ARIA (a `role="slider"` has
   `aria-valuenow/min/max/text`, D-037).
+- A press never leaves focus on BODY (D-063). A control a press can make
+  unavailable (busy, end of a range, done) takes `aria-disabled="true"` and
+  its handler ignores the press, never the `disabled` attribute. A control
+  that hides itself on a press names its successor with
+  `data-focus-next="<key>"`. The base moves focus to the same key, else that
+  successor, else the component's UI. QA's keyboard walk of the lab pages
+  checks it.
 
 ## 7. Test hook
 Every component instance exposes `el.__test = { run: async () => boolean }`
@@ -117,7 +125,8 @@ Three small protocols, nothing else:
 
 - **Gate.** Runnable components (`hx-replay`, `hx-bench`, `hx-incident`)
   accept a boolean `locked` attribute. While it is present their run controls
-  are disabled (not hidden) and one line says
+  are unavailable, never hidden (`aria-disabled` or `disabled`; a control a
+  press can lock takes `aria-disabled`, §6), and one line says
   "Make your prediction above to unlock the run." Removing it unlocks them.
   `hx-check mode="predict" for="<id>"` removes it when the learner commits.
 - **Results.** When a runnable component finishes, it dispatches a bubbling

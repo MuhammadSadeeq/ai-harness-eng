@@ -9,6 +9,7 @@ import { formatInt, plural } from "./lib/format.js";
 import { toolUseHits, toolsRange, foldTools } from "./lib/wire-hits.js";
 
 const MARK_PLUS = "M12 5v14M5 12h14";
+const COPY_FAILED = "Could not copy. Select the text and copy it.";
 const MARK_BANG = "M12 4.5v10M12 19v.5";
 // B-16: the message status keys (the classes are is-new, is-changed and is-breakpoint-moved).
 const MESSAGE_STATUS = { added: "new", changed: "changed", "breakpoint moved": "breakpoint-moved" };
@@ -147,14 +148,14 @@ export class HxWire extends HxElement {
     back.dataset.key = "turn-back";
     back.textContent = "Previous";
     back.setAttribute("aria-label", "Previous turn");
-    back.disabled = this.state.turn <= 1;
+    back.setAttribute("aria-disabled", String(this.state.turn <= 1));
     back.addEventListener("click", () => this.hxSetValue("turn", this.state.turn - 1));
     const forward = el("button", "key");
     forward.type = "button";
     forward.dataset.key = "turn-forward";
     forward.textContent = "Next";
     forward.setAttribute("aria-label", "Next turn");
-    forward.disabled = this.state.turn >= this.turns;
+    forward.setAttribute("aria-disabled", String(this.state.turn >= this.turns));
     forward.addEventListener("click", () => this.hxSetValue("turn", this.state.turn + 1));
     stepper.append(back, el("p", "wire-turn", `Turn ${this.state.turn} of ${this.turns}`), forward);
     const toggles = el("div", "wire-toggles");
@@ -404,7 +405,15 @@ export class HxWire extends HxElement {
   }
 
   #copy(name, text) {
-    globalThis.navigator?.clipboard?.writeText?.(text).catch(() => {});
+    const write = globalThis.navigator?.clipboard?.writeText?.(text);
+    if (!write) {
+      this.live(COPY_FAILED);
+      return;
+    }
+    write.then(() => this.#copied(name), () => this.live(COPY_FAILED));
+  }
+
+  #copied(name) {
     this.setState({ copied: name });
     this.live("Copied");
     setTimeout(() => {

@@ -15,7 +15,9 @@
 //   again, data-hx-error is set, and nothing is logged.
 // - this.ready resolves to true once the first render succeeds (false on failure).
 // - setState(patch) merges and re-renders. Focus survives re-renders: give focusable elements a
-//   data-key and the element with the same key is focused again after render().
+//   data-key and the element with the same key is focused again after render(). If that element is
+//   gone, hidden or disabled, focus goes to the key named by the pressed control's data-focus-next,
+//   else to this.ui itself (tabindex -1). A render never leaves focus on BODY (D-063).
 // - live(text) sets the component's one polite live region (only when the text changes).
 // - evidence(kind, detail) dispatches the bubbling hx-evidence event (§5).
 // - reducedMotion reads the stored motion setting, else the system setting (DESIGN §8.4).
@@ -24,6 +26,11 @@
 import { hxContext } from "../../core/context.js";
 
 const sheets = new Map();
+
+/** A control focus can stay on: in the page, not disabled, not inside [hidden], and laid out. */
+function usable(el) {
+  return el.isConnected && !el.disabled && !el.closest("[hidden]") && el.getClientRects().length > 0;
+}
 
 /** Adds a stylesheet to the page once; resolves when it has loaded (or failed: the UI still works). */
 export function loadStyles(href) {
@@ -160,15 +167,36 @@ export class HxElement extends HTMLElement {
   #safeRender() {
     const active = this.contains(document.activeElement) ? document.activeElement : null;
     const key = active?.dataset?.key ?? null;
+    const next = active?.dataset?.focusNext ?? null;
     try {
       this.render();
     } catch (error) {
       this.#fail(error);
       return;
     }
-    if (key !== null && !this.contains(document.activeElement)) {
-      this.ui?.querySelector(`[data-key="${CSS.escape(key)}"]`)?.focus({ preventScroll: true });
+    // Lost: focus is on BODY, or still on the pressed control though the render hid, disabled or removed it (the
+    // browser moves it to BODY only later).
+    const now = document.activeElement;
+    const lost = now === null || now === document.body || (now === active && !usable(active));
+    if (active !== null && lost) this.#refocus(key, next);
+  }
+
+  /**
+   * Focus after a render took it away (D-063): the control with the same data-key, else the one its
+   * data-focus-next named, else the component's UI itself. Never BODY.
+   */
+  #refocus(key, next) {
+    if (!this.ui) return;
+    for (const k of [key, next]) {
+      if (k === null) continue;
+      const target = this.ui.querySelector(`[data-key="${CSS.escape(k)}"]`);
+      if (target && usable(target)) {
+        target.focus({ preventScroll: true });
+        if (document.activeElement === target) return;
+      }
     }
+    if (!this.ui.hasAttribute("tabindex")) this.ui.setAttribute("tabindex", "-1");
+    this.ui.focus({ preventScroll: true });
   }
 
   #fail(error) {

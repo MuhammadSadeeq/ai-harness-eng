@@ -81,7 +81,7 @@ export function modelOfTrace(events) {
   };
 }
 /** event indexes per wire, in step order */
-function indexByWire(events) {
+export function indexByWire(events) {
   const byWire = new Map();
   events.forEach((e, i) => {
     if (!byWire.has(e.wire)) byWire.set(e.wire, []);
@@ -211,6 +211,14 @@ export class HxReplay extends HxElement {
     if (prev === undefined) return next ?? -1;
     if (next === undefined) return prev;
     return index - prev <= next - index ? prev : next;
+  }
+
+  /**
+   * A step to the target event (keys and the - and + buttons). The direction is the way the target lies, so with a
+   * wire filter ArrowRight moves to the next event of that wire, and Home and End snap to its first and last.
+   */
+  stepTo(target) {
+    this.go(target, { dir: Math.sign(target - this.state.index) });
   }
 
   go(index, { moved = true, dir = 0 } = {}) {
@@ -369,6 +377,7 @@ export class HxReplay extends HxElement {
     r.strip.classList.add("scrub-strip");
     r.strip.tabIndex = 0;
     r.strip.setAttribute("role", "slider");
+    r.strip.dataset.key = "run-position";
     r.strip.setAttribute("aria-label", "Run position");
     r.strip.setAttribute("aria-valuemin", "0");
     r.strip.setAttribute("aria-valuemax", String(this.events.length - 1));
@@ -386,8 +395,8 @@ export class HxReplay extends HxElement {
     r.strip.addEventListener("pointercancel", stop);
     r.minus = el("button", { class: "key key-icon", type: "button", "data-key": "minus", "aria-label": "Back one event", text: "−" });
     r.plus = el("button", { class: "key key-icon", type: "button", "data-key": "plus", "aria-label": "Forward one event", text: "+" });
-    r.minus.addEventListener("click", () => this.go(this.state.index - 1));
-    r.plus.addEventListener("click", () => this.go(this.state.index + 1));
+    r.minus.addEventListener("click", () => this.stepTo(this.state.index - 1));
+    r.plus.addEventListener("click", () => this.stepTo(this.state.index + 1));
     r.scrubRow = el("div", { class: "scrub-row" }, r.minus, lanes, r.plus);
     // Phones: one native select labelled "Wire" (BP-1.4 notes, item 2). Desktop uses the lane labels.
     r.wireSelect = el("select", { class: "wire-select-input", "data-key": "wire-select" }, el("option", { value: "", text: "All wires" }),
@@ -395,7 +404,7 @@ export class HxReplay extends HxElement {
     r.wireSelect.addEventListener("change", () => this.setWire(r.wireSelect.value || null));
     r.wireLabel = el("label", { class: "wire-select" }, el("span", { text: "Wire" }), r.wireSelect);
     r.filterLine = el("p", { class: "filter-state", "aria-live": "off" });
-    r.showAll = el("button", { class: "btn btn-quiet", type: "button", "data-key": "show-all", text: "Show all" });
+    r.showAll = el("button", { class: "btn btn-quiet", type: "button", "data-key": "show-all", "data-focus-next": "run-position", text: "Show all" });
     r.showAll.addEventListener("click", () => this.toggleWire(null));
     r.transcriptWrap = el("div", { class: "transcript-wrap", tabindex: "0", role: "region", "aria-label": "Transcript" });
     r.empty = el("p", { class: "empty", text: "Nothing on this wire in this run." });
@@ -492,7 +501,7 @@ export class HxReplay extends HxElement {
     const next = map[e.key];
     if (!next) return;
     e.preventDefault();
-    this.go(next());
+    this.stepTo(next());
   }
 
   // ---------- render ----------

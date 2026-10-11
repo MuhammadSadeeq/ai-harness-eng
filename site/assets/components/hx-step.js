@@ -28,6 +28,7 @@ const SLOW_COPY = "Still loading Python. A slow connection can take a minute or 
 const FAILED_COPY = "Python could not load. Check your connection and try again.";
 const RETRY_COPY = "Try again";
 const COPIED = "Copied";
+const COPY_FAILED = "Could not copy. Select the text and copy it.";
 const COPY_NEW = "Copy new lines";
 const COPY_FILE = "Copy rein.py";
 const RUN_HERE = "Run it here";
@@ -201,7 +202,16 @@ export class HxStep extends HxElement {
   // ---- copy ----
   copyText(text, key) {
     this.lastCopy = text;
-    this.copyJob = navigator.clipboard?.writeText(text).catch(() => {}) ?? Promise.resolve();
+    const write = navigator.clipboard?.writeText(text);
+    if (!write) {
+      this.live(COPY_FAILED);
+      this.copyJob = Promise.resolve();
+      return;
+    }
+    this.copyJob = write.then(() => this.#copied(key), () => this.live(COPY_FAILED));
+  }
+
+  #copied(key) {
     this.live(COPIED);
     clearTimeout(this.#copyTimer);
     this.patch({ copied: key });
