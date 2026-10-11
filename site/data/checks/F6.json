@@ -1,0 +1,129 @@
+[
+ {
+  "answer": 1,
+  "id": "F6-p1",
+  "mode": "predict",
+  "objective": "F6.o3",
+  "options": [
+   {
+    "text": "Yes: the grader passed, so the reward says the task is done.",
+    "why": "Tempting. The grader passed, but it read a marker the policy had just cleared."
+   },
+   {
+    "text": "No: the grader read the marker the policy cleared, so its pass says nothing about the function.",
+    "why": "Right. The grader's pass depends on what it reads. Here it read a switched-off test, so the check on the function never ran."
+   },
+   {
+    "text": "It depends on how well the model reasons about its own change.",
+    "why": "Tempting and wrong. The grader does not reason. It runs the checks it is given."
+   }
+  ],
+  "outcome": "The grader passed and the check on calc.py failed. The run's reward was a pass and its truth a fail.",
+  "question": "A policy clears the test marker, says done, and the workspace grader passes. Is the task solved?"
+ },
+ {
+  "answer": 1,
+  "id": "F6-c1",
+  "mode": "check",
+  "objective": "F6.o1",
+  "options": [
+   {
+    "text": "The policy's own summary of its work.",
+    "why": "Tempting and wrong. The policy is the thing being graded, so its summary cannot grade it."
+   },
+   {
+    "text": "The grader.",
+    "why": "Right. The grader turns a run into a reward. The sandbox, the tools and the task set up the run; the grader scores it."
+   },
+   {
+    "text": "The sandbox, since it decides what the policy can touch.",
+    "why": "Tempting. The sandbox limits what a run can do. It does not score what the run did."
+   }
+  ],
+  "question": "In an environment, which part decides the reward?"
+ },
+ {
+  "answer": 1,
+  "id": "F6-c2",
+  "mode": "check",
+  "objective": "F6.o2",
+  "options": [
+   {
+    "text": "Draw new random seeds, so each run is different.",
+    "why": "Tempting and wrong. New seeds make a run unrepeatable, which is the opposite of what a reproduction needs."
+   },
+   {
+    "text": "Reset to the same workspace and seeds, so the same inputs give the same run.",
+    "why": "Right. A reset returns the starting state, and determinism means the same inputs give the same result."
+   },
+   {
+    "text": "Allow a longer timeout, so every run finishes.",
+    "why": "Tempting. A timeout changes whether a run ends, not whether it repeats."
+   }
+  ],
+  "question": "A result must be reproduced next week. What must the environment do between runs?"
+ },
+ {
+  "answer": 1,
+  "id": "F6-c3",
+  "mode": "check",
+  "objective": "F6.o4",
+  "options": [
+   {
+    "text": "A training run is one score; an eval is many runs, so hacks are rare in training.",
+    "why": "Tempting and wrong. It is the other way round: a training loop runs the environment many times, and the reward shapes the policy."
+   },
+   {
+    "text": "A training environment's reward shapes what the model learns, so a hack gets trained in.",
+    "why": "Right. In training the reward is the signal, so a grader that can be gamed teaches the gaming."
+   },
+   {
+    "text": "Evals have no grader, so no hack can be found in them.",
+    "why": "Tempting and wrong. An eval has a grader too, and a hack in it reports a score that is not true."
+   }
+  ],
+  "question": "Why does a reward hack matter more in a training environment than in an eval?"
+ },
+ {
+  "answer": 0,
+  "id": "F6-c4",
+  "mode": "check",
+  "objective": "F6.o5",
+  "options": [
+   {
+    "text": "No network egress by default, and scoped credentials.",
+    "why": "Right. A policy with network access and wide credentials can reach what it should not. Close those first."
+   },
+   {
+    "text": "A longer timeout, so the policy has time to finish.",
+    "why": "Tempting. A timeout does not contain anything."
+   },
+   {
+    "text": "A longer prompt that asks the policy to behave.",
+    "why": "Tempting and wrong. A request in a prompt is not a control."
+   }
+  ],
+  "question": "A policy can read files and call tools. What is the first containment control to set?"
+ },
+ {
+  "answer": 0,
+  "id": "F6-c5",
+  "mode": "check",
+  "objective": "F6.o3",
+  "options": [
+   {
+    "text": "A grader that runs the function on cases the policy cannot see.",
+    "why": "Right. A hidden case checks the behaviour, and a comment cannot pass it."
+   },
+   {
+    "text": "A grader that searches for the words more carefully.",
+    "why": "Tempting. The policy can put the words anywhere a search finds them."
+   },
+   {
+    "text": "Asking the policy to write only real code.",
+    "why": "Tempting and wrong. A request is not a check on the file."
+   }
+  ],
+  "question": "A policy writes the grader's words into a comment, and the workspace grader passes. What closes that hack?"
+ }
+]

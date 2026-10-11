@@ -1,0 +1,23 @@
+id: F6-grader
+module: F6
+title: A grader that the listed hacks cannot pass
+objectives:
+- F6.o3
+minutes: 30
+hints:
+- 'List the hacks the grader must refuse: a switched-off test, a function that only passes the visible case, and words in a comment. Which test covers which one?'
+- Compare the switch with the pristine copy and refuse a difference. Then run add on every case, the hidden ones too, and treat broken code as a failure.
+- 'Nearly the code: if marker != pristine marker: return False; exec calc.py in a namespace; return all(add(a, b) == expected for each case); except Exception: return False.'
+from_memory: true
+wrong_solutions:
+- name: marker-only
+  code: "MARKER = \"tests/active.txt\"\n\n\ndef grade(workspace, pristine, cases):\n    text = workspace.get(\"calc.py\", \"\")\n    return \"add\" in workspace.get(MARKER, \"\") and \"a + b\" in text\n"
+- name: compares-with-itself
+  code: "MARKER = \"tests/active.txt\"\n\n\ndef grade(workspace, pristine, cases):\n    if workspace.get(MARKER) != workspace.get(MARKER):\n        return False\n    namespace = {}\n    try:\n        exec(workspace.get(\"\
+    calc.py\", \"\"), namespace)\n        add = namespace[\"add\"]\n        return all(add(a, b) == expected for a, b, expected in cases)\n    except Exception:\n        return False\n"
+- name: visible-case-only
+  code: "MARKER = \"tests/active.txt\"\n\n\ndef grade(workspace, pristine, cases):\n    if workspace.get(MARKER) != pristine.get(MARKER):\n        return False\n    namespace = {}\n    try:\n        exec(workspace.get(\"\
+    calc.py\", \"\"), namespace)\n        add = namespace[\"add\"]\n        return add(2, 3) == 5\n    except Exception:\n        return False\n"
+- name: broken-passes
+  code: "MARKER = \"tests/active.txt\"\n\n\ndef grade(workspace, pristine, cases):\n    if workspace.get(MARKER) != pristine.get(MARKER):\n        return False\n    namespace = {}\n    try:\n        exec(workspace.get(\"\
+    calc.py\", \"\"), namespace)\n        add = namespace[\"add\"]\n        return all(add(a, b) == expected for a, b, expected in cases)\n    except Exception:\n        return True\n"

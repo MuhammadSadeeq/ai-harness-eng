@@ -1,0 +1,11 @@
+{
+  "id": "f1-old",
+  "label": "Fan out with no cap",
+  "modules": {
+    "subagents": {
+      "context": "isolated",
+      "max": 10,
+      "max_turns": 3
+    }
+  }
+}

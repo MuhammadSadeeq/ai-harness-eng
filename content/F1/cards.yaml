@@ -1,0 +1,32 @@
+- id: F1-k1
+  type: term
+  objective: F1.o3
+  front: Why does a sub-agent get a brief?
+  back: It starts from the brief, or from the parent's messages with the brief added. So the brief must name the
+    task, the files and the result.
+- id: F1-k2
+  type: term
+  objective: F1.o1
+  front: What is an orchestrator?
+  back: The parent that starts workers, gives each one a brief, and reads what they return.
+- id: F1-k3
+  type: term
+  objective: F1.o3
+  front: What does an isolated context cost against a forked one?
+  back: Fewer input tokens on the first request, and no view of the parent's messages.
+- id: F1-k4
+  type: term
+  objective: F1.o1
+  front: Name the two honest reasons for many agents.
+  back: Parallel work, and keeping a separate piece of work out of the parent's context.
+- id: F1-k5
+  type: term
+  objective: F1.o5
+  front: A sub-agent's answer comes back. Is it a fact?
+  back: No. It is a reader's answer. Check it against the file or the field the brief named before the parent relies
+    on it.
+- id: F1-k6
+  type: term
+  objective: F1.o2
+  front: What is a fan-out?
+  back: Starting several sub-agents at once, one per piece of work, and reading their results together.

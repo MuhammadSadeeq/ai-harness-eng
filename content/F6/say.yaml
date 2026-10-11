@@ -1,0 +1,30 @@
+- id: F6-s1
+  objectives:
+  - F6.o1
+  - F6.o3
+  prompt: A policy says its task is done, and the grader passes. How do you know the task is solved, and what would
+    you change in the grader?
+  model_answer: 'The pass only says the grader''s checks held. I would read what the grader checks: the test it
+    runs, and whether the policy could have edited it. I would judge the work against a pristine copy of the tests
+    and against hidden cases, and treat a changed test as a failure of the grader, not a pass of the task.'
+  rubric:
+  - Says a pass is what the grader checked, not proof of the task
+  - Names a way the policy could have edited the grader's inputs
+  - Proposes a pristine copy or hidden cases as the fix
+  - Says what the grader reads, and whether the policy could edit it
+- id: F6-s2
+  objectives:
+  - F6.o2
+  - F6.o4
+  - F6.o5
+  prompt: How do you make an environment reproducible, and what does a training environment need that an eval does
+    not?
+  model_answer: 'A reproducible environment resets to the same workspace and seeds, so the same inputs give the
+    same run. A training environment needs a grader it can trust, because its reward trains the policy; an eval
+    scores a model once. Both need containment: no network egress by default and scoped credentials, so a run cannot
+    reach what it should not.'
+  rubric:
+  - Says reset and determinism make a result repeatable
+  - Says a training reward shapes the policy, so the grader must be trusted
+  - 'Names one containment control: network or credentials'
+  - Says what a reset restores between runs

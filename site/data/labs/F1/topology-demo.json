@@ -1,0 +1,243 @@
+{
+ "boards": {
+  "forked": "topology-forked.json",
+  "isolated": "topology-isolated.json"
+ },
+ "note": "The cost and wall-clock ratios are the course's model, against one agent on the same task: illustrative, not measured on any model.",
+ "subagent_tape": "topology-subagents.json",
+ "task": {
+  "name": "A bug report across two modules, with the tests that show it",
+  "note": "The same task for every shape: read the report, find the two causes, fix both, run the tests."
+ },
+ "topologies": [
+  {
+   "cost": 1,
+   "diagram": {
+    "edges": [],
+    "nodes": [
+     {
+      "id": "a",
+      "label": "Agent",
+      "mark": "layers",
+      "x": 140,
+      "y": 62
+     }
+    ]
+   },
+   "failure_modes": [
+    "One context fills with every step of the task.",
+    "No second pair of eyes checks its claims."
+   ],
+   "id": "single",
+   "name": "A single agent",
+   "wall_clock": 1
+  },
+  {
+   "cost": 3.2,
+   "diagram": {
+    "edges": [
+     [
+      "o",
+      "w1"
+     ],
+     [
+      "o",
+      "w2"
+     ],
+     [
+      "o",
+      "w3"
+     ]
+    ],
+    "nodes": [
+     {
+      "id": "o",
+      "label": "Orchestrator",
+      "mark": "box",
+      "x": 140,
+      "y": 22
+     },
+     {
+      "id": "w1",
+      "label": "Worker",
+      "mark": "hexagon",
+      "x": 50,
+      "y": 100
+     },
+     {
+      "id": "w2",
+      "label": "Worker",
+      "mark": "hexagon",
+      "x": 140,
+      "y": 100
+     },
+     {
+      "id": "w3",
+      "label": "Worker",
+      "mark": "hexagon",
+      "x": 230,
+      "y": 100
+     }
+    ]
+   },
+   "failure_modes": [
+    "The brief drops a constraint the orchestrator knew.",
+    "Workers read the same files and repeat each other's work.",
+    "The summaries lose the detail the orchestrator needed."
+   ],
+   "id": "orchestrator",
+   "name": "An orchestrator and workers",
+   "wall_clock": 1.6
+  },
+  {
+   "cost": 1.9,
+   "diagram": {
+    "edges": [
+     [
+      "r",
+      "p"
+     ],
+     [
+      "p",
+      "e"
+     ],
+     [
+      "e",
+      "t"
+     ]
+    ],
+    "nodes": [
+     {
+      "id": "r",
+      "label": "Read",
+      "mark": "box",
+      "x": 40,
+      "y": 62
+     },
+     {
+      "id": "p",
+      "label": "Plan",
+      "mark": "box",
+      "x": 107,
+      "y": 62
+     },
+     {
+      "id": "e",
+      "label": "Edit",
+      "mark": "box",
+      "x": 173,
+      "y": 62
+     },
+     {
+      "id": "t",
+      "label": "Test",
+      "mark": "box",
+      "x": 240,
+      "y": 62
+     }
+    ]
+   },
+   "failure_modes": [
+    "A stage's mistake is carried to the last stage.",
+    "Each stage needs the whole output of the one before."
+   ],
+   "id": "pipeline",
+   "name": "A pipeline",
+   "wall_clock": 2.4
+  },
+  {
+   "cost": 2.8,
+   "diagram": {
+    "edges": [
+     [
+      "g",
+      "v"
+     ],
+     [
+      "v",
+      "g"
+     ]
+    ],
+    "nodes": [
+     {
+      "id": "g",
+      "label": "Generator",
+      "mark": "cycle",
+      "x": 84,
+      "y": 62
+     },
+     {
+      "id": "v",
+      "label": "Evaluator",
+      "mark": "shield",
+      "x": 196,
+      "y": 62
+     }
+    ]
+   },
+   "failure_modes": [
+    "The evaluator approves its own style of work.",
+    "The loop runs until the budget is spent, with no new evidence."
+   ],
+   "id": "loop",
+   "name": "A generator and an evaluator in a loop",
+   "wall_clock": 3.1
+  },
+  {
+   "cost": 2.6,
+   "diagram": {
+    "edges": [
+     [
+      "p1",
+      "b"
+     ],
+     [
+      "p2",
+      "b"
+     ],
+     [
+      "p3",
+      "b"
+     ]
+    ],
+    "nodes": [
+     {
+      "id": "b",
+      "label": "Board",
+      "mark": "window",
+      "x": 140,
+      "y": 62
+     },
+     {
+      "id": "p1",
+      "label": "Peer",
+      "mark": "hexagon",
+      "x": 50,
+      "y": 22
+     },
+     {
+      "id": "p2",
+      "label": "Peer",
+      "mark": "hexagon",
+      "x": 230,
+      "y": 22
+     },
+     {
+      "id": "p3",
+      "label": "Peer",
+      "mark": "hexagon",
+      "x": 140,
+      "y": 110
+     }
+    ]
+   },
+   "failure_modes": [
+    "Peers overwrite each other's notes on the board.",
+    "Nobody owns the final answer."
+   ],
+   "id": "board",
+   "name": "Peers on a shared board",
+   "wall_clock": 1.5
+  }
+ ]
+}

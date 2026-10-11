@@ -1,0 +1,10 @@
+{
+  "id": "f6-new",
+  "label": "Pristine tests decide",
+  "modules": {
+    "verify_gate": {
+      "max_feedback": 1,
+      "pristine_tests": true
+    }
+  }
+}

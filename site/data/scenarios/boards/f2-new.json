@@ -1,0 +1,9 @@
+{
+  "id": "f2-new",
+  "label": "Sessions, progress file",
+  "modules": {
+    "progress_file": {
+      "path": "progress.md"
+    }
+  }
+}

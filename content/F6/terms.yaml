@@ -1,0 +1,70 @@
+- id: reward
+  term: reward
+  aliases:
+  - reward
+  - rewards
+  strict: false
+  wire: verify
+  definition: The number a grader gives a run. A training loop learns from it, and it can differ from whether the
+    task was really solved.
+- id: policy
+  term: policy
+  aliases:
+  - policy
+  - policies
+  strict: false
+  wire: loop
+  definition: 'The model''s behaviour in an environment: the actions it takes from what it sees. In this course
+    a scripted policy stands in for a model.'
+- id: reward-hacking
+  term: reward hacking
+  aliases:
+  - reward hacking
+  - reward hack
+  - reward hacks
+  strict: true
+  wire: verify
+  definition: A run that earns the reward without solving the task, for example by editing the test that grades
+    it.
+- id: reinforcement-learning
+  term: reinforcement learning
+  aliases:
+  - reinforcement learning
+  strict: true
+  wire: verify
+  definition: Training a model by letting it try actions in an environment and adjusting it toward the actions that
+    earn more reward.
+- id: rl-environment
+  term: RL environment
+  aliases:
+  - RL environment
+  - RL environments
+  strict: true
+  wire: verify
+  definition: The tasks, sandbox, tools, grader and reward that a policy is trained or tested in.
+- id: hidden-tests
+  term: hidden tests
+  aliases:
+  - hidden tests
+  - hidden test
+  strict: true
+  wire: verify
+  definition: Tests the policy cannot read or edit. They check the work on inputs the workspace does not show.
+- id: reset
+  term: reset
+  aliases:
+  - reset
+  - resets
+  - resettable
+  strict: false
+  wire: loop
+  definition: Returning an environment to its starting state, so the next run begins from the same workspace and
+    seeds.
+- id: determinism
+  term: determinism
+  aliases:
+  - determinism
+  - deterministic
+  strict: false
+  wire: verify
+  definition: The same inputs and seeds give the same run, so a result can be reproduced.

@@ -1,0 +1,244 @@
+{
+  "schema": 1,
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "fact": "models.sonnet-5-5-price"
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given. Say done when the work is finished.",
+  "rules": [],
+  "outside": {},
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "seed_base": 20261010,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "id": "f1-sprawl",
+  "title": "Three notes, one reader each, and a reader again for each",
+  "task": "Read the three notes in notes/ and write summary.txt with one line per note.",
+  "workspace": {
+    "notes/a.txt": "Buy milk.\n",
+    "notes/b.txt": "Call Sam.\n",
+    "notes/c.txt": "Pay Ana.\n"
+  },
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [],
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "checks": [
+    {
+      "file": "summary.txt",
+      "contains": "Pay Ana"
+    },
+    {
+      "file": "summary.txt",
+      "contains": "Call Sam"
+    }
+  ],
+  "agents": {
+    "note-a": {
+      "script": [
+        {
+          "say": "The note says: Buy milk.",
+          "tools": [
+            [
+              "read_file",
+              {
+                "path": "notes/a.txt"
+              }
+            ]
+          ]
+        },
+        {
+          "say": "The note says: Buy milk.",
+          "stop": "end_turn"
+        }
+      ]
+    },
+    "note-b": {
+      "script": [
+        {
+          "say": "The note says: Call Sam.",
+          "tools": [
+            [
+              "read_file",
+              {
+                "path": "notes/b.txt"
+              }
+            ]
+          ]
+        },
+        {
+          "say": "The note says: Call Sam.",
+          "stop": "end_turn"
+        }
+      ]
+    },
+    "note-c": {
+      "script": [
+        {
+          "say": "The note says: Pay Ana.",
+          "tools": [
+            [
+              "read_file",
+              {
+                "path": "notes/c.txt"
+              }
+            ]
+          ]
+        },
+        {
+          "say": "The note says: Pay Ana.",
+          "stop": "end_turn"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "say": "I'll ask a reader for the first note.",
+      "tools": [
+        [
+          "run_agent",
+          {
+            "agent": "note-a",
+            "brief": "Read notes/a.txt and return the note."
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Now a reader for the second note.",
+      "tools": [
+        [
+          "run_agent",
+          {
+            "agent": "note-b",
+            "brief": "Read notes/b.txt and return the note."
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Now a reader for the third note.",
+      "tools": [
+        [
+          "run_agent",
+          {
+            "agent": "note-c",
+            "brief": "Read notes/c.txt and return the note."
+          }
+        ]
+      ]
+    },
+    {
+      "say": "I'll ask again for the first note, to be sure.",
+      "tools": [
+        [
+          "run_agent",
+          {
+            "agent": "note-a",
+            "brief": "Read notes/a.txt and return the note."
+          }
+        ]
+      ]
+    },
+    {
+      "say": "I'll ask again for the second note, to be sure.",
+      "tools": [
+        [
+          "run_agent",
+          {
+            "agent": "note-b",
+            "brief": "Read notes/b.txt and return the note."
+          }
+        ]
+      ]
+    },
+    {
+      "say": "I'll ask again for the third note, to be sure.",
+      "tools": [
+        [
+          "run_agent",
+          {
+            "agent": "note-c",
+            "brief": "Read notes/c.txt and return the note."
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Writing the summary.",
+      "tools": [
+        [
+          "write_file",
+          {
+            "path": "summary.txt",
+            "content": "Buy milk.\nCall Sam.\nPay Ana.\n"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Done. Three notes, one line each.",
+      "stop": "end_turn"
+    }
+  ],
+  "boards": [
+    "f1-old",
+    "f1-new"
+  ],
+  "incident": {
+    "family": "sub-agent-sprawl",
+    "wire": "loop",
+    "board": "f1-old",
+    "seed": 0,
+    "first_bad_seq": 76,
+    "accept_seqs": [
+      74,
+      75
+    ],
+    "why": "The parent had all three notes by event 68. At 74 it asked for the first note again, and the harness started a fourth reader at 76 with no cap. The repeats at 97 and 120 did the same. The summary is right and the run ends done and passed, but it started six readers for three notes.",
+    "hint": "Count the readers the parent starts. For each repeat, ask what the parent did not already know.",
+    "notes": [
+      {
+        "seq": 22,
+        "text": "The first note comes back whole at event 22. Nothing is missing, so nothing needs a second reader. Tempting: read the repeat as a retry."
+      },
+      {
+        "seq": 74,
+        "text": "The parent says it wants to be sure. That is an ordinary reply from the model. The harness is what lets the reader start."
+      },
+      {
+        "seq": 153,
+        "text": "The run ends done and passed. The checks say nothing about how many readers ran, so the pass hides the cost."
+      }
+    ],
+    "fixes": [
+      {
+        "text": "Cap the sub-agents at the number of pieces of work",
+        "why": "Set subagents max to three. The repeat at 76 is refused with a message the parent can read, and the summary is the same."
+      },
+      {
+        "text": "Ask the model in the prompt to avoid repeats",
+        "why": "Tempting. A prompt is a request. The harness still starts the reader when the model asks."
+      },
+      {
+        "text": "Give each reader a longer turn limit",
+        "why": "Tempting and wrong. A longer limit lets each reader run longer. It does not stop the repeats."
+      }
+    ],
+    "correct_fix": 0,
+    "par_s": 60
+  }
+}

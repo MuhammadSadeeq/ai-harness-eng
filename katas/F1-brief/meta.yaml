@@ -1,0 +1,27 @@
+id: F1-brief
+module: F1
+title: A sub-agent brief whose result can be checked
+objectives:
+- F1.o4
+minutes: 25
+hints:
+- 'Start with the three parts a brief must have: the task, the files it may read, and the fields it must return. Check which one is missing from the tests.'
+- Write the task, then one line listing the files, then one line per field. Refuse the brief when a part is empty. For the check, read every line and look for each field with a value after its colon.
+- 'Nearly the code: files required, fields required, one ''- field'' line each; then the check: values from each line after the first colon, every field present and non-empty.'
+from_memory: true
+wrong_solutions:
+- name: no-files-check
+  code: "def make_brief(task, files, fields):\n    if not task.strip():\n        raise ValueError(\"a brief needs a task\")\n    if not fields:\n        raise ValueError(\"a brief says what the result must\
+    \ return\")\n    lines = [f\"Task: {task.strip()}\", f\"Files: {', '.join(files)}\", \"Return these fields, one per line, as 'field: value':\"]\n    lines += [f\"- {field}\" for field in fields]\n \
+    \   return \"\\n\".join(lines) + \"\\n\"\n\n\ndef check_result(result, fields):\n    values = {}\n    for line in result.splitlines():\n        key, sep, value = line.partition(\":\")\n        if sep:\n\
+    \            values[key.strip()] = value.strip()\n    return all(values.get(field, \"\") != \"\" for field in fields)\n"
+- name: empty-field-passes
+  code: "def make_brief(task, files, fields):\n    if not task.strip():\n        raise ValueError(\"a brief needs a task\")\n    if not files:\n        raise ValueError(\"a brief names the files the sub-agent\
+    \ may read\")\n    if not fields:\n        raise ValueError(\"a brief says what the result must return\")\n    lines = [f\"Task: {task.strip()}\", f\"Files: {', '.join(files)}\", \"Return these fields,\
+    \ one per line, as 'field: value':\"]\n    lines += [f\"- {field}\" for field in fields]\n    return \"\\n\".join(lines) + \"\\n\"\n\n\ndef check_result(result, fields):\n    keys = {line.partition(\"\
+    :\")[0].strip() for line in result.splitlines() if \":\" in line}\n    return all(field in keys for field in fields)\n"
+- name: first-line-only
+  code: "def make_brief(task, files, fields):\n    if not task.strip():\n        raise ValueError(\"a brief needs a task\")\n    if not files:\n        raise ValueError(\"a brief names the files the sub-agent\
+    \ may read\")\n    if not fields:\n        raise ValueError(\"a brief says what the result must return\")\n    lines = [f\"Task: {task.strip()}\", f\"Files: {', '.join(files)}\", \"Return these fields,\
+    \ one per line, as 'field: value':\"]\n    lines += [f\"- {field}\" for field in fields]\n    return \"\\n\".join(lines) + \"\\n\"\n\n\ndef check_result(result, fields):\n    first = result.splitlines()[0]\
+    \ if result.splitlines() else \"\"\n    key, sep, value = first.partition(\":\")\n    return bool(sep) and value.strip() != \"\"\n"

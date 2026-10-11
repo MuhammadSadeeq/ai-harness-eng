@@ -1,0 +1,80 @@
+- id: F1-p1
+  objective: F1.o1
+  mode: predict
+  question: A parent has three notes. It starts a reader for each, then starts a reader again for each note. What
+    happens to the summary, and what happens to the cost?
+  options:
+  - text: 'The summary is the same, and the run costs more: each repeat is a new reader with its own input.'
+    why: Right. Each repeat starts a reader that reads the same note again. The harness does not refuse it, so the
+      bill grows and the answer does not change.
+  - text: The repeats disagree with the first readers, so the summary is wrong.
+    why: Tempting. The readers read the same file. They agree, and nothing in the run compares them.
+  - text: Sub-agents run in parallel for free, so the cost stays the same.
+    why: Tempting and wrong. A sub-agent is another loop with its own turns and its own input. Parallel does not
+      make it free.
+  answer: 0
+  outcome: The summary matches the notes. The run started its readers again for notes it had already read, and it
+    cost more for the same answer.
+- id: F1-c1
+  objective: F1.o1
+  mode: check
+  question: Which is an honest reason to add a sub-agent?
+  options:
+  - text: It makes the work look bigger in a demo.
+    why: Tempting and wrong. The reason has to be about the work, not the picture.
+  - text: It keeps a long, noisy search out of the parent's context, so the parent keeps its room.
+    why: 'Right. Context isolation is one of the two honest reasons: a separate context for a separate piece of
+      work.'
+  - text: It lets two agents make a shared decision without talking to each other.
+    why: Tempting and wrong. Agents that share decisions implicitly disagree in ways no one sees.
+  answer: 1
+- id: F1-c2
+  objective: F1.o2
+  mode: check
+  question: A generator and an evaluator run in a loop. What failure should you watch for?
+  options:
+  - text: The evaluator approves its own style of work.
+    why: Right. An evaluator that shares the generator's habits passes its work. Its criteria must come from outside
+      the loop.
+  - text: The two agents need too much memory to run.
+    why: Tempting. Memory matters less than shared blind spots in this shape.
+  - text: The loop costs nothing, because each side is short.
+    why: Tempting and wrong. Each turn of the loop is a model call, so every round costs more.
+  answer: 0
+- id: F1-c3
+  objective: F1.o3
+  mode: check
+  question: A sub-agent must judge a decision that depends on the parent's last ten messages. Which context does
+    it need?
+  options:
+  - text: An isolated context, so it is cheaper.
+    why: Tempting. Isolated is cheaper, but it cannot see the messages the decision depends on.
+  - text: A forked context, so it starts from the parent's messages.
+    why: Right. The forked sub-agent carries the messages, so its first request is larger, and it has what it needs.
+  - text: No context at all, and the brief alone.
+    why: Tempting and wrong. The brief alone is what an isolated context gets, and it is missing the thread.
+  answer: 1
+- id: F1-c4
+  objective: F1.o5
+  mode: check
+  question: A sub-agent times out and returns nothing. What should the parent do?
+  options:
+  - text: Treat the silence as a finding that nothing was there.
+    why: Tempting and wrong. A timeout is a failure of the reader, and the parent has learnt nothing.
+  - text: Decide with what it has, and say which note is missing.
+    why: Right. A multi-agent system fails in parts. The parent must say what it could not learn and what it did.
+  - text: Start the same reader again with no limit.
+    why: Tempting. That repeats the sprawl with no cap, the failure this module starts from.
+  answer: 1
+- id: F1-c5
+  objective: F1.o4
+  mode: check
+  question: Which brief lets the parent check the result when it comes back?
+  options:
+  - text: Find something useful in the notes.
+    why: Tempting and vague. Nothing in the result can be checked against that.
+  - text: 'Read notes/a.txt. Return the date as ''date: value''.'
+    why: Right. A named file and a named field let the parent check the result line by line.
+  - text: Do whatever is needed and report back.
+    why: Tempting and wrong. A brief with no result format gives the parent nothing to check.
+  answer: 1

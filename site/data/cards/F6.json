@@ -1,0 +1,44 @@
+[
+ {
+  "back": "Tasks, a sandbox, tools, a grader and a reward. The grader turns a run into the reward.",
+  "front": "What does an environment contain?",
+  "id": "F6-k1",
+  "objective": "F6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A run that earns the reward without solving the task. Editing the test that grades it is one way.",
+  "front": "What is reward hacking?",
+  "id": "F6-k2",
+  "objective": "F6.o3",
+  "type": "term"
+ },
+ {
+  "back": "The same starting state, so the next run begins from the same workspace and seeds.",
+  "front": "What does a reset give you?",
+  "id": "F6-k3",
+  "objective": "F6.o2",
+  "type": "term"
+ },
+ {
+  "back": "Judge the work on what the policy cannot edit: a pristine copy of the tests and hidden cases.",
+  "front": "What closes a hack in the grader?",
+  "id": "F6-k4",
+  "objective": "F6.o3",
+  "type": "term"
+ },
+ {
+  "back": "Its reward trains the policy, so a gamed grader teaches the gaming.",
+  "front": "Why does a training environment need a trusted grader more than an eval?",
+  "id": "F6-k5",
+  "objective": "F6.o4",
+  "type": "term"
+ },
+ {
+  "back": "No network egress by default, and scoped credentials.",
+  "front": "What is the first containment control?",
+  "id": "F6-k6",
+  "objective": "F6.o5",
+  "type": "term"
+ }
+]

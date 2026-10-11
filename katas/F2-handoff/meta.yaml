@@ -1,0 +1,24 @@
+id: F2-handoff
+module: F2
+title: A progress note the next session can act on
+objectives:
+- F2.o2
+- F2.o4
+minutes: 25
+hints:
+- Read the tests for the rules a note must follow. Which line must always be there, and what makes a note refused?
+- Write one line per part. Check the done items and the next step before you write anything. The next step is one line, so refuse a step that has a newline in it.
+- 'Nearly the code: done = trimmed non-empty items; refuse when no done or no next; reject a newline in next; write ''Done:'' per item, ''Next:'', ''Open:'' per question, and one ''Files:'' line.'
+from_memory: true
+wrong_solutions:
+- name: next-optional
+  code: "def handoff(state):\n    done = [item.strip() for item in state.get(\"done\", []) if item.strip()]\n    if not done:\n        raise ValueError(\"a handoff says what is done\")\n    nxt = state.get(\"\
+    next\", \"\").strip()\n    lines = [f\"Done: {item}\" for item in done]\n    lines.append(f\"Next: {nxt}\")\n    return \"\\n\".join(lines) + \"\\n\"\n"
+- name: drops-open
+  code: "def handoff(state):\n    done = [item.strip() for item in state.get(\"done\", []) if item.strip()]\n    nxt = state.get(\"next\", \"\").strip()\n    if not done:\n        raise ValueError(\"a handoff\
+    \ says what is done\")\n    if not nxt:\n        raise ValueError(\"a handoff needs one next step\")\n    lines = [f\"Done: {item}\" for item in done]\n    lines.append(f\"Next: {nxt}\")\n    files\
+    \ = [name.strip() for name in state.get(\"files\", []) if name.strip()]\n    if files:\n        lines.append(f\"Files: {', '.join(files)}\")\n    return \"\\n\".join(lines) + \"\\n\"\n"
+- name: multi-line-next
+  code: "def handoff(state):\n    done = [item.strip() for item in state.get(\"done\", []) if item.strip()]\n    nxt = state.get(\"next\", \"\").strip()\n    if not done:\n        raise ValueError(\"a handoff\
+    \ says what is done\")\n    if not nxt:\n        raise ValueError(\"a handoff needs one next step\")\n    lines = [f\"Done: {item}\" for item in done]\n    lines.append(f\"Next: {nxt}\")\n    return\
+    \ \"\\n\".join(lines) + \"\\n\"\n"

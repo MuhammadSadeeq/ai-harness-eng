@@ -1,0 +1,9 @@
+{
+  "id": "shift-board",
+  "label": "The handoff note is the progress file",
+  "modules": {
+    "progress_file": {
+      "path": "progress.md"
+    }
+  }
+}

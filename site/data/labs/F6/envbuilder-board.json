@@ -1,0 +1,5 @@
+{
+ "id": "envbuilder-board",
+ "label": "The base board: no grader module, no sandbox",
+ "modules": {}
+}

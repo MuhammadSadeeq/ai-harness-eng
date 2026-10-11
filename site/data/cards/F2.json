@@ -1,0 +1,44 @@
+[
+ {
+  "back": "No. It has what the harness sends: the task, the tools, and any progress file the harness passes in.",
+  "front": "Does a new session remember the last one?",
+  "id": "F2-k1",
+  "objective": "F2.o1",
+  "type": "term"
+ },
+ {
+  "back": "Each session starts with no memory of the last. The work has to be written down, or the next session redoes it or breaks it.",
+  "front": "What is the shift-worker problem?",
+  "id": "F2-k2",
+  "objective": "F2.o1",
+  "type": "term"
+ },
+ {
+  "back": "The environment, a feature list and a progress file, with an initial commit that shows what was added.",
+  "front": "What does an initializer agent set up?",
+  "id": "F2-k3",
+  "objective": "F2.o2",
+  "type": "term"
+ },
+ {
+  "back": "It says what is done, what is next and what is open, so a fresh session finds the state without guessing.",
+  "front": "What is a progress file for?",
+  "id": "F2-k4",
+  "objective": "F2.o2",
+  "type": "term"
+ },
+ {
+  "back": "Its criteria come from outside the generator's work, so it does not pass its own blind spots.",
+  "front": "Why is the evaluator a separate role?",
+  "id": "F2-k5",
+  "objective": "F2.o3",
+  "type": "term"
+ },
+ {
+  "back": "The next step on one line, the files to start from, and what is already done.",
+  "front": "What must a handoff note name?",
+  "id": "F2-k6",
+  "objective": "F2.o4",
+  "type": "term"
+ }
+]

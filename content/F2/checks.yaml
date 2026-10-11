@@ -1,0 +1,67 @@
+- id: F2-p1
+  objective: F2.o1
+  mode: predict
+  question: Session one fixed the parser and wrote a note. Session two starts with no note in its request. What
+    does it do first?
+  options:
+  - text: It reads the note, and keeps the parser as it is.
+    why: Tempting. The note exists in the workspace, but nothing in session two's request points to it.
+  - text: It rewrites the parser, because it does not know the parser is done.
+    why: Right. The next session sees the code and the task, and no record that the work is finished. Its first
+      move is a plausible guess.
+  - text: It runs the tests and stops, since they were the last thing done.
+    why: Tempting and wrong. Without the note it does not know what was last done.
+  answer: 1
+  outcome: It rewrote the parser, changed the migrations, and wrote a report that says the tests did not run. The
+    run ends done and fails the checks.
+- id: F2-c1
+  objective: F2.o1
+  mode: check
+  question: A new session begins on a long task. What tells it what the last session did?
+  options:
+  - text: Its own memory of the last session.
+    why: Tempting and wrong. A new session has no memory of the last one. It has what the harness sends.
+  - text: The progress file, which the harness passes into the new session.
+    why: Right. What the next session reads is the state the harness gives it, and the progress file is the record
+      that carries it.
+    fact: anthropic.harn-progress-file
+  - text: The model's summary of the last session, in its own words.
+    why: Tempting. A summary helps only if the harness passes it on, and it may not say what is still open.
+  answer: 1
+- id: F2-c2
+  objective: F2.o2
+  mode: check
+  question: What is the first session of a long task for?
+  options:
+  - text: Finishing as much of the task as the window allows.
+    why: Tempting. The first session should prepare the later ones, not race ahead of them.
+  - text: Setting up the files, a feature list and a progress file, with an initial commit.
+    why: Right. An initializer agent does this in its first session, as Anthropic describes it.
+    fact: anthropic.harn-initializer-agent
+  - text: Testing every feature before any work starts.
+    why: Tempting and wrong. No features exist yet to test.
+  answer: 1
+- id: F2-c3
+  objective: F2.o3
+  mode: check
+  question: Who grades each step of a long task?
+  options:
+  - text: The generator, since it did the work and knows it best.
+    why: Tempting and wrong. A generator that grades itself passes its own blind spots.
+  - text: A separate evaluator, with criteria written outside the generator's work.
+    why: Right. The evaluator is its own role, and its criteria come from outside the work it grades.
+  - text: 'Nobody: the done claim at the end of the last session is the grade.'
+    why: Tempting. A done claim is the model's own word, not a grade.
+  answer: 1
+- id: F2-c4
+  objective: F2.o4
+  mode: check
+  question: 'A handoff note says only: ''Next: fix the bug.'' What is missing?'
+  options:
+  - text: Nothing. The next session will work out which bug.
+    why: Tempting and wrong. The next session then guesses, and guessing is what the note exists to stop.
+  - text: Which bug, which files to start from, and what is already done.
+    why: Right. A handoff names the next step, the files to start from and what is done, so no part is guessed.
+  - text: A longer note with every line of the work.
+    why: Tempting. Length is not the test. A note the next session can act on is short and specific.
+  answer: 1

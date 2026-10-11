@@ -1,0 +1,11 @@
+{
+ "id": "eng-subagents-isolated",
+ "label": "sub-agents, isolated, at most 5",
+ "modules": {
+  "subagents": {
+   "context": "isolated",
+   "max": 5,
+   "max_turns": 2
+  }
+ }
+}

@@ -1,0 +1,30 @@
+- id: F1-s1
+  objectives:
+  - F1.o1
+  - F1.o5
+  prompt: Your task needs five files read. Would you add sub-agents? Argue for and against, and say what you would
+    check.
+  model_answer: 'Add them when the reading is separate and long, so the parent''s context stays clear. Against:
+    each reader is a loop with its own bill, and a reader can fail, time out or repeat work. I would start with
+    one parent, give each reader a brief that names its file and its field, and check each answer before I rely
+    on it.'
+  rubric:
+  - 'Gives an honest reason: separate, long work, or context isolation'
+  - 'Names the cost of a sub-agent: its own loop and input'
+  - Says what happens when a sub-agent fails or times out
+  - Says how the parent checks the answers it gets back
+- id: F1-s2
+  objectives:
+  - F1.o2
+  - F1.o3
+  prompt: Compare one agent with an orchestrator and workers on cost and failure. Which context do the workers get,
+    and why?
+  model_answer: 'One agent is cheaper and easier to follow, but its one context fills with every step. An orchestrator
+    with workers spreads reading across several contexts, and it adds cost and new failures: a brief that drops
+    a constraint, and workers that repeat each other. Workers get an isolated context when they need only their
+    brief; they get a forked one when the parent''s messages decide their work.'
+  rubric:
+  - Compares cost and the failure modes of the two shapes
+  - 'Names a failure of the orchestrator shape: a dropped constraint or repeated work'
+  - Chooses isolated or forked for a stated reason
+  - Says what the parent gets back, and how it checks it

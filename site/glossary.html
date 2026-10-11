@@ -224,6 +224,15 @@
         </p>
         <p class="term-alias">Also written: breaking changes</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-brief">
+        <h3 class="term-name"><dfn id="term-brief">brief</dfn></h3>
+        <p class="term-def">The message a sub-agent starts from: the task, the files it may read, and the fields its result must return.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/many-agents.html">F1 · Many agents: when and how</a></span>
+        </p>
+        <p class="term-alias">Also written: briefs</p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-c" data-filter-group>
       <h2>C</h2>
@@ -606,6 +615,15 @@
         </p>
         <p class="term-alias">Also written: destructive tools</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-determinism">
+        <h3 class="term-name"><dfn id="term-determinism">determinism</dfn></h3>
+        <p class="term-def">The same inputs and seeds give the same run, so a result can be reproduced.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/environments.html">F6 · Environments: harnesses that train and test models</a></span>
+        </p>
+        <p class="term-alias">Also written: deterministic</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-diff">
         <h3 class="term-name"><dfn id="term-diff">diff</dfn></h3>
         <p class="term-def">The text that shows which lines a change adds, removes or leaves alone, file by file.</p>
@@ -702,6 +720,15 @@
           <span class="taught">Taught in <a href="modules/evals-in-practice.html">D3 · Evals in practice</a></span>
         </p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-evaluator">
+        <h3 class="term-name"><dfn id="term-evaluator">evaluator</dfn></h3>
+        <p class="term-def">The role that grades each step against criteria written outside the generator&#x27;s own work.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/long-running-agents.html">F2 · Long-running agents</a></span>
+        </p>
+        <p class="term-alias">Also written: evaluators</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-event">
         <h3 class="term-name"><dfn id="term-event">event</dfn></h3>
         <p class="term-def">One record the harness writes as it runs: a model call, a tool call, a permission decision. Each has a sequence number and a time.</p>
@@ -785,6 +812,24 @@
         </p>
         <p class="term-alias">Also written: failure modes</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-fan-out">
+        <h3 class="term-name"><dfn id="term-fan-out">fan-out</dfn></h3>
+        <p class="term-def">Starting several sub-agents at once, one per piece of work, and reading their results together.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/many-agents.html">F1 · Many agents: when and how</a></span>
+        </p>
+        <p class="term-alias">Also written: fan out, fanning out</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-feature-list">
+        <h3 class="term-name"><dfn id="term-feature-list">feature list</dfn></h3>
+        <p class="term-def">A file of the work the task needs, each item marked done or not, so a session can see what is left without guessing.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/long-running-agents.html">F2 · Long-running agents</a></span>
+        </p>
+        <p class="term-alias">Also written: feature lists</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-file-permissions">
         <h3 class="term-name"><dfn id="term-file-permissions">file permissions</dfn></h3>
         <p class="term-def">The rules that say which user may read, write or run a file, given its owner, its group and its mode.</p>
@@ -811,6 +856,15 @@
           <span class="taught">Taught in <a href="modules/pytest-primer.html">T6 · pytest</a></span>
         </p>
         <p class="term-alias">Also written: fixtures</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-forked-context">
+        <h3 class="term-name"><dfn id="term-forked-context">forked context</dfn></h3>
+        <p class="term-def">A sub-agent that starts from the parent&#x27;s messages so far, plus its brief. It knows more, and its first request is larger.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/many-agents.html">F1 · Many agents: when and how</a></span>
+        </p>
+        <p class="term-alias">Also written: forked contexts</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-framework">
         <h3 class="term-name"><dfn id="term-framework">framework</dfn></h3>
@@ -840,6 +894,15 @@
           <span class="taught">Taught in <a href="modules/observability.html">C12 · Observability: traces you can read</a></span>
         </p>
         <p class="term-alias">Also written: GenAI conventions</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-generator">
+        <h3 class="term-name"><dfn id="term-generator">generator</dfn></h3>
+        <p class="term-def">The role that does the work of each step and hands its output to the evaluator.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/long-running-agents.html">F2 · Long-running agents</a></span>
+        </p>
+        <p class="term-alias">Also written: generators</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-golden-set">
         <h3 class="term-name"><dfn id="term-golden-set">golden set</dfn></h3>
@@ -940,6 +1003,15 @@
         </p>
         <p class="term-alias">Also written: headers</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-hidden-tests">
+        <h3 class="term-name"><dfn id="term-hidden-tests">hidden tests</dfn></h3>
+        <p class="term-def">Tests the policy cannot read or edit. They check the work on inputs the workspace does not show.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/environments.html">F6 · Environments: harnesses that train and test models</a></span>
+        </p>
+        <p class="term-alias">Also written: hidden test</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-hook">
         <h3 class="term-name"><dfn id="term-hook">hook</dfn></h3>
         <p class="term-def">Code the harness runs at a fixed point, such as before a tool call, so the rule holds whatever the prompt says.</p>
@@ -1039,6 +1111,15 @@
           <span class="taught">Taught in <a href="modules/statistics-for-a-random-system.html">D2 · Statistics for a random system</a></span>
         </p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-initializer-agent">
+        <h3 class="term-name"><dfn id="term-initializer-agent">initializer agent</dfn></h3>
+        <p class="term-def">The first session of a long task. It sets up the files, a feature list and a progress file, so later sessions start from a known state.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/long-running-agents.html">F2 · Long-running agents</a></span>
+        </p>
+        <p class="term-alias">Also written: initializer agents, initializer</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-input-tokens">
         <h3 class="term-name"><dfn id="term-input-tokens">input tokens</dfn></h3>
         <p class="term-def">The tokens the model reads on a call: the instructions, the earlier messages, the tool results and the new message.</p>
@@ -1090,6 +1171,15 @@
           <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
           <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
         </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-isolated-context">
+        <h3 class="term-name"><dfn id="term-isolated-context">isolated context</dfn></h3>
+        <p class="term-def">A sub-agent that starts from its brief alone. It cannot see the parent&#x27;s messages, so its first request is small.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/many-agents.html">F1 · Many agents: when and how</a></span>
+        </p>
+        <p class="term-alias">Also written: isolated contexts</p>
       </div>
     </section>
     <section class="glossary-group" id="letter-j" data-filter-group>
@@ -1148,6 +1238,15 @@
           <span class="taught">Taught in <a href="modules/evals-in-practice.html">D3 · Evals in practice</a></span>
         </p>
         <p class="term-alias">Also written: LLM judges</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-long-running-agent">
+        <h3 class="term-name"><dfn id="term-long-running-agent">long-running agent</dfn></h3>
+        <p class="term-def">An agent whose task spans more sessions than one context window holds. It needs a record of its state to carry on.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/long-running-agents.html">F2 · Long-running agents</a></span>
+        </p>
+        <p class="term-alias">Also written: long-running agents, long-running</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-loop-detection">
         <h3 class="term-name"><dfn id="term-loop-detection">loop detection</dfn></h3>
@@ -1370,6 +1469,15 @@
           <span class="taught">Taught in <a href="modules/observability.html">C12 · Observability: traces you can read</a></span>
         </p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-orchestrator">
+        <h3 class="term-name"><dfn id="term-orchestrator">orchestrator</dfn></h3>
+        <p class="term-def">The parent agent that starts sub-agents, gives each one a brief, and reads what they return.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/many-agents.html">F1 · Many agents: when and how</a></span>
+        </p>
+        <p class="term-alias">Also written: orchestrators</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-orphaned-tool-call">
         <h3 class="term-name"><dfn id="term-orphaned-tool-call">orphaned tool call</dfn></h3>
         <p class="term-def">A tool call with no result after it. A request that holds one is refused.</p>
@@ -1541,6 +1649,24 @@
         </p>
         <p class="term-alias">Also written: permission</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-planner">
+        <h3 class="term-name"><dfn id="term-planner">planner</dfn></h3>
+        <p class="term-def">The role that splits a task into steps and writes the order they run in. It hands the steps to the generator.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/long-running-agents.html">F2 · Long-running agents</a></span>
+        </p>
+        <p class="term-alias">Also written: planners</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-policy">
+        <h3 class="term-name"><dfn id="term-policy">policy</dfn></h3>
+        <p class="term-def">The model&#x27;s behaviour in an environment: the actions it takes from what it sees. In this course a scripted policy stands in for a model.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/environments.html">F6 · Environments: harnesses that train and test models</a></span>
+        </p>
+        <p class="term-alias">Also written: policies</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-pre-tool-hook">
         <h3 class="term-name"><dfn id="term-pre-tool-hook">pre-tool hook</dfn></h3>
         <p class="term-def">A hook that runs before each tool call and decides whether the call may run.</p>
@@ -1585,6 +1711,15 @@
           <span class="taught">Taught in <a href="modules/mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></span>
         </p>
         <p class="term-alias">Also written: programmatic tool call</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-progress-file">
+        <h3 class="term-name"><dfn id="term-progress-file">progress file</dfn></h3>
+        <p class="term-def">A file the sessions write and read: what is done, what is next and what is open. The harness can pass it into the next session.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/long-running-agents.html">F2 · Long-running agents</a></span>
+        </p>
+        <p class="term-alias">Also written: progress files</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-progressive-disclosure">
         <h3 class="term-name"><dfn id="term-progressive-disclosure">progressive disclosure</dfn></h3>
@@ -1712,6 +1847,14 @@
         </p>
         <p class="term-alias">Also written: regression evals</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-reinforcement-learning">
+        <h3 class="term-name"><dfn id="term-reinforcement-learning">reinforcement learning</dfn></h3>
+        <p class="term-def">Training a model by letting it try actions in an environment and adjusting it toward the actions that earn more reward.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/environments.html">F6 · Environments: harnesses that train and test models</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-reliability">
         <h3 class="term-name"><dfn id="term-reliability">reliability</dfn></h3>
         <p class="term-def">How often a task works all the way through. In this course it comes from the system around the model.</p>
@@ -1729,6 +1872,15 @@
         </p>
         <p class="term-alias">Also written: requests</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-reset">
+        <h3 class="term-name"><dfn id="term-reset">reset</dfn></h3>
+        <p class="term-def">Returning an environment to its starting state, so the next run begins from the same workspace and seeds.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/environments.html">F6 · Environments: harnesses that train and test models</a></span>
+        </p>
+        <p class="term-alias">Also written: resets, resettable</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-response">
         <h3 class="term-name"><dfn id="term-response">response</dfn></h3>
         <p class="term-def">What the model sends back for one call: a list of content blocks and a stop reason.</p>
@@ -1745,6 +1897,33 @@
           <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
           <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
         </p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-reward">
+        <h3 class="term-name"><dfn id="term-reward">reward</dfn></h3>
+        <p class="term-def">The number a grader gives a run. A training loop learns from it, and it can differ from whether the task was really solved.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/environments.html">F6 · Environments: harnesses that train and test models</a></span>
+        </p>
+        <p class="term-alias">Also written: rewards</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-reward-hacking">
+        <h3 class="term-name"><dfn id="term-reward-hacking">reward hacking</dfn></h3>
+        <p class="term-def">A run that earns the reward without solving the task, for example by editing the test that grades it.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/environments.html">F6 · Environments: harnesses that train and test models</a></span>
+        </p>
+        <p class="term-alias">Also written: reward hack, reward hacks</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-rl-environment">
+        <h3 class="term-name"><dfn id="term-rl-environment">RL environment</dfn></h3>
+        <p class="term-def">The tasks, sandbox, tools, grader and reward that a policy is trained or tested in.</p>
+        <p class="term-meta">
+          <span class="wire w-verify"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-shield"></use></svg> Verification</span>
+          <span class="taught">Taught in <a href="modules/environments.html">F6 · Environments: harnesses that train and test models</a></span>
+        </p>
+        <p class="term-alias">Also written: RL environments</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-role">
         <h3 class="term-name"><dfn id="term-role">role</dfn></h3>
@@ -1881,6 +2060,15 @@
           <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
         </p>
         <p class="term-alias">Also written: server-sent event</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-session">
+        <h3 class="term-name"><dfn id="term-session">session</dfn></h3>
+        <p class="term-def">One run of the harness on a task, from its first request to its end. A new session starts with what the harness sends it.</p>
+        <p class="term-meta">
+          <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
+          <span class="taught">Taught in <a href="modules/long-running-agents.html">F2 · Long-running agents</a></span>
+        </p>
+        <p class="term-alias">Also written: sessions</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-session-log">
         <h3 class="term-name"><dfn id="term-session-log">session log</dfn></h3>
@@ -2156,6 +2344,15 @@
         </p>
         <p class="term-alias">Also written: tool_use ids, tool_use id</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-topology">
+        <h3 class="term-name"><dfn id="term-topology">topology</dfn></h3>
+        <p class="term-def">The shape of a multi-agent system: who starts whom, who reads whose output, and where work waits.</p>
+        <p class="term-meta">
+          <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
+          <span class="taught">Taught in <a href="modules/many-agents.html">F1 · Many agents: when and how</a></span>
+        </p>
+        <p class="term-alias">Also written: topologies</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-trace">
         <h3 class="term-name"><dfn id="term-trace">trace</dfn></h3>
         <p class="term-def">The record of a run: each model call, reply, permission, tool call and check, in order.</p>
@@ -2369,7 +2566,7 @@
       </div>
     </section>
     </div>
-    <p class="glossary-count" data-glossary-count>255 terms</p>
+    <p class="glossary-count" data-glossary-count>277 terms</p>
     <!-- /gen:glossary -->
   </section>
 </main>

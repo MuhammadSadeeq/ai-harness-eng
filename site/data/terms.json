@@ -196,6 +196,18 @@
   "term": "breaking change",
   "wire": "loop"
  },
+ "brief": {
+  "aliases": [
+   "brief",
+   "briefs"
+  ],
+  "definition": "The message a sub-agent starts from: the task, the files it may read, and the fields its result must return.",
+  "id": "brief",
+  "module": "F1",
+  "strict": false,
+  "term": "brief",
+  "wire": "context"
+ },
  "cache-breakpoint": {
   "aliases": [
    "cache breakpoint",
@@ -702,6 +714,18 @@
   "term": "destructive tool",
   "wire": "tools"
  },
+ "determinism": {
+  "aliases": [
+   "determinism",
+   "deterministic"
+  ],
+  "definition": "The same inputs and seeds give the same run, so a result can be reproduced.",
+  "id": "determinism",
+  "module": "F6",
+  "strict": false,
+  "term": "determinism",
+  "wire": "verify"
+ },
  "diff": {
   "aliases": [
    "diff",
@@ -827,6 +851,18 @@
   "term": "eval awareness",
   "wire": "verify"
  },
+ "evaluator": {
+  "aliases": [
+   "evaluator",
+   "evaluators"
+  ],
+  "definition": "The role that grades each step against criteria written outside the generator's own work.",
+  "id": "evaluator",
+  "module": "F2",
+  "strict": true,
+  "term": "evaluator",
+  "wire": "verify"
+ },
  "event": {
   "aliases": [
    "event",
@@ -935,6 +971,31 @@
   "term": "failure mode",
   "wire": "verify"
  },
+ "fan-out": {
+  "aliases": [
+   "fan-out",
+   "fan out",
+   "fanning out"
+  ],
+  "definition": "Starting several sub-agents at once, one per piece of work, and reading their results together.",
+  "id": "fan-out",
+  "module": "F1",
+  "strict": true,
+  "term": "fan-out",
+  "wire": "loop"
+ },
+ "feature-list": {
+  "aliases": [
+   "feature list",
+   "feature lists"
+  ],
+  "definition": "A file of the work the task needs, each item marked done or not, so a session can see what is left without guessing.",
+  "id": "feature-list",
+  "module": "F2",
+  "strict": true,
+  "term": "feature list",
+  "wire": "context"
+ },
  "file-permissions": {
   "aliases": [
    "file permissions",
@@ -968,6 +1029,18 @@
   "module": "T6",
   "strict": true,
   "term": "fixture"
+ },
+ "forked-context": {
+  "aliases": [
+   "forked context",
+   "forked contexts"
+  ],
+  "definition": "A sub-agent that starts from the parent's messages so far, plus its brief. It knows more, and its first request is larger.",
+  "id": "forked-context",
+  "module": "F1",
+  "strict": true,
+  "term": "forked context",
+  "wire": "context"
  },
  "framework": {
   "aliases": [
@@ -1003,6 +1076,18 @@
   "strict": true,
   "term": "GenAI semantic conventions",
   "wire": "observe"
+ },
+ "generator": {
+  "aliases": [
+   "generator",
+   "generators"
+  ],
+  "definition": "The role that does the work of each step and hands its output to the evaluator.",
+  "id": "generator",
+  "module": "F2",
+  "strict": true,
+  "term": "generator",
+  "wire": "loop"
  },
  "golden-set": {
   "aliases": [
@@ -1132,6 +1217,18 @@
   "strict": true,
   "term": "header"
  },
+ "hidden-tests": {
+  "aliases": [
+   "hidden tests",
+   "hidden test"
+  ],
+  "definition": "Tests the policy cannot read or edit. They check the work on inputs the workspace does not show.",
+  "id": "hidden-tests",
+  "module": "F6",
+  "strict": true,
+  "term": "hidden tests",
+  "wire": "verify"
+ },
  "hook": {
   "aliases": [
    "hook",
@@ -1260,6 +1357,19 @@
   "term": "infrastructure noise",
   "wire": "verify"
  },
+ "initializer-agent": {
+  "aliases": [
+   "initializer agent",
+   "initializer agents",
+   "initializer"
+  ],
+  "definition": "The first session of a long task. It sets up the files, a feature list and a progress file, so later sessions start from a known state.",
+  "id": "initializer-agent",
+  "module": "F2",
+  "strict": true,
+  "term": "initializer agent",
+  "wire": "context"
+ },
  "input-schema": {
   "aliases": [
    "input_schema",
@@ -1329,6 +1439,18 @@
   "strict": true,
   "term": "is_error",
   "wire": "tools"
+ },
+ "isolated-context": {
+  "aliases": [
+   "isolated context",
+   "isolated contexts"
+  ],
+  "definition": "A sub-agent that starts from its brief alone. It cannot see the parent's messages, so its first request is small.",
+  "id": "isolated-context",
+  "module": "F1",
+  "strict": true,
+  "term": "isolated context",
+  "wire": "context"
  },
  "jitter": {
   "aliases": [
@@ -1400,6 +1522,19 @@
   "strict": true,
   "term": "LLM judge",
   "wire": "verify"
+ },
+ "long-running-agent": {
+  "aliases": [
+   "long-running agent",
+   "long-running agents",
+   "long-running"
+  ],
+  "definition": "An agent whose task spans more sessions than one context window holds. It needs a record of its state to carry on.",
+  "id": "long-running-agent",
+  "module": "F2",
+  "strict": true,
+  "term": "long-running agent",
+  "wire": "context"
  },
  "loop-detection": {
   "aliases": [
@@ -1684,6 +1819,18 @@
   "term": "OpenTelemetry",
   "wire": "observe"
  },
+ "orchestrator": {
+  "aliases": [
+   "orchestrator",
+   "orchestrators"
+  ],
+  "definition": "The parent agent that starts sub-agents, gives each one a brief, and reads what they return.",
+  "id": "orchestrator",
+  "module": "F1",
+  "strict": true,
+  "term": "orchestrator",
+  "wire": "loop"
+ },
  "orphaned-tool-call": {
   "aliases": [
    "orphaned tool call",
@@ -1909,6 +2056,30 @@
   "term": "permissions",
   "wire": "permissions"
  },
+ "planner": {
+  "aliases": [
+   "planner",
+   "planners"
+  ],
+  "definition": "The role that splits a task into steps and writes the order they run in. It hands the steps to the generator.",
+  "id": "planner",
+  "module": "F2",
+  "strict": true,
+  "term": "planner",
+  "wire": "loop"
+ },
+ "policy": {
+  "aliases": [
+   "policy",
+   "policies"
+  ],
+  "definition": "The model's behaviour in an environment: the actions it takes from what it sees. In this course a scripted policy stands in for a model.",
+  "id": "policy",
+  "module": "F6",
+  "strict": false,
+  "term": "policy",
+  "wire": "loop"
+ },
  "pre-tool-hook": {
   "aliases": [
    "pre-tool hook",
@@ -1967,6 +2138,18 @@
   "strict": true,
   "term": "programmatic tool calling",
   "wire": "tools"
+ },
+ "progress-file": {
+  "aliases": [
+   "progress file",
+   "progress files"
+  ],
+  "definition": "A file the sessions write and read: what is done, what is next and what is open. The harness can pass it into the next session.",
+  "id": "progress-file",
+  "module": "F2",
+  "strict": true,
+  "term": "progress file",
+  "wire": "context"
  },
  "progressive-disclosure": {
   "aliases": [
@@ -2130,6 +2313,17 @@
   "term": "regression eval",
   "wire": "verify"
  },
+ "reinforcement-learning": {
+  "aliases": [
+   "reinforcement learning"
+  ],
+  "definition": "Training a model by letting it try actions in an environment and adjusting it toward the actions that earn more reward.",
+  "id": "reinforcement-learning",
+  "module": "F6",
+  "strict": true,
+  "term": "reinforcement learning",
+  "wire": "verify"
+ },
  "reliability": {
   "aliases": [
    "reliability"
@@ -2151,6 +2345,19 @@
   "module": "A4",
   "strict": false,
   "term": "request",
+  "wire": "loop"
+ },
+ "reset": {
+  "aliases": [
+   "reset",
+   "resets",
+   "resettable"
+  ],
+  "definition": "Returning an environment to its starting state, so the next run begins from the same workspace and seeds.",
+  "id": "reset",
+  "module": "F6",
+  "strict": false,
+  "term": "reset",
   "wire": "loop"
  },
  "response": {
@@ -2175,6 +2382,43 @@
   "strict": true,
   "term": "retry budget",
   "wire": "errors"
+ },
+ "reward": {
+  "aliases": [
+   "reward",
+   "rewards"
+  ],
+  "definition": "The number a grader gives a run. A training loop learns from it, and it can differ from whether the task was really solved.",
+  "id": "reward",
+  "module": "F6",
+  "strict": false,
+  "term": "reward",
+  "wire": "verify"
+ },
+ "reward-hacking": {
+  "aliases": [
+   "reward hacking",
+   "reward hack",
+   "reward hacks"
+  ],
+  "definition": "A run that earns the reward without solving the task, for example by editing the test that grades it.",
+  "id": "reward-hacking",
+  "module": "F6",
+  "strict": true,
+  "term": "reward hacking",
+  "wire": "verify"
+ },
+ "rl-environment": {
+  "aliases": [
+   "RL environment",
+   "RL environments"
+  ],
+  "definition": "The tasks, sandbox, tools, grader and reward that a policy is trained or tested in.",
+  "id": "rl-environment",
+  "module": "F6",
+  "strict": true,
+  "term": "RL environment",
+  "wire": "verify"
  },
  "role": {
   "aliases": [
@@ -2354,6 +2598,18 @@
   "strict": true,
   "term": "server-sent events",
   "wire": "observe"
+ },
+ "session": {
+  "aliases": [
+   "session",
+   "sessions"
+  ],
+  "definition": "One run of the harness on a task, from its first request to its end. A new session starts with what the harness sends it.",
+  "id": "session",
+  "module": "F2",
+  "strict": false,
+  "term": "session",
+  "wire": "context"
  },
  "session-log": {
   "aliases": [
@@ -2722,6 +2978,18 @@
   "strict": true,
   "term": "tool_use_id",
   "wire": "tools"
+ },
+ "topology": {
+  "aliases": [
+   "topology",
+   "topologies"
+  ],
+  "definition": "The shape of a multi-agent system: who starts whom, who reads whose output, and where work waits.",
+  "id": "topology",
+  "module": "F1",
+  "strict": true,
+  "term": "topology",
+  "wire": "loop"
  },
  "trace": {
   "aliases": [

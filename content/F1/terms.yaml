@@ -1,0 +1,52 @@
+- id: orchestrator
+  term: orchestrator
+  aliases:
+  - orchestrator
+  - orchestrators
+  strict: true
+  wire: loop
+  definition: The parent agent that starts sub-agents, gives each one a brief, and reads what they return.
+- id: topology
+  term: topology
+  aliases:
+  - topology
+  - topologies
+  strict: true
+  wire: loop
+  definition: 'The shape of a multi-agent system: who starts whom, who reads whose output, and where work waits.'
+- id: isolated-context
+  term: isolated context
+  aliases:
+  - isolated context
+  - isolated contexts
+  strict: true
+  wire: context
+  definition: A sub-agent that starts from its brief alone. It cannot see the parent's messages, so its first request
+    is small.
+- id: forked-context
+  term: forked context
+  aliases:
+  - forked context
+  - forked contexts
+  strict: true
+  wire: context
+  definition: A sub-agent that starts from the parent's messages so far, plus its brief. It knows more, and its
+    first request is larger.
+- id: fan-out
+  term: fan-out
+  aliases:
+  - fan-out
+  - fan out
+  - fanning out
+  strict: true
+  wire: loop
+  definition: Starting several sub-agents at once, one per piece of work, and reading their results together.
+- id: brief
+  term: brief
+  aliases:
+  - brief
+  - briefs
+  strict: false
+  wire: context
+  definition: 'The message a sub-agent starts from: the task, the files it may read, and the fields its result must
+    return.'

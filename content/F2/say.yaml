@@ -1,0 +1,27 @@
+- id: F2-s1
+  objectives:
+  - F2.o1
+  - F2.o2
+  prompt: A long task spans three sessions. What does each session need from the one before it, and what does the
+    first session set up?
+  model_answer: 'Each session starts with no memory, so it needs a record of the state: what is done, what is next
+    and what is open. The first session sets up the files, a feature list and a progress file, and makes an initial
+    commit. The harness passes the progress file into each later session, so no session starts from a guess.'
+  rubric:
+  - Says a new session has no memory of the last one
+  - Names the progress file and what it records
+  - Says what the initializer sets up in the first session
+  - Says what a fresh session has to read before it acts
+- id: F2-s2
+  objectives:
+  - F2.o3
+  - F2.o4
+  prompt: Who grades the work of a long task, and what does a handoff note have to say so the next session can act?
+  model_answer: A separate evaluator grades each step against criteria the generator did not write; the generator
+    does the work and the planner orders it. A handoff note names the next step on one line, the files to start
+    from, and what is already done, so the next session does not have to guess.
+  rubric:
+  - Separates the generator from the evaluator, and says why
+  - Names the next step, the files and the done items in the handoff
+  - Says what the next session would have to guess without them
+  - Says who grades the work, and why the grader is not the generator

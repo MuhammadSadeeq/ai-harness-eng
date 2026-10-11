@@ -1,0 +1,11 @@
+{
+  "id": "f1-new",
+  "label": "Fan out, at most three sub-agents",
+  "modules": {
+    "subagents": {
+      "context": "isolated",
+      "max": 3,
+      "max_turns": 3
+    }
+  }
+}

@@ -1,0 +1,31 @@
+- id: F2-k1
+  type: term
+  objective: F2.o1
+  front: Does a new session remember the last one?
+  back: 'No. It has what the harness sends: the task, the tools, and any progress file the harness passes in.'
+- id: F2-k2
+  type: term
+  objective: F2.o1
+  front: What is the shift-worker problem?
+  back: Each session starts with no memory of the last. The work has to be written down, or the next session redoes
+    it or breaks it.
+- id: F2-k3
+  type: term
+  objective: F2.o2
+  front: What does an initializer agent set up?
+  back: The environment, a feature list and a progress file, with an initial commit that shows what was added.
+- id: F2-k4
+  type: term
+  objective: F2.o2
+  front: What is a progress file for?
+  back: It says what is done, what is next and what is open, so a fresh session finds the state without guessing.
+- id: F2-k5
+  type: term
+  objective: F2.o3
+  front: Why is the evaluator a separate role?
+  back: Its criteria come from outside the generator's work, so it does not pass its own blind spots.
+- id: F2-k6
+  type: term
+  objective: F2.o4
+  front: What must a handoff note name?
+  back: The next step on one line, the files to start from, and what is already done.

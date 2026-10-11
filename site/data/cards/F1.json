@@ -1,0 +1,44 @@
+[
+ {
+  "back": "It starts from the brief, or from the parent's messages with the brief added. So the brief must name the task, the files and the result.",
+  "front": "Why does a sub-agent get a brief?",
+  "id": "F1-k1",
+  "objective": "F1.o3",
+  "type": "term"
+ },
+ {
+  "back": "The parent that starts workers, gives each one a brief, and reads what they return.",
+  "front": "What is an orchestrator?",
+  "id": "F1-k2",
+  "objective": "F1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Fewer input tokens on the first request, and no view of the parent's messages.",
+  "front": "What does an isolated context cost against a forked one?",
+  "id": "F1-k3",
+  "objective": "F1.o3",
+  "type": "term"
+ },
+ {
+  "back": "Parallel work, and keeping a separate piece of work out of the parent's context.",
+  "front": "Name the two honest reasons for many agents.",
+  "id": "F1-k4",
+  "objective": "F1.o1",
+  "type": "term"
+ },
+ {
+  "back": "No. It is a reader's answer. Check it against the file or the field the brief named before the parent relies on it.",
+  "front": "A sub-agent's answer comes back. Is it a fact?",
+  "id": "F1-k5",
+  "objective": "F1.o5",
+  "type": "term"
+ },
+ {
+  "back": "Starting several sub-agents at once, one per piece of work, and reading their results together.",
+  "front": "What is a fan-out?",
+  "id": "F1-k6",
+  "objective": "F1.o2",
+  "type": "term"
+ }
+]

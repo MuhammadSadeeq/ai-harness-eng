@@ -1,0 +1,72 @@
+- id: long-running-agent
+  term: long-running agent
+  aliases:
+  - long-running agent
+  - long-running agents
+  - long-running
+  strict: true
+  wire: context
+  definition: An agent whose task spans more sessions than one context window holds. It needs a record of its state
+    to carry on.
+- id: session
+  term: session
+  aliases:
+  - session
+  - sessions
+  strict: false
+  wire: context
+  definition: One run of the harness on a task, from its first request to its end. A new session starts with what
+    the harness sends it.
+- id: initializer-agent
+  term: initializer agent
+  aliases:
+  - initializer agent
+  - initializer agents
+  - initializer
+  strict: true
+  wire: context
+  definition: The first session of a long task. It sets up the files, a feature list and a progress file, so later
+    sessions start from a known state.
+- id: progress-file
+  term: progress file
+  aliases:
+  - progress file
+  - progress files
+  strict: true
+  wire: context
+  definition: 'A file the sessions write and read: what is done, what is next and what is open. The harness can
+    pass it into the next session.'
+- id: feature-list
+  term: feature list
+  aliases:
+  - feature list
+  - feature lists
+  strict: true
+  wire: context
+  definition: A file of the work the task needs, each item marked done or not, so a session can see what is left
+    without guessing.
+- id: planner
+  term: planner
+  aliases:
+  - planner
+  - planners
+  strict: true
+  wire: loop
+  definition: The role that splits a task into steps and writes the order they run in. It hands the steps to the
+    generator.
+- id: generator
+  term: generator
+  aliases:
+  - generator
+  - generators
+  strict: true
+  wire: loop
+  definition: The role that does the work of each step and hands its output to the evaluator.
+- id: evaluator
+  term: evaluator
+  aliases:
+  - evaluator
+  - evaluators
+  strict: true
+  wire: verify
+  definition: The role that grades each step against criteria written outside the generator's own work.

@@ -1,0 +1,9 @@
+{
+  "id": "f6-old",
+  "label": "Workspace tests decide",
+  "modules": {
+    "verify_gate": {
+      "max_feedback": 1
+    }
+  }
+}

@@ -1,0 +1,196 @@
+{
+ "boards": [],
+ "checks": [
+  {
+   "contains": "strip",
+   "file": "parser.py"
+  },
+  {
+   "contains": "tests pass",
+   "file": "report.txt"
+  },
+  {
+   "file": "migrations.sql",
+   "not_contains": "DROP"
+  }
+ ],
+ "custom_tools": [],
+ "golden_seeds": [
+  0,
+  1,
+  2
+ ],
+ "human": {
+  "default": "approve"
+ },
+ "id": "shift-tape",
+ "interrupt": null,
+ "model_id": "claude-sonnet-5-5",
+ "outside": {},
+ "pricing": {
+  "fact": "models.sonnet-5-5-price"
+ },
+ "rules": [],
+ "schema": 1,
+ "seed_base": 20261010,
+ "sessions": [
+  {
+   "script": [
+    {
+     "say": "I'll fix the parser so it strips spaces.",
+     "tools": [
+      [
+       "write_file",
+       {
+        "content": "def parse(s):\n    return [x.strip() for x in s.split(',')]\n",
+        "path": "parser.py"
+       }
+      ]
+     ]
+    },
+    {
+     "say": "Parser fixed. Session one is done.",
+     "stop": "end_turn"
+    }
+   ]
+  },
+  {
+   "script": [
+    {
+     "when": [
+      {
+       "if": "sent_lacks:parser is done",
+       "then": [
+        {
+         "say": "The parser looks wrong, so I will rewrite it.",
+         "tools": [
+          [
+           "write_file",
+           {
+            "content": "def parse(s):\n    return s.split(',')\n",
+            "path": "parser.py"
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "else": [
+        {
+         "say": "The note says the parser is done. I will keep it.",
+         "tools": [
+          [
+           "write_file",
+           {
+            "content": "def parse(s):\n    return [x.strip() for x in s.split(',')]\n",
+            "path": "parser.py"
+           }
+          ]
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "when": [
+      {
+       "if": "sent_lacks:do not edit migrations",
+       "then": [
+        {
+         "say": "I will update the migrations to match.",
+         "tools": [
+          [
+           "write_file",
+           {
+            "content": "ALTER TABLE items DROP COLUMN id;\n",
+            "path": "migrations.sql"
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "else": [
+        {
+         "say": "The note says to leave the migrations alone.",
+         "tools": [
+          [
+           "write_file",
+           {
+            "content": "CREATE TABLE items (id int, name text);\n",
+            "path": "migrations.sql"
+           }
+          ]
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "when": [
+      {
+       "if": "sent_lacks:run the tests",
+       "then": [
+        {
+         "say": "Writing the report.",
+         "tools": [
+          [
+           "write_file",
+           {
+            "content": "Parser checked, untested.\n",
+            "path": "report.txt"
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "else": [
+        {
+         "say": "I ran the tests and they pass. Writing the report.",
+         "tools": [
+          [
+           "write_file",
+           {
+            "content": "Parser checked: tests pass.\n",
+            "path": "report.txt"
+           }
+          ]
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "say": "Done.",
+     "stop": "end_turn"
+    }
+   ]
+  }
+ ],
+ "system": "You are a coding agent. Use the tools you are given. Say done when the report is written.",
+ "task": "Finish the report for the parser work and write report.txt.",
+ "test_output": {
+  "fail": "1 failed",
+  "pass": "1 passed"
+ },
+ "tests": null,
+ "title": "Hand the parser over to the next shift",
+ "tools": [
+  "read_file",
+  "write_file",
+  "edit_file",
+  "run_command"
+ ],
+ "window": 8000,
+ "workspace": {
+  "migrations.sql": "CREATE TABLE items (id int, name text);\n",
+  "parser.py": "def parse(s):\n    return s.split(',')\n"
+ }
+}
