@@ -1,0 +1,17 @@
+- id: readiness-level
+  term: readiness level
+  aliases: [readiness level, readiness levels]
+  strict: true
+  wire: observe
+  definition: >-
+    One of three levels on a wire's row of the readiness radar: can explain (L1), have built (L2) and can defend with
+    data (L3). Each level needs the one below it, and each comes from entries in your evidence.
+
+- id: brag-sheet
+  term: brag sheet
+  aliases: [brag sheet, brag sheets]
+  strict: true
+  wire: observe
+  definition: >-
+    A one-page print of your readiness: your levels, the modules you explained, your passed katas and steps, your bench
+    results, your design drills and the date. It lists only what your evidence shows.

@@ -1,0 +1,44 @@
+[
+ {
+  "back": "It ends in a link you can check: a merged pull request, a results table or a write-up. 'Practice more' is not a goal you can check.",
+  "front": "What makes a weekly goal evidence?",
+  "id": "I6-k1",
+  "objective": "I6.o1",
+  "type": "term"
+ },
+ {
+  "back": "Real evals for Rein: ten tasks, baseline numbers, and a README table.",
+  "front": "What is the output of weeks 1 to 2 in the plan?",
+  "id": "I6-k2",
+  "objective": "I6.o1",
+  "type": "term"
+ },
+ {
+  "back": "A practice interview in which someone else asks the questions and grades your answers against a rubric.",
+  "front": "What is a mock interview?",
+  "id": "I6-k3",
+  "objective": "I6.o2",
+  "type": "term"
+ },
+ {
+  "back": "The questions, your answer to each, and what to improve next time. A mock with no notes repeats its mistakes.",
+  "front": "What should you write down after a mock interview?",
+  "id": "I6-k4",
+  "objective": "I6.o2",
+  "type": "term"
+ },
+ {
+  "back": "The course's plan: about ten minutes, with one incident, the due cards, and one micro-kata or say-it drill.",
+  "front": "What is the daily on-call shift?",
+  "id": "I6-k5",
+  "objective": "I6.o3",
+  "type": "term"
+ },
+ {
+  "back": "Start again the next day, and do not try to clear the backlog in one sitting.",
+  "front": "You miss several days of the daily shift. What is the advice?",
+  "id": "I6-k6",
+  "objective": "I6.o3",
+  "type": "term"
+ }
+]

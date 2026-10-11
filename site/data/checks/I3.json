@@ -1,0 +1,65 @@
+[
+ {
+  "answer": 0,
+  "id": "I3-c1",
+  "mode": "check",
+  "objective": "I3.o1",
+  "options": [
+   {
+    "text": "Cut the project until two weeks can finish one measured result.",
+    "why": "Right. A scoped project with one measured result is what the course asks you to finish."
+   },
+   {
+    "text": "Add a fourth project to the same plan.",
+    "why": "Wrong. More projects do not beat one measured project, and four in two weeks are not measured."
+   },
+   {
+    "text": "Plan the whole list, and write up later.",
+    "why": "Wrong. A write-up written after the fact cannot show what was measured, and the plan does not finish."
+   }
+  ],
+  "question": "You want to finish in two weeks, and you have four ideas. What scope does the course advise?"
+ },
+ {
+  "answer": 0,
+  "id": "I3-c2",
+  "mode": "check",
+  "objective": "I3.o2",
+  "options": [
+   {
+    "text": "The row with an interval, since the interval says how far luck could move the count.",
+    "why": "Right. The interval is part of the result. It tells the reader how much the count could change by chance."
+   },
+   {
+    "text": "The row with only the count, since a count is exact.",
+    "why": "Wrong. A count from a few trials is exact about those runs and says nothing about how far luck could move it."
+   },
+   {
+    "text": "Neither, since any count is noise.",
+    "why": "Wrong. A count with its interval is evidence. Calling every count noise throws the evidence away."
+   }
+  ],
+  "question": "Two rows show the same passes out of the same trials. One gives an interval; the other gives only the count. Which claim can you defend?"
+ },
+ {
+  "answer": 0,
+  "id": "I3-c3",
+  "mode": "check",
+  "objective": "I3.o3",
+  "options": [
+   {
+    "text": "The command and the seed or tape used, so the same numbers come back.",
+    "why": "Right. Reproduction needs the command and the inputs, so a reviewer can get the same counts."
+   },
+   {
+    "text": "Your conclusion, so the reviewer can agree.",
+    "why": "Wrong. A conclusion without the method cannot be checked."
+   },
+   {
+    "text": "The name of the model, and nothing else.",
+    "why": "Wrong. A model name is not enough. The reviewer also needs the command, the inputs and the limits."
+   }
+  ],
+  "question": "A reviewer tries to reproduce your write-up. What must it contain?"
+ }
+]

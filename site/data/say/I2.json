@@ -1,0 +1,31 @@
+[
+ {
+  "id": "I2-s1",
+  "model_answer": "My strongest wire is Loop, at L2. Its level rests on a passing kata on a loop module, and the row lists the module and the date. I am at L1 on Permissions, because I have explained its modules but have no passing kata there. My next step is the one the radar gives for Permissions: pass a kata or step on a permissions module. I would not claim L3 on anything until a bench or design drill backs it.",
+  "objectives": [
+   "I2.o1",
+   "I2.o2"
+  ],
+  "prompt": "Walk me through your radar: which level is strongest, what evidence backs it, and what you would do next.",
+  "rubric": [
+   "Names the strongest wire and its level",
+   "Points to the evidence behind the level, not to a feeling",
+   "Takes the next step the radar names, and claims no level above the evidence",
+   "Says the next step in the radar's own words"
+  ]
+ },
+ {
+  "id": "I2-s2",
+  "model_answer": "I would defend the line about the passing kata on the tools wire. The sheet names the module and the date, and I can open the kata and run its tests in front of the interviewer. I would not defend any line I could not open. A claim without a module behind it does not belong on the sheet.",
+  "objectives": [
+   "I2.o3"
+  ],
+  "prompt": "Which line on your brag sheet would you defend in an interview, and how would you show the evidence?",
+  "rubric": [
+   "Chooses a line that has evidence behind it",
+   "Can show the evidence, not describe it",
+   "Removes any claim that has no module or entry behind it",
+   "Names the module and date behind the line"
+  ]
+ }
+]

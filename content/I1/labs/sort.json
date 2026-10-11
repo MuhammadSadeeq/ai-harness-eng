@@ -1,0 +1,23 @@
+{
+  "prompt": "Sort each requirement into the wire it touches.",
+  "buckets": [
+    {"id": "control", "label": "Control", "hint": "What the model is told, and which instruction wins."},
+    {"id": "context", "label": "Context", "hint": "What is on the desk for each call, and what is saved."},
+    {"id": "loop", "label": "Loop", "hint": "What happens next, and when the run stops."},
+    {"id": "errors", "label": "Errors", "hint": "How a failure is recovered without spinning."},
+    {"id": "tools", "label": "Tools", "hint": "What the model can do, and how easy each tool is to use."},
+    {"id": "permissions", "label": "Permissions", "hint": "Which actions are allowed, and how bad a mistake can get."},
+    {"id": "verify", "label": "Verification", "hint": "How we know it is really done."},
+    {"id": "observe", "label": "Observability", "hint": "What exactly happened, and where the time and money went."}
+  ],
+  "items": [
+    {"id": "i1-r1", "text": "The run stops at a clear exit, not when the model seems finished", "bucket": "loop", "why": "Stop conditions belong to the loop. A reply that says it is finished is not an exit by itself."},
+    {"id": "i1-r2", "text": "The conversation fits the window, and old turns are summarized", "bucket": "context", "why": "Context decides what is on the desk for each call, and what is saved from earlier turns."},
+    {"id": "i1-r3", "text": "Rate limits and overloaded responses are retried with backoff", "bucket": "errors", "why": "Recovery is the errors wire: retry, back off, and stop after a limit."},
+    {"id": "i1-r4", "text": "Each tool validates its input and returns errors the model can act on", "bucket": "tools", "why": "A tool's inputs and its error messages are the tools wire."},
+    {"id": "i1-r5", "text": "A tool that writes files asks before it runs", "bucket": "permissions", "why": "Which actions are allowed, and whether one needs a yes first, belongs to permissions."},
+    {"id": "i1-r6", "text": "The system prompt says which instruction wins when two conflict", "bucket": "control", "why": "What the model is told, and which instruction wins, is the control wire."},
+    {"id": "i1-r7", "text": "Each run is checked against a test or a grader before it is called done", "bucket": "verify", "why": "A done claim is only a claim until a check confirms it. That is verification."},
+    {"id": "i1-r8", "text": "Every model call and tool call is traced with its time and cost", "bucket": "observe", "why": "What happened, and where the time and money went, is observability."}
+  ]
+}

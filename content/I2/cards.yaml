@@ -1,0 +1,35 @@
+- id: I2-k1
+  type: term
+  objective: I2.o1
+  front: "What does L1 mean on a wire?"
+  back: "Can explain: every built module on the wire is explained, and there is at least one."
+
+- id: I2-k2
+  type: term
+  objective: I2.o1
+  front: "What does L2 need, beyond L1?"
+  back: "A passing kata or step on a module of the wire."
+
+- id: I2-k3
+  type: term
+  objective: I2.o1
+  front: "What does L3 need, beyond L2?"
+  back: "A credited bench or par experiment on a module of the wire, or a credited design drill."
+
+- id: I2-k4
+  type: term
+  objective: I2.o2
+  front: "What is the radar's next step for a wire?"
+  back: "One line of words per wire, such as explaining every module that is still open, or passing a kata. Take it next."
+
+- id: I2-k5
+  type: term
+  objective: I2.o2
+  front: "Can you set a level by hand?"
+  back: "No. The level comes from your evidence. What you control is the claim you make: never claim a level the evidence does not show."
+
+- id: I2-k6
+  type: term
+  objective: I2.o3
+  front: "What goes on a brag sheet?"
+  back: "Only what your evidence shows: your levels, the modules you explained, your passed katas and steps, bench results, design drills and the date."

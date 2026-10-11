@@ -1,0 +1,44 @@
+[
+ {
+  "back": "Cut it until two weeks can finish one measured result. A smaller project you measure beats a larger one you only describe.",
+  "front": "What does it mean to scope a project to two weeks?",
+  "id": "I3-k1",
+  "objective": "I3.o1",
+  "type": "term"
+ },
+ {
+  "back": "With a documentation fix or a reproduction of a failing test, then one small bug fix. A merged pull request is the evidence.",
+  "front": "How do you start a contribution to a real harness?",
+  "id": "I3-k2",
+  "objective": "I3.o1",
+  "type": "term"
+ },
+ {
+  "back": "Task, passed of trials, the Wilson 95% interval, tokens, cost, and whether the numbers are scripted.",
+  "front": "What columns does the results table have?",
+  "id": "I3-k3",
+  "objective": "I3.o2",
+  "type": "term"
+ },
+ {
+  "back": "A count is not a result on its own. The interval says how far luck could move it.",
+  "front": "Why show the interval next to the count of passes?",
+  "id": "I3-k4",
+  "objective": "I3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Scripted runs repeat exactly, and real model runs vary. The table says which in a line of its own.",
+  "front": "Why say whether the numbers are scripted?",
+  "id": "I3-k5",
+  "objective": "I3.o2",
+  "type": "term"
+ },
+ {
+  "back": "The question, the method, the command that reproduces the numbers, the results table and the limits.",
+  "front": "What must a write-up contain for a reviewer?",
+  "id": "I3-k6",
+  "objective": "I3.o3",
+  "type": "term"
+ }
+]

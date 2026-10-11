@@ -1,0 +1,51 @@
+[
+ {
+  "back": "Builds agents into a product, with tools, evals and guardrails, then watches them run. In this course's terms, it is most of the work.",
+  "front": "What does an applied AI engineer do?",
+  "id": "I1-k1",
+  "objective": "I1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Fits an agent into a customer's codebase and workflow, often working with the customer directly.",
+  "front": "What does a forward-deployed engineer do?",
+  "id": "I1-k2",
+  "objective": "I1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Designs the tasks, scoring checks and experiments that measure an agent, and reads the noise in the results.",
+  "front": "What does an evals engineer do?",
+  "id": "I1-k3",
+  "objective": "I1.o1",
+  "type": "term"
+ },
+ {
+  "back": "The environments, sandboxes and scoring checks that measure and train models.",
+  "front": "What does a research engineer build?",
+  "id": "I1-k4",
+  "objective": "I1.o1",
+  "type": "term"
+ },
+ {
+  "back": "Permissions, for which actions are allowed and which need a yes first.",
+  "front": "A posting asks for a tool that asks before it writes files. Which wire is that?",
+  "id": "I1-k5",
+  "objective": "I1.o2",
+  "type": "term"
+ },
+ {
+  "back": "Building, measuring and debugging, shown in public: a repository with tests, a results table and a write-up.",
+  "front": "What evidence do labs look for, in the course's reading?",
+  "id": "I1-k6",
+  "objective": "I1.o3",
+  "type": "term"
+ },
+ {
+  "back": "It shows you finished a course. It does not show that you can build or measure. Show the work instead.",
+  "front": "Is a certificate evidence?",
+  "id": "I1-k7",
+  "objective": "I1.o3",
+  "type": "term"
+ }
+]

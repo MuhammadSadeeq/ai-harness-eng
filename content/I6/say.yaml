@@ -1,0 +1,25 @@
+- id: I6-s1
+  objectives: [I6.o1]
+  prompt: "Set out your plan for the next twelve weeks. What evidence does each block end with?"
+  model_answer: >-
+    The first two weeks end with real evals on Rein: ten tasks, baseline numbers and a README table. Weeks three and four
+    end with one experiment and its write-up. Each block ends with an output I can link, so I can check the week, not just
+    report that I worked.
+  rubric:
+    - "Gives each block an output that can be linked"
+    - "Puts the goals in evidence, not hours"
+    - "Names the block that comes next, and what it ends with"
+    - "Names what the first block ends with, as a link"
+
+- id: I6-s2
+  objectives: [I6.o2, I6.o3]
+  prompt: "Run a two-minute mock. Walk me through Rein results and name the one change you would make next."
+  model_answer: >-
+    Your Rein results show the baseline pass rate, the interval around it and the cost per run. The change I would make next
+    is the task where the interval is widest, because more trials there would show whether the change helped. I would write
+    the question I was asked and my answer to it in my notes, so the next mock starts from them.
+  rubric:
+    - "Walks through the results with their interval, not the count alone"
+    - "Names one change and the evidence it needs"
+    - "Says what goes into the notes after the mock"
+    - "Says what the next mock will test"

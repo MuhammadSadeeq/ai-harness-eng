@@ -1,0 +1,95 @@
+{
+ "buckets": [
+  {
+   "hint": "What the model is told, and which instruction wins.",
+   "id": "control",
+   "label": "Control"
+  },
+  {
+   "hint": "What is on the desk for each call, and what is saved.",
+   "id": "context",
+   "label": "Context"
+  },
+  {
+   "hint": "What happens next, and when the run stops.",
+   "id": "loop",
+   "label": "Loop"
+  },
+  {
+   "hint": "How a failure is recovered without spinning.",
+   "id": "errors",
+   "label": "Errors"
+  },
+  {
+   "hint": "What the model can do, and how easy each tool is to use.",
+   "id": "tools",
+   "label": "Tools"
+  },
+  {
+   "hint": "Which actions are allowed, and how bad a mistake can get.",
+   "id": "permissions",
+   "label": "Permissions"
+  },
+  {
+   "hint": "How we know it is really done.",
+   "id": "verify",
+   "label": "Verification"
+  },
+  {
+   "hint": "What exactly happened, and where the time and money went.",
+   "id": "observe",
+   "label": "Observability"
+  }
+ ],
+ "items": [
+  {
+   "bucket": "loop",
+   "id": "i1-r1",
+   "text": "The run stops at a clear exit, not when the model seems finished",
+   "why": "Stop conditions belong to the loop. A reply that says it is finished is not an exit by itself."
+  },
+  {
+   "bucket": "context",
+   "id": "i1-r2",
+   "text": "The conversation fits the window, and old turns are summarized",
+   "why": "Context decides what is on the desk for each call, and what is saved from earlier turns."
+  },
+  {
+   "bucket": "errors",
+   "id": "i1-r3",
+   "text": "Rate limits and overloaded responses are retried with backoff",
+   "why": "Recovery is the errors wire: retry, back off, and stop after a limit."
+  },
+  {
+   "bucket": "tools",
+   "id": "i1-r4",
+   "text": "Each tool validates its input and returns errors the model can act on",
+   "why": "A tool's inputs and its error messages are the tools wire."
+  },
+  {
+   "bucket": "permissions",
+   "id": "i1-r5",
+   "text": "A tool that writes files asks before it runs",
+   "why": "Which actions are allowed, and whether one needs a yes first, belongs to permissions."
+  },
+  {
+   "bucket": "control",
+   "id": "i1-r6",
+   "text": "The system prompt says which instruction wins when two conflict",
+   "why": "What the model is told, and which instruction wins, is the control wire."
+  },
+  {
+   "bucket": "verify",
+   "id": "i1-r7",
+   "text": "Each run is checked against a test or a grader before it is called done",
+   "why": "A done claim is only a claim until a check confirms it. That is verification."
+  },
+  {
+   "bucket": "observe",
+   "id": "i1-r8",
+   "text": "Every model call and tool call is traced with its time and cost",
+   "why": "What happened, and where the time and money went, is observability."
+  }
+ ],
+ "prompt": "Sort each requirement into the wire it touches."
+}

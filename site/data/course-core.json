@@ -1089,7 +1089,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "I1",
    "kind": "career",
    "minutes": 30,
@@ -1102,7 +1102,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "I2",
    "kind": "career",
    "minutes": 30,
@@ -1121,7 +1121,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "I3",
    "kind": "career",
    "minutes": 45,
@@ -1172,7 +1172,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "I6",
    "kind": "career",
    "minutes": 30,

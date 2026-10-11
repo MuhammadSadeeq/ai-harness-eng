@@ -1,0 +1,38 @@
+- id: I6-c1
+  objective: I6.o1
+  mode: check
+  question: "A week's goal is 'write more about my project'. Which goal is evidence?"
+  options:
+    - text: "One merged pull request, with its link in the write-up."
+      why: "Right. A goal that ends in a link can be checked, and the reviewer can open it."
+    - text: "More reading about the project."
+      why: "Wrong. Reading is not an output. The plan asks for something you can link."
+    - text: "Feeling ready by the end of the week."
+      why: "Wrong. A feeling cannot be checked, so it cannot count as evidence."
+  answer: 0
+
+- id: I6-c2
+  objective: I6.o2
+  mode: check
+  question: "A mock interview ends. What should you write down?"
+  options:
+    - text: "The questions, your answers, and what to improve next time."
+      why: "Right. Notes turn the mock into a plan, and the next one starts from them."
+    - text: "Only whether it felt good."
+      why: "Wrong. A feeling does not show what to improve."
+    - text: "Nothing, so the practice stays private."
+      why: "Wrong. The plan asks for the practice in public, and notes are how the next round improves."
+  answer: 0
+
+- id: I6-c3
+  objective: I6.o3
+  mode: check
+  question: "You miss several days of the daily shift. What is the course's advice?"
+  options:
+    - text: "Start again the next day, and do not try to clear the backlog in one sitting."
+      why: "Right. The plan runs on a schedule, and one catch-up session is how the schedule survives a missed run."
+    - text: "Double the shift until the backlog is gone."
+      why: "Wrong. A double session in one sitting is how practice breaks down, not how it recovers."
+    - text: "Stop the plan, since a missed day ends it."
+      why: "Wrong. A missed day does not end the plan. Restarting it the next day keeps it going."
+  answer: 0

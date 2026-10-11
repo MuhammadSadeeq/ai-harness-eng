@@ -1,0 +1,8 @@
+- id: mock-interview
+  term: mock interview
+  aliases: [mock interview, mock interviews]
+  strict: true
+  wire: observe
+  definition: >-
+    A practice interview in which someone else asks the questions and grades your answers against a rubric. You write down
+    what to improve afterwards.

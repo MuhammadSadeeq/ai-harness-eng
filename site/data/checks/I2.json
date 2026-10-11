@@ -1,0 +1,65 @@
+[
+ {
+  "answer": 0,
+  "id": "I2-c1",
+  "mode": "check",
+  "objective": "I2.o1",
+  "options": [
+   {
+    "text": "A passing kata or step on a module of the tools wire.",
+    "why": "Right. L2 needs a passing kata or step on a module of the wire, on top of L1."
+   },
+   {
+    "text": "Reading every tools module.",
+    "why": "Wrong. Reading is not evidence on the radar. Explaining a module is what L1 counts."
+   },
+   {
+    "text": "A bench run on any wire.",
+    "why": "Wrong. L2 needs a kata or step on a module of the same wire, not a bench on another one."
+   }
+  ],
+  "question": "Your radar shows L2 on Tools. Which evidence supports that level?"
+ },
+ {
+  "answer": 0,
+  "id": "I2-c2",
+  "mode": "check",
+  "objective": "I2.o2",
+  "options": [
+   {
+    "text": "Work on those two, taking the next step the radar names for each.",
+    "why": "Right. The radar's next step is built from your evidence, so it names the gap that matters."
+   },
+   {
+    "text": "Work on the two you enjoy most.",
+    "why": "Tempting. Enjoyment is not evidence, and it does not show which gap is largest."
+   },
+   {
+    "text": "Set both levels higher by hand.",
+    "why": "Wrong. The radar has no control for that. A level comes from your evidence."
+   }
+  ],
+  "question": "Your two lowest wires are Permissions and Context. What is the course's advice?"
+ },
+ {
+  "answer": 0,
+  "id": "I2-c3",
+  "mode": "check",
+  "objective": "I2.o3",
+  "options": [
+   {
+    "text": "A passing kata on the loop wire, with the module it came from.",
+    "why": "Right. The line names its module, so the reader can open the evidence."
+   },
+   {
+    "text": "Expert in agent harnesses.",
+    "why": "Wrong. A claim with no module or entry behind it does not belong on the sheet."
+   },
+   {
+    "text": "Finished the course.",
+    "why": "Wrong. Finishing a course is not readiness. The course's advice is to show evidence."
+   }
+  ],
+  "question": "Which line belongs on a brag sheet?"
+ }
+]

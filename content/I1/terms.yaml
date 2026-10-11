@@ -1,0 +1,34 @@
+- id: applied-ai-engineer
+  term: applied AI engineer
+  aliases: [applied AI engineer, applied AI engineers]
+  strict: true
+  wire: observe
+  definition: >-
+    A job title for an engineer who builds agents into a product, with tools, evals and guardrails. In this course's
+    terms it is most of the work the course teaches.
+
+- id: forward-deployed-engineer
+  term: forward-deployed engineer
+  aliases: [forward-deployed engineer, forward-deployed engineers, forward deployed engineer]
+  strict: true
+  wire: observe
+  definition: >-
+    A job title for an engineer who fits an agent into a customer's codebase and workflow, often working with the customer
+    directly.
+
+- id: evals-engineer
+  term: evals engineer
+  aliases: [evals engineer, evals engineers]
+  strict: true
+  wire: observe
+  definition: >-
+    A job title for an engineer who designs the tasks, scoring checks and experiments that measure an agent, and reads the noise in
+    its results.
+
+- id: research-engineer
+  term: research engineer
+  aliases: [research engineer, research engineers]
+  strict: true
+  wire: observe
+  definition: >-
+    A job title for an engineer who builds the environments, sandboxes and scoring checks that measure and train models.

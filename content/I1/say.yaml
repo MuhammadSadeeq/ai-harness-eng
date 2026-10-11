@@ -1,0 +1,25 @@
+- id: I1-s1
+  objectives: [I1.o1, I1.o3]
+  prompt: "Read me a job posting you would apply for. Which duties matter most, and what evidence would you show?"
+  model_answer: >-
+    I would read the duties before the title. The posting asks for tools, evals and guardrails, so I read it as an applied
+    role. I would show a repository with tests and a results table, linked from a write-up that gives the method and the
+    interval. A certificate would not answer any of the duties, so I would not lead with one.
+  rubric:
+    - "Reads the duties before the title"
+    - "Names the evidence for each main duty, with a link"
+    - "Does not offer a certificate as proof of building or measuring"
+    - "Says which duty it cannot evidence yet, and why"
+
+- id: I1-s2
+  objectives: [I1.o2]
+  prompt: "Take one requirement from a posting. Which wire does it touch, and what would you show to prove it?"
+  model_answer: >-
+    Take a requirement such as retrying rate limits. It touches the errors wire: retry with backoff, and stop after a limit.
+    To prove it I would show a run where the rate limit is injected, the retries and the stop, and the trace of each
+    attempt. That is evidence a reviewer can check.
+  rubric:
+    - "Names the wire the requirement touches"
+    - "Names one piece of evidence that a reviewer could check"
+    - "Says what would count as failure"
+    - "Says what a reviewer would open to check the answer"

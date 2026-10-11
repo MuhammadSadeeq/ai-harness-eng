@@ -127,6 +127,18 @@
   "term": "append-only history",
   "wire": "loop"
  },
+ "applied-ai-engineer": {
+  "aliases": [
+   "applied AI engineer",
+   "applied AI engineers"
+  ],
+  "definition": "A job title for an engineer who builds agents into a product, with tools, evals and guardrails. In this course's terms it is most of the work the course teaches.",
+  "id": "applied-ai-engineer",
+  "module": "I1",
+  "strict": true,
+  "term": "applied AI engineer",
+  "wire": "observe"
+ },
  "approval-fatigue": {
   "aliases": [
    "approval fatigue"
@@ -206,6 +218,18 @@
   "strict": true,
   "term": "blast radius",
   "wire": "permissions"
+ },
+ "brag-sheet": {
+  "aliases": [
+   "brag sheet",
+   "brag sheets"
+  ],
+  "definition": "A one-page print of your readiness: your levels, the modules you explained, your passed katas and steps, your bench results, your design drills and the date. It lists only what your evidence shows.",
+  "id": "brag-sheet",
+  "module": "I2",
+  "strict": true,
+  "term": "brag sheet",
+  "wire": "observe"
  },
  "brain": {
   "aliases": [
@@ -932,6 +956,18 @@
   "term": "eval awareness",
   "wire": "verify"
  },
+ "evals-engineer": {
+  "aliases": [
+   "evals engineer",
+   "evals engineers"
+  ],
+  "definition": "A job title for an engineer who designs the tasks, scoring checks and experiments that measure an agent, and reads the noise in its results.",
+  "id": "evals-engineer",
+  "module": "I1",
+  "strict": true,
+  "term": "evals engineer",
+  "wire": "observe"
+ },
  "evaluator": {
   "aliases": [
    "evaluator",
@@ -1122,6 +1158,19 @@
   "strict": true,
   "term": "forked context",
   "wire": "context"
+ },
+ "forward-deployed-engineer": {
+  "aliases": [
+   "forward-deployed engineer",
+   "forward-deployed engineers",
+   "forward deployed engineer"
+  ],
+  "definition": "A job title for an engineer who fits an agent into a customer's codebase and workflow, often working with the customer directly.",
+  "id": "forward-deployed-engineer",
+  "module": "I1",
+  "strict": true,
+  "term": "forward-deployed engineer",
+  "wire": "observe"
  },
  "framework": {
   "aliases": [
@@ -1796,6 +1845,18 @@
   "term": "migration guide",
   "wire": "loop"
  },
+ "mock-interview": {
+  "aliases": [
+   "mock interview",
+   "mock interviews"
+  ],
+  "definition": "A practice interview in which someone else asks the questions and grades your answers against a rubric. You write down what to improve afterwards.",
+  "id": "mock-interview",
+  "module": "I6",
+  "strict": true,
+  "term": "mock interview",
+  "wire": "observe"
+ },
  "model-context-protocol": {
   "aliases": [
    "Model Context Protocol",
@@ -2394,6 +2455,18 @@
   "term": "read-only tool",
   "wire": "tools"
  },
+ "readiness-level": {
+  "aliases": [
+   "readiness level",
+   "readiness levels"
+  ],
+  "definition": "One of three levels on a wire's row of the readiness radar: can explain (L1), have built (L2) and can defend with data (L3). Each level needs the one below it, and each comes from entries in your evidence.",
+  "id": "readiness-level",
+  "module": "I2",
+  "strict": true,
+  "term": "readiness level",
+  "wire": "observe"
+ },
  "recovery": {
   "aliases": [
    "recovery"
@@ -2474,6 +2547,18 @@
   "strict": false,
   "term": "request",
   "wire": "loop"
+ },
+ "research-engineer": {
+  "aliases": [
+   "research engineer",
+   "research engineers"
+  ],
+  "definition": "A job title for an engineer who builds the environments, sandboxes and scoring checks that measure and train models.",
+  "id": "research-engineer",
+  "module": "I1",
+  "strict": true,
+  "term": "research engineer",
+  "wire": "observe"
  },
  "reset": {
   "aliases": [
@@ -3434,5 +3519,19 @@
   "module": "T8",
   "strict": true,
   "term": "worktree"
+ },
+ "write-up": {
+  "aliases": [
+   "write-up",
+   "write-ups",
+   "writeup",
+   "writeups"
+  ],
+  "definition": "A short document that states the question, the method, the command that reproduces the numbers, the results table and the limits. A reviewer should be able to run it and get the same numbers.",
+  "id": "write-up",
+  "module": "I3",
+  "strict": true,
+  "term": "write-up",
+  "wire": "verify"
  }
 }

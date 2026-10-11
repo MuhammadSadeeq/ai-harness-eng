@@ -1,0 +1,31 @@
+[
+ {
+  "id": "I3-s1",
+  "model_answer": "I would pick the eval study, and cut it to one harness question with a small task set. I would drop any second question. The result I would show is one comparison, with its pass rate, its interval and its cost, from a run I can repeat. Two weeks is enough for one measured answer, not for four.",
+  "objectives": [
+   "I3.o1"
+  ],
+  "prompt": "Pick one of the four projects. What would you cut to finish it in two weeks, and what result would you show?",
+  "rubric": [
+   "Picks one project and names what it cuts",
+   "Names one measured result it will show within two weeks",
+   "Says why the cut makes the result more trustworthy",
+   "Says what the scoped project leaves out, and why"
+  ]
+ },
+ {
+  "id": "I3-s2",
+  "model_answer": "I would defend every column. Each row names the task, the passes out of the trials, the Wilson interval for that count, the tokens and cost from the trace, and whether the run was scripted. A reviewer reproduces one row with the command in the write-up, the same tape or seed, and the same board, and checks that the same counts come back.",
+  "objectives": [
+   "I3.o2",
+   "I3.o3"
+  ],
+  "prompt": "Show me a results table you would publish. Which columns would you defend, and how would a reviewer reproduce one row?",
+  "rubric": [
+   "Defends each column of the results table",
+   "Says what the interval adds to the count",
+   "Names the command and seed a reviewer would run",
+   "Says which numbers are scripted, and why that matters"
+  ]
+ }
+]

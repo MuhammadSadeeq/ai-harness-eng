@@ -1,0 +1,8 @@
+- id: write-up
+  term: write-up
+  aliases: [write-up, write-ups, writeup, writeups]
+  strict: true
+  wire: verify
+  definition: >-
+    A short document that states the question, the method, the command that reproduces the numbers, the results table and
+    the limits. A reviewer should be able to run it and get the same numbers.
