@@ -1,9 +1,10 @@
 # Phase 6 gate: the audit
 
-**Status:** both rounds are complete. Round 1's three blockers are fixed;
-every major is fixed or ruled; round 2 found no blocker in any of the five
-areas, and each of its new majors is fixed. Sign-off follows the full gate
-on the final commit (the last section).
+**Status:** passed; signed off on ef3f934. Round 1's three blockers are
+fixed; every major is fixed or ruled; round 2 found no blocker in any of
+the five areas, and each of its new majors is fixed. ef3f934 passed the
+full gate in parts (D-044): every check, and QA on all 108 pages (972
+screenshots, 0 failures).
 
 SPEC §10 sets the Phase 6 exit gate: **no blockers; majors are fixed; round 2
 confirms.** Five reviewers, one area each, worked on a clean worktree of
@@ -187,4 +188,14 @@ No blocker in any of the five reports.
 | No blockers | **Pass.** Round 1 had three (D2's false overlap rule, I5.o2 unearnable, the filtered replay); all fixed. Round 2: none in five reports. |
 | Majors are fixed | **Pass.** Every round-1 major is fixed or ruled above; the four new majors round 2 found (a span without "tier", the drill starting I5, a refused copy shown only to screen readers, the transcript's expand key) are fixed. |
 | Round 2 confirms | **Pass.** Fixed / not fixed / ruled / new, per audit: 55/3/0/4, 20/2/2/3, 11/1/2/1, 8/0/1/2, 22/0/1/4; every "not fixed" and every new item is closed or ruled above. |
+
+## Sign-off
+
+Signed off on ef3f934 by the director, 2026-10-11. The gate ran on a clean
+worktree of that commit: `tools/ci_local.sh` (every check: 403 checker
+tests, 974 JS tests, 737 Rein tests, facts, katas and steps in CPython and
+Pyodide, parity on 423 runs, the wire payloads, palette and fonts), then
+`tools/qa/run.mjs --cvd` over QA's 108 default pages in four chunks of 27
+(972 screenshots, 0 failures; seven pages that timed out under load passed
+when checked alone). Phase 7 (launch) starts.
 
