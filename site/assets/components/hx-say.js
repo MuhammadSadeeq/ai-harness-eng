@@ -277,7 +277,7 @@ export class HxSay extends HxElement {
     dom.plenty = el("p", { class: "say-plenty", text: "90 s is plenty", hidden: "" });
     dom.timerKey = el("button", { class: "key key-primary", type: "button", "data-key": "timer" });
     dom.timerKey.addEventListener("click", () => this.onTimerKey());
-    dom.skip = el("button", { class: "say-skip", type: "button", "data-key": "skip", "data-focus-next": "timer", text: "Skip the timer" });
+    dom.skip = el("button", { class: "say-skip", type: "button", "data-key": "skip", "data-focus-next": "reveal", text: "Skip the timer" });
     dom.skip.addEventListener("click", () => this.skip());
     dom.after = el("div", { class: "say-after", hidden: "" });
     dom.reveal = el("button", { class: "key key-primary", type: "button", "data-key": "reveal", "data-focus-next": "model-answer", text: "Show the model answer" });
