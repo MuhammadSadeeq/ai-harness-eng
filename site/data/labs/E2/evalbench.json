@@ -1,0 +1,12 @@
+{
+ "boards": {
+  "new": "e2-pinned",
+  "old": "e2-old"
+ },
+ "eval": "e2-attacks",
+ "note": "Scripted runs of the course's model, seeded: the rates are the course's modelled numbers, not a measurement of a real model. The pinned board stops the new version; it does not stop a line in the notes.",
+ "start_tasks": [
+  "list-and-summarise-notes"
+ ],
+ "trials": 20
+}

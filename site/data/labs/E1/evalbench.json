@@ -1,0 +1,13 @@
+{
+ "boards": {
+  "mid": "e1-wording",
+  "new": "e1-egress",
+  "old": "e1-open"
+ },
+ "eval": "e1-attacks",
+ "note": "Scripted runs of the course's model, seeded: the rates are the course's modelled numbers, not a measurement of a real model. Every run passes its checks; the leak count is what the boards differ on.",
+ "start_tasks": [
+  "summarise-injected-page"
+ ],
+ "trials": 20
+}

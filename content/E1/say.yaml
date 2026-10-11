@@ -1,0 +1,28 @@
+- id: E1-s1
+  objectives:
+  - E1.o1
+  - E1.o2
+  prompt: Name the three legs of the lethal trifecta, and give one tool that opens each.
+  model_answer: 'Private data, untrusted content and exfiltration. A config reader opens private data: it returns
+    a token the model can see. A page fetcher opens untrusted content: someone outside wrote the text. A report
+    or post tool opens exfiltration: it sends data to a host the attacker can reach. With all three open, an instruction
+    in the page can make the agent read the token and send it out. Cutting any one leg breaks the attack.'
+  rubric:
+  - 'Names all three legs: private data, untrusted content and exfiltration'
+  - Gives one tool for each leg
+  - Says that all three open together is the risk
+  - Says that cutting one leg breaks the attack
+- id: E1-s2
+  objectives:
+  - E1.o3
+  - E1.o4
+  prompt: Why is a sentence in the system prompt not enough to stop an injected page? What would be enough?
+  model_answer: 'The sentence is text the model reads, so it lowers the rate at which the model obeys an injected
+    instruction. It does not remove a leg. A control in the harness does: an egress allow-list the send cannot pass,
+    a deny rule on the outbound call, or no untrusted content in reach. The model may still follow the injected
+    text, so the defense has to make the send fail whatever the model decides.'
+  rubric:
+  - Says the wording lowers the rate and removes no leg
+  - Names one harness control that cuts a leg
+  - Says the model may still follow injected text, so the defense must hold then
+  - Says that a control the model cannot argue with is what makes the send fail

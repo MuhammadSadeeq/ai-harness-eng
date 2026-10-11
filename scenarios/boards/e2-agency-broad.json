@@ -1,0 +1,10 @@
+{
+  "id": "e2-agency-broad",
+  "label": "Every tool, every path",
+  "modules": {
+    "permissions": {
+      "mode": "allow",
+      "rules": []
+    }
+  }
+}

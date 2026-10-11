@@ -1,0 +1,58 @@
+[
+ {
+  "back": "Only the thing it is built for. A sandbox egress list stops a send; least privilege stops a write outside its folder. Each layer names what it stops.",
+  "front": "What does a layer stop?",
+  "id": "E2-c1",
+  "objective": "E2.o1",
+  "type": "term"
+ },
+ {
+  "back": "Every layer fails sometimes. With several layers, one failure does not decide the outcome.",
+  "front": "Why stack defenses instead of relying on one strong one?",
+  "id": "E2-c2",
+  "objective": "E2.o1",
+  "type": "term"
+ },
+ {
+  "back": "A server that changes what its tools say or do, so the model is steered by the change. A new version is the usual route.",
+  "front": "What is tool poisoning?",
+  "id": "E2-c3",
+  "objective": "E2.o2",
+  "type": "term"
+ },
+ {
+  "back": "A pin stops a version nobody reviewed from running. It does not read the data the server returns, so an instruction in the data still gets through.",
+  "front": "What does a pin stop, and what does it not?",
+  "id": "E2-c4",
+  "objective": "E2.o2",
+  "type": "term"
+ },
+ {
+  "back": "An agent that can do more than its task needs. A tidy-up task that can empty an archive has excessive agency.",
+  "front": "What is excessive agency?",
+  "id": "E2-c5",
+  "objective": "E2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Allow the listing, read in the notes, and write only in the done folder. Refuse everything else by default, including the shell.",
+  "front": "Which policy is least privilege for a task that moves one note?",
+  "id": "E2-c6",
+  "objective": "E2.o3",
+  "type": "term"
+ },
+ {
+  "back": "Attacking it on purpose with a fixed set of attacks, to find what it lets through before someone else does.",
+  "front": "What is red-teaming your own agent?",
+  "id": "E2-c7",
+  "objective": "E2.o4",
+  "type": "term"
+ },
+ {
+  "back": "The share of seeded attack runs in which the attack succeeded. It is a measure of the lab's runs, reported with the number of runs.",
+  "front": "What does an attack success rate tell you?",
+  "id": "E2-c8",
+  "objective": "E2.o4",
+  "type": "term"
+ }
+]

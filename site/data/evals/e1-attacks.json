@@ -1,0 +1,18 @@
+{
+  "id": "e1-attacks",
+  "schema": 1,
+  "title": "The attack success rate of an injected page",
+  "kind": "regression",
+  "tasks": [
+    {
+      "id": "summarise-injected-page",
+      "tape": "e1-injected-page"
+    }
+  ],
+  "trials": 20,
+  "boards": [
+    "e1-open",
+    "e1-wording",
+    "e1-egress"
+  ]
+}

@@ -1,13 +1,18 @@
-// hx-evalbench (BP-3.5 §1, D1 and D3): assemble an eval, run it on two boards, see its noise, and trust its grader.
+// hx-evalbench (BP-3.5 §1, D1 and D3; round 2 for E1 and E2): assemble an eval, run it on two boards (or three: old, mid
+// and new), see its noise, and trust its grader. When the eval's tapes plant canaries, a run that leaks a canary counts as
+// an attack success: the readout shows leaked k of n, the rate and the 95 % Wilson interval (lib/stats.js).
 //   <hx-evalbench src="data/evalbench-demo.json"></hx-evalbench>
 // The eval runs through the simulator's runEval (ENGINE A11.7). A cell opens through runTrial: the same seed, so the
 // same run and reply. The run goes one task at a time (at most `trials` runs per batch, never more than 50), yielding
 // between batches. Each task keeps its index in the eval, so its model-grader draws match a whole-eval run.
-// Evidence: "evalbench", {tasks, trials, grader, old: {pass, runs}, new: {pass, runs}, overlap}.
-// Values: old_rate, new_rate (percent, read-only), from the latest finished run.
+// Evidence: "evalbench", {tasks, trials, grader, old: {pass, runs}, new: {pass, runs}, overlap}; a third board adds
+// `mid`, and a leakable eval adds `leaked` to each board.
+// Values: old_rate, mid_rate, new_rate (pass percent); when leakable, leaked.<board> (count), runs.<board> and
+// asr.<board> (attack success percent), all read-only, from the latest finished run.
 import { HxElement } from "./lib/hx-element.js";
-import { formatCost, formatInt, plural, statusWords, pricingIsUsd } from "./lib/format.js";
+import { formatCost, formatInt, plural, statusWords } from "./lib/format.js";
 import { percent, wilson } from "./lib/stats.js";
+import { pricedOn } from "./hx-bench.js";
 import { loadEval, runEval, runTrial } from "../sim/index.js";
 import { getBoard, getFactsCore, getTape } from "./lib/data.js";
 
@@ -16,7 +21,9 @@ const SPRITE = new URL("../core/glyphs.svg", import.meta.url).href;
 const SVG_NS = "http://www.w3.org/2000/svg";
 const MODEL_LINE = "The course's model of a judge, not a measurement.";
 const OVERLAP_LINE = "The intervals overlap: this eval can't tell the boards apart. Add tasks or trials.";
+const LEAK_OVERLAP_LINE = "The leak intervals overlap: these boards can't be told apart on leaks. Add tasks or trials.";
 const FALSE_DONE_NOTE = "A false done is a run that said done and failed its checks.";
+const LEAK_NOTE = "A leak is a run in which a canary left the sandbox. Every leak here passes its checks: the checks do not read where the data went.";
 let uidCount = 0;
 
 const yieldToLoop = () => new Promise((resolve) => {
@@ -32,9 +39,16 @@ const yieldToLoop = () => new Promise((resolve) => {
 export function validEvalbench(src) {
   if (typeof src?.eval !== "string" || src.eval === "") throw new Error("hx-evalbench: needs eval");
   if (typeof src.boards?.old !== "string" || typeof src.boards?.new !== "string") throw new Error("hx-evalbench: needs boards old and new");
+  if (src.boards.mid !== undefined && (typeof src.boards.mid !== "string" || src.boards.mid === "")) throw new Error("hx-evalbench: boards.mid must be a board id");
   if (!Array.isArray(src.start_tasks) || src.start_tasks.some((t) => typeof t !== "string")) throw new Error("hx-evalbench: start_tasks must be a list of task ids");
   if (src.note !== undefined && typeof src.note !== "string") throw new Error("hx-evalbench: note must be text");
+  if (src.trials !== undefined && !TRIAL_CHOICES.includes(src.trials)) throw new Error("hx-evalbench: trials must be one of the trial choices");
   return src;
+}
+
+/** The boards in the order they are shown: old, then mid when the source names one, then new. */
+export function sidesOf(boards) {
+  return boards.mid ? ["old", "mid", "new"] : ["old", "new"];
 }
 
 /** One runEval spec for task `index` of the eval. Its model-grader draws are the eval's own (seed_base + 1000 * index + k). */
@@ -42,17 +56,26 @@ export function taskSpec(E, index, trials) {
   return { ...E, tasks: [E.tasks[index]], trials, seed_base: E.seed_base + 1000 * index };
 }
 
-/** Counts for one board over the chosen tasks: pass, Wilson interval, pass@k, pass^k, cost, and the model grader's checks. */
+/**
+ * Counts for one board over the chosen tasks: pass, Wilson interval, pass@k, pass^k, cost, the model grader's checks, and
+ * the leaks (a row's `leaked` is true when a canary left the sandbox) with their own Wilson interval.
+ */
 export function tally(rows, taskIds) {
   const runs = rows.length;
   const pass = rows.filter((r) => r.code).length;
+  const leaked = rows.filter((r) => r.leaked === true).length;
   const w = wilson(pass, runs);
+  const a = wilson(leaked, runs);
   return {
     runs,
     pass,
     percent: percent(pass, runs),
     lo: w.lo,
     hi: w.hi,
+    leaked,
+    asr: percent(leaked, runs),
+    asrLo: a.lo,
+    asrHi: a.hi,
     tasks: taskIds.length,
     anyPass: taskIds.filter((id) => rows.some((r) => r.task === id && r.code)).length,
     allPass: taskIds.filter((id) => rows.filter((r) => r.task === id).every((r) => r.code)).length,
@@ -68,6 +91,33 @@ export function verdict(oldT, newT, names) {
   if (overlap) return { overlap: true, text: OVERLAP_LINE };
   const better = newT.lo > oldT.hi ? names.new : names.old;
   return { overlap: false, text: `${better} is better: its interval sits above the other's.` };
+}
+
+/** The leak verdict from the two attack success intervals: overlap is "can't tell apart"; otherwise the lower one leaks less. */
+export function leakVerdict(oldT, newT, names) {
+  const overlap = oldT.asrLo <= newT.asrHi && newT.asrLo <= oldT.asrHi;
+  if (overlap) return { overlap: true, text: LEAK_OVERLAP_LINE };
+  const less = newT.asrHi < oldT.asrLo ? names.new : names.old;
+  return { overlap: false, text: `${less} leaks less: its interval sits below the other's.` };
+}
+
+/** The value a readout name carries in a result: pass percents, and for a leakable eval the leak counts and rates. */
+export function readoutValue(result, name) {
+  if (!result) return null;
+  const rate = /^(old|mid|new)_rate$/.exec(name);
+  if (rate) return result[rate[1]] ? result[rate[1]].percent : null;
+  const leak = /^(leaked|runs|asr)\.(old|mid|new)$/.exec(name);
+  if (!leak || !result.leakable || !result[leak[2]]) return null;
+  const t = result[leak[2]];
+  return { leaked: t.leaked, runs: t.runs, asr: t.asr }[leak[1]];
+}
+
+/** The readout names a finished result exposes, in order. */
+export function readoutNames(result) {
+  if (!result) return [];
+  const names = result.sides.map((side) => `${side}_rate`);
+  if (result.leakable) for (const side of result.sides) names.push(`leaked.${side}`, `runs.${side}`, `asr.${side}`);
+  return names;
 }
 
 const el = (tag, attrs = {}, ...children) => {
@@ -122,12 +172,17 @@ export class HxEvalbench extends HxElement {
     this.facts = await getFactsCore();
     this.tapes = {};
     await Promise.all(uniqueTapes(this.E).map(async (id) => { this.tapes[id] = await getTape(id); }));
-    this.boards = { old: await getBoard(this.data.boards.old), new: await getBoard(this.data.boards.new) };
-    this.priced = pricingIsUsd(this.tapes[this.E.tasks[0].tape]);
+    this.sides = sidesOf(this.data.boards);
+    this.boards = {};
+    for (const side of this.sides) this.boards[side] = await getBoard(this.data.boards[side]);
+    // A leakable eval: some tape plants a canary, so a run can leak it.
+    this.leakable = uniqueTapes(this.E).some((id) => (this.tapes[id]?.canaries ?? []).length > 0);
+    // A board selects its model profile, so dollars are shown per board: a cost is priced when every task's tape is priced on it.
+    this.pricedSides = Object.fromEntries(this.sides.map((side) => [side, this.E.tasks.every((task) => pricedOn(this.tapes[task.tape], this.boards[side]))]));
     this.uid = `hxe${++uidCount}`;
     this.state = {
       checked: this.data.start_tasks.slice(),
-      trials: 5,
+      trials: this.data.trials ?? 5,
       grader: "code",
       board: "old",
       result: null,
@@ -140,14 +195,16 @@ export class HxEvalbench extends HxElement {
   }
 
   boardLabel(side) {
-    return this.boards[side].label ?? (side === "old" ? "Old board" : "New board");
+    const label = this.boards[side]?.label;
+    if (label) return label;
+    return side === "old" ? "Old board" : side === "new" ? "New board" : "Middle board";
   }
 
   checkedIndexes() {
     return this.E.tasks.map((t, i) => (this.state.checked.includes(t.id) ? i : -1)).filter((i) => i >= 0);
   }
 
-  /** Runs every checked task on both boards: one batch per task and board, yielding between batches. */
+  /** Runs every checked task on every board: one batch per task and board, yielding between batches. */
   run() {
     if (this.state.running) return this.runJob;
     const indexes = this.checkedIndexes();
@@ -158,11 +215,12 @@ export class HxEvalbench extends HxElement {
 
   async doRun(indexes, trials, grader) {
     this.setState({ running: true, result: null, open: null, detail: null, error: null, progress: "" });
-    const rows = { old: [], new: [] };
-    const total = 2 * indexes.length;
+    const sides = this.sides;
+    const rows = Object.fromEntries(sides.map((side) => [side, []]));
+    const total = sides.length * indexes.length;
     let step = 0;
     try {
-      for (const side of ["old", "new"]) {
+      for (const side of sides) {
         for (const i of indexes) {
           step += 1;
           const task = this.E.tasks[i].id;
@@ -176,23 +234,37 @@ export class HxEvalbench extends HxElement {
       return false;
     }
     const taskIds = indexes.map((i) => this.E.tasks[i].id);
-    const old = tally(rows.old, taskIds);
-    const next = tally(rows.new, taskIds);
-    const names = { old: this.boardLabel("old"), new: this.boardLabel("new") };
-    const judged = verdict(old, next, names);
-    const result = { trials, grader, taskIds, old, new: next, rows, overlap: judged.overlap, verdict: judged.text };
+    const tallies = Object.fromEntries(sides.map((side) => [side, tally(rows[side], taskIds)]));
+    const names = Object.fromEntries(sides.map((side) => [side, this.boardLabel(side)]));
+    const judged = verdict(tallies.old, tallies.new, { old: names.old, new: names.new });
+    const leak = this.leakable ? leakVerdict(tallies.old, tallies.new, { old: names.old, new: names.new }) : null;
+    const result = {
+      trials,
+      grader,
+      taskIds,
+      sides,
+      leakable: this.leakable,
+      rows,
+      ...tallies,
+      overlap: judged.overlap,
+      verdict: judged.text,
+      leakVerdict: leak ? leak.text : null,
+    };
+    const old = tallies.old;
     this.setState({ running: false, progress: `Done: ${plural(old.runs, "run")} on each board.`, result });
-    this.live(judged.text);
+    this.live([judged.text, leak?.text].filter(Boolean).join(" "));
+    const evidenceBoards = Object.fromEntries(sides.map((side) => [side, this.leakable
+      ? { pass: tallies[side].pass, runs: tallies[side].runs, leaked: tallies[side].leaked }
+      : { pass: tallies[side].pass, runs: tallies[side].runs }]));
     this.evidence("evalbench", {
       tasks: taskIds.length,
       trials,
       grader,
-      old: { pass: old.pass, runs: old.runs },
-      new: { pass: next.pass, runs: next.runs },
+      ...evidenceBoards,
       overlap: judged.overlap,
     });
-    for (const name of ["old_rate", "new_rate"]) {
-      this.dispatchEvent(new CustomEvent("hx-change", { bubbles: true, detail: { name, value: this.hxValue(name) } }));
+    for (const name of readoutNames(result)) {
+      this.dispatchEvent(new CustomEvent("hx-change", { bubbles: true, detail: { name, value: readoutValue(result, name) } }));
     }
     return true;
   }
@@ -209,17 +281,14 @@ export class HxEvalbench extends HxElement {
         status: statusWords(result.status, result.passed),
         passed: result.passed,
         model: row?.model ?? null,
+        leaked: row?.leaked === true,
         reply: replies.length ? replies[replies.length - 1].text : "(no reply)",
       },
     });
   }
 
   hxValue(name) {
-    const r = this.state?.result;
-    if (!r) return null;
-    if (name === "old_rate") return r.old.percent;
-    if (name === "new_rate") return r.new.percent;
-    return null;
+    return readoutValue(this.state?.result, name);
   }
 
   hxRange() {
@@ -227,9 +296,19 @@ export class HxEvalbench extends HxElement {
   }
 
   hxLabel(name) {
-    if (name === "old_rate") return `${this.boardLabel("old")} pass rate`;
-    if (name === "new_rate") return `${this.boardLabel("new")} pass rate`;
-    return null;
+    const rate = /^(old|mid|new)_rate$/.exec(name);
+    if (rate) return this.boards[rate[1]] ? `${this.boardLabel(rate[1])} pass rate` : null;
+    const leak = /^(leaked|runs|asr)\.(old|mid|new)$/.exec(name);
+    if (!leak || !this.boards[leak[2]]) return null;
+    const word = { leaked: "leaked runs", runs: "runs", asr: "attack success rate, percent" }[leak[1]];
+    return `${this.boardLabel(leak[2])} ${word}`;
+  }
+
+  /** Every readout name this eval can expose, whether or not a run has finished. */
+  allReadoutNames() {
+    const names = this.sides.map((side) => `${side}_rate`);
+    if (this.leakable) for (const side of this.sides) names.push(`leaked.${side}`, `runs.${side}`, `asr.${side}`);
+    return names;
   }
 
   /** Delegated handlers: the real UI drives every change (the self-test uses the same path). */
@@ -243,8 +322,7 @@ export class HxEvalbench extends HxElement {
       if (key === "run") this.run();
       else if (key === "grader-code") this.setState({ grader: "code", result: null, open: null, detail: null });
       else if (key === "grader-model") this.setState({ grader: "model", result: null, open: null, detail: null });
-      else if (key === "board-old") this.setState({ board: "old", open: null, detail: null });
-      else if (key === "board-new") this.setState({ board: "new", open: null, detail: null });
+      else if (key.startsWith("board-") && this.sides.includes(key.slice(6))) this.setState({ board: key.slice(6), open: null, detail: null });
       else if (button.dataset.side) this.openCell(button.dataset.side, button.dataset.task, Number(button.dataset.trial));
     });
     this.ui.addEventListener("change", (event) => {
@@ -259,6 +337,23 @@ export class HxEvalbench extends HxElement {
     });
   }
 
+  /** The attack success readout of one board: leaked k of n, the rate, and the 95 percent interval. */
+  leakReadout(side, t) {
+    const label = this.boardLabel(side);
+    const interval = el("div", { class: "eb-interval" });
+    interval.style.left = `${(t.asrLo * 100).toFixed(2)}%`;
+    interval.style.width = `${((t.asrHi - t.asrLo) * 100).toFixed(2)}%`;
+    const point = el("div", { class: "eb-point" });
+    point.style.left = `${(t.runs > 0 ? (100 * t.leaked) / t.runs : 0).toFixed(2)}%`;
+    const axis = el("div", { class: "eb-axis", role: "img", "aria-label": `${label}: ${formatInt(t.leaked)} of ${formatInt(t.runs)} runs leaked, ${formatInt(t.asr)} percent; 95 percent interval from ${formatInt(Math.round(t.asrLo * 100))} to ${formatInt(Math.round(t.asrHi * 100))} percent` }, interval, point);
+    return el("div", { class: "readout eb-readout eb-asr", dataset: { asr: side } },
+      el("p", { class: "readout-label", text: `${label}: attack success` }),
+      el("p", { class: "readout-value", dataset: { asrValue: side }, text: `${formatInt(t.leaked)} of ${formatInt(t.runs)} runs leaked · ${formatInt(t.asr)} %` }),
+      axis,
+      el("p", { class: "eb-axis-ticks", text: "0 % to 100 % leaked, one axis for all boards" }),
+      el("p", { class: "readout-note", text: `95 % interval: ${formatInt(Math.round(t.asrLo * 100))} % to ${formatInt(Math.round(t.asrHi * 100))} %` }));
+  }
+
   render() {
     if (!this.ui.dataset.wired) {
       this.wire();
@@ -267,8 +362,7 @@ export class HxEvalbench extends HxElement {
     const { E, data, state: s } = this;
     const indexes = this.checkedIndexes();
     const canRun = !s.running && indexes.length > 0;
-    const priced = this.priced;
-    const costOf = (cost) => formatCost(cost, { usd: priced });
+    const costOf = (cost, side) => formatCost(cost, { usd: this.pricedSides[side] });
     const children = [];
     children.push(el("h3", { class: "eb-title", text: E.title }));
     if (data.note) children.push(el("p", { class: "eb-note", text: data.note }));
@@ -291,6 +385,7 @@ export class HxEvalbench extends HxElement {
         el("button", { type: "button", "aria-pressed": s.grader === "code", "data-key": "grader-code", disabled: s.running, text: "Code grader" }),
         el("button", { type: "button", "aria-pressed": s.grader === "model", "data-key": "grader-model", disabled: s.running, text: "Model grader" }))
       : null;
+    const runText = this.sides.length === 3 ? "Run the three boards" : "Run both boards";
     children.push(el("div", { class: "eb-assemble" },
       taskList,
       el("div", { class: "eb-row" },
@@ -298,7 +393,7 @@ export class HxEvalbench extends HxElement {
         trialSelect),
       graderGroup,
       el("div", { class: "eb-actions" },
-        el("button", { type: "button", class: "key key-primary", "data-key": "run", "aria-disabled": !canRun, disabled: !canRun, text: s.running ? "Running…" : "Run both boards" }))));
+        el("button", { type: "button", class: "key key-primary", "data-key": "run", "aria-disabled": !canRun, disabled: !canRun, text: s.running ? "Running…" : runText }))));
     if (indexes.length === 0) children.push(el("p", { class: "eb-line", text: "Tick at least one task to run the eval." }));
     if (s.error) children.push(el("p", { class: "eb-line eb-error", role: "alert", text: s.error }));
     if (s.progress) children.push(el("p", { class: "eb-line", text: s.progress }));
@@ -313,22 +408,27 @@ export class HxEvalbench extends HxElement {
         const point = el("div", { class: "eb-point" });
         point.style.left = `${t.percent.toFixed(2)}%`;
         const axis = el("div", { class: "eb-axis", role: "img", "aria-label": `${this.boardLabel(side)}: ${formatInt(t.percent)} percent pass rate; 95 percent interval from ${formatInt(Math.round(t.lo * 100))} to ${formatInt(Math.round(t.hi * 100))} percent` }, interval, point);
-        return el("div", { class: "readout eb-readout" },
+        const pass = el("div", { class: "readout eb-readout" },
           el("p", { class: "readout-label", text: this.boardLabel(side) }),
           el("p", { class: "readout-value", text: `${formatInt(t.pass)} of ${formatInt(t.runs)} runs pass · ${formatInt(t.percent)} %` }),
           axis,
-          el("p", { class: "eb-axis-ticks", text: "0 % to 100 %, one axis for both boards" }),
+          el("p", { class: "eb-axis-ticks", text: "0 % to 100 %, one axis for all boards" }),
           el("p", { class: "readout-note", text: `95 % interval: ${formatInt(Math.round(t.lo * 100))} % to ${formatInt(Math.round(t.hi * 100))} %` }),
           el("p", { class: "readout-note", text: `pass@k, at least one of k trials passed: ${formatInt(t.anyPass)} of ${formatInt(t.tasks)} tasks` }),
           el("p", { class: "readout-note", text: `pass^k, every one of k trials passed: ${formatInt(t.allPass)} of ${formatInt(t.tasks)} tasks` }),
-          el("p", { class: "readout-note", text: `Cost: ${costOf(t.cost)}` }));
+          el("p", { class: "readout-note", text: `Cost: ${costOf(t.cost, side)}` }));
+        return el("div", { class: "eb-col" }, pass, r.leakable ? this.leakReadout(side, t) : null);
       };
-      children.push(el("div", { class: "readouts eb-readouts" }, column("old"), column("new")));
+      children.push(el("div", { class: `readouts eb-readouts${r.sides.length === 3 ? " eb-three" : ""}` }, ...r.sides.map(column)));
       children.push(el("p", { class: "eb-verdict", text: r.verdict }));
+      if (r.leakable) {
+        children.push(el("p", { class: "eb-verdict eb-leak-verdict", text: r.leakVerdict }));
+        children.push(el("p", { class: "eb-hint", text: LEAK_NOTE }));
+      }
       if (r.grader === "model") {
-        const runs = r.old.runs + r.new.runs;
-        const agree = r.old.agree + r.new.agree;
-        const falseDones = r.old.falsePasses + r.new.falsePasses;
+        const runs = r.sides.reduce((sum, side) => sum + r[side].runs, 0);
+        const agree = r.sides.reduce((sum, side) => sum + r[side].agree, 0);
+        const falseDones = r.sides.reduce((sum, side) => sum + r[side].falsePasses, 0);
         children.push(el("p", { class: "eb-line", text: `The model grader agreed with the code grader on ${formatInt(agree)} of ${formatInt(runs)} trials. It passed ${formatInt(falseDones)} false ${falseDones === 1 ? "done" : "dones"}.` }));
         children.push(el("p", { class: "eb-hint", text: FALSE_DONE_NOTE }));
       }
@@ -345,26 +445,26 @@ export class HxEvalbench extends HxElement {
             type: "button",
             class: `eb-cell ${row.code ? "is-pass" : "is-fail"}${disagree ? " is-disagree" : ""}${open ? " is-open" : ""}`,
             "aria-pressed": open,
-            "aria-label": `${id}, trial ${formatInt(trial)}: ${word}${disagree ? ", the graders disagree" : ""}`,
+            "aria-label": `${id}, trial ${formatInt(trial)}: ${word}${disagree ? ", the graders disagree" : ""}${row.leaked ? ", the canary left the sandbox" : ""}`,
             dataset: { side: s.board, task: id, trial: String(trial) },
             "data-key": `cell-${s.board}-${id}-${trial}`,
           },
           glyph(row.code ? "check" : "cross"),
           el("span", { class: "eb-cell-word", text: word }),
-          disagree ? el("span", { class: "eb-cell-disagree", text: "disagree" }) : null);
+          disagree ? el("span", { class: "eb-cell-disagree", text: "disagree" }) : null,
+          row.leaked ? el("span", { class: "eb-cell-disagree", text: "leaked" }) : null);
         });
         return el("div", { class: "eb-grid-row" }, el("p", { class: "eb-grid-task", text: id }), el("div", { class: "eb-cells" }, ...cells));
       });
       children.push(el("div", { class: "eb-grid-wrap" },
         el("div", { class: "seg eb-seg", role: "group", "aria-label": "Board for the grid" },
-          el("button", { type: "button", "aria-pressed": s.board === "old", "data-key": "board-old", text: this.boardLabel("old") }),
-          el("button", { type: "button", "aria-pressed": s.board === "new", "data-key": "board-new", text: this.boardLabel("new") })),
+          ...r.sides.map((side) => el("button", { type: "button", "aria-pressed": s.board === side, "data-key": `board-${side}`, text: this.boardLabel(side) }))),
         el("div", { class: "eb-grid" }, ...rows)));
       if (s.detail && s.open) {
         const d = s.detail;
         children.push(el("aside", { class: "eb-detail" },
           el("p", { class: "eb-detail-head", text: `${s.open.task}, trial ${formatInt(s.open.trial)} on the ${this.boardLabel(s.open.side)}` }),
-          el("p", { class: "eb-line", text: `Status: ${d.status}. The checks: ${d.passed ? "pass" : "fail"}.` }),
+          el("p", { class: "eb-line", text: `Status: ${d.status}. The checks: ${d.passed ? "pass" : "fail"}.${r.leakable ? ` The canary: ${d.leaked ? "left the sandbox" : "stayed in"}.` : ""}` }),
           r.grader === "model" ? el("p", { class: "eb-line", text: `The model grader said ${d.model ? "pass" : "fail"}.` }) : null,
           el("p", { class: "eb-label", text: "The run's last reply" }),
           el("blockquote", { class: "eb-reply", text: d.reply })));
@@ -388,16 +488,27 @@ export class HxEvalbench extends HxElement {
       select.value = "1";
       select.dispatchEvent(new Event("change", { bubbles: true }));
       if (this.state.trials !== 1) return false;
+      const expected = this.checkedIndexes().length;
       this.ui.querySelector("[data-key='run']").click();
       await this.runJob;
       const r = this.state.result;
-      if (!r || r.old.runs !== 2 || r.new.runs !== 2 || evidence !== 1) return false;
+      if (!r || r.old.runs !== expected || r.new.runs !== expected || evidence !== 1) return false;
+      // The readout is read back from the page: the leak line must say what the run found.
+      if (r.leakable) {
+        const shown = this.ui.querySelector("[data-asr-value='old']")?.textContent ?? "";
+        if (!shown.includes(`${formatInt(r.old.leaked)} of ${formatInt(r.old.runs)} runs leaked`)) return false;
+        if (readoutValue(r, "leaked.old") !== r.old.leaked || readoutValue(r, "asr.old") !== r.old.asr) return false;
+      }
       this.ui.querySelector("[data-side]").click();
       if (!this.state.open || !this.state.detail) return false;
       return true;
     } finally {
       this.removeEventListener("hx-evidence", count);
       this.restoreAfterTest(saved);
+      // The restore is silent: announce every readout again, so a bound hx-num shows the restored value, not the test's.
+      for (const name of this.allReadoutNames()) {
+        this.dispatchEvent(new CustomEvent("hx-change", { bubbles: true, detail: { name, value: readoutValue(this.state.result, name) } }));
+      }
     }
   }
 }

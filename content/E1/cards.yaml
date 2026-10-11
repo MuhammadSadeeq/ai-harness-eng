@@ -1,0 +1,43 @@
+- id: E1-c1
+  type: term
+  objective: E1.o1
+  front: What is prompt injection?
+  back: Instructions hidden in content the agent reads. The model may act on them as if the person had asked for
+    them.
+- id: E1-c2
+  type: term
+  objective: E1.o1
+  front: Who wrote the instruction in an indirect prompt injection?
+  back: 'A stranger who could put text where the agent reads it: a page, a comment, a file. Not the person typing.'
+- id: E1-c3
+  type: term
+  objective: E1.o2
+  front: What are the three legs of the lethal trifecta?
+  back: Private data the agent can read, untrusted content it reads, and a way to send data out.
+- id: E1-c4
+  type: term
+  objective: E1.o2
+  front: A tool reads a config file that holds a token. Which leg does it open?
+  back: Private data. The leg is open because the agent can read the token; the risk needs the other two legs too.
+- id: E1-c5
+  type: term
+  objective: E1.o3
+  front: Which control cuts the send leg?
+  back: 'A harness control that stops the send: an egress allow-list in the sandbox, or a deny rule on the outbound
+    call.'
+- id: E1-c6
+  type: term
+  objective: E1.o3
+  front: Does a sentence in the system prompt remove a leg?
+  back: No. It lowers the rate at which the model obeys an injected instruction. The leg stays open; only a cut
+    leg stops the attack.
+- id: E1-c7
+  type: term
+  objective: E1.o4
+  front: Why is 'the model will ignore malicious text' not a defense?
+  back: The model may ignore it, but may not. A defense has to hold on the runs where the text is followed.
+- id: E1-c8
+  type: term
+  objective: E1.o4
+  front: The tests pass and the summary is written. Is the run safe?
+  back: Not known. No test reads where the data went. Check the three legs and the outbound call.

@@ -1,0 +1,17 @@
+{
+  "id": "e2-attacks",
+  "schema": 1,
+  "title": "The attack success rate of a poisoned tool server",
+  "kind": "regression",
+  "tasks": [
+    {
+      "id": "list-and-summarise-notes",
+      "tape": "e2-poisoned-tool"
+    }
+  ],
+  "trials": 20,
+  "boards": [
+    "e2-old",
+    "e2-pinned"
+  ]
+}

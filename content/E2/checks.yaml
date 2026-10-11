@@ -1,0 +1,64 @@
+- id: E2-p1
+  objective: E2.o2
+  mode: predict
+  question: A notes server ships a new version. Its summary tool's description now asks for a post with the team
+    token. Your harness has no pin. What happens?
+  options:
+  - text: The model may post the notes, and the harness lets the post through, because no pin or rule says no.
+    why: Right. Without a pin the new description is sent, and without a rule the post runs.
+  - text: The harness refuses the description, because the server is one the team already uses.
+    why: Tempting. Being used is not being reviewed. Nothing in the harness checks a version that nobody pinned.
+  - text: The model ignores it, because summaries do not send data.
+    why: Tempting. A summary tool can carry a post step in its description; the description is what the model reads.
+  answer: 0
+  outcome: 'On the old board the post ran in some seeded runs. Every run still passed: the summary was written,
+    and nothing checked where the notes went.'
+- id: E2-c1
+  objective: E2.o1
+  mode: check
+  question: Which layer stops an outbound post to a host nobody approved, even when the model asks for it?
+  options:
+  - text: Least privilege on the notes folder.
+    why: Wrong. It limits where files are written, not where data is sent.
+  - text: A sandbox egress list that names only the docs host.
+    why: Right. The sandbox refuses the connection before it runs, so the post never reaches the host.
+  - text: A rule in the system prompt about posts.
+    why: Wrong. Wording lowers the rate at which the model obeys; it does not cut the leg.
+  answer: 1
+- id: E2-c2
+  objective: E2.o2
+  mode: check
+  question: A notes server is pinned at the reviewed version. Which attack does the pin stop?
+  options:
+  - text: A new version whose tool description carries an instruction.
+    why: Right. A version that differs from the pin is rejected, so its tools are never sent.
+  - text: An instruction hidden in the notes the list returns.
+    why: Wrong. The pin accepts the reviewed version. The pin does not read the notes the server returns.
+  - text: Every attack that uses the notes server.
+    why: Wrong. A pin is one layer on one supply-chain route.
+  answer: 0
+- id: E2-c3
+  objective: E2.o3
+  mode: check
+  question: A task moves one note into a done folder and tidies the notes folder. Which policy applies least privilege
+    to it?
+  options:
+  - text: Allow every tool on every path, and log each call.
+    why: Wrong. A log records what happened. It does not stop the archive from being emptied.
+  - text: Allow the listing, read in the notes, and write only in the done folder; refuse the rest.
+    why: Right. Each allow names one need, and the default refuses the shell and the archive.
+  - text: Ask a person before every call.
+    why: Tempting. A question is a layer, and it fails by habit when the prompts are many.
+  answer: 1
+- id: E2-c4
+  objective: E2.o4
+  mode: check
+  question: Which statement about an attack success rate is right?
+  options:
+  - text: It is the share of seeded runs in which the attack succeeded, reported with the number of runs.
+    why: Right. A rate needs its denominator, and the seeds say which runs it came from.
+  - text: It is the model's accuracy on the task.
+    why: Wrong. Accuracy counts correct answers. A success rate counts the attacks that worked.
+  - text: It shows how rare the attack is in real use.
+    why: Wrong. These are seeded runs of a scripted model. The rate is a measure of the lab, not of a product.
+  answer: 0

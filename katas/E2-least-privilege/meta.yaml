@@ -1,0 +1,30 @@
+id: E2-least-privilege
+module: E2
+title: Narrow a policy to what one task needs
+objectives:
+- E2.o3
+minutes: 25
+hints:
+- 'Read test_kata.py. The helper decide() is the course''s reading of a policy: the first matching rule, else the
+  mode. Each test names one call the task makes or must refuse.'
+- 'Start from the mode: a deny mode refuses what no rule allows. Then add one allow rule per need. A need with a
+  path gets match {"path": glob}; a need without one gets match {}.'
+- 'Nearly the code: keep a set of the needs already seen so a repeated need adds no rule; for each new need append
+  {"decision": "allow", "tool": tool, "match": match, "reason": ...} and return {"mode": "deny", "rules": rules}.'
+from_memory: false
+wrong_solutions:
+- name: allow-everything
+  code: "def narrow(needs):\n    return {\"mode\": \"allow\", \"rules\": []}\n"
+- name: tool-only
+  code: "def narrow(needs):\n    rules = []\n    seen = set()\n    for tool, path in needs:\n        if tool in\
+    \ seen:\n            continue\n        seen.add(tool)\n        rules.append({\"decision\": \"allow\", \"tool\"\
+    : tool, \"match\": {}, \"reason\": \"needed\"})\n    return {\"mode\": \"deny\", \"rules\": rules}\n"
+- name: ask-by-default
+  code: "def narrow(needs):\n    rules = []\n    seen = set()\n    for tool, path in needs:\n        if (tool, path)\
+    \ in seen:\n            continue\n        seen.add((tool, path))\n        match = {} if path is None else {\"\
+    path\": path}\n        rules.append({\"decision\": \"allow\", \"tool\": tool, \"match\": match, \"reason\":\
+    \ \"needed\"})\n    return {\"mode\": \"ask\", \"rules\": rules}\n"
+- name: repeats-rules
+  code: "def narrow(needs):\n    rules = []\n    for tool, path in needs:\n        match = {} if path is None else\
+    \ {\"path\": path}\n        rules.append({\"decision\": \"allow\", \"tool\": tool, \"match\": match, \"reason\"\
+    : \"needed\"})\n    return {\"mode\": \"deny\", \"rules\": rules}\n"

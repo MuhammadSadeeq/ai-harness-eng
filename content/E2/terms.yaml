@@ -1,0 +1,61 @@
+- id: defense-in-depth
+  term: defense in depth
+  aliases:
+  - defense in depth
+  - defence in depth
+  - defense in layers
+  strict: true
+  wire: permissions
+  definition: Several controls, each stopping something different, so that one control failing does not decide the
+    outcome.
+- id: least-privilege
+  term: least privilege
+  aliases:
+  - least privilege
+  strict: true
+  wire: permissions
+  definition: Give a tool or an agent only the tools, paths and hosts its task needs. Refuse the rest by default.
+- id: excessive-agency
+  term: excessive agency
+  aliases:
+  - excessive agency
+  strict: true
+  wire: permissions
+  definition: An agent that can do more than its task needs, so that a mistake or a manipulated output can do damage.
+- id: tool-poisoning
+  term: tool poisoning
+  aliases:
+  - tool poisoning
+  - poisoned tool
+  - poisoned tools
+  strict: true
+  wire: tools
+  definition: A tool server changes what its tools say or do, so the model is steered by the change. The change
+    can arrive in a new version of a server the harness already uses.
+- id: supply-chain
+  term: supply chain
+  aliases:
+  - supply chain
+  - supply-chain
+  strict: true
+  wire: tools
+  definition: The servers, packages and versions a harness depends on. Each one can change without the harness changing.
+- id: red-teaming
+  term: red-teaming
+  aliases:
+  - red-teaming
+  - red team
+  - red-team
+  - red teaming
+  strict: true
+  wire: permissions
+  definition: Attacking your own agent on purpose, with a fixed set of attacks, to find what it lets through.
+- id: attack-success-rate
+  term: attack success rate
+  aliases:
+  - attack success rate
+  - attack success rates
+  strict: true
+  wire: permissions
+  definition: The share of seeded attack runs in which the attack succeeded. Report it with the number of runs it
+    came from.

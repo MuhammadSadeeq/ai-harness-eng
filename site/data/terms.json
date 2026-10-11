@@ -173,6 +173,18 @@
   "term": "ask",
   "wire": "permissions"
  },
+ "attack-success-rate": {
+  "aliases": [
+   "attack success rate",
+   "attack success rates"
+  ],
+  "definition": "The share of seeded attack runs in which the attack succeeded. Report it with the number of runs it came from.",
+  "id": "attack-success-rate",
+  "module": "E2",
+  "strict": true,
+  "term": "attack success rate",
+  "wire": "permissions"
+ },
  "attention-budget": {
   "aliases": [
    "attention budget",
@@ -761,6 +773,19 @@
   "term": "decision order",
   "wire": "permissions"
  },
+ "defense-in-depth": {
+  "aliases": [
+   "defense in depth",
+   "defence in depth",
+   "defense in layers"
+  ],
+  "definition": "Several controls, each stopping something different, so that one control failing does not decide the outcome.",
+  "id": "defense-in-depth",
+  "module": "E2",
+  "strict": true,
+  "term": "defense in depth",
+  "wire": "permissions"
+ },
  "deferred-loading": {
   "aliases": [
    "deferred loading"
@@ -1003,6 +1028,17 @@
   "strict": true,
   "term": "event log",
   "wire": "context"
+ },
+ "excessive-agency": {
+  "aliases": [
+   "excessive agency"
+  ],
+  "definition": "An agent that can do more than its task needs, so that a mistake or a manipulated output can do damage.",
+  "id": "excessive-agency",
+  "module": "E2",
+  "strict": true,
+  "term": "excessive agency",
+  "wire": "permissions"
  },
  "exfiltration": {
   "aliases": [
@@ -1465,6 +1501,19 @@
   "term": "independent reviewer",
   "wire": "verify"
  },
+ "indirect-prompt-injection": {
+  "aliases": [
+   "indirect prompt injection",
+   "indirect prompt injections",
+   "indirect injection"
+  ],
+  "definition": "A prompt injection that arrives through content the agent fetched. The person typing never wrote it.",
+  "id": "indirect-prompt-injection",
+  "module": "E1",
+  "strict": true,
+  "term": "indirect prompt injection",
+  "wire": "permissions"
+ },
  "inference": {
   "aliases": [
    "inference"
@@ -1664,6 +1713,29 @@
   "strict": false,
   "term": "latency budget",
   "wire": "observe"
+ },
+ "least-privilege": {
+  "aliases": [
+   "least privilege"
+  ],
+  "definition": "Give a tool or an agent only the tools, paths and hosts its task needs. Refuse the rest by default.",
+  "id": "least-privilege",
+  "module": "E2",
+  "strict": true,
+  "term": "least privilege",
+  "wire": "permissions"
+ },
+ "lethal-trifecta": {
+  "aliases": [
+   "lethal trifecta",
+   "trifecta"
+  ],
+  "definition": "Three legs together: the agent can read private data, it reads untrusted content, and it can send data out. With all three open, an injected instruction can steal data.",
+  "id": "lethal-trifecta",
+  "module": "E1",
+  "strict": true,
+  "term": "lethal trifecta",
+  "wire": "permissions"
  },
  "llm-judge": {
   "aliases": [
@@ -2385,6 +2457,18 @@
   "term": "prompt engineering",
   "wire": "control"
  },
+ "prompt-injection": {
+  "aliases": [
+   "prompt injection",
+   "prompt injections"
+  ],
+  "definition": "Instructions hidden in content the agent reads: a page, a file, a tool's output. The model may act on them as if a person had asked.",
+  "id": "prompt-injection",
+  "module": "E1",
+  "strict": true,
+  "term": "prompt injection",
+  "wire": "permissions"
+ },
  "queue": {
   "aliases": [
    "queue",
@@ -2477,6 +2561,20 @@
   "strict": false,
   "term": "recovery",
   "wire": "errors"
+ },
+ "red-teaming": {
+  "aliases": [
+   "red-teaming",
+   "red team",
+   "red-team",
+   "red teaming"
+  ],
+  "definition": "Attacking your own agent on purpose, with a fixed set of attacks, to find what it lets through.",
+  "id": "red-teaming",
+  "module": "E2",
+  "strict": true,
+  "term": "red-teaming",
+  "wire": "permissions"
  },
  "redaction": {
   "aliases": [
@@ -2988,6 +3086,18 @@
   "term": "sub-agent",
   "wire": "verify"
  },
+ "supply-chain": {
+  "aliases": [
+   "supply chain",
+   "supply-chain"
+  ],
+  "definition": "The servers, packages and versions a harness depends on. Each one can change without the harness changing.",
+  "id": "supply-chain",
+  "module": "E2",
+  "strict": true,
+  "term": "supply chain",
+  "wire": "tools"
+ },
  "symlink": {
   "aliases": [
    "symlink",
@@ -3012,6 +3122,18 @@
   "strict": true,
   "term": "system prompt",
   "wire": "control"
+ },
+ "taint": {
+  "aliases": [
+   "taint",
+   "tainted"
+  ],
+  "definition": "A value that came from untrusted content and keeps that origin. A tainted value should not decide an action that sends data out.",
+  "id": "taint",
+  "module": "E1",
+  "strict": false,
+  "term": "taint",
+  "wire": "permissions"
  },
  "task": {
   "aliases": [
@@ -3176,6 +3298,19 @@
   "module": "C7",
   "strict": true,
   "term": "tool description",
+  "wire": "tools"
+ },
+ "tool-poisoning": {
+  "aliases": [
+   "tool poisoning",
+   "poisoned tool",
+   "poisoned tools"
+  ],
+  "definition": "A tool server changes what its tools say or do, so the model is steered by the change. The change can arrive in a new version of a server the harness already uses.",
+  "id": "tool-poisoning",
+  "module": "E2",
+  "strict": true,
+  "term": "tool poisoning",
   "wire": "tools"
  },
  "tool-registry": {
@@ -3391,6 +3526,18 @@
   "module": "T1",
   "strict": true,
   "term": "type hint"
+ },
+ "untrusted-content": {
+  "aliases": [
+   "untrusted content",
+   "untrusted"
+  ],
+  "definition": "Anything the agent reads that a stranger could have written: a page, a comment, a tool's answer. It is data, even when it is phrased as an order.",
+  "id": "untrusted-content",
+  "module": "E1",
+  "strict": false,
+  "term": "untrusted content",
+  "wire": "permissions"
  },
  "usage": {
   "aliases": [

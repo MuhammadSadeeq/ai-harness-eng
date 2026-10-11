@@ -691,7 +691,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "E1",
    "kind": "core",
    "minutes": 55,
@@ -707,7 +707,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "E2",
    "kind": "core",
    "minutes": 50,

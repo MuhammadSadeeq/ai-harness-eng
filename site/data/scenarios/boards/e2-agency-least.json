@@ -1,0 +1,33 @@
+{
+  "id": "e2-agency-least",
+  "label": "Writes only to the done folder",
+  "modules": {
+    "permissions": {
+      "mode": "deny",
+      "rules": [
+        {
+          "decision": "allow",
+          "tool": "list_files",
+          "match": {},
+          "reason": "read-only"
+        },
+        {
+          "decision": "allow",
+          "tool": "read_file",
+          "match": {
+            "path": "notes/**"
+          },
+          "reason": "read the notes"
+        },
+        {
+          "decision": "allow",
+          "tool": "write_file",
+          "match": {
+            "path": "notes/done/**"
+          },
+          "reason": "the one folder the task writes"
+        }
+      ]
+    }
+  }
+}

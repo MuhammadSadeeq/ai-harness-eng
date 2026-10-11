@@ -1,0 +1,11 @@
+{
+  "id": "e1-egress",
+  "label": "Network out to the docs host only",
+  "modules": {
+    "sandbox": {
+      "egress": [
+        "docs.example"
+      ]
+    }
+  }
+}

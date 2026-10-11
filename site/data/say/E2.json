@@ -1,0 +1,32 @@
+[
+ {
+  "id": "E2-s1",
+  "model_answer": "A sandbox egress list stops the send: the connection to the collector host is refused before it runs, whatever the model asked. A deny rule on the outbound tool does the same at the permission step, and needs a person to say yes. Least privilege limits the other tools: a task that writes only to its done folder cannot empty the archive. None of the three stops an instruction from being read. Each layer stops one thing, so the answer is the stack.",
+  "objectives": [
+   "E2.o1",
+   "E2.o3"
+  ],
+  "prompt": "Name two layers that stop a poisoned tool from sending data out, and say what each one stops.",
+  "rubric": [
+   "Names a sandbox egress allow-list and says what it stops",
+   "Names a permission rule on the outbound tool and says what it stops",
+   "Names least privilege and says what it stops",
+   "Says that no single layer covers every route"
+  ]
+ },
+ {
+  "id": "E2-s2",
+  "model_answer": "Write a small suite of attacks: a poisoned description in a new version, and an instruction hidden in the data a tool returns. Run each attack over seeded trials on the board you have and on the board with the pin and the other layers. Report the attack success rate for each board, with the number of runs it came from. A pin should stop the new version, but it will not stop the instruction in the data; the report should show that.",
+  "objectives": [
+   "E2.o2",
+   "E2.o4"
+  ],
+  "prompt": "How would you red-team your own agent for tool poisoning, and what number would you report?",
+  "rubric": [
+   "Builds the attack suite from two routes: a new version and the data",
+   "Runs the suite on a board with and without the layers",
+   "Reports the attack success rate with the number of runs",
+   "Notes that a pin stops the version but not the data"
+  ]
+ }
+]

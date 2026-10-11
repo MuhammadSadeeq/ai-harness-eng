@@ -1,0 +1,7 @@
+{
+  "id": "e1-wording",
+  "label": "The rules say not to send",
+  "modules": {
+    "rules_file": {}
+  }
+}

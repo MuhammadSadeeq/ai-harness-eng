@@ -52,6 +52,13 @@ hx-evalbench .hx-ui { display: grid; gap: var(--sp-4); }
   .eb-readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .eb-grid-row { grid-template-columns: 180px minmax(0, 1fr); align-items: start; }
 }
+/* Round 2 (E1 and E2): each board's column holds its pass readout and, for a leakable eval, its attack success readout;
+   a third board (boards.mid) takes three columns from 700 px up. */
+.eb-col { display: grid; gap: var(--sp-2); align-content: start; min-width: 0; }
+.eb-readouts.eb-three { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 700px) { .eb-readouts.eb-three { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.eb-leak-verdict { font-weight: 600; }
+
 @media (prefers-reduced-motion: reduce) {
   hx-evalbench * { transition: none !important; animation: none !important; }
 }

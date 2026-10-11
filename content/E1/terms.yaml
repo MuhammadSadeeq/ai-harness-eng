@@ -1,0 +1,45 @@
+- id: prompt-injection
+  term: prompt injection
+  aliases:
+  - prompt injection
+  - prompt injections
+  strict: true
+  wire: permissions
+  definition: 'Instructions hidden in content the agent reads: a page, a file, a tool''s output. The model may act
+    on them as if a person had asked.'
+- id: indirect-prompt-injection
+  term: indirect prompt injection
+  aliases:
+  - indirect prompt injection
+  - indirect prompt injections
+  - indirect injection
+  strict: true
+  wire: permissions
+  definition: A prompt injection that arrives through content the agent fetched. The person typing never wrote it.
+- id: lethal-trifecta
+  term: lethal trifecta
+  aliases:
+  - lethal trifecta
+  - trifecta
+  strict: true
+  wire: permissions
+  definition: 'Three legs together: the agent can read private data, it reads untrusted content, and it can send
+    data out. With all three open, an injected instruction can steal data.'
+- id: untrusted-content
+  term: untrusted content
+  aliases:
+  - untrusted content
+  - untrusted
+  strict: false
+  wire: permissions
+  definition: 'Anything the agent reads that a stranger could have written: a page, a comment, a tool''s answer.
+    It is data, even when it is phrased as an order.'
+- id: taint
+  term: taint
+  aliases:
+  - taint
+  - tainted
+  strict: false
+  wire: permissions
+  definition: A value that came from untrusted content and keeps that origin. A tainted value should not decide
+    an action that sends data out.

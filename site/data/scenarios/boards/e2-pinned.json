@@ -1,0 +1,11 @@
+{
+  "id": "e2-pinned",
+  "label": "Pinned tool servers",
+  "modules": {
+    "tool_pins": {
+      "pins": {
+        "notes": "1.2.0"
+      }
+    }
+  }
+}

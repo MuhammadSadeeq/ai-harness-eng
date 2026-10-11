@@ -1,0 +1,45 @@
+- id: E2-c1
+  type: term
+  objective: E2.o1
+  front: What does a layer stop?
+  back: Only the thing it is built for. A sandbox egress list stops a send; least privilege stops a write outside
+    its folder. Each layer names what it stops.
+- id: E2-c2
+  type: term
+  objective: E2.o1
+  front: Why stack defenses instead of relying on one strong one?
+  back: Every layer fails sometimes. With several layers, one failure does not decide the outcome.
+- id: E2-c3
+  type: term
+  objective: E2.o2
+  front: What is tool poisoning?
+  back: A server that changes what its tools say or do, so the model is steered by the change. A new version is
+    the usual route.
+- id: E2-c4
+  type: term
+  objective: E2.o2
+  front: What does a pin stop, and what does it not?
+  back: A pin stops a version nobody reviewed from running. It does not read the data the server returns, so an
+    instruction in the data still gets through.
+- id: E2-c5
+  type: term
+  objective: E2.o3
+  front: What is excessive agency?
+  back: An agent that can do more than its task needs. A tidy-up task that can empty an archive has excessive agency.
+- id: E2-c6
+  type: term
+  objective: E2.o3
+  front: Which policy is least privilege for a task that moves one note?
+  back: Allow the listing, read in the notes, and write only in the done folder. Refuse everything else by default,
+    including the shell.
+- id: E2-c7
+  type: term
+  objective: E2.o4
+  front: What is red-teaming your own agent?
+  back: Attacking it on purpose with a fixed set of attacks, to find what it lets through before someone else does.
+- id: E2-c8
+  type: term
+  objective: E2.o4
+  front: What does an attack success rate tell you?
+  back: The share of seeded attack runs in which the attack succeeded. It is a measure of the lab's runs, reported
+    with the number of runs.

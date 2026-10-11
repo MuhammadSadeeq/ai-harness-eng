@@ -1,0 +1,42 @@
+id: E1-trifecta
+module: E1
+title: Find the three legs in a tool set
+objectives:
+- E1.o2
+minutes: 25
+hints:
+- 'Read test_kata.py. Each test names one case: no tools, one leg, two legs in one tool, all three, a cut leg, an
+  unknown name.'
+- Each tool lists its legs in its "trifecta" field. Collect the legs of every tool into one set, refuse a name that
+  is not one of the three, then keep the three in the course's fixed order.
+- 'Nearly the code: for each leg in LEGS, keep it when it is in the set and not in cut. lethal() is then whether
+  all three are kept.'
+from_memory: false
+wrong_solutions:
+- name: names-tools
+  code: "LEGS = (\"private_data\", \"untrusted_content\", \"exfiltration\")\n\n\ndef legs_open(tools, cut=()):\n\
+    \    return [tool[\"name\"] for tool in tools if tool.get(\"trifecta\")]\n\n\ndef lethal(tools, cut=()):\n \
+    \   return len(legs_open(tools, cut)) == len(LEGS)\n"
+- name: ignores-cut
+  code: "LEGS = (\"private_data\", \"untrusted_content\", \"exfiltration\")\n\n\ndef legs_open(tools, cut=()):\n\
+    \    seen = set()\n    for tool in tools:\n        for leg in tool.get(\"trifecta\", []):\n            if leg\
+    \ not in LEGS:\n                raise ValueError(f\"unknown leg: {leg}\")\n            seen.add(leg)\n    return\
+    \ [leg for leg in LEGS if leg in seen]\n\n\ndef lethal(tools, cut=()):\n    return len(legs_open(tools, cut))\
+    \ == len(LEGS)\n"
+- name: sorted-order
+  code: "LEGS = (\"private_data\", \"untrusted_content\", \"exfiltration\")\n\n\ndef legs_open(tools, cut=()):\n\
+    \    seen = set()\n    for tool in tools:\n        for leg in tool.get(\"trifecta\", []):\n            if leg\
+    \ not in LEGS:\n                raise ValueError(f\"unknown leg: {leg}\")\n            seen.add(leg)\n    return\
+    \ sorted(leg for leg in seen if leg not in cut)\n\n\ndef lethal(tools, cut=()):\n    return len(legs_open(tools,\
+    \ cut)) == len(LEGS)\n"
+- name: silent-unknown
+  code: "LEGS = (\"private_data\", \"untrusted_content\", \"exfiltration\")\n\n\ndef legs_open(tools, cut=()):\n\
+    \    seen = set()\n    for tool in tools:\n        for leg in tool.get(\"trifecta\", []):\n            seen.add(leg)\n\
+    \    return [leg for leg in LEGS if leg in seen and leg not in cut]\n\n\ndef lethal(tools, cut=()):\n    return\
+    \ len(legs_open(tools, cut)) == len(LEGS)\n"
+- name: two-is-enough
+  code: "LEGS = (\"private_data\", \"untrusted_content\", \"exfiltration\")\n\n\ndef legs_open(tools, cut=()):\n\
+    \    seen = set()\n    for tool in tools:\n        for leg in tool.get(\"trifecta\", []):\n            if leg\
+    \ not in LEGS:\n                raise ValueError(f\"unknown leg: {leg}\")\n            seen.add(leg)\n    return\
+    \ [leg for leg in LEGS if leg in seen and leg not in cut]\n\n\ndef lethal(tools, cut=()):\n    return len(legs_open(tools,\
+    \ cut)) >= 2\n"
