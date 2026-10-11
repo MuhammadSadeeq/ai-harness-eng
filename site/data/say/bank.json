@@ -1771,6 +1771,40 @@
   "wire": "verify"
  },
  {
+  "id": "H12-s1",
+  "model_answer": "The change is one harness setting, here a turn limit of four. The baseline is the same board without it, on the same five tasks and seeds. I would report each task's passes of trials with its interval, the tokens and the cost, and whether the numbers are scripted or live. If the change lowers cost and drops a held-out task, I say so, and I do not report the cost saving alone.",
+  "module": "H12",
+  "objectives": [
+   "H12.o4",
+   "H12.o5"
+  ],
+  "prompt": "Walk me through your first experiment: the change, the baseline, the tasks, and what you would report.",
+  "rubric": [
+   "Names the one change and the baseline it is measured against",
+   "Says the tasks and seeds are the same on both sides",
+   "Reports passes of trials with the interval, not the cost alone",
+   "Says whether the numbers are scripted or live"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "H12-s2",
+  "model_answer": "One run is one sample. With 10 trials, a pass count of 10 of 10 still has a wide interval, so the claim needs the trials, the interval, and the baseline. A demo shows one run; a reviewer can run the numbers, so I give them the commands, the seeds and the cap.",
+  "module": "H12",
+  "objectives": [
+   "H12.o3",
+   "H12.o5"
+  ],
+  "prompt": "A teammate says one good real run proves the harness works. What do you answer?",
+  "rubric": [
+   "Says one run is one sample, not a proof",
+   "Says the interval is wide with few trials",
+   "Says the claim needs a baseline and the trials",
+   "Says a reviewer should be able to rerun the commands"
+  ],
+  "wire": "verify"
+ },
+ {
   "id": "H13-s1",
   "model_answer": "My extension is a tool-call budget that ends a run after a fixed number of calls. I will run the D1 suite on the board that sets it, with the suite's own seed and ten trials per task. The decisive number is passes out of ten for each task. The rule: a change counts only if a task loses or gains passes; if no task moves, I report a null.",
   "module": "H13",

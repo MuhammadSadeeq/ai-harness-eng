@@ -1,0 +1,27 @@
+- id: H12-s1
+  objectives:
+  - H12.o4
+  - H12.o5
+  prompt: 'Walk me through your first experiment: the change, the baseline, the tasks, and what you would report.'
+  model_answer: The change is one harness setting, here a turn limit of four. The baseline is the same board without
+    it, on the same five tasks and seeds. I would report each task's passes of trials with its interval, the tokens
+    and the cost, and whether the numbers are scripted or live. If the change lowers cost and drops a held-out task,
+    I say so, and I do not report the cost saving alone.
+  rubric:
+  - Names the one change and the baseline it is measured against
+  - Says the tasks and seeds are the same on both sides
+  - Reports passes of trials with the interval, not the cost alone
+  - Says whether the numbers are scripted or live
+- id: H12-s2
+  objectives:
+  - H12.o3
+  - H12.o5
+  prompt: A teammate says one good real run proves the harness works. What do you answer?
+  model_answer: One run is one sample. With 10 trials, a pass count of 10 of 10 still has a wide interval, so the
+    claim needs the trials, the interval, and the baseline. A demo shows one run; a reviewer can run the numbers,
+    so I give them the commands, the seeds and the cap.
+  rubric:
+  - Says one run is one sample, not a proof
+  - Says the interval is wide with few trials
+  - Says the claim needs a baseline and the trials
+  - Says a reviewer should be able to rerun the commands

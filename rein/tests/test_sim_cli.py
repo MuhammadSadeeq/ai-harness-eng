@@ -41,8 +41,16 @@ def test_cli_prints_wire_payloads_with_wire(capsys: pytest.CaptureFixture[str]) 
     assert "messages" in lines[0] and lines[1]["type"] == "message"
 
 
-def test_fact_pricing_without_facts_is_exit_two(capsys: pytest.CaptureFixture[str]) -> None:
-    assert main([*RUN, "--seed", "1"]) == 2
+def test_fact_pricing_without_facts_is_exit_two(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    # Outside the repository, so no site/data/facts.json is found from here.
+    tape = tmp_path / "b2-spiral.json"
+    tape.write_text((SCENARIOS / "b2-spiral.json").read_text(encoding="utf-8"), encoding="utf-8")
+    board = tmp_path / "b2-new.json"
+    board.write_text((BOARDS / "b2-new.json").read_text(encoding="utf-8"), encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    assert main(["run", "--tape", str(tape), "--board", str(board), "--seed", "1"]) == 2
     assert "--facts" in capsys.readouterr().err
 
 

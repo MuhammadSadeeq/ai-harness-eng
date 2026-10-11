@@ -2966,6 +2966,62 @@
   "type": "term"
  },
  {
+  "back": "An automated test: its step runs in a temp folder, and its transcript must match the expected output.",
+  "front": "What does a checkpoint become in H12?",
+  "id": "H12-k1",
+  "module": "H12",
+  "objective": "H12.o1",
+  "type": "term"
+ },
+ {
+  "back": "It runs one trial, scripted or live, and prints the events as JSON lines.",
+  "front": "What does python -m rein run do?",
+  "id": "H12-k2",
+  "module": "H12",
+  "objective": "H12.o2",
+  "type": "term"
+ },
+ {
+  "back": "It caps the spend. Before each request the run checks that the request cannot pass the cap, and stops with status budget if it could.",
+  "front": "What does --max-cost-usd do on a live run?",
+  "id": "H12-k3",
+  "module": "H12",
+  "objective": "H12.o3",
+  "type": "term"
+ },
+ {
+  "back": "From ANTHROPIC_API_KEY only. No command takes it as an argument, and no output, trace or file contains it.",
+  "front": "Where does a live run's API key come from?",
+  "id": "H12-k4",
+  "module": "H12",
+  "objective": "H12.o3",
+  "type": "term"
+ },
+ {
+  "back": "The version you compare the change against, run on the same tasks, seeds and board, without the change.",
+  "front": "What is a baseline?",
+  "id": "H12-k5",
+  "module": "H12",
+  "objective": "H12.o4",
+  "type": "term"
+ },
+ {
+  "back": "How sure you can be about the rate. It is wide when there are few trials, so 10 of 10 is not a proof.",
+  "front": "What does a Wilson 95% interval tell you about a pass count?",
+  "id": "H12-k6",
+  "module": "H12",
+  "objective": "H12.o3",
+  "type": "term"
+ },
+ {
+  "back": "A scripted run repeats exactly, and a real model's numbers vary. The label says which one you are reading (D-038).",
+  "front": "Why label a number scripted?",
+  "id": "H12-k7",
+  "module": "H12",
+  "objective": "H12.o5",
+  "type": "term"
+ },
+ {
   "back": "Learning value, and what the extension shows a reviewer you can do. The ranking is the course's judgment and claims nothing about the job market.",
   "front": "What does the course rank extensions by?",
   "id": "H13-k1",

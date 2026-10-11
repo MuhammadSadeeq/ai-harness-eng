@@ -209,6 +209,18 @@
   "term": "auto mode",
   "wire": "permissions"
  },
+ "baseline": {
+  "aliases": [
+   "baseline",
+   "baselines"
+  ],
+  "definition": "The version you compare a change against: the same tasks, seeds and board, without the change.",
+  "id": "baseline",
+  "module": "H12",
+  "strict": false,
+  "term": "baseline",
+  "wire": "verify"
+ },
  "batch-processing": {
   "aliases": [
    "batch processing"
@@ -992,6 +1004,18 @@
   "term": "eval awareness",
   "wire": "verify"
  },
+ "eval-runner": {
+  "aliases": [
+   "eval runner",
+   "eval runners"
+  ],
+  "definition": "The part of the package that runs an eval: many tasks, several trials each, on one board, and writes a results file.",
+  "id": "eval-runner",
+  "module": "H12",
+  "strict": true,
+  "term": "eval runner",
+  "wire": "verify"
+ },
  "evals-engineer": {
   "aliases": [
    "evals engineer",
@@ -1074,6 +1098,18 @@
   "strict": false,
   "term": "exit",
   "wire": "loop"
+ },
+ "experiment": {
+  "aliases": [
+   "experiment",
+   "experiments"
+  ],
+  "definition": "One harness change, measured against a baseline on the same tasks, so the difference is the change and nothing else.",
+  "id": "experiment",
+  "module": "H12",
+  "strict": false,
+  "term": "experiment",
+  "wire": "verify"
  },
  "exponential-backoff": {
   "aliases": [

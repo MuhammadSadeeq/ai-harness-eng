@@ -8,3 +8,6 @@ __pycache__/
 tools/qa/out/
 site/vendor/pyodide/
 .DS_Store
+
+# An editable install of the rein package (pip install -e ./rein)
+*.egg-info/

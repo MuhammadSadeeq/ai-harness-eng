@@ -1,0 +1,26 @@
+- id: eval-runner
+  term: eval runner
+  aliases:
+  - eval runner
+  - eval runners
+  strict: true
+  wire: verify
+  definition: 'The part of the package that runs an eval: many tasks, several trials each, on one board, and writes
+    a results file.'
+- id: baseline
+  term: baseline
+  aliases:
+  - baseline
+  - baselines
+  strict: false
+  wire: verify
+  definition: 'The version you compare a change against: the same tasks, seeds and board, without the change.'
+- id: experiment
+  term: experiment
+  aliases:
+  - experiment
+  - experiments
+  strict: false
+  wire: verify
+  definition: One harness change, measured against a baseline on the same tasks, so the difference is the change
+    and nothing else.

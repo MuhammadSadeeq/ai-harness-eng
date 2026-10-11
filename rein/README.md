@@ -5,13 +5,34 @@ time. This package is the local reference: the same harness the course's pages
 run in the browser, with a scripted model (every tape, every golden trace) and,
 on your machine, a real model with your own key.
 
+Run every command in this README from the repository root: the folder that
+holds `scenarios/`, `site/` and `rein/`. The facts registry (`site/data/facts.json`)
+is found from there, so no command needs `--facts`.
+
+Make `python -m rein` importable in one of two ways. Both work:
+
+- Install once, from the root. `python -m pip install -e "./rein[live]"` adds the
+  live extra, which pins the Anthropic SDK for real-model runs. The scripted
+  commands need only the core: `python -m pip install -e ./rein`.
+- Or put the source on the path in front of each command:
+  `PYTHONPATH=rein/src python -m rein ...`. The course's H13 page and its example
+  use this form.
+
+The commands below assume the install. If you did not install, put
+`PYTHONPATH=rein/src` in front of each one.
+
 ## Commands
 
-    python -m rein run  --tape T --board B [--seed N] [--wire | --choices]
-    python -m rein run  --tape T --board B --live MODEL_ID --max-cost-usd X
-    python -m rein eval --eval E --board B [--out results.json]
-    python -m rein eval --eval E --board B --live MODEL_ID --max-cost-usd X [--trials N] [--out results.json]
-    python -m rein results results.json --markdown
+Scripted (free, offline, repeats exactly):
+
+    python -m rein run  --tape scenarios/d1-example-a.json --board scenarios/boards/d1-new.json --seed 0
+    python -m rein eval --eval scenarios/evals/d1-suite.json --board scenarios/boards/d1-new.json --out d1-new.json
+    python -m rein results d1-new.json --markdown
+
+Live (a real model, your key, a spend cap; the course shows this command and does
+not run it):
+
+    python -m rein eval --eval scenarios/evals/d1-suite.json --board scenarios/boards/d1-new.json --live claude-haiku-5-5 --max-cost-usd 0.05 --trials 2 --out my-results.json
 
 `python -m rein.sim` keeps working as before. Errors print one line on stderr
 and exit with status 2.
@@ -22,9 +43,9 @@ touches your files; the tape's checks still decide whether a run passed.
 ## Record your own numbers
 
 The course's results are scripted, and the table says so. To record real
-numbers:
+numbers, from the repository root:
 
-1. Install the package with the live extra, which pins the SDK:
+1. Install with the live extra, as above:
 
        python -m pip install -e "./rein[live]"
 
@@ -42,10 +63,7 @@ numbers:
    request the run checks that the request cannot pass the cap, and stops with
    status `budget` if it could:
 
-       python -m rein eval --eval ../scenarios/evals/d1-suite.json \
-         --board ../scenarios/boards/d1-new.json \
-         --live claude-haiku-5-5 --max-cost-usd 0.05 --trials 2 \
-         --facts ../site/data/facts.json --out my-results.json
+       python -m rein eval --eval scenarios/evals/d1-suite.json --board scenarios/boards/d1-new.json --live claude-haiku-5-5 --max-cost-usd 0.05 --trials 2 --out my-results.json
 
 5. Print the table and paste it into your write-up:
 
@@ -75,9 +93,12 @@ lookup endpoint, and the rule that thinking blocks go back unchanged.
 
 ## Tests
 
-    cd rein && PYTHONPATH=src ../.venv/bin/python -m pytest -q
+From the repository root, with the course's virtual environment (or any Python
+3.11+ that has pytest):
+
+    PYTHONPATH=rein/src .venv/bin/python -m pytest -q rein/tests
 
 The live tests run against a local mock of the Messages API on 127.0.0.1 only.
-Its recorded responses are in `tests/fixtures/live/` and are validated by
+Its recorded responses are in `rein/tests/fixtures/live/` and are validated by
 `tools/check_wire.py`. No test opens a connection anywhere else, and no test
 spends money.

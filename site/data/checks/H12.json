@@ -1,0 +1,86 @@
+[
+ {
+  "answer": 1,
+  "id": "H12-p1",
+  "mode": "predict",
+  "options": [
+   {
+    "text": "The same pass rate, only cheaper.",
+    "why": "Tempting. A cost saving on a change that cuts turns is not a free one."
+   },
+   {
+    "text": "A lower pass rate: the change cut runs that need more turns.",
+    "why": "Right. The held-out tasks script more replies than four turns allow."
+   },
+   {
+    "text": "Nothing changes: the tasks are the same.",
+    "why": "Tempting. The tasks are the same; the harness is not."
+   }
+  ],
+  "outcome": "On the scripted board the held-out tasks pass 0 of 10 after the change, against 10 of 10 before, and the cost fell. The change did not do what it was for.",
+  "question": "You set the turn limit to four and the cost falls on every task. What do you expect on the held-out tasks?"
+ },
+ {
+  "answer": 0,
+  "id": "H12-c1",
+  "mode": "check",
+  "objective": "H12.o1",
+  "options": [
+   {
+    "text": "That the step's transcript matches the expected output, in a temp folder.",
+    "why": "Right. The checkpoint is the expected transcript, and the test runs it."
+   },
+   {
+    "text": "That the code has no bugs.",
+    "why": "Tempting and wrong. A checkpoint shows one run, not the absence of bugs."
+   },
+   {
+    "text": "That the steps pass in the browser only.",
+    "why": "Tempting and wrong. The same check runs under CPython and Pyodide."
+   }
+  ],
+  "question": "A checkpoint becomes a test. What does the test check?"
+ },
+ {
+  "answer": 0,
+  "id": "H12-c2",
+  "mode": "check",
+  "objective": "H12.o3",
+  "options": [
+   {
+    "text": "The spend: a request that could pass the cap is not sent.",
+    "why": "Right. The cap is checked before each request, and the run stops with status budget."
+   },
+   {
+    "text": "The model's answers, so they stay short.",
+    "why": "Tempting and wrong. The cap limits money, not length."
+   },
+   {
+    "text": "The key, so it is never printed.",
+    "why": "Tempting and wrong. The key rule is separate; the cap is about spend."
+   }
+  ],
+  "question": "What does --max-cost-usd protect on a live run?"
+ },
+ {
+  "answer": 0,
+  "id": "H12-c3",
+  "mode": "check",
+  "objective": "H12.o4",
+  "options": [
+   {
+    "text": "A baseline: the same tasks and seeds, without the change.",
+    "why": "Right. Then the difference is the change and nothing else."
+   },
+   {
+    "text": "The author's memory of the last run.",
+    "why": "Tempting and wrong. Memory is not a measurement."
+   },
+   {
+    "text": "The best of all the trials.",
+    "why": "Tempting and wrong. Picking the best trial hides the rest."
+   }
+  ],
+  "question": "A change is measured against what?"
+ }
+]
