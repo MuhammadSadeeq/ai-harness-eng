@@ -44,7 +44,8 @@ early. (Amendment numbers are not module ids.)
 Rein steps H3–H13 in the browser (`hx-step`, `check_steps`), the local `rein`
 package (tests, eval runner against the mock API, D-038), and the **I4 Rust
 capstone** tooling (parity runner, Rust skeleton, the director's reference;
-D-046). Steps that need a subprocess run locally only (`runs_in_browser: false`).
+D-046). Every step runs in the browser (D-056: a stand-in for `python <file>.py`
+commands); a checkpoint or break the stand-in cannot reproduce is marked `local: true`.
 
 ## Phase 5: career track
 Interview Room (I5), Design Room prompts with rubrics, the question bank,

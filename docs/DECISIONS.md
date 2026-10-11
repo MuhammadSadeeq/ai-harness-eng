@@ -509,3 +509,25 @@ basis for Phase 1, and answered SPEC §14:
   (docs.docker.com) and `git` (git-scm.com, for T8). As with D-052, a host the network policy denies leaves
   its facts `unverifiable`, and the page says no more than a checked snippet
   shows.
+
+## D-056 Every Rein step runs in the browser: a stand-in for `python <file>.py`
+
+- **Context:** SPEC Part H says the book's eleven steps run in the browser
+  with the FakeModel, but from step 3 on, `run_command` calls
+  `subprocess.run`, which Pyodide cannot do, and almost every checkpoint runs
+  `python test_calc.py`. PLAN's Phase 4 line ("steps that need a subprocess
+  run locally only") would have left nine of eleven steps without a Run
+  button.
+- **Decision:** the browser's Python gets a stand-in for `subprocess.run`
+  (`site/assets/py/hxshell.py`, installed by the runner, never written into
+  `rein.py`): it runs `python <file>.py [args]` in the same interpreter, in
+  the given folder, with fresh imports, and returns the exit code and output
+  a real process would. Anything else (another program, a shell operator)
+  returns exit code 127 and says the command needs the learner's machine.
+  `check_steps --pyodide` keeps the guarantee honest: a browser run's output
+  must equal CPython's real-subprocess output, and a checkpoint or break that
+  cannot (it deletes files, needs a timeout to fire, runs another program) is
+  marked `local: true`, and `hx-step` shows its command and expected output
+  for the learner's machine instead of a Run button. The learner's code is
+  the book's real code; only the operating system is stood in for, and the
+  page says so (BP-4.0-steps-platform).

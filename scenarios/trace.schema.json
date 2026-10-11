@@ -78,12 +78,6 @@
       "$ref": "#/$defs/tool_rejected"
     },
     {
-      "$ref": "#/$defs/subagent_start"
-    },
-    {
-      "$ref": "#/$defs/subagent_end"
-    },
-    {
       "$ref": "#/$defs/session_start"
     },
     {
