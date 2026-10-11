@@ -23,7 +23,8 @@ const el = (tag, attrs = {}, ...children) => {
     if (key === "text") node.textContent = value;
     else node.setAttribute(key, String(value));
   }
-  node.append(...children);
+  // A missing optional child (a bucket with no hint) is null: append drops it, never the text "null".
+  node.append(...children.filter((child) => child !== null && child !== undefined));
   return node;
 };
 

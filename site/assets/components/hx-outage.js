@@ -258,7 +258,7 @@ const el = (tag, attrs = {}, ...children) => {
     if (key === "text") node.textContent = value;
     else node.setAttribute(key, String(value));
   }
-  node.append(...children);
+  node.append(...children.filter((child) => child !== null && child !== undefined));
   return node;
 };
 
