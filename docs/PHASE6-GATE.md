@@ -1,8 +1,7 @@
 # Phase 6 gate: the audit
 
-**Status:** round 1 in progress. Audits 1, 2, 3 and 5 are in and their
-findings are fixed, being fixed (BP-6.2) or ruled below; audit 4 is
-finishing. Round 2 (each
+**Status:** round 1 is complete: every blocker and major of the five
+audits is fixed or ruled below. Round 2 is in progress. Round 2 (each
 reviewer re-checks its own findings on the fixed commit) follows.
 
 SPEC §10 sets the Phase 6 exit gate: **no blockers; majors are fixed; round 2
@@ -17,7 +16,7 @@ quote; a severity; a `file:line`). Reports: `docs/gate/phase6-audit-*.md`.
 | 1. Technical accuracy | 1 | 56 (73 counting each no-JS dash) | 1 | phase6-audit-1-accuracy.md |
 | 2. Sequencing and pedagogy | 1 | 10 | 13 groups | phase6-audit-2-pedagogy.md |
 | 3. Interaction QA | 0 | 11 | 3 | phase6-audit-3-interaction.md |
-| 4. Accessibility and mobile | — | 1 so far | — | running |
+| 4. Accessibility and mobile | 1 | 5 | 3 | phase6-audit-4-a11y.md |
 | 5. Code and tests | 0 | 12 | 11 | phase6-audit-5-code.md |
 
 ### Blockers (both fixed)
@@ -102,7 +101,7 @@ FIXED, NOT FIXED or RULED for each, then any new problem a fix introduced.
 | 1. Technical accuracy | 283d660 | 55 | 3 | 0 | 4 (1 major) | phase6-audit-1-round2.md |
 | 2. Sequencing and pedagogy | 283d660 | 20 | 2 | 2 | 3 (1 major) | phase6-audit-2-round2.md |
 | 3. Interaction QA | 509ef41 | — | — | — | — | running |
-| 4. Accessibility and mobile | — | — | — | — | — | waits on BP-6.2 |
+| 4. Accessibility and mobile | 312e352 | — | — | — | — | running |
 | 5. Code and tests | 283d660 | 22 | 0 | 1 | 4 (minor) | phase6-audit-5-round2.md |
 
 No blocker in any report so far.
