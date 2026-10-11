@@ -1,0 +1,35 @@
+- id: H10-k1
+  type: term
+  objective: H10.o1
+  front: What does BASE_PROMPT hold?
+  back: Rein's own rules, numbered, most important first.
+- id: H10-k2
+  type: term
+  objective: H10.o1
+  front: What does build_system_prompt() add, and in which order?
+  back: The project's AGENTS.md as a second layer, under a line that says the rules above win when they disagree.
+- id: H10-k3
+  type: term
+  objective: H10.o1
+  front: When two layers disagree, which one wins?
+  back: The earlier one. Rein's own rules come first, but the order is still only words; the code is what enforces a rule.
+- id: H10-k4
+  type: term
+  objective: H10.o2
+  front: What does the hook check?
+  back: 'The tool name and the path: edit_file and write_file on a test file are denied in every mode.'
+- id: H10-k5
+  type: term
+  objective: H10.o2
+  front: Why must a rule that matters also be in code?
+  back: A prompt is words the model may ignore. The permission gate decides before the edit runs.
+- id: H10-k6
+  type: term
+  objective: H10.o3
+  front: When is the prompt built?
+  back: Once per run, in Agent.__init__(), and the same string goes out on every call.
+- id: H10-k7
+  type: term
+  objective: H10.o3
+  front: What does --show-prompt print?
+  back: The finished prompt, and then the run stops. Run it twice and the text is the same.

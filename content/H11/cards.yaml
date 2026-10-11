@@ -1,0 +1,35 @@
+- id: H11-k1
+  type: term
+  objective: H11.o1
+  front: What does a reviewer start with?
+  back: 'A fresh history of one message: the brief. It does not inherit the author''s conversation.'
+- id: H11-k2
+  type: term
+  objective: H11.o1
+  front: What powers does a reviewer have?
+  back: 'Read-only: it can read the project, and any change it tries is denied.'
+- id: H11-k3
+  type: term
+  objective: H11.o1
+  front: What is a reviewer's turn limit for?
+  back: It stops a reviewer that reads forever. Rein's reviewer has six turns.
+- id: H11-k4
+  type: term
+  objective: H11.o2
+  front: What goes into the reviewer's brief?
+  back: The task, the diff of the change and the check output. Not the author's reasoning, and not its claim.
+- id: H11-k5
+  type: term
+  objective: H11.o2
+  front: Why not give the reviewer the author's history?
+  back: Then it judges the author's story, and can approve a change without reading the change.
+- id: H11-k6
+  type: term
+  objective: H11.o3
+  front: What is a rubber stamp?
+  back: A review that approves without judging the change. It is there, and it checks nothing.
+- id: H11-k7
+  type: term
+  objective: H11.o3
+  front: What does a reviewer's FAIL do to the run?
+  back: It goes back to the agent like a failed check, and the run goes on until the change passes.

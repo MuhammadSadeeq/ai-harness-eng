@@ -1703,6 +1703,74 @@
   "wire": "verify"
  },
  {
+  "id": "H10-s1",
+  "model_answer": "AGENTS.md is the second layer, after Rein's own rules, under a line that says the rules above win when the two disagree. The earlier layer wins, but that order is still only words. A rule that must hold is also enforced in code, because a prompt is words the model may ignore.",
+  "module": "H10",
+  "objectives": [
+   "H10.o1",
+   "H10.o2"
+  ],
+  "prompt": "Where does a project's AGENTS.md go in the prompt, and what happens when it disagrees with Rein's own rules?",
+  "rubric": [
+   "Places AGENTS.md as the second layer, after Rein's rules",
+   "Says the earlier layer wins when they disagree",
+   "Says a rule that must hold is enforced in code, not only in words",
+   "Says the project's rules sit below Rein's own rules, so Rein's rules win"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "H10-s2",
+  "model_answer": "I show them the prompt-only run: the model edits the test anyway, nothing stops the edit, and the run ends done. Then I show the same run with the rule in code, where the edit is denied and the gate refuses the claim. I also show the prompt from --show-prompt, run twice with the same text, because a prompt that changes between calls loses the cache.",
+  "module": "H10",
+  "objectives": [
+   "H10.o2",
+   "H10.o3"
+  ],
+  "prompt": "A teammate says the rules are in the prompt, so the model will follow them. What do you show them?",
+  "rubric": [
+   "Says the prompt-only run lets the edit through",
+   "Says the rule in code denies the edit in every mode",
+   "Says the prompt is built once and stays the same",
+   "Says a changing prompt loses the cache"
+  ],
+  "wire": "control"
+ },
+ {
+  "id": "H11-s1",
+  "model_answer": "I check what the reviewer was given: the task, the diff and the check output, and no history from the author. I check that it read the change, and that its verdict starts with PASS or FAIL. I check that its trace lines carry its own label, so I can see its turns. A PASS from a reviewer that read only the author's claim is a rubber stamp, not a review.",
+  "module": "H11",
+  "objectives": [
+   "H11.o1",
+   "H11.o2"
+  ],
+  "prompt": "Your reviewer says PASS. What do you check before you accept it?",
+  "rubric": [
+   "Checks that the reviewer got the task, the diff and the check output",
+   "Checks that the reviewer read the change, not only the claim",
+   "Checks the verdict starts with PASS or FAIL",
+   "Says a PASS from a reviewer that read only the claim is a rubber stamp"
+  ],
+  "wire": "verify"
+ },
+ {
+  "id": "H11-s2",
+  "model_answer": "A second call is independent only if it has a fresh context, read-only powers and a brief that leaves out the author's reasoning. Otherwise it judges the story. I show the rubber-stamp tape: the reviewer that sees the author's history approves the special case, and the reviewer that gets only the brief rejects it.",
+  "module": "H11",
+  "objectives": [
+   "H11.o2",
+   "H11.o3"
+  ],
+  "prompt": "A teammate says a second model call is an independent review. What do you say?",
+  "rubric": [
+   "Says independence needs a fresh context and a narrow brief",
+   "Says read-only powers keep the reviewer from changing the work",
+   "Names the rubber-stamp tape as the case a shared history fails",
+   "Says the reviewer with only the brief rejects the special case"
+  ],
+  "wire": "verify"
+ },
+ {
   "id": "I1-s1",
   "model_answer": "I would read the duties before the title. The posting asks for tools, evals and guardrails, so I read it as an applied role. I would show a repository with tests and a results table, linked from a write-up that gives the method and the interval. A certificate would not answer any of the duties, so I would not lead with one.",
   "module": "I1",

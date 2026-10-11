@@ -1,0 +1,11 @@
+{
+ "id": "h11-new",
+ "label": "Isolated reviewer: the brief only, at most 1, 2 turns",
+ "modules": {
+  "subagents": {
+   "context": "isolated",
+   "max": 1,
+   "max_turns": 2
+  }
+ }
+}

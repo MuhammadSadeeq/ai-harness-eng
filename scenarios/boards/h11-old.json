@@ -1,0 +1,11 @@
+{
+ "id": "h11-old",
+ "label": "Forked reviewer, at most 1, 2 turns",
+ "modules": {
+  "subagents": {
+   "context": "forked",
+   "max": 1,
+   "max_turns": 2
+  }
+ }
+}

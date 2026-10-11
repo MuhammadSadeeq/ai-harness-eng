@@ -2854,6 +2854,118 @@
   "type": "term"
  },
  {
+  "back": "Rein's own rules, numbered, most important first.",
+  "front": "What does BASE_PROMPT hold?",
+  "id": "H10-k1",
+  "module": "H10",
+  "objective": "H10.o1",
+  "type": "term"
+ },
+ {
+  "back": "The project's AGENTS.md as a second layer, under a line that says the rules above win when they disagree.",
+  "front": "What does build_system_prompt() add, and in which order?",
+  "id": "H10-k2",
+  "module": "H10",
+  "objective": "H10.o1",
+  "type": "term"
+ },
+ {
+  "back": "The earlier one. Rein's own rules come first, but the order is still only words; the code is what enforces a rule.",
+  "front": "When two layers disagree, which one wins?",
+  "id": "H10-k3",
+  "module": "H10",
+  "objective": "H10.o1",
+  "type": "term"
+ },
+ {
+  "back": "The tool name and the path: edit_file and write_file on a test file are denied in every mode.",
+  "front": "What does the hook check?",
+  "id": "H10-k4",
+  "module": "H10",
+  "objective": "H10.o2",
+  "type": "term"
+ },
+ {
+  "back": "A prompt is words the model may ignore. The permission gate decides before the edit runs.",
+  "front": "Why must a rule that matters also be in code?",
+  "id": "H10-k5",
+  "module": "H10",
+  "objective": "H10.o2",
+  "type": "term"
+ },
+ {
+  "back": "Once per run, in Agent.__init__(), and the same string goes out on every call.",
+  "front": "When is the prompt built?",
+  "id": "H10-k6",
+  "module": "H10",
+  "objective": "H10.o3",
+  "type": "term"
+ },
+ {
+  "back": "The finished prompt, and then the run stops. Run it twice and the text is the same.",
+  "front": "What does --show-prompt print?",
+  "id": "H10-k7",
+  "module": "H10",
+  "objective": "H10.o3",
+  "type": "term"
+ },
+ {
+  "back": "A fresh history of one message: the brief. It does not inherit the author's conversation.",
+  "front": "What does a reviewer start with?",
+  "id": "H11-k1",
+  "module": "H11",
+  "objective": "H11.o1",
+  "type": "term"
+ },
+ {
+  "back": "Read-only: it can read the project, and any change it tries is denied.",
+  "front": "What powers does a reviewer have?",
+  "id": "H11-k2",
+  "module": "H11",
+  "objective": "H11.o1",
+  "type": "term"
+ },
+ {
+  "back": "It stops a reviewer that reads forever. Rein's reviewer has six turns.",
+  "front": "What is a reviewer's turn limit for?",
+  "id": "H11-k3",
+  "module": "H11",
+  "objective": "H11.o1",
+  "type": "term"
+ },
+ {
+  "back": "The task, the diff of the change and the check output. Not the author's reasoning, and not its claim.",
+  "front": "What goes into the reviewer's brief?",
+  "id": "H11-k4",
+  "module": "H11",
+  "objective": "H11.o2",
+  "type": "term"
+ },
+ {
+  "back": "Then it judges the author's story, and can approve a change without reading the change.",
+  "front": "Why not give the reviewer the author's history?",
+  "id": "H11-k5",
+  "module": "H11",
+  "objective": "H11.o2",
+  "type": "term"
+ },
+ {
+  "back": "A review that approves without judging the change. It is there, and it checks nothing.",
+  "front": "What is a rubber stamp?",
+  "id": "H11-k6",
+  "module": "H11",
+  "objective": "H11.o3",
+  "type": "term"
+ },
+ {
+  "back": "It goes back to the agent like a failed check, and the run goes on until the change passes.",
+  "front": "What does a reviewer's FAIL do to the run?",
+  "id": "H11-k7",
+  "module": "H11",
+  "objective": "H11.o3",
+  "type": "term"
+ },
+ {
   "back": "Builds agents into a product, with tools, evals and guardrails, then watches them run. In this course's terms, it is most of the work.",
   "front": "What does an applied AI engineer do?",
   "id": "I1-k1",

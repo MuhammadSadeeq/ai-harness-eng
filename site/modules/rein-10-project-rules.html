@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en" data-module="H10">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rein 10: project rules · HARNESSED</title>
+<meta name="description" content="After this module you can build the system prompt from layers, load the project rules from AGENTS.md into the second layer, enforce one rule in code with a hook, and keep the prompt identical on every call.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<!-- gen:topbar -->
+<header class="topbar" data-topbar>
+  <a class="wordmark" href="../index.html" aria-label="HARNESSED, course home">
+    <svg class="connector" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 12V4"/><path d="M12 12l5 3"/></svg>
+    <span>HARNESSED</span>
+  </a>
+  <p class="module-id"><span class="mod-code">H10</span><span class="mod-title">Rein 10: project rules</span></p>
+  <nav class="top-nav" aria-label="Pages">
+    <ol>
+      <li><a href="../index.html" aria-current="page">Course</a></li>
+      <li><a href="../glossary.html">Glossary</a></li>
+      <li><a href="../readiness.html">Readiness</a></li>
+    </ol>
+  </nav>
+  <a class="board-btn" href="../index.html#board" aria-label="Board, 0 cards due" data-due-label>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12V6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span><span class="board-word">Board · </span><span data-due-num>0</span><span class="board-due" data-due-words> cards due</span></span>
+  </a>
+  <div class="settings">
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="menu-btn" type="button" data-menu-btn aria-haspopup="dialog" aria-expanded="false" aria-controls="menu-sheet" hidden>Menu</button>
+</header>
+<dialog class="menu-sheet" id="menu-sheet" data-menu-sheet aria-label="Menu">
+  <p class="menu-title">Menu</p>
+  <nav aria-label="Pages in the menu">
+    <ol class="menu-pages">
+      <li><a href="../index.html" aria-current="page">Course</a></li>
+      <li><a href="../glossary.html">Glossary</a></li>
+      <li><a href="../readiness.html">Readiness</a></li>
+    </ol>
+  </nav>
+  <div class="menu-settings">
+    <p class="menu-label">Theme</p>
+    <div data-theme-slot></div>
+    <div data-motion-slot></div>
+  </div>
+  <button class="key menu-close" type="button" data-close>Close menu</button>
+</dialog>
+<!-- /gen:topbar -->
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">H10 · Part H · Build Rein</p>
+    <h1>Rein 10: project rules</h1>
+    <p class="lede">Rein's own rules come first in the prompt, and the project's AGENTS.md comes after them. A rule that must hold is also checked in code, and the prompt stays the same on every call.</p>
+    <!-- gen:module-meta -->
+    <div class="module-meta" data-module-id="H10" data-glyph="layers">
+      <ul class="wire-chips">
+        <li class="w-control"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="../assets/core/glyphs.svg#g-layers"/></svg><span>Control plane</span></li>
+      </ul>
+      <p class="module-minutes">35 minutes</p>
+      <p class="meta-label">By the end you can</p>
+      <ol class="objectives" data-objective-list data-objectives-total="3">
+        <li data-objective="H10.o1">Load project rules from a file into the right layer of the prompt.</li>
+        <li data-objective="H10.o2">Enforce one rule in code with a hook, and show the difference against the prompt-only version.</li>
+        <li data-objective="H10.o3">Keep the stable prefix stable so the prompt stays cacheable.</li>
+      </ol>
+      <p class="progress-line" data-progress><span data-progress-text>0 of 3 objectives done</span></p>
+      <p class="prereqs">Before this: <a href="rein-9-the-verification-gate.html">H9 · Rein 9: the verification gate</a>, <a href="control-plane.html">C1 · Control plane: instructions as law</a></p>
+      <nav class="beat-strip" aria-label="Beats in this module" data-beat-strip>
+        <ol>
+          <li><a href="#break" data-beat-link="break">1 Break</a></li>
+          <li><a href="#see" data-beat-link="see">2 See</a></li>
+          <li><a href="#fix" data-beat-link="fix">3 Fix</a></li>
+          <li><a href="#prove" data-beat-link="prove">4 Prove</a></li>
+          <li><a href="#keep" data-beat-link="keep">5 Keep</a></li>
+        </ol>
+      </nav>
+    </div>
+    <!-- /gen:module-meta -->
+  </header>
+
+  <div class="layout">
+  <section class="beat" data-beat="break" id="break">
+    <h2>A rule that only the prompt holds</h2>
+    <p>The project rule says never to touch the tests. The model reads it, and then edits a test anyway. Predict what stops the edit.</p>
+    <hx-check mode="predict" src="H10" item="H10-p1" for="break-run">
+      <p>Without JavaScript, the question is: The rule 'never touch the tests' is in the prompt, and the model edits a test anyway. What stops the edit?</p>
+      <ol>
+        <li>The prompt: the model read the rule and will follow it.</li>
+        <li>Nothing in the harness, unless the rule is also in code.</li>
+        <li>The check: the test run fails, so the edit is undone.</li>
+      </ol>
+    </hx-check>
+    <figure>
+      <hx-incident id="break-run" tape="c1-ignored-rule" locked data-objective="H10.o2">
+        <p>Without JavaScript, you see a run where the rule is in the prompt, the model edits the test, and the run ends done while the check fails.</p>
+      </hx-incident>
+      <figcaption>FIG H10.0 · The rule that is only words. Try this: find the edit to the test, and which part of the harness let it through.</figcaption>
+    </figure>
+    <p>The rule was in the prompt and nowhere else. Nothing checked the edit before it ran, so the run ended done while the check failed.</p>
+  </section>
+  <section class="beat" data-beat="see" id="see">
+    <h2>Layers, a file, and a rule in code</h2>
+    <p><code>BASE_PROMPT</code> holds Rein's own rules, numbered, most important first. The <dfn data-term="rules-loader">rules loader</dfn> in <code>build_system_prompt()</code> adds the project's AGENTS.md as a second layer, under a line that says the rules above win when the two disagree. The earlier layer wins, but that is still words: the line tells the model that Rein's rules win, and a model can still break them. That is why the hook exists. Words guide, code enforces.</p>
+    <hx-check mode="check" src="H10" item="H10-c3" data-objective="H10.o1">
+      <p>Without JavaScript, the question is: Where does the project's AGENTS.md sit in the prompt?</p>
+      <ol>
+        <li>Second, after Rein's rules, under a line that says the rules above win.</li>
+        <li>First, so it is read before Rein's rules.</li>
+        <li>Only in the first message of the run.</li>
+      </ol>
+    </hx-check>
+    <p>The prompt is built once per run, in the agent's constructor, and the same string goes out on every call. <span class="fact" data-fact="api.cache-invalidation-hierarchy">The API caches a request in order: tools, then system, then messages. A change at one level means that level and every level after it are not reused, so a prompt that changes between calls loses the cache.</span></p>
+    <hx-check mode="check" src="H10" item="H10-c2" data-objective="H10.o3">
+      <p>Without JavaScript, the question is: Why is the prompt built once per run, not on every turn?</p>
+      <ol>
+        <li>So the same prefix goes out on every call, and the cache can reuse it.</li>
+        <li>So the model reads the rules once, and not on every turn.</li>
+        <li>Because the prompt is too long to rebuild each turn.</li>
+      </ol>
+    </hx-check>
+    <p>Run <code>--show-prompt</code> twice and compare the two outputs. They match because the prompt is built only from the base rules and the file, with nothing that changes between runs, such as a time or a counter. What breaks a cache is covered in <a href="prompt-caching.html">C4</a>.</p>
+    <p>A rule that must hold also needs code. The hook in <code>decide()</code> denies <code>edit_file</code> and <code>write_file</code> on a test file in every mode, before the edit runs. The prompt does not say so; the code enforces the rule.</p>
+    <hx-check mode="check" src="H10" item="H10-c1" data-objective="H10.o2">
+      <p>Without JavaScript, the question is: What enforces a rule that must hold?</p>
+      <ol>
+        <li>Code: a check in the permission gate that runs before the edit.</li>
+        <li>The prompt, if the rule is numbered first.</li>
+        <li>The first sentence of the system message.</li>
+      </ol>
+    </hx-check>
+    <aside class="note">
+      <p>The theory of instructions as law, and the order of the layers, is in <a href="control-plane.html">C1 · Control plane: instructions as law</a>.</p>
+    </aside>
+  </section>
+  <section class="beat" data-beat="fix" id="fix">
+    <h2>Add the layers and the rule to rein.py</h2>
+    <p>Step 10 adds the layers, the rules loader, the prompt built once per run, <code>--show-prompt</code>, and the hook. The checkpoint runs the tamper script with <code>--check "python test_calc.py"</code>. The hook denies the edit, the gate refuses both claims, and the run ends <code>unverified</code>.</p>
+    <figure>
+      <hx-step step="H10" data-objective="H10.o1 H10.o2">
+        <p>Without JavaScript, you see the goal of step 10 and the command it ends with: python rein.py "Fix the failing test in calc.py" --fake scenarios/10_rules.json --mode auto --check "python test_calc.py". The run writes trace.jsonl beside rein.py.</p>
+      </hx-step>
+      <figcaption>FIG H10.1 · Step 10 of Rein. Try this: use Break it on purpose, take the hook out, and read the done line that comes out.</figcaption>
+    </figure>
+  </section>
+  <section class="beat" data-beat="prove" id="prove">
+    <h2>Run the rule tape on both boards</h2>
+    <p>The rule tape has a model that edits a test against the rule. The old board has the rules file and nothing else. The new board adds a permission rule that denies edits to the tests folder, which holds in code. Both boards get the same seeds.</p>
+    <figure>
+      <hx-bench id="rule-bench" tape="c1-ignored-rule" old="c1-old" new="c1-new" trials="20" data-objective="H10.o2">
+        <p>Without JavaScript, this shows the two boards on the same seeds: whether each trial ends done with the test edited, and how each board decided the edit.</p>
+      </hx-bench>
+      <figcaption>FIG H10.2 · Old board against new board on the rule tape. Try this: find a trial where the old board ends done after editing the test.</figcaption>
+    </figure>
+    <p>These runs are scripted, so they repeat exactly. A pass shows the rule holds on this tape. It does not show that every rule can be enforced in code.</p>
+  </section>
+  <section class="beat" data-beat="keep" id="keep">
+    <h2>Keep it</h2>
+    <p class="law">Words guide, code enforces.</p>
+    <hx-cards src="H10">
+      <dl>
+        <dt>What does BASE_PROMPT hold?</dt><dd>Rein's own rules, numbered, most important first.</dd>
+        <dt>Why must a rule that matters also be in code?</dt><dd>A prompt is words the model may ignore. The permission gate decides before the edit runs.</dd>
+      </dl>
+    </hx-cards>
+    <h3>Say it out loud</h3>
+    <hx-say src="H10">
+      <ol>
+        <li>Where does a project's AGENTS.md go in the prompt, and what happens when it disagrees with Rein's own rules?</li>
+        <li>A teammate says the rules are in the prompt, so the model will follow them. What do you show them?</li>
+      </ol>
+    </hx-say>
+    <aside class="portfolio">
+      <h3>What to show from this module</h3>
+      <ul>
+        <li>Your --show-prompt output, run twice with the same text, with the two layers named.</li>
+        <li>The rule tape bench: one trial where the old board ends done after editing the test, and the new board's result on the same seed.</li>
+      </ul>
+    </aside>
+  </section>
+
+    <aside class="rail" aria-label="Course map" tabindex="0">
+      <details class="course-map" open>
+        <summary>Course map</summary>
+        <div class="map-body">
+          <!-- gen:course-map -->
+          <section class="map-part" data-part-id="S" data-part-title="Start here">
+            <h3><span>Part S · Start here</span></h3>
+            <p class="map-count" data-part-count>1 module</p>
+            <ol class="map-modules">
+              <li data-module-id="S0" data-slug="same-model-different-harness" data-part="S" data-title="Same model, different harness" data-minutes="25" data-family="false-done" data-family-name="False “done”" data-family-summary="The agent reports success it never checked." data-path="0" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="same-model-different-harness.html">S0 · Same model, different harness</a></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="A" data-part-title="The model">
+            <h3><span>Part A · The model</span></h3>
+            <p class="map-count" data-part-count>7 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="A1" data-slug="what-a-model-does" data-part="A" data-title="What a model does" data-minutes="30" data-family="confident-lie" data-family-name="The confident lie" data-family-summary="Fluent, specific, wrong: an invented function, flag or fact." data-path="1" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="what-a-model-does.html">A1 · What a model does</a></li>
+              <li data-module-id="A2" data-slug="tokens-and-the-window" data-part="A" data-title="Tokens and the context window" data-minutes="30" data-family="context-flood" data-family-name="Context flood" data-family-summary="One giant tool output buries the task." data-path="2" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="tokens-and-the-window.html">A2 · Tokens and the context window</a></li>
+              <li data-module-id="A3" data-slug="the-stateless-model" data-part="A" data-title="The stateless model" data-minutes="40" data-family="forgetful-harness" data-family-name="The forgetful harness" data-family-summary="History isn&#x27;t resent, so the model starts from nothing." data-path="3" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="the-stateless-model.html">A3 · The stateless model</a></li>
+              <li data-module-id="A4" data-slug="the-api-call-on-the-wire" data-part="A" data-title="The API call on the wire" data-minutes="50" data-family="first-block-only" data-family-name="First block only" data-family-summary="Code reads only content[0] and misses or crashes on other blocks." data-path="4" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="the-api-call-on-the-wire.html">A4 · The API call on the wire</a></li>
+              <li data-module-id="A5" data-slug="structured-outputs" data-part="A" data-title="Structured outputs and schemas" data-minutes="45" data-family="schema-drift" data-family-name="Schema drift" data-family-summary="Model output has the wrong shape and breaks code downstream." data-path="5" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="structured-outputs.html">A5 · Structured outputs and schemas</a></li>
+              <li data-module-id="A6" data-slug="reasoning-and-effort" data-part="A" data-title="Reasoning and effort as harness knobs" data-minutes="35" data-family="effort-mismatch" data-family-name="Effort mismatch" data-family-summary="Maximum reasoning on easy work: same answers, many times the cost and wait." data-path="6" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="reasoning-and-effort.html">A6 · Reasoning and effort as harness knobs</a></li>
+              <li data-module-id="A7" data-slug="why-a-model-alone-is-unreliable" data-part="A" data-title="Why a model alone is unreliable" data-minutes="30" data-family="long-chain-collapse" data-family-name="Long-chain collapse" data-family-summary="Small per-step error rates multiply until long tasks mostly fail." data-path="7" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="why-a-model-alone-is-unreliable.html">A7 · Why a model alone is unreliable</a></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="B" data-part-title="From chatbot to agent">
+            <h3><span>Part B · From chatbot to agent</span></h3>
+            <p class="map-count" data-part-count>4 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="B1" data-slug="tools-give-the-model-hands" data-part="B" data-title="Tools give the model hands" data-minutes="50" data-family="split-tool-results" data-family-name="Split tool results" data-family-summary="Parallel results sent in separate messages or with mismatched ids." data-path="8" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="tools-give-the-model-hands.html">B1 · Tools give the model hands</a></li>
+              <li data-module-id="B2" data-slug="the-agent-loop" data-part="B" data-title="The agent loop" data-minutes="60" data-family="almost-done-spiral" data-family-name="The “almost done” spiral" data-family-summary="A loop with one exit keeps calling tools forever." data-path="9" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="the-agent-loop.html">B2 · The agent loop</a></li>
+              <li data-module-id="B3" data-slug="what-a-harness-is" data-part="B" data-title="What a harness is" data-minutes="35" data-family="harness-regression" data-family-name="Harness regression" data-family-summary="A harness change, not the model, quietly makes results worse." data-path="13" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="what-a-harness-is.html">B3 · What a harness is</a></li>
+              <li data-module-id="B4" data-slug="the-turn-clock" data-part="B" data-title="The Turn Clock" data-minutes="30" data-family="false-done" data-family-name="False “done”" data-family-summary="The agent reports success it never checked." data-path="14" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="the-turn-clock.html">B4 · The Turn Clock</a></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="C" data-part-title="The eight wires">
+            <h3><span>Part C · The eight wires</span></h3>
+            <p class="map-count" data-part-count>12 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="C1" data-slug="control-plane" data-part="C" data-title="Control plane: instructions as law" data-minutes="55" data-family="rule-ignored" data-family-name="The ignored rule" data-family-summary="A prompt-only rule holds early and breaks late in a long run." data-path="15" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="control-plane.html">C1 · Control plane: instructions as law</a></li>
+              <li data-module-id="C2" data-slug="context-budget" data-part="C" data-title="Context budget" data-minutes="50" data-family="context-flood" data-family-name="Context flood" data-family-summary="One giant tool output buries the task." data-path="16" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="context-budget.html">C2 · Context budget</a></li>
+              <li data-module-id="C3" data-slug="compaction-and-memory" data-part="C" data-title="Compaction and memory" data-minutes="50" data-family="compaction-amnesia" data-family-name="Compaction amnesia" data-family-summary="A summary drops a constraint or redoes finished work." data-path="17" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="compaction-and-memory.html">C3 · Compaction and memory</a></li>
+              <li data-module-id="C4" data-slug="prompt-caching" data-part="C" data-title="Prompt caching" data-minutes="45" data-family="cold-cache" data-family-name="Cold cache" data-family-summary="A changing prefix (a timestamp, reordered tools) defeats prompt caching." data-path="18" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="prompt-caching.html">C4 · Prompt caching</a></li>
+              <li data-module-id="C5" data-slug="loop-state-and-stopping" data-part="C" data-title="Loop state and stopping well" data-minutes="55" data-family="orphaned-tool-call" data-family-name="Orphaned tool call" data-family-summary="An interrupt leaves a tool_use with no tool_result, and resume fails." data-path="19" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="loop-state-and-stopping.html">C5 · Loop state and stopping well</a></li>
+              <li data-module-id="C6" data-slug="errors-and-recovery" data-part="C" data-title="Errors are the main path" data-minutes="55" data-family="retry-storm" data-family-name="Retry storm" data-family-summary="Clients retry in lockstep without jitter and prolong the outage." data-path="20" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="errors-and-recovery.html">C6 · Errors are the main path</a></li>
+              <li data-module-id="C7" data-slug="tool-design" data-part="C" data-title="Tool design is agent UX" data-minutes="55" data-family="tool-confusion" data-family-name="Tool confusion" data-family-summary="A vague name or schema makes the model call the wrong tool or wrong inputs." data-path="21" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="tool-design.html">C7 · Tool design is agent UX</a></li>
+              <li data-module-id="C8" data-slug="mcp-skills-and-tool-scale" data-part="C" data-title="MCP, skills and tool scale" data-minutes="50" data-family="tool-overload" data-family-name="Tool overload" data-family-summary="Too many tool definitions eat the window and blur the choice." data-path="22" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="mcp-skills-and-tool-scale.html">C8 · MCP, skills and tool scale</a></li>
+              <li data-module-id="C9" data-slug="permissions" data-part="C" data-title="Permissions" data-minutes="55" data-family="approval-fatigue" data-family-name="Approval fatigue" data-family-summary="So many prompts that the dangerous one gets approved too." data-path="23" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="permissions.html">C9 · Permissions</a></li>
+              <li data-module-id="C10" data-slug="sandboxes" data-part="C" data-title="Sandboxes: blast walls" data-minutes="50" data-family="sandbox-escape" data-family-name="Sandbox escape" data-family-summary="A symlink or ../ path reaches outside the workspace." data-path="24" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="sandboxes.html">C10 · Sandboxes: blast walls</a></li>
+              <li data-module-id="C11" data-slug="verification" data-part="C" data-title="Verification: done is a claim" data-minutes="55" data-family="false-done" data-family-name="False “done”" data-family-summary="The agent reports success it never checked." data-path="31" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="verification.html">C11 · Verification: done is a claim</a></li>
+              <li data-module-id="C12" data-slug="observability" data-part="C" data-title="Observability: traces you can read" data-minutes="50" data-family="unexplained-bill" data-family-name="The unexplained bill" data-family-summary="Cost jumps and nobody can say where it went." data-path="35" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="observability.html">C12 · Observability: traces you can read</a></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="D" data-part-title="Measure">
+            <h3><span>Part D · Measure</span></h3>
+            <p class="map-count" data-part-count>3 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="D1" data-slug="eval-anatomy" data-part="D" data-title="Eval anatomy" data-minutes="50" data-family="silent-regression" data-family-name="Works on my examples" data-family-summary="A change looks fine on three examples and breaks many real tasks." data-path="36" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="eval-anatomy.html">D1 · Eval anatomy</a></li>
+              <li data-module-id="D2" data-slug="statistics-for-a-random-system" data-part="D" data-title="Statistics for a random system" data-minutes="55" data-family="eval-noise" data-family-name="Noise mistaken for progress" data-family-summary="A difference that is inside the noise is reported as an improvement." data-path="37" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="statistics-for-a-random-system.html">D2 · Statistics for a random system</a></li>
+              <li data-module-id="D3" data-slug="evals-in-practice" data-part="D" data-title="Evals in practice" data-minutes="55" data-family="reviewer-rubber-stamp" data-family-name="Reviewer rubber-stamp" data-family-summary="A reviewer or judge that shares the author&#x27;s view approves everything." data-path="38" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="evals-in-practice.html">D3 · Evals in practice</a></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="E" data-part-title="Secure">
+            <h3><span>Part E · Secure</span></h3>
+            <p class="map-count" data-part-count>2 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="E1" data-slug="prompt-injection-and-the-trifecta" data-part="E" data-title="Prompt injection and the lethal trifecta" data-minutes="55" data-family="injected-page" data-family-name="The injected page" data-family-summary="Instructions hidden in fetched content steer the agent." data-path="40" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="prompt-injection-and-the-trifecta.html">E1 · Prompt injection and the lethal trifecta</a></li>
+              <li data-module-id="E2" data-slug="defense-in-layers" data-part="E" data-title="Defense in layers" data-minutes="50" data-family="poisoned-tool" data-family-name="The poisoned tool" data-family-summary="A tool&#x27;s description or server is malicious or compromised." data-path="41" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="defense-in-layers.html">E2 · Defense in layers</a></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="F" data-part-title="Scale">
+            <h3><span>Part F · Scale</span></h3>
+            <p class="map-count" data-part-count>7 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="F1" data-slug="many-agents" data-part="F" data-title="Many agents: when and how" data-minutes="55" data-family="sub-agent-sprawl" data-family-name="Sub-agent sprawl" data-family-summary="Many agents, many times the cost, conflicting work." data-path="42" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="many-agents.html">F1 · Many agents: when and how</a></li>
+              <li data-module-id="F2" data-slug="long-running-agents" data-part="F" data-title="Long-running agents" data-minutes="50" data-family="shift-amnesia" data-family-name="Shift amnesia" data-family-summary="A new session redoes or undoes the last one&#x27;s work." data-path="43" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="long-running-agents.html">F2 · Long-running agents</a></li>
+              <li data-module-id="F3" data-slug="managed-agents" data-part="F" data-title="Managed agents: the harness as a service" data-minutes="35" data-family="lost-session" data-family-name="The lost session" data-family-summary="The process dies and the run&#x27;s state dies with it." data-path="44" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="managed-agents.html">F3 · Managed agents: the harness as a service</a></li>
+              <li data-module-id="F4" data-slug="cost-and-latency" data-part="F" data-title="Cost and latency engineering" data-minutes="50" data-family="cheap-model-trap" data-family-name="The cheap-model trap" data-family-summary="Cheaper per call, more expensive per completed task." data-path="45" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="cost-and-latency.html">F4 · Cost and latency engineering</a></li>
+              <li data-module-id="F5" data-slug="production" data-part="F" data-title="Production: agents that survive real traffic" data-minutes="55" data-family="double-charge" data-family-name="Double charge" data-family-summary="A retried action with side effects runs twice." data-path="46" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="production.html">F5 · Production: agents that survive real traffic</a></li>
+              <li data-module-id="F6" data-slug="environments" data-part="F" data-title="Environments: harnesses that train and test models" data-minutes="60" data-family="reward-hack" data-family-name="Reward hack" data-family-summary="The policy satisfies the grader instead of the task." data-path="47" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="environments.html">F6 · Environments: harnesses that train and test models</a></li>
+              <li data-module-id="F7" data-slug="model-migrations" data-part="F" data-title="Model migrations: when the model changes under you" data-minutes="50" data-family="migration-break" data-family-name="Migration break" data-family-summary="A new model rejects or changes something the harness relied on." data-path="48" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="model-migrations.html">F7 · Model migrations: when the model changes under you</a></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="G" data-part-title="Real harnesses">
+            <h3><span>Part G · Real harnesses</span></h3>
+            <p class="map-count" data-part-count>4 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="G1" data-slug="inside-claude-code" data-part="G" data-title="Inside Claude Code, wire by wire" data-minutes="40" data-family="harness-regression" data-family-name="Harness regression" data-family-summary="A harness change, not the model, quietly makes results worse." data-path="49" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="inside-claude-code.html">G1 · Inside Claude Code, wire by wire</a></li>
+              <li data-module-id="G2" data-slug="codex-and-open-harnesses" data-part="G" data-title="Codex and open harnesses: what everyone agrees on" data-minutes="40" data-family="stale-map" data-family-name="The stale map" data-family-summary="Agents follow outdated rules or docs as the codebase drifts." data-path="50" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="codex-and-open-harnesses.html">G2 · Codex and open harnesses: what everyone agrees on</a></li>
+              <li data-module-id="G3" data-slug="reading-a-harness-repo" data-part="G" data-title="Reading a real harness repository" data-minutes="60" data-family="harness-regression" data-family-name="Harness regression" data-family-summary="A harness change, not the model, quietly makes results worse." data-path="51" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="reading-a-harness-repo.html">G3 · Reading a real harness repository</a></li>
+              <li data-module-id="G4" data-slug="the-daily-craft" data-part="G" data-title="The daily craft" data-minutes="50" data-family="stale-map" data-family-name="The stale map" data-family-summary="Agents follow outdated rules or docs as the codebase drifts." data-path="52" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="the-daily-craft.html">G4 · The daily craft</a></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="H" data-part-title="Build Rein">
+            <h3><span>Part H · Build Rein</span></h3>
+            <p class="map-count" data-part-count>14 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="H0" data-slug="rein-setup" data-part="H" data-title="Rein setup" data-minutes="20" data-path="10" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-setup.html">H0 · Rein setup</a></li>
+              <li data-module-id="H1" data-slug="rein-1-talk-to-a-model" data-part="H" data-title="Rein 1: talk to a model" data-minutes="35" data-family="first-block-only" data-family-name="First block only" data-family-summary="Code reads only content[0] and misses or crashes on other blocks." data-path="11" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-1-talk-to-a-model.html">H1 · Rein 1: talk to a model</a></li>
+              <li data-module-id="H2" data-slug="rein-2-one-tool-and-the-loop" data-part="H" data-title="Rein 2: one tool and the loop" data-minutes="40" data-family="almost-done-spiral" data-family-name="The “almost done” spiral" data-family-summary="A loop with one exit keeps calling tools forever." data-path="12" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-2-one-tool-and-the-loop.html">H2 · Rein 2: one tool and the loop</a></li>
+              <li data-module-id="H3" data-slug="rein-3-real-tools-inside-a-wall" data-part="H" data-title="Rein 3: real tools inside a wall" data-minutes="45" data-family="sandbox-escape" data-family-name="Sandbox escape" data-family-summary="A symlink or ../ path reaches outside the workspace." data-path="25" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-3-real-tools-inside-a-wall.html">H3 · Rein 3: real tools inside a wall</a></li>
+              <li data-module-id="H4" data-slug="rein-4-the-permission-gate" data-part="H" data-title="Rein 4: the permission gate" data-minutes="40" data-family="approval-fatigue" data-family-name="Approval fatigue" data-family-summary="So many prompts that the dangerous one gets approved too." data-path="26" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-4-the-permission-gate.html">H4 · Rein 4: the permission gate</a></li>
+              <li data-module-id="H5" data-slug="rein-5-a-trace" data-part="H" data-title="Rein 5: a trace" data-minutes="35" data-family="unexplained-bill" data-family-name="The unexplained bill" data-family-summary="Cost jumps and nobody can say where it went." data-path="27" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-5-a-trace.html">H5 · Rein 5: a trace</a></li>
+              <li data-module-id="H6" data-slug="rein-6-a-context-budget" data-part="H" data-title="Rein 6: a context budget" data-minutes="40" data-family="context-flood" data-family-name="Context flood" data-family-summary="One giant tool output buries the task." data-path="28" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-6-a-context-budget.html">H6 · Rein 6: a context budget</a></li>
+              <li data-module-id="H7" data-slug="rein-7-retries-and-a-breaker" data-part="H" data-title="Rein 7: retries and a breaker" data-minutes="45" data-family="retry-storm" data-family-name="Retry storm" data-family-summary="Clients retry in lockstep without jitter and prolong the outage." data-path="29" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-7-retries-and-a-breaker.html">H7 · Rein 7: retries and a breaker</a></li>
+              <li data-module-id="H8" data-slug="rein-8-guards" data-part="H" data-title="Rein 8: guards that stop the run well" data-minutes="40" data-family="orphaned-tool-call" data-family-name="Orphaned tool call" data-family-summary="An interrupt leaves a tool_use with no tool_result, and resume fails." data-path="30" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-8-guards.html">H8 · Rein 8: guards that stop the run well</a></li>
+              <li data-module-id="H9" data-slug="rein-9-the-verification-gate" data-part="H" data-title="Rein 9: the verification gate" data-minutes="40" data-family="false-done" data-family-name="False “done”" data-family-summary="The agent reports success it never checked." data-path="32" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-9-the-verification-gate.html">H9 · Rein 9: the verification gate</a></li>
+              <li data-module-id="H10" data-slug="rein-10-project-rules" data-part="H" data-title="Rein 10: project rules" data-minutes="35" data-family="rule-ignored" data-family-name="The ignored rule" data-family-summary="A prompt-only rule holds early and breaks late in a long run." data-path="33" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-10-project-rules.html" aria-current="page">H10 · Rein 10: project rules</a></li>
+              <li data-module-id="H11" data-slug="rein-11-a-reviewer" data-part="H" data-title="Rein 11: a reviewer sub-agent" data-minutes="45" data-family="reviewer-rubber-stamp" data-family-name="Reviewer rubber-stamp" data-family-summary="A reviewer or judge that shares the author&#x27;s view approves everything." data-path="34" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="rein-11-a-reviewer.html">H11 · Rein 11: a reviewer sub-agent</a></li>
+              <li data-module-id="H12" data-slug="rein-from-one-file-to-a-project" data-part="H" data-title="From one file to a project" data-minutes="90" data-path="39" data-built="false"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><span class="module-label">H12 · From one file to a project</span><span class="soon">soon</span></li>
+              <li data-module-id="H13" data-slug="rein-extensions" data-part="H" data-title="Rein extensions, ranked" data-minutes="30" data-path="53" data-built="false"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><span class="module-label">H13 · Rein extensions, ranked</span><span class="soon">soon</span></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="I" data-part-title="Get hired">
+            <h3><span>Part I · Get hired</span></h3>
+            <p class="map-count" data-part-count>6 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="I1" data-slug="the-job-map" data-part="I" data-title="The job map" data-minutes="30" data-path="54" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="the-job-map.html">I1 · The job map</a></li>
+              <li data-module-id="I2" data-slug="readiness" data-part="I" data-title="Readiness self-assessment" data-minutes="30" data-path="55" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="readiness.html">I2 · Readiness self-assessment</a></li>
+              <li data-module-id="I3" data-slug="portfolio-projects" data-part="I" data-title="Four portfolio projects" data-minutes="45" data-path="56" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="portfolio-projects.html">I3 · Four portfolio projects</a></li>
+              <li data-module-id="I4" data-slug="capstone-rein-in-rust" data-part="I" data-title="Capstone: Rein in Rust" data-minutes="60" data-path="57" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="capstone-rein-in-rust.html">I4 · Capstone: Rein in Rust</a></li>
+              <li data-module-id="I5" data-slug="interview-room" data-part="I" data-title="Interview Room" data-minutes="120" data-path="58" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="interview-room.html">I5 · Interview Room</a></li>
+              <li data-module-id="I6" data-slug="twelve-weeks-after" data-part="I" data-title="Twelve weeks after the course" data-minutes="30" data-path="59" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="twelve-weeks-after.html">I6 · Twelve weeks after the course</a></li>
+            </ol>
+          </section>
+          <section class="map-part" data-part-id="T" data-part-title="Toolbelt">
+            <h3><span>Part T · Toolbelt</span></h3>
+            <p class="map-count" data-part-count>10 modules</p>
+            <ol class="map-modules">
+              <li data-module-id="T1" data-slug="py-typing-and-dataclasses" data-part="T" data-title="Python typing and dataclasses" data-minutes="20" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="py-typing-and-dataclasses.html">T1 · Python typing and dataclasses</a></li>
+              <li data-module-id="T2" data-slug="asyncio" data-part="T" data-title="asyncio" data-minutes="25" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="asyncio.html">T2 · asyncio</a></li>
+              <li data-module-id="T3" data-slug="subprocess-and-signals" data-part="T" data-title="subprocess and signals" data-minutes="20" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="subprocess-and-signals.html">T3 · subprocess and signals</a></li>
+              <li data-module-id="T4" data-slug="json-schema-primer" data-part="T" data-title="JSON Schema in depth" data-minutes="20" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="json-schema-primer.html">T4 · JSON Schema in depth</a></li>
+              <li data-module-id="T5" data-slug="http-and-sse" data-part="T" data-title="HTTP and SSE streaming" data-minutes="20" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="http-and-sse.html">T5 · HTTP and SSE streaming</a></li>
+              <li data-module-id="T6" data-slug="pytest-primer" data-part="T" data-title="pytest" data-minutes="20" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="pytest-primer.html">T6 · pytest</a></li>
+              <li data-module-id="T7" data-slug="containers-primer" data-part="T" data-title="Containers" data-minutes="25" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="containers-primer.html">T7 · Containers</a></li>
+              <li data-module-id="T8" data-slug="git-primer" data-part="T" data-title="git for agent work" data-minutes="20" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="git-primer.html">T8 · git for agent work</a></li>
+              <li data-module-id="T9" data-slug="linux-processes" data-part="T" data-title="Linux processes" data-minutes="20" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="linux-processes.html">T9 · Linux processes</a></li>
+              <li data-module-id="T10" data-slug="threads-vs-async" data-part="T" data-title="Threads vs. async" data-minutes="20" data-built="true"><span class="module-mark" aria-hidden="true"><svg class="path-mark is-ahead" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/></svg></span><a class="module-label" href="threads-vs-async.html">T10 · Threads vs. async</a></li>
+            </ol>
+          </section>
+          <!-- /gen:course-map -->
+        </div>
+      </details>
+    </aside>
+  </div>
+</main>
+<!-- gen:footer -->
+<footer class="footer">
+  <div class="footer-grid">
+    <p class="live-status" data-store-status></p>
+    <div class="footer-actions">
+      <button class="btn" type="button" data-export>Export progress</button>
+      <label class="btn">Import progress<input class="sr-only" type="file" accept="application/json,.json" data-import></label>
+      <button class="btn btn-quiet" type="button" data-reset>Reset progress (keeps settings)</button>
+    </div>
+    <p><a href="../design.html">Design system</a></p>
+    <p>Fonts: Newsreader (SIL OFL 1.1). Harnessed Sans and Harnessed Mono (SIL OFL 1.1; renamed IBM Plex subsets). Licences in <a href="../assets/fonts/LICENSE-OFL.txt">LICENSE-OFL.txt</a> and <a href="../assets/fonts/LICENSE-newsreader.txt">LICENSE-newsreader.txt</a>.</p>
+    <p data-facts-line>Facts verified as of <span data-facts-oldest data-facts-oldest-iso="2026-10-10">2026-10-10</span>.</p>
+  </div>
+</footer>
+<!-- /gen:footer -->
+</body>
+</html>

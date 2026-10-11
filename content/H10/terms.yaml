@@ -1,0 +1,9 @@
+- id: rules-loader
+  term: rules loader
+  aliases:
+  - rules loader
+  - rules loaders
+  strict: true
+  wire: control
+  definition: The part of build_system_prompt() that reads the project's AGENTS.md and adds it as a second layer
+    under Rein's own rules.

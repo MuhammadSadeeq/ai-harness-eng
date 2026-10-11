@@ -1,0 +1,86 @@
+[
+ {
+  "answer": 1,
+  "id": "H11-p1",
+  "mode": "predict",
+  "options": [
+   {
+    "text": "The change: the diff, read on its own.",
+    "why": "Tempting. Nothing in this history gives it the diff, so it judges the story instead."
+   },
+   {
+    "text": "The claim: the history says the tests pass, so it agrees.",
+    "why": "Right. A reviewer that shares the author's history judges the author's claim."
+   },
+   {
+    "text": "Nothing: a reviewer always reads the file.",
+    "why": "Tempting. A reviewer reads only what it is given, and here it reads the claim."
+   }
+  ],
+  "outcome": "The reviewer had the author's history and approved the special case. The run ended done with the checks failing: a rubber stamp.",
+  "question": "The reviewer reads the author's whole history, which says the tests pass. What does it judge?"
+ },
+ {
+  "answer": 0,
+  "id": "H11-c1",
+  "mode": "check",
+  "objective": "H11.o1",
+  "options": [
+   {
+    "text": "A fresh history with one message: the brief.",
+    "why": "Right. The reviewer does not inherit the author's conversation."
+   },
+   {
+    "text": "The author's whole conversation.",
+    "why": "Tempting and wrong. That is the forked history that lets a rubber stamp through."
+   },
+   {
+    "text": "Nothing: the reviewer reads the project only.",
+    "why": "Tempting and wrong. The reviewer starts with the brief."
+   }
+  ],
+  "question": "What does a reviewer's context start with?"
+ },
+ {
+  "answer": 0,
+  "id": "H11-c2",
+  "mode": "check",
+  "objective": "H11.o2",
+  "options": [
+   {
+    "text": "The task, the diff and the check output.",
+    "why": "Right. That is what independence needs."
+   },
+   {
+    "text": "The author's reasoning, so the reviewer knows why.",
+    "why": "Tempting and wrong. The reasoning is the story the reviewer must not judge by."
+   },
+   {
+    "text": "Only the task.",
+    "why": "Tempting and wrong. Without the diff the reviewer judges the description, not the change."
+   }
+  ],
+  "question": "What goes into the reviewer's brief?"
+ },
+ {
+  "answer": 0,
+  "id": "H11-c3",
+  "mode": "check",
+  "objective": "H11.o3",
+  "options": [
+   {
+    "text": "It goes back to the agent like a failed check, and the run goes on.",
+    "why": "Right. The run continues until the change passes."
+   },
+   {
+    "text": "The run ends as failed at once.",
+    "why": "Tempting and wrong. The verdict is a check result the agent can fix."
+   },
+   {
+    "text": "The verdict is ignored, because only tests count.",
+    "why": "Tempting and wrong. A FAIL is a reason the run is not done."
+   }
+  ],
+  "question": "The reviewer answers FAIL. What happens next?"
+ }
+]

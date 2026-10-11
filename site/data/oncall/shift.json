@@ -1,5 +1,5 @@
 {
- "board_cards": 441,
+ "board_cards": 455,
  "incidents": [
   {
    "family": "false-done",
@@ -282,6 +282,18 @@
    "module": "H9",
    "tape": "s0-false-done",
    "title": "Rein 9: the verification gate"
+  },
+  {
+   "family": "rule-ignored",
+   "module": "H10",
+   "tape": "c1-ignored-rule",
+   "title": "Rein 10: project rules"
+  },
+  {
+   "family": "reviewer-rubber-stamp",
+   "module": "H11",
+   "tape": "h11-rubber-stamp",
+   "title": "Rein 11: a reviewer sub-agent"
   }
  ],
  "memory_katas": [
@@ -512,6 +524,8 @@
   "H7",
   "H8",
   "H9",
+  "H10",
+  "H11",
   "I1",
   "I2",
   "I3",

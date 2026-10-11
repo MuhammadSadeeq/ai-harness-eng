@@ -1,0 +1,32 @@
+[
+ {
+  "id": "H10-s1",
+  "model_answer": "AGENTS.md is the second layer, after Rein's own rules, under a line that says the rules above win when the two disagree. The earlier layer wins, but that order is still only words. A rule that must hold is also enforced in code, because a prompt is words the model may ignore.",
+  "objectives": [
+   "H10.o1",
+   "H10.o2"
+  ],
+  "prompt": "Where does a project's AGENTS.md go in the prompt, and what happens when it disagrees with Rein's own rules?",
+  "rubric": [
+   "Places AGENTS.md as the second layer, after Rein's rules",
+   "Says the earlier layer wins when they disagree",
+   "Says a rule that must hold is enforced in code, not only in words",
+   "Says the project's rules sit below Rein's own rules, so Rein's rules win"
+  ]
+ },
+ {
+  "id": "H10-s2",
+  "model_answer": "I show them the prompt-only run: the model edits the test anyway, nothing stops the edit, and the run ends done. Then I show the same run with the rule in code, where the edit is denied and the gate refuses the claim. I also show the prompt from --show-prompt, run twice with the same text, because a prompt that changes between calls loses the cache.",
+  "objectives": [
+   "H10.o2",
+   "H10.o3"
+  ],
+  "prompt": "A teammate says the rules are in the prompt, so the model will follow them. What do you show them?",
+  "rubric": [
+   "Says the prompt-only run lets the edit through",
+   "Says the rule in code denies the edit in every mode",
+   "Says the prompt is built once and stays the same",
+   "Says a changing prompt loses the cache"
+  ]
+ }
+]

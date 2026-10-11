@@ -1,0 +1,9 @@
+- id: reviewer
+  term: reviewer
+  aliases:
+  - reviewer
+  - reviewers
+  strict: false
+  wire: loop
+  definition: A sub-agent that judges a change in a fresh context, with read-only powers and a narrow brief, and
+    answers with a verdict.

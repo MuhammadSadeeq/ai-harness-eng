@@ -1,0 +1,86 @@
+[
+ {
+  "answer": 1,
+  "id": "H10-p1",
+  "mode": "predict",
+  "options": [
+   {
+    "text": "The prompt: the model read the rule and will follow it.",
+    "why": "Tempting. Reading a rule does not stop the model from breaking it."
+   },
+   {
+    "text": "Nothing in the harness, unless the rule is also in code.",
+    "why": "Right. A rule that exists only as words is not checked before the edit."
+   },
+   {
+    "text": "The check: the test run fails, so the edit is undone.",
+    "why": "Tempting. The check runs after the edit, and the edit is already made."
+   }
+  ],
+  "outcome": "The rule was in the prompt and nowhere else. The model read it, edited the test anyway, and nothing stopped the edit. The run ended done while the check on the test failed.",
+  "question": "The rule 'never touch the tests' is in the prompt, and the model edits a test anyway. What stops the edit?"
+ },
+ {
+  "answer": 0,
+  "id": "H10-c1",
+  "mode": "check",
+  "objective": "H10.o2",
+  "options": [
+   {
+    "text": "Code: a check in the permission gate that runs before the edit.",
+    "why": "Right. The gate decides before the tool runs, in every mode."
+   },
+   {
+    "text": "The prompt, if the rule is numbered first.",
+    "why": "Tempting and wrong. Numbering only orders the words; the model may still ignore them."
+   },
+   {
+    "text": "The first sentence of the system message.",
+    "why": "Tempting and wrong. The position in the prompt does not enforce anything."
+   }
+  ],
+  "question": "What enforces a rule that must hold?"
+ },
+ {
+  "answer": 0,
+  "id": "H10-c2",
+  "mode": "check",
+  "objective": "H10.o3",
+  "options": [
+   {
+    "text": "So the same prefix goes out on every call, and the cache can reuse it.",
+    "why": "Right. A change at one level means that level and every level after it are not reused."
+   },
+   {
+    "text": "So the model reads the rules once, and not on every turn.",
+    "why": "Tempting and wrong. The model reads the prompt on every call; what matters is that it stays the same."
+   },
+   {
+    "text": "Because the prompt is too long to rebuild each turn.",
+    "why": "Tempting and wrong. The reason is the cache, not the length."
+   }
+  ],
+  "question": "Why is the prompt built once per run, not on every turn?"
+ },
+ {
+  "answer": 0,
+  "id": "H10-c3",
+  "mode": "check",
+  "objective": "H10.o1",
+  "options": [
+   {
+    "text": "Second, after Rein's rules, under a line that says the rules above win.",
+    "why": "Right. The layer order is the precedence."
+   },
+   {
+    "text": "First, so it is read before Rein's rules.",
+    "why": "Tempting and wrong. The earlier layer wins, and Rein's rules come first."
+   },
+   {
+    "text": "Only in the first message of the run.",
+    "why": "Tempting and wrong. The prompt is built once and sent on every call."
+   }
+  ],
+  "question": "Where does the project's AGENTS.md sit in the prompt?"
+ }
+]

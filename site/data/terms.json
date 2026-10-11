@@ -2762,6 +2762,18 @@
   "term": "retry budget",
   "wire": "errors"
  },
+ "reviewer": {
+  "aliases": [
+   "reviewer",
+   "reviewers"
+  ],
+  "definition": "A sub-agent that judges a change in a fresh context, with read-only powers and a narrow brief, and answers with a verdict.",
+  "id": "reviewer",
+  "module": "H11",
+  "strict": false,
+  "term": "reviewer",
+  "wire": "loop"
+ },
  "reward": {
   "aliases": [
    "reward",
@@ -2833,6 +2845,18 @@
   "module": "C1",
   "strict": true,
   "term": "rules file",
+  "wire": "control"
+ },
+ "rules-loader": {
+  "aliases": [
+   "rules loader",
+   "rules loaders"
+  ],
+  "definition": "The part of build_system_prompt() that reads the project's AGENTS.md and adds it as a second layer under Rein's own rules.",
+  "id": "rules-loader",
+  "module": "H10",
+  "strict": true,
+  "term": "rules loader",
   "wire": "control"
  },
  "run": {

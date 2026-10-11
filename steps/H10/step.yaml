@@ -1,0 +1,207 @@
+module: H10
+number: 10
+title: Project rules
+goal: 'Build the system prompt from layers: Rein''s own rules first, then the project''s AGENTS.md. Enforce one
+  rule in code, and keep the prompt the same on every call.'
+requires_python: '3.11'
+theory: 'Chapter 9: control plane, instructions as law'
+lines_after: 690
+size: rein.py grows to 690 lines
+chunks:
+- id: 10a
+  title: The prompt in layers
+  explain: BASE_PROMPT holds Rein's own rules, numbered, most important first. build_system_prompt() adds the project's
+    AGENTS.md when there is one, under a header that says the rules above win when the two disagree. The prompt
+    is a list of layers, and the earlier layer wins.
+  hunks:
+  - where: 'above THE LOOP: the prompt layers'
+    diff: |2
+       SYSTEM_PROMPT = ("You are Rein, a careful coding agent working inside one project folder. "
+                        "Look before you change anything, and run the tests to prove your work.")
+      +
+      +BASE_PROMPT = """You are Rein, a careful coding agent working inside one project folder.
+      +Rules, most important first:
+      +1. Stay inside the project folder. Use relative paths.
+      +2. Look before you change anything. Make the smallest change that solves the task.
+      +3. Never say something works unless you ran a check that proves it.
+      +4. If a tool call is denied, do not repeat it. Find another way, or explain what you need."""
+      +
+      +def build_system_prompt(workspace):
+      +    """Build the prompt from layers. When two layers disagree, the earlier one wins."""
+      +    layers = [BASE_PROMPT]
+      +    rules = Path(workspace) / "AGENTS.md"
+      +    if rules.is_file():
+      +        layers.append("Project rules from AGENTS.md (follow them unless they break a rule above):\n"
+      +                      + rules.read_text())
+      +    return "\n\n".join(layers)
+- id: 10b
+  title: Built once per run
+  explain: The prompt is built once per run, in Agent.__init__(), and the same string goes out on every call. A
+    prompt that never changes is what lets prompt caching reuse its prefix.
+  hunks:
+  - where: in Agent.__init__()
+    diff: |2
+               self.tools = make_tools(Workspace(cfg.workspace))
+      +        self.system = build_system_prompt(cfg.workspace)  # built once per run: stable, so it caches well
+  - where: 'in Agent.loop(): the model call'
+    diff: |
+      -                reply = with_retries(lambda: self.model.call(SYSTEM_PROMPT, messages, self.specs),
+      +                reply = with_retries(lambda: self.model.call(self.system, messages, self.specs),
+- id: 10c
+  title: Show the prompt
+  explain: --show-prompt prints the finished prompt and stops, so you can see exactly what the model will read.
+    The task becomes optional for that one case.
+  hunks:
+  - where: 'in main(): the task argument'
+    diff: |
+      -    p.add_argument("task", help="what you want done, in plain words")
+      +    p.add_argument("task", nargs="?", help="what you want done, in plain words")
+  - where: 'in main(): the --show-prompt argument'
+    diff: |2
+           p.add_argument("--check", default="", help='a command that proves the work, e.g. "python test_calc.py"')
+      +    p.add_argument("--show-prompt", action="store_true", help="print the system prompt and stop")
+  - where: 'in main(): before the task check'
+    diff: |2
+           args = p.parse_args()
+      +    if args.show_prompt:
+      +        print(build_system_prompt(args.workspace))
+      +        return
+      +    if not args.task:
+      +        p.error("tell Rein what to do, in quotes")
+- id: 10d
+  title: A rule in code
+  explain: 'A rule in code: edit_file and write_file on a test file are denied in every mode. The prompt does not
+    say so; the code enforces the rule, and the prompt-only version of this step would let the edit through.'
+  hunks:
+  - where: 'after CHAINING: the test-file pattern'
+    diff: |2
+       CHAINING = re.compile(r"[;&|`$<>]")  # an allowed command must not smuggle in a second one
+      +TESTS = re.compile(r"^(tests?/|test_)")  # "never touch the tests": a rule that holds in code
+  - where: 'in decide(): the rule'
+    diff: |2
+           if tool.read_only:
+               return Verdict("allow", "read-only tool", "read-only")
+      +    if tool.name in ("edit_file", "write_file") and TESTS.match(args.get("path", "")):
+      +        return Verdict("deny", "tests are off limits: this rule holds in code", "tests-off-limits")
+checkpoint:
+  setup:
+  - reset_demo
+  argv:
+  - Fix the failing test in calc.py
+  - --fake
+  - scenarios/10_rules.json
+  - --mode
+  - auto
+  - --check
+  - python test_calc.py
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: The test expects 5, but add(2, 3) returns -1. I will change the test to match.
+             tool   edit_file {"path": "test_calc.py", "old_text": "assert result == 5", "new_text": "as
+             deny   tests are off limits: this rule holds in code
+             error  Permission denied: tests are off limits: this rule holds in code. Do not retry this;
+    turn 3   model: Running the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 1 | test_add failed: add(2, 3) returned -1, expected 5
+    turn 4   model: The test passes now. Done.
+    check    not done: exit code 1 | test_add failed: add(2, 3) returned -1, expected 5
+    turn 5   model: (the script has run out)
+    check    not done: exit code 1 | test_add failed: add(2, 3) returned -1, expected 5
+    turn 6   model: (the script has run out)
+    unverified still failing after 2 fix rounds
+    trace    6 model_call, 3 permission, 3 tool_call, 3 verify, 1710 tokens (details in trace.jsonl)
+  explain: The scripted model edits the test so it expects the wrong answer. The rule in code denies the edit, so
+    the test still fails. The model claims done twice; the gate refuses both claims, and after two fix rounds the
+    run ends unverified. The rules layer does not stop the edit by itself; the code does.
+breaks:
+- id: show-prompt
+  title: Show the prompt
+  explain: 'Run python rein.py --show-prompt. The prompt has two layers: Rein''s rules, then the project''s AGENTS.md.
+    Run it twice and compare: the two outputs match because the prompt is built only from the base rules and the file, with nothing that changes between runs, such as a time or a counter. That is the stable prefix that prompt caching depends on; C4 says what breaks it.'
+  change:
+    argv:
+    - --show-prompt
+  expected: |+
+    You are Rein, a careful coding agent working inside one project folder.
+    Rules, most important first:
+    1. Stay inside the project folder. Use relative paths.
+    2. Look before you change anything. Make the smallest change that solves the task.
+    3. Never say something works unless you ran a check that proves it.
+    4. If a tool call is denied, do not repeat it. Find another way, or explain what you need.
+
+    Project rules from AGENTS.md (follow them unless they break a rule above):
+    # Rules for agents in this project
+    - Run the tests with: python test_calc.py
+    - Keep changes small. Do not rename functions.
+    - Never delete app.log. The support team reads it.
+
+- id: prompt-only
+  title: Take the hook out
+  explain: Remove the rule from the code and keep the same run. The edit goes through, the test passes against the
+    wrong answer, and the gate accepts the claim. The run ends done, with the test changed to match the bug. Words
+    guide; only code enforces.
+  change:
+    patch:
+      diff: |
+        -    if tool.name in ("edit_file", "write_file") and TESTS.match(args.get("path", "")):
+        -        return Verdict("deny", "tests are off limits: this rule holds in code", "tests-off-limits")
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: The test expects 5, but add(2, 3) returns -1. I will change the test to match.
+             tool   edit_file {"path": "test_calc.py", "old_text": "assert result == 5", "new_text": "as
+             allow  edits are allowed in auto mode
+             result Edited test_calc.py.
+    turn 3   model: Running the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 4   model: The test passes now. Done.
+    check    passed: python test_calc.py
+    done     after 4 model calls
+    trace    4 model_call, 3 permission, 3 tool_call, 1 verify, 767 tokens (details in trace.jsonl)
+- id: step-9-again
+  title: Step 9 again, nothing else changed
+  explain: Run the step 9 script again. The output is the same as step 9's, so the rules layer and the hook leave
+    a run that does not edit tests unchanged.
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/09_verify.json
+    - --mode
+    - auto
+    - --check
+    - python test_calc.py
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: It should multiply, I think.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a * b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 3   model: Done! add() is fixed.
+    check    not done: exit code 1 | test_add failed: add(2, 3) returned 6, expected 5
+    turn 4   model: The check says add(2, 3) returned 6. It must add, not multiply.
+             tool   edit_file {"path": "calc.py", "old_text": "return a * b", "new_text": "return a + b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 5   model: Running the test myself this time.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 6   model: Fixed add() in calc.py. I ran the test and it passes.
+    check    passed: python test_calc.py
+    done     after 6 model calls
+    trace    6 model_call, 4 permission, 4 tool_call, 2 verify, 1603 tokens (details in trace.jsonl)

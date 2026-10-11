@@ -1,0 +1,353 @@
+module: H11
+number: 11
+title: A reviewer sub-agent
+goal: After the check passes, a reviewer sub-agent with a fresh context and read-only powers decides whether the
+  task is truly done.
+requires_python: '3.11'
+theory: 'Chapter 17: many agents, and chapter 16: verification'
+lines_after: 763
+size: rein.py grows to 763 lines
+chunks:
+- id: 11a
+  title: Indent, read-only, and the reviewer's prompt
+  explain: show() learns to indent, so the reviewer's lines stand out. The gate gets a read_only mode that denies
+    anything which could change the project. REVIEWER_PROMPT tells the reviewer what it is, and that its answer
+    must start with a verdict. Config gets a review switch.
+  hunks:
+  - where: at the imports
+    diff: |2
+       import argparse
+      +import difflib
+       import json
+  - where: in show()
+    diff: |
+      -def show(tag, text):
+      +def show(tag, text, indent=""):
+  - where: 'in show(): the print'
+    diff: |
+      -    print(f"{tag:<8} {' '.join(str(text).splitlines())}"[:100])
+      +    print(f"{indent}{tag:<8} {' '.join(str(text).splitlines())}"[:100])
+  - where: 'in decide(): the read-only mode'
+    diff: |2
+           if tool.read_only:
+               return Verdict("allow", "read-only tool", "read-only")
+      +    if mode == "read_only":
+      +        return Verdict("deny", "this agent is read-only", "read-only-mode")
+  - where: above class Config
+    diff: |
+      +REVIEWER_PROMPT = """You are an independent reviewer. You did NOT write this change.
+      +Read the files and decide whether the task is truly solved for every input, not only for the tests.
+      +You cannot change anything. Start your answer with exactly VERDICT: PASS or VERDICT: FAIL."""
+      +
+      +
+       @dataclass
+       class Config:
+- id: 11b
+  title: The reviewer as a sub-agent
+  explain: 'review() builds a second agent: a fresh history that starts with one message, read-only powers, its
+    own limit of six turns, and the same trace. Its brief holds the task, the diff and the check output, and nothing
+    from the author''s reasoning. Its start and end are subagent_start and subagent_end lines, and its own lines
+    carry the label reviewer#1. The summary counts each sub-agent once, and it is printed whole.'
+  hunks:
+  - where: 'in Tracer.summary(): the kinds counted'
+    diff: |
+      -            if e["kind"] not in ("run_start", "run_end", "model_reply"):  # a reply is counted by its model_call
+      +            if e["kind"] not in ("run_start", "run_end", "model_reply", "subagent_start"):  # a reply is counted by its model_call
+  - where: 'in Tracer.summary(): the count'
+    diff: |
+      -                counts[e["kind"]] = counts.get(e["kind"], 0) + 1
+      +                kind = "subagent" if e["kind"] == "subagent_end" else e["kind"]  # one count per sub-agent
+      +                counts[kind] = counts.get(kind, 0) + 1
+  - where: 'in Config: the review switch'
+    diff: |2
+           max_fix_rounds: int = 2          # how many times the gate may send work back
+      +    review: bool = False             # also ask an independent reviewer (a sub-agent, read-only) after the check passes
+  - where: in Tracer.__init__()
+    diff: |2
+               self.seq, self.turn, self.events = 0, 0, []
+      +        self.agent = "main"  # the label of whoever is running: main, or reviewer#k while a reviewer runs
+  - where: 'in Tracer.event(): the agent label'
+    diff: |
+      -                  "turn": self.turn, "agent": "main", "kind": kind, "wire": wire, **redact(fields)}
+      +                  "turn": self.turn, "agent": self.agent, "kind": kind, "wire": wire, **redact(fields)}
+  - where: 'above class Agent: the helpers'
+    diff: |
+      +def snapshot(root):
+      +    """The text of every project file, so the reviewer can be shown what changed."""
+      +    files = {}
+      +    for path in sorted(Path(root).rglob("*")):
+      +        if path.is_file() and "__pycache__" not in path.parts:
+      +            files[path.relative_to(root).as_posix()] = path.read_text(errors="replace")
+      +    return files
+      +
+      +
+      +def diff_of(before, after):
+      +    """A unified diff of every file that changed. The reviewer judges this, not the author's story about it."""
+      +    lines = []
+      +    for name in sorted(set(before) | set(after)):
+      +        if before.get(name) != after.get(name):
+      +            lines += difflib.unified_diff((before.get(name) or "").splitlines(), (after.get(name) or "").splitlines(),
+      +                                          f"a/{name}", f"b/{name}", lineterm="")
+      +    return "\n".join(lines) or "(no change)"
+      +
+      +
+      +def ascii_text(text):
+      +    """Printable ASCII with line breaks kept, for the trace fields that hold text."""
+      +    return "".join(ch if (" " <= ch <= "~") or ch in "\n\t" else "?" for ch in str(text))
+      +
+      +
+       class Agent:
+- id: 11c
+  title: Review after the check
+  explain: The agent takes a name, its own system prompt, and the model its reviewer runs on. After the check passes,
+    verify() calls review(). A FAIL goes back to the agent exactly like a failed check, and the run goes on.
+  hunks:
+  - where: 'in Agent.__init__(): the signature'
+    diff: |
+      -    def __init__(self, model, cfg, trace, clock, rng):
+      +    def __init__(self, model, cfg, trace, clock, rng, name="main", system=None, reviewer_model=None):
+  - where: 'in Agent.__init__(): the new fields'
+    diff: |2
+               self.clock, self.rng = clock, rng  # virtual under --fake: a retry costs no real time
+      +        self.name = name  # main, or reviewer for a sub-agent
+      +        self.reviewer_model = reviewer_model or model  # the model a reviewer runs on
+      +        self.reviews = 0  # how many reviewers this run has started
+      +        self.before = {}  # the project as it was when the run started
+  - where: 'in Agent.__init__(): the system prompt'
+    diff: |
+      -        self.system = build_system_prompt(cfg.workspace)  # built once per run: stable, so it caches well
+      +        self.system = system or build_system_prompt(cfg.workspace)  # built once per run: stable, so it caches well
+  - where: in Agent.say()
+    diff: |2
+           def say(self, tag, text):
+      -        show(tag, text)
+      +        show(tag, text, "" if self.name == "main" else "    ")
+  - where: 'in Agent.finish(): run_end for the main agent'
+    diff: |
+      -        self.trace.event("run_end", "loop", status=ended, passed=False, turns=self.turns,
+      -                         tokens={"input": self.tokens_in, "output": self.tokens_out}, cost=self.cost)
+      +        self.status = ended
+      +        if self.name == "main":  # a sub-agent ends with its subagent_end line, written by its parent
+      +            self.trace.event("run_end", "loop", status=ended, passed=False, turns=self.turns,
+      +                             tokens={"input": self.tokens_in, "output": self.tokens_out}, cost=self.cost)
+  - where: 'in Agent.loop(): the snapshot'
+    diff: |2
+               self.started = self.clock.now()  # the time guard counts from here
+      +        self.before = snapshot(self.cfg.workspace)  # the change is shown against this
+  - where: 'in Agent.loop(): run_start for the main agent'
+    diff: |
+      -        self.trace.event("run_start", "loop", task=task, board=self.cfg.mode, seed=0, model_id=self.model.model_id)
+      +        if self.name == "main":
+      +            self.trace.event("run_start", "loop", task=task, board=self.cfg.mode, seed=0, model_id=self.model.model_id)
+  - where: 'in Agent.loop(): the gate'
+    diff: |
+      -                passed, report = self.verify()
+      +                passed, report = self.verify(task)
+  - where: 'in Agent.verify(): the signature'
+    diff: |
+      -    def verify(self):
+      +    def verify(self, task):
+  - where: 'in Agent.verify(): the review after the check'
+    diff: |2
+               self.say("check", f"passed: {self.cfg.check}")
+      +        if self.cfg.review:
+      +            return self.review(task, output)
+               return True, "ok"
+  - where: new method in class Agent
+    diff: |
+      +    def review(self, task, check_output):
+      +        """A reviewer sub-agent: fresh history, read-only powers, its own turn limit. Only its verdict comes back."""
+      +        self.reviews += 1
+      +        k = self.reviews
+      +        self.say("review", "starting an independent reviewer (fresh context, read-only)")
+      +        brief = (f"Task: {task}\n"
+      +                 f"The diff of the change:\n{diff_of(self.before, snapshot(self.cfg.workspace))}\n"
+      +                 f"The check output: {check_output}\n"
+      +                 "Answer with VERDICT: PASS or VERDICT: FAIL.")
+      +        self.trace.event("subagent_start", "loop", name="reviewer", k=k, context="isolated", brief=ascii_text(brief))
+      +        cfg = Config(workspace=self.cfg.workspace, mode="read_only", max_turns=6)
+      +        reviewer = Agent(self.reviewer_model, cfg, self.trace, self.clock, self.rng, name="reviewer",
+      +                         system=REVIEWER_PROMPT, reviewer_model=self.reviewer_model)
+      +        saved_turn, saved_agent = self.trace.turn, self.trace.agent
+      +        self.trace.agent = f"reviewer#{k}"  # the reviewer's own lines carry its label
+      +        answer = reviewer.run(brief)
+      +        self.trace.turn, self.trace.agent = saved_turn, saved_agent
+      +        self.trace.event("subagent_end", "loop", name="reviewer", k=k, status=reviewer.status, turns=reviewer.turns,
+      +                         tokens={"input": reviewer.tokens_in, "output": reviewer.tokens_out}, cost=reviewer.cost,
+      +                         output=ascii_text(answer))
+      +        passed = answer.lstrip().startswith("VERDICT: PASS")
+      +        self.say("review", f"verdict: {'PASS' if passed else 'FAIL'}")
+      +        return passed, answer
+      +
+           def check_permission(self, tool, call):
+- id: 11d
+  title: The review switch
+  explain: '--review turns the reviewer on. In a scripted run the reviewer reads its own script: the reviewer list
+    in the scenario file.'
+  hunks:
+  - where: 'in main(): the trace line'
+    diff: |
+      -    show("trace", f"{trace.summary()} (details in {cfg.trace_file})")
+      +    print(f"{'trace':<8} {trace.summary()} (details in {cfg.trace_file})")  # not cut: a sub-agent makes it long
+  - where: 'in main(): the --review argument'
+    diff: |2
+           p.add_argument("--show-prompt", action="store_true", help="print the system prompt and stop")
+      +    p.add_argument("--review", action="store_true", help="also ask an independent reviewer sub-agent")
+  - where: 'in main(): before the fake check'
+    diff: |
+      +    reviewer_model = None
+           if args.fake:
+  - where: 'in main(): the reviewer''s script'
+    diff: |2
+               model = FakeModel(scenario["replies"])
+      +        reviewer_model = FakeModel(scenario.get("reviewer", []))  # the reviewer has its own script
+  - where: 'in main(): the agent''s config'
+    diff: |2
+               check=args.check,
+      +        review=args.review,
+  - where: 'in main(): the agent'
+    diff: |
+      -    agent = Agent(model, cfg, trace, clock, rng)
+      +    agent = Agent(model, cfg, trace, clock, rng, reviewer_model=reviewer_model)
+checkpoint:
+  setup:
+  - reset_demo
+  argv:
+  - Fix the failing test in calc.py
+  - --fake
+  - scenarios/11_review.json
+  - --mode
+  - auto
+  - --check
+  - python test_calc.py
+  - --review
+  expected: "task     Fix the failing test in calc.py\nturn 1   model: Let me read the code.\n         tool   read_file\
+    \ {\"path\": \"calc.py\"}\n         allow  read-only tool\n         result 1| def add(a, b): | 2|     return\
+    \ a - b\nturn 2   model: Quickest way to make the test pass.\n         tool   edit_file {\"path\": \"calc.py\"\
+    , \"old_text\": \"    return a - b\", \"new_text\": \"    if (a\n         allow  edits are allowed in auto mode\n\
+    \         result Edited calc.py.\nturn 3   model: Running the test.\n         tool   run_command {\"command\"\
+    : \"python test_calc.py\"}\n         allow  allow-listed command\n         result exit code 0 | 1 test passed\n\
+    turn 4   model: Done. The test passes.\ncheck    passed: python test_calc.py\nreview   starting an independent\
+    \ reviewer (fresh context, read-only)\n    task     Task: Fix the failing test in calc.py The diff of the change:\
+    \ --- a/calc.py +++ b/calc.\n    turn 1   model: Let me read the change.\n             tool   read_file {\"\
+    path\": \"calc.py\"}\n             allow  read-only tool\n             result 1| def add(a, b): | 2|     if\
+    \ (a, b) == (2, 3): | 3|         return 5 | 4|     r\n    turn 2   model: VERDICT: FAIL. add() special-cases\
+    \ the inputs (2, 3) instead of adding. It still\n    done     after 2 model calls\nreview   verdict: FAIL\n\
+    check    not done: VERDICT: FAIL. add() special-cases the inputs (2, 3) instead of adding. It still \nturn 5\
+    \   model: The reviewer is right: I gamed the test. Fixing it properly.\n         tool   edit_file {\"path\"\
+    : \"calc.py\", \"old_text\": \"    if (a, b) == (2, 3):\\n        return \n         allow  edits are allowed\
+    \ in auto mode\n         result Edited calc.py.\nturn 6   model: Running the test again.\n         tool   run_command\
+    \ {\"command\": \"python test_calc.py\"}\n         allow  allow-listed command\n         result exit code 0\
+    \ | 1 test passed\nturn 7   model: Fixed add() properly: it returns a + b for every input. The test passes.\n\
+    check    passed: python test_calc.py\nreview   starting an independent reviewer (fresh context, read-only)\n\
+    \    task     Task: Fix the failing test in calc.py The diff of the change: --- a/calc.py +++ b/calc.\n    turn\
+    \ 1   model: Checking the new version.\n             tool   read_file {\"path\": \"calc.py\"}\n            \
+    \ allow  read-only tool\n             result 1| def add(a, b): | 2|     return a + b\n             tool   run_command\
+    \ {\"command\": \"python test_calc.py\"}\n             deny   this agent is read-only\n             error  Permission\
+    \ denied: this agent is read-only. Do not retry this; find another way.\n    turn 2   model: VERDICT: PASS.\
+    \ add() returns a + b for any input.\n    done     after 2 model calls\nreview   verdict: PASS\ndone     after\
+    \ 7 model calls\ntrace    11 model_call, 8 permission, 8 tool_call, 2 verify, 2 subagent, 3021 tokens (details\
+    \ in trace.jsonl)\n"
+  explain: 'The agent special-cases the test, so the check passes on the one input the test uses. A reviewer starts
+    with a fresh context, reads the change and fails it. The verdict goes back like a failed check; the agent fixes
+    add() properly, and a second reviewer passes it. The run ends done after seven model calls: the price of a second
+    opinion.'
+breaks:
+- id: no-review
+  title: No reviewer
+  explain: 'Run the checkpoint without --review. The check passes on the special case, and nothing else looks at
+    the change: the run ends done after four model calls, with add() still subtracting for every other input.'
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/11_review.json
+    - --mode
+    - auto
+    - --check
+    - python test_calc.py
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: Quickest way to make the test pass.
+             tool   edit_file {"path": "calc.py", "old_text": "    return a - b", "new_text": "    if (a
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 3   model: Running the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 4   model: Done. The test passes.
+    check    passed: python test_calc.py
+    done     after 4 model calls
+    trace    4 model_call, 3 permission, 3 tool_call, 1 verify, 757 tokens (details in trace.jsonl)
+- id: rubber-stamp
+  title: A reviewer that approves without reading
+  explain: 'Replace the reviewer''s script with one that approves without reading the change. The special case gets
+    through, and the reviewer''s verdict is the only thing that could have stopped it. This is a rubber stamp: the
+    review is there, and it checks nothing.'
+  change:
+    script:
+      path: scenarios/11_review.json
+      json:
+        replies:
+        - say: Let me read the code.
+          tools:
+          - - read_file
+            - path: calc.py
+        - say: Quickest way to make the test pass.
+          tools:
+          - - edit_file
+            - path: calc.py
+              old_text: '    return a - b'
+              new_text: |2-
+                    if (a, b) == (2, 3):
+                        return 5
+                    return a - b
+        - say: Running the test.
+          tools:
+          - - run_command
+            - command: python test_calc.py
+        - say: Done. The test passes.
+        - say: 'The reviewer is right: I gamed the test. Fixing it properly.'
+          tools:
+          - - edit_file
+            - path: calc.py
+              old_text: |2-
+                    if (a, b) == (2, 3):
+                        return 5
+                    return a - b
+              new_text: '    return a + b'
+        - say: Running the test again.
+          tools:
+          - - run_command
+            - command: python test_calc.py
+        - say: 'Fixed add() properly: it returns a + b for every input. The test passes.'
+        reviewer:
+        - say: 'VERDICT: PASS. The check passes, so the change is done.'
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me read the code.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 2   model: Quickest way to make the test pass.
+             tool   edit_file {"path": "calc.py", "old_text": "    return a - b", "new_text": "    if (a
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 3   model: Running the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 4   model: Done. The test passes.
+    check    passed: python test_calc.py
+    review   starting an independent reviewer (fresh context, read-only)
+        task     Task: Fix the failing test in calc.py The diff of the change: --- a/calc.py +++ b/calc.
+        turn 1   model: VERDICT: PASS. The check passes, so the change is done.
+        done     after 1 model calls
+    review   verdict: PASS
+    done     after 4 model calls
+    trace    5 model_call, 3 permission, 3 tool_call, 1 verify, 1 subagent, 856 tokens (details in trace.jsonl)
