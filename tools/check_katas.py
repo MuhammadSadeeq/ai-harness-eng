@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -240,14 +241,15 @@ def _check_kata(
             )
     starter_path = folder / "starter.py"
     solution_path = folder / "solution.py"
+    entry = _entry_names(tests)
     candidates: list[Candidate] = [
         Candidate(
             folder.name, "starter", starter, tests, _display(starter_path),
-            line=_def_line(starter_path),
+            line=_def_line(starter_path, entry),
         ),
         Candidate(
             folder.name, "solution", solution, tests, _display(solution_path),
-            line=_def_line(solution_path),
+            line=_def_line(solution_path, entry),
         ),
     ]
     where = _display(folder / "meta.yaml")
@@ -263,11 +265,13 @@ def _check_kata(
         try:
             blank = memory_blank(solution, tests, folder.name)
         except (BlankError, SyntaxError) as exc:
-            report.error(_display(solution_path), _def_line(solution_path), f"memory blank: {exc}")
+            report.error(
+                _display(solution_path), _def_line(solution_path, entry), f"memory blank: {exc}"
+            )
         else:
             candidates.append(
                 Candidate(folder.name, "memory blank", blank, tests, where,
-                          line=_def_line(solution_path))
+                          line=_def_line(solution_path, entry))
             )
     for candidate in candidates:
         if _import_problems(candidate.code, frozenset()):
@@ -276,16 +280,39 @@ def _check_kata(
     return candidates
 
 
-def _def_line(path: Path) -> int:
-    """The line of a candidate file's first def (1-based), or 1 when there is none."""
+DEF_LINE = re.compile(r"^\s*(?:async\s+)?def\s+(\w+)\s*\(")
+
+
+def _entry_names(tests: str) -> frozenset[str]:
+    """The names the test file imports from kata: the functions the kata is about."""
+    try:
+        tree = ast.parse(tests)
+    except SyntaxError:
+        return frozenset()
+    return frozenset(
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module == "kata"
+        for alias in node.names
+    )
+
+
+def _def_line(path: Path, entry: frozenset[str] = frozenset()) -> int:
+    """The line (1-based) of a candidate file's entry def: the first def, sync or async, whose name
+    the test imports (entry). Without one, the first def. 1 when there is no def at all."""
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
     except OSError:
         return 1
+    defs: list[tuple[int, str]] = []
     for number, line in enumerate(lines, start=1):
-        if line.lstrip().startswith("def "):
+        match = DEF_LINE.match(line)
+        if match:
+            defs.append((number, match.group(1)))
+    for number, name in defs:
+        if name in entry:
             return number
-    return 1
+    return defs[0][0] if defs else 1
 
 
 def _wrong_solution_lines(meta_path: Path) -> dict[str, int]:

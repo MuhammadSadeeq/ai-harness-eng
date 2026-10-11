@@ -4,5 +4,5 @@ def wilson(passed, n):
 
 
 def differ(a, b):
-    """True when two results really differ, judged by their Wilson intervals. a and b are (passed, n)."""
+    """True when two results really differ: compare wilson(*a) with wilson(*b). a and b are (passed, n)."""
     return False

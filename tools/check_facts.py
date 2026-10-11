@@ -163,7 +163,10 @@ def run(
             report.error(shown, line, f"unknown fact id '{fact_id}'")
             continue
         used.add(fact_id)
-        _check_span_tokens(referenced, inner, shown, line, report)
+        if inner is None:
+            report.error(shown, line, f"fact span {fact_id} is not closed")
+        else:
+            _check_span_tokens(referenced, inner, shown, line, report)
         if referenced.status != "verified":
             report.error(
                 shown,
@@ -347,12 +350,13 @@ def _as_date(value: object) -> dt.date | None:
     return None
 
 
-def scan_pages(site_dir: Path) -> list[tuple[Path, int, str, str]]:
+def scan_pages(site_dir: Path) -> list[tuple[Path, int, str, str | None]]:
     """Return ``(page, line, fact_id, inner_html)`` for every ``data-fact`` attribute in the site.
 
-    inner_html is what the element holds: the span's text, with any <code> inside it.
+    inner_html is what the element holds: the span's text, with any <code> inside it. None when the
+    span is never closed, so its text cannot be known.
     """
-    references: list[tuple[Path, int, str, str]] = []
+    references: list[tuple[Path, int, str, str | None]] = []
     if not site_dir.is_dir():
         return references
     for page in sorted(site_dir.rglob("*.html")):
@@ -367,10 +371,11 @@ def scan_pages(site_dir: Path) -> list[tuple[Path, int, str, str]]:
     return references
 
 
-def element_inner_html(text: str, attribute_at: int) -> str:
+def element_inner_html(text: str, attribute_at: int) -> str | None:
     """The HTML an element holds, from the attribute at attribute_at to its closing tag.
 
-    An empty string when there is no closing tag.
+    None when the element has no closing tag: an unclosed span has no text of its own, so the rest
+    of the page must not be read as its claim. An empty string for a void element.
     """
     start = text.rfind("<", 0, attribute_at)
     name = TAG_NAME.match(text, start) if start >= 0 else None
@@ -381,7 +386,7 @@ def element_inner_html(text: str, attribute_at: int) -> str:
         return ""
     open_end = text.find(">", attribute_at)
     if open_end < 0:
-        return ""
+        return None
     open_end += 1
     depth = 1
     for tag_match in re.finditer(rf"<(/?){re.escape(tag)}\b[^>]*>", text[open_end:], re.IGNORECASE):
@@ -391,7 +396,7 @@ def element_inner_html(text: str, attribute_at: int) -> str:
                 return text[open_end:open_end + tag_match.start()]
         elif not tag_match.group(0).endswith("/>"):
             depth += 1
-    return text[open_end:]
+    return None
 
 
 def _plain(markup: str) -> str:

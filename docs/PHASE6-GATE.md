@@ -127,9 +127,11 @@ No blocker in any report so far.
   grader" now has its sentence.
 
 - **Audit 5, new (4 minor):** an unclosed fact span flooded check_facts
-  with false problems; check_katas named a helper's or an async def's line
-  instead of the kata's function; D2's touching test stubbed `wilson`, so a
-  correct solution computing its own intervals failed (being fixed).
+  with false problems: it is now one problem naming the span's line.
+  check_katas named a helper's or an async def's line instead of the
+  kata's function: it now prefers the def the test imports and reads
+  `async def`. D2's touching test stubs `wilson`, so a solution that
+  computes its intervals inside `differ` fails it: ruled below.
 
 ### Ruled in round 2
 
@@ -142,6 +144,12 @@ No blocker in any report so far.
   the known limit of the hard-token rule (FACTS §6): the rule catches a
   number the claim does not have, not a number moved to the wrong place.
   Spans that state prices are read by the accuracy reviewer.
+- **D2's touching test stubs `wilson` (audit 5, N4):** two intervals that
+  only touch can be made from real counts only to the last bit of one
+  formula's rounding, so a test without the stub would fail a correct
+  `wilson` written in another order. The kata's contract is that `differ`
+  compares `wilson(*a)` with `wilson(*b)`; the starter now says so, and the
+  stubbed test checks that comparison.
 - **A one-module drill (audit 2, N3):** with one module in the pool and no
   memory kata, the drill is that module's say prompts every day. That is
   intended: the drill reviews what was seen (D-062).

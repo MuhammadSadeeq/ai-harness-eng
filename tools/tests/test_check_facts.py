@@ -307,3 +307,31 @@ def test_element_inner_html_reads_the_span_including_nested_code(tmp_path: Path)
     inner = checker.element_inner_html(text, at)
     assert inner == 'one <code>two</code> <span>three</span>'
     assert checker.hard_tokens(inner) == ["two"], "the code is hard; the plain words are not"
+
+
+def test_an_unclosed_fact_span_is_one_problem_that_names_its_line(tmp_path: Path) -> None:
+    # The first span is never closed. Its text must not be read as the rest of the page, so the
+    # only problem is the unclosed span, on its own line; the closed span after it is fine.
+    facts = tmp_path / "facts"
+    site = tmp_path / "site"
+    facts.mkdir()
+    site.mkdir()
+    entry = (
+        "- id: harnesses.example\n"
+        f"  claim: {json.dumps(SANDBOX_CLAIM)}\n"
+        "  source: https://example.com/doc\n"
+        f"  quote: {json.dumps(SANDBOX_QUOTE)}\n"
+        "  verified_on: 2026-10-01\n  volatility: stable\n"
+    )
+    (facts / "harnesses.yaml").write_text(entry, encoding="utf-8")
+    page = (
+        "<p>Start.</p>\n"
+        '<span class="fact" data-fact="harnesses.example">Codex has three sandbox modes.\n'
+        '<p>The rest of the page, with <span class="fact" data-fact="harnesses.example">'
+        "Codex has three sandbox modes.</span></p>\n"
+        "<p>More text, danger-full-access-by-default among it.</p>\n"
+    )
+    (site / "index.html").write_text(page, encoding="utf-8")
+    report = checker.run(facts, site, TODAY)
+    assert _errors(report) == ["fact span harnesses.example is not closed"], _errors(report)
+    assert report.problems[0].line == 2

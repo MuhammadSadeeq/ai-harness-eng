@@ -200,3 +200,28 @@ def test_a_memory_blank_that_passes_is_reported_at_the_solution_def_line(
     found = [p for p in report.problems if "memory blank passes" in p.message]
     expected = _line_containing(kata / "solution.py", "def ")
     assert len(found) == 1 and found[0].line == expected, _lines(report)
+
+
+def test_an_async_def_is_found_as_the_entry_def(tmp_path: Path) -> None:
+    path = tmp_path / "starter.py"
+    path.write_text("import asyncio\n\n\nasync def fetch(url):\n    return url\n", encoding="utf-8")
+    assert checker._def_line(path) == 4
+    assert checker._def_line(path, frozenset({"fetch"})) == 4
+
+
+def test_the_def_the_test_imports_wins_over_a_helper_defined_first(tmp_path: Path) -> None:
+    path = tmp_path / "solution.py"
+    path.write_text(
+        "def _parts(text):\n    return text.split()\n\n\n"
+        "def hit_percent(read, total):\n    return 99 * read // total\n",
+        encoding="utf-8",
+    )
+    assert checker._def_line(path, frozenset({"hit_percent"})) == 5
+    assert checker._def_line(path) == 1, "without the test's import, the first def"
+
+
+def test_the_names_the_test_imports_from_kata_are_the_entry_names() -> None:
+    tests = "from kata import hit_percent, parts\n\n\ndef test_x():\n    assert hit_percent(1, 2)\n"
+    assert checker._entry_names(tests) == frozenset({"hit_percent", "parts"})
+    assert checker._entry_names("import math\n") == frozenset()
+    assert checker._entry_names("def test_x(:\n") == frozenset(), "a broken test file has no names"
