@@ -892,7 +892,7 @@
    ]
   },
   {
-   "built": false,
+   "built": true,
    "id": "G4",
    "kind": "core",
    "minutes": 50,

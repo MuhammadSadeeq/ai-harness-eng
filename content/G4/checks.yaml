@@ -1,0 +1,74 @@
+- id: G4-p1
+  objective: G4.o2
+  mode: predict
+  question: A rules file names a function the code no longer has. A run ends done with no summary. What do you expect
+    the harness to show?
+  options:
+  - text: The model fixes the missing name itself and writes the summary.
+    why: Tempting. The model followed the stale line; nothing told it the name was gone.
+  - text: 'The run ends done, and the scenario check fails: the harness accepted the done claim.'
+    why: Right. Nothing stopped the claim, and the scenario check is the only record of the miss.
+  - text: The run stops at the first error and writes nothing.
+    why: Tempting. The error was returned to the model, and the loop went on.
+  answer: 1
+  outcome: The run ended done, and the check failed. The gate turns the claim into a second try.
+- id: G4-c1
+  objective: G4.o1
+  mode: check
+  question: Put the steering loop in order.
+  options:
+  - text: Fix, measure, watch, name the family.
+    why: Tempting and wrong. A fix before a name changes the wrong wire.
+  - text: Watch, name the family, fix the harness, measure.
+    why: Right. Each step needs the one before it.
+  - text: Measure, fix, then watch for the family.
+    why: Tempting. A measure with no name cannot say what to measure.
+  answer: 1
+- id: G4-c2
+  objective: G4.o2
+  mode: check
+  question: A run's first wrong event is a call to a function that is gone. Which family do you name?
+  options:
+  - text: The stale map.
+    why: Right. The rules name a function the code no longer has.
+  - text: The harness regression.
+    why: Tempting. A regression is a change that makes results worse; the change here is the code, not the harness.
+  - text: The model's mistake.
+    why: Tempting. The model followed a rule it was given.
+  answer: 0
+- id: G4-c3
+  objective: G4.o3
+  mode: check
+  question: A retry was built for a model that no longer fails that way. What do you do?
+  options:
+  - text: 'Keep it: it was built on purpose.'
+    why: Tempting. Built on purpose is not the same as still needed.
+  - text: Measure the runs without it on the same seeds, and remove it if the measure holds.
+    why: Right. Build to delete means the part leaves when the measure says so.
+  - text: Add a second retry, to be safe.
+    why: Tempting and wrong. It adds a part no model needs.
+  answer: 1
+- id: G4-c4
+  objective: G4.o4
+  mode: check
+  question: Which check fights entropy in a rules file?
+  options:
+  - text: A reminder in the README to read the rules.
+    why: Tempting. A reminder depends on someone reading it.
+  - text: A mechanical check that finds names the code no longer defines, run on every change.
+    why: Right. It runs without anyone remembering.
+  - text: A longer rules file, so nothing is missed.
+    why: Tempting and wrong. A longer file has more names to go stale.
+  answer: 1
+- id: G4-c5
+  objective: G4.o5
+  mode: check
+  question: Which change makes a codebase easier to harness?
+  options:
+  - text: More prose in the docs, so every rule is written down.
+    why: Tempting. Long docs go stale faster than checks catch them.
+  - text: A check that runs fast and names the missing function.
+    why: Right. Fast checks and clear errors are what a harness can use.
+  - text: Fewer tests, so the runs are quicker.
+    why: Tempting and wrong. Fewer checks leave the harness blind.
+  answer: 1

@@ -1,0 +1,41 @@
+- id: steering-loop
+  term: steering loop
+  aliases:
+  - steering loop
+  - steering loops
+  strict: true
+  wire: observe
+  definition: Watch the runs, name the failure family, fix the harness, then measure the fix.
+- id: build-to-delete
+  term: build to delete
+  aliases:
+  - build to delete
+  strict: true
+  wire: control
+  definition: Write a harness part so it can be removed when a newer model no longer needs it, and measure before
+    you remove it.
+- id: entropy
+  term: entropy
+  aliases:
+  - entropy
+  strict: true
+  wire: verify
+  definition: The slow drift of a codebase and its rules away from each other, as code changes and the map stays
+    where it was.
+- id: harnessable-codebase
+  term: harnessable codebase
+  aliases:
+  - harnessable codebase
+  - harnessable codebases
+  strict: true
+  wire: tools
+  definition: A codebase with fast checks, clear errors, a readable structure and docs that work as a map.
+- id: self-tuning-harness
+  term: self-tuning harness
+  aliases:
+  - self-tuning harness
+  - self-tuning harnesses
+  strict: true
+  wire: observe
+  definition: A harness that adjusts one of its settings from measured runs, and only after a person has agreed
+    the measure.

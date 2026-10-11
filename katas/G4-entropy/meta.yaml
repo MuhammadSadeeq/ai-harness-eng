@@ -1,0 +1,50 @@
+id: G4-entropy
+module: G4
+title: A mechanical check for stale references in a rules file
+objectives:
+- G4.o4
+minutes: 25
+hints:
+- 'Split the work in two: find the names the code defines, then find the calls in the rules that name
+  something else.'
+- Use ast to collect the definitions, and a regular expression for name() with empty parentheses. Number
+  the lines from 1.
+- 'Nearly the code: defined_names walks ast.walk and keeps FunctionDef, AsyncFunctionDef and ClassDef
+  names; stale_references loops over rules.splitlines(), and appends (number, name) when the name is not
+  in names.'
+from_memory: true
+wrong_solutions:
+- name: no-line-numbers
+  code: "import ast\nimport re\n\nCALL = re.compile(r\"\\b([A-Za-z_][A-Za-z0-9_]*)\\(\\)\")\n\n\ndef defined_names(source):\n\
+    \    names = set()\n    for node in ast.walk(ast.parse(source)):\n        if isinstance(node, (ast.FunctionDef,\
+    \ ast.AsyncFunctionDef, ast.ClassDef)):\n            names.add(node.name)\n    return names\n\n\n\
+    def stale_references(rules, names):\n    return [match.group(1) for match in CALL.finditer(rules)\
+    \ if match.group(1) not in names]\n"
+- name: any-arguments-count
+  code: "import ast\nimport re\n\nCALL = re.compile(r\"\\b([A-Za-z_][A-Za-z0-9_]*)\\(\")\n\n\ndef defined_names(source):\n\
+    \    names = set()\n    for node in ast.walk(ast.parse(source)):\n        if isinstance(node, (ast.FunctionDef,\
+    \ ast.AsyncFunctionDef, ast.ClassDef)):\n            names.add(node.name)\n    return names\n\n\n\
+    def stale_references(rules, names):\n    found = []\n    for number, line in enumerate(rules.splitlines(),\
+    \ start=1):\n        for match in CALL.finditer(line):\n            if match.group(1) not in names:\n\
+    \                found.append((number, match.group(1)))\n    return found\n"
+- name: inverted
+  code: "import ast\nimport re\n\nCALL = re.compile(r\"\\b([A-Za-z_][A-Za-z0-9_]*)\\(\\)\")\n\n\ndef defined_names(source):\n\
+    \    names = set()\n    for node in ast.walk(ast.parse(source)):\n        if isinstance(node, (ast.FunctionDef,\
+    \ ast.AsyncFunctionDef, ast.ClassDef)):\n            names.add(node.name)\n    return names\n\n\n\
+    def stale_references(rules, names):\n    found = []\n    for number, line in enumerate(rules.splitlines(),\
+    \ start=1):\n        for match in CALL.finditer(line):\n            if match.group(1) in names:\n\
+    \                found.append((number, match.group(1)))\n    return found\n"
+- name: top-level-only
+  code: "import ast\nimport re\n\nCALL = re.compile(r\"\\b([A-Za-z_][A-Za-z0-9_]*)\\(\\)\")\n\n\ndef defined_names(source):\n\
+    \    return {node.name for node in ast.parse(source).body if isinstance(node, (ast.FunctionDef, ast.ClassDef))}\n\
+    \n\ndef stale_references(rules, names):\n    found = []\n    for number, line in enumerate(rules.splitlines(),\
+    \ start=1):\n        for match in CALL.finditer(line):\n            if match.group(1) not in names:\n\
+    \                found.append((number, match.group(1)))\n    return found\n"
+- name: empty-input-refused
+  code: "import ast\nimport re\n\nCALL = re.compile(r\"\\b([A-Za-z_][A-Za-z0-9_]*)\\(\\)\")\n\n\ndef defined_names(source):\n\
+    \    names = set()\n    for node in ast.walk(ast.parse(source)):\n        if isinstance(node, (ast.FunctionDef,\
+    \ ast.AsyncFunctionDef, ast.ClassDef)):\n            names.add(node.name)\n    return names\n\n\n\
+    def stale_references(rules, names):\n    if not rules:\n        raise ValueError(\"no rules to check\"\
+    )\n    found = []\n    for number, line in enumerate(rules.splitlines(), start=1):\n        for match\
+    \ in CALL.finditer(line):\n            if match.group(1) not in names:\n                found.append((number,\
+    \ match.group(1)))\n    return found\n"

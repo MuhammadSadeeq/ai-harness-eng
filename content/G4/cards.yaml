@@ -1,0 +1,30 @@
+- id: G4-k1
+  type: term
+  objective: G4.o1
+  front: What are the four steps of the steering loop?
+  back: Watch, name the failure family, fix the harness, measure.
+- id: G4-k2
+  type: term
+  objective: G4.o2
+  front: Why name the family before choosing a fix?
+  back: The family says which wire is at fault, so the fix changes that wire and not the model.
+- id: G4-k3
+  type: term
+  objective: G4.o3
+  front: What is build to delete?
+  back: A harness part written to be removed when a newer model no longer needs it, with a measure before removal.
+- id: G4-k4
+  type: term
+  objective: G4.o4
+  front: What does entropy look like in a rules file?
+  back: A rule that names a function the code no longer has, so the model follows a stale map.
+- id: G4-k5
+  type: term
+  objective: G4.o4
+  front: Why a mechanical check and not a reminder?
+  back: A check runs on every change; a reminder depends on someone remembering to read the file.
+- id: G4-k6
+  type: term
+  objective: G4.o5
+  front: What makes a codebase harnessable?
+  back: Fast checks, clear errors, a readable structure and docs that act as a short map.

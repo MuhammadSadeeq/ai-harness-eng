@@ -208,7 +208,15 @@
         "rules_file": {
           "type": "object",
           "additionalProperties": false,
-          "properties": {}
+          "properties": {
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
         },
         "redact": {
           "type": "object",

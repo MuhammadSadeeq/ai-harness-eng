@@ -760,11 +760,12 @@ export function runCore(tape, board, seed, facts) {
   };
 
   // The main agent, and its sessions (A14.2 and A15.5).
-  const systemBase = tape.system +
-    (mods.rules_file && tape.rules.length > 0 ? "\n\nProject rules:\n- " + tape.rules.join("\n- ") : "");
+  // A19: the board's rules, when it lists them, replace the tape's.
+  const rules = mods.rules_file ? (mods.rules_file.rules ?? tape.rules) : [];
+  const systemBase = tape.system + (rules.length > 0 ? "\n\nProject rules:\n- " + rules.join("\n- ") : "");
   const layersFor = (progress) => {
     const pre = mods.system_clock ? ["clock", "system"] : ["system"];
-    if (mods.rules_file && tape.rules.length > 0) pre.push("rules");
+    if (rules.length > 0) pre.push("rules");
     if (progress) pre.push("progress");
     return [...pre, "tools", mods.history?.resend === false ? "history (not resent)" : "history"];
   };

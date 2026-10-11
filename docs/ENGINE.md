@@ -1182,5 +1182,6 @@ eventually notices; lessons say so).
   `prompt_built.layers`, and everything computed from them (tokens, cache
   prefixes, `sent_lacks:`). An empty list means no rules layer, as for a tape
   without rules. Absent, the tape's `rules` are used, as before, so every
-  existing golden is unchanged. The rules file is the harness's map, so a
-  board can now fix a stale one on the same tape.
+  existing golden is unchanged. Sub-agents are unchanged: they never get a
+  rules layer (A14.1). The rules file is the harness's map, so a board can now
+  fix a stale one on the same tape.

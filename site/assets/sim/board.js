@@ -14,7 +14,7 @@ const MODULE_PARAMS = {
   tool_overrides: [],
   tool_search: ["always"],
   close_books: [],
-  rules_file: [],
+  rules_file: ["rules"],
   redact: ["patterns"],
   history: ["resend"],
   first_block_only: [],
@@ -97,8 +97,15 @@ function loadModule(name, p, where) {
       return { max_feedback: reqInt(p, "max_feedback", where), pristine_tests: p.pristine_tests === true };
     }
     case "close_books":
-    case "rules_file":
       return {};
+    case "rules_file": {
+      // A19: an optional list of rules that replaces the tape's for the run.
+      if (p.rules === undefined) return {};
+      if (!Array.isArray(p.rules) || p.rules.some((r) => typeof r !== "string" || r.length === 0)) {
+        fail(where, "rules must be a list of non-empty strings (A19)");
+      }
+      return { rules: [...p.rules] };
+    }
     case "history":
       // A5 ruling (c): {"resend": false} forgets; {"resend": true} is the same as absent. Any other shape is refused.
       if (p.resend !== false && p.resend !== true) fail(where, 'resend must be true or false (A5: the forgetful harness)');

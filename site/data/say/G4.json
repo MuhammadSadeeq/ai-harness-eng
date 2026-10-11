@@ -1,0 +1,33 @@
+[
+ {
+  "id": "G4-s1",
+  "model_answer": "I watch the run and find the first wrong event: here, a call to a function the code no longer has. I name the family before I choose a fix. It is a stale map, a rule that names something the code lost. I fix the source, the rule, and add a check that finds stale names on every change. Then I measure the same tasks on the same seeds before I call the fix done.",
+  "objectives": [
+   "G4.o1",
+   "G4.o2"
+  ],
+  "prompt": "A run ends done and the summary is missing. Walk me through the steering loop for it.",
+  "rubric": [
+   "Starts from the first wrong event in the run",
+   "Names the stale-map family before choosing the fix",
+   "Fixes the source of the stale rule, not only the symptom",
+   "Measures on the same seeds before calling the fix done"
+  ]
+ },
+ {
+  "id": "G4-s2",
+  "model_answer": "The retry was built to delete. I measure the runs without it on the same seeds, and remove it if the measure holds, because a part kept without a reason adds cost and hides what the model now does. For the rules file I add a mechanical check that finds names the code no longer defines, since a reminder depends on someone remembering it. A codebase with fast checks and clear errors is easy to harness, so I keep those checks fast and their errors plain.",
+  "objectives": [
+   "G4.o3",
+   "G4.o4",
+   "G4.o5"
+  ],
+  "prompt": "You added a retry for a model that no longer fails that way. What do you do, and how do you keep a rules file honest as the code changes?",
+  "rubric": [
+   "Measures the runs without the retry before removing it",
+   "Names a mechanical check for stale names in the rules",
+   "Explains why a reminder is weaker than a check",
+   "Connects fast checks and clear errors to a harnessable codebase"
+  ]
+ }
+]

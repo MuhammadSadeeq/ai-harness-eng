@@ -224,6 +224,11 @@ class Harness:
             Policy.from_params(board.modules["permissions"]) if board.has("permissions") else None
         )
         self.has_rules_file = board.has("rules_file")
+        # A19: a board's rules replace the tape's for the whole run; an empty list means no layer.
+        board_rules = board.modules["rules_file"].get("rules") if self.has_rules_file else None
+        self.rules: list[str] = (
+            [str(r) for r in board_rules] if board_rules is not None else list(tape.rules)
+        )
         self.has_close_books = board.has("close_books")
         self.has_verify = board.has("verify_gate")
         self.max_feedback = (
@@ -738,7 +743,7 @@ class Harness:
 
     def _layers(self) -> list[str]:
         layers = ["clock", "system"] if self.has_clock else ["system"]
-        if self.has_rules_file and self.tape.rules:
+        if self.has_rules_file and self.rules:
             layers.append("rules")
         if self.progress_layer is not None:  # A14.2: after rules
             layers.append("progress")
@@ -747,8 +752,8 @@ class Harness:
 
     def _system(self) -> str:
         system = self.system_base
-        if self.has_rules_file and self.tape.rules:
-            system += "\n\nProject rules:\n- " + "\n- ".join(self.tape.rules)
+        if self.has_rules_file and self.rules:
+            system += "\n\nProject rules:\n- " + "\n- ".join(self.rules)
         if self.progress_layer is not None:  # A14.2: the progress note, read at session start
             system += "\n\n" + self.progress_layer
         if self.has_clock:  # A6.4: the time at the top of the prompt, a bug on purpose

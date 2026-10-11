@@ -1,0 +1,12 @@
+{
+  "id": "g4-new",
+  "label": "The map fixed, no gate",
+  "modules": {
+    "rules_file": {
+      "rules": [
+        "Build the summary with render_report() in report.py.",
+        "Say done only when summary.txt is written."
+      ]
+    }
+  }
+}

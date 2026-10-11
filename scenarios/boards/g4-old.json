@@ -1,0 +1,7 @@
+{
+  "id": "g4-old",
+  "label": "Rules only, no gate",
+  "modules": {
+    "rules_file": {}
+  }
+}

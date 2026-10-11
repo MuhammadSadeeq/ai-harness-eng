@@ -84,6 +84,14 @@ def _check_module(name: str, params: dict[str, Any]) -> None:
             raise BoardError("permissions.mode must be allow, ask or deny")
         for rule in params.get("rules", []):
             _check_rule(rule)
+    if name == "rules_file":  # A19: the board's rules replace the tape's, when given
+        extra = sorted(set(params) - {"rules"})
+        if extra:
+            raise BoardError(f"rules_file has unknown keys {extra} (A19)")
+        if "rules" in params:
+            rules = params["rules"]
+            if not isinstance(rules, list) or any(not isinstance(r, str) or not r for r in rules):
+                raise BoardError("rules_file.rules must be a list of non-empty strings (A19)")
     if name == "sandbox":
         egress = params.get("egress", [])
         if not isinstance(egress, list):

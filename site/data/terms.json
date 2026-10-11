@@ -208,6 +208,17 @@
   "term": "brief",
   "wire": "context"
  },
+ "build-to-delete": {
+  "aliases": [
+   "build to delete"
+  ],
+  "definition": "Write a harness part so it can be removed when a newer model no longer needs it, and measure before you remove it.",
+  "id": "build-to-delete",
+  "module": "G4",
+  "strict": true,
+  "term": "build to delete",
+  "wire": "control"
+ },
  "cache-breakpoint": {
   "aliases": [
    "cache breakpoint",
@@ -817,6 +828,17 @@
   "term": "end_turn",
   "wire": "loop"
  },
+ "entropy": {
+  "aliases": [
+   "entropy"
+  ],
+  "definition": "The slow drift of a codebase and its rules away from each other, as code changes and the map stays where it was.",
+  "id": "entropy",
+  "module": "G4",
+  "strict": true,
+  "term": "entropy",
+  "wire": "verify"
+ },
  "enum": {
   "aliases": [
    "enum",
@@ -1217,6 +1239,18 @@
   "strict": true,
   "term": "harness engineering",
   "wire": "control"
+ },
+ "harnessable-codebase": {
+  "aliases": [
+   "harnessable codebase",
+   "harnessable codebases"
+  ],
+  "definition": "A codebase with fast checks, clear errors, a readable structure and docs that work as a map.",
+  "id": "harnessable-codebase",
+  "module": "G4",
+  "strict": true,
+  "term": "harnessable codebase",
+  "wire": "tools"
  },
  "header": {
   "aliases": [
@@ -2587,6 +2621,18 @@
   "term": "self-report",
   "wire": "verify"
  },
+ "self-tuning-harness": {
+  "aliases": [
+   "self-tuning harness",
+   "self-tuning harnesses"
+  ],
+  "definition": "A harness that adjusts one of its settings from measured runs, and only after a person has agreed the measure.",
+  "id": "self-tuning-harness",
+  "module": "G4",
+  "strict": true,
+  "term": "self-tuning harness",
+  "wire": "observe"
+ },
  "sensor": {
   "aliases": [
    "sensor",
@@ -2702,6 +2748,18 @@
   "strict": true,
   "term": "stateless",
   "wire": "context"
+ },
+ "steering-loop": {
+  "aliases": [
+   "steering loop",
+   "steering loops"
+  ],
+  "definition": "Watch the runs, name the failure family, fix the harness, then measure the fix.",
+  "id": "steering-loop",
+  "module": "G4",
+  "strict": true,
+  "term": "steering loop",
+  "wire": "observe"
  },
  "stop-reason": {
   "aliases": [
