@@ -674,3 +674,17 @@ basis for Phase 1, and answered SPEC §14:
   path, so a root-absolute path fails the page; the service worker's scope
   is the site's own folder. The Pages workflow deploys only a commit on
   `main` whose CI run passed, and checks out that exact commit.
+
+
+## D-065 The study book is shared for learning; the repository may go public
+
+- **Context:** at launch the director asked whether to keep the repository
+  private (Pages then needs a paid plan) or make it public, which D-001 had
+  tied to removing `source/` first, since `source/` was marked all rights
+  reserved.
+- **Decision (owner, 2026-10-11):** the book is not paid content; it was
+  written with AI and is meant for everyone's learning. `source/` may stay in
+  a public repository, under the same CC BY-NC-SA 4.0 as the course content.
+  It is still excluded from the Pages deploy (D-001). The capstone's Rust
+  reference (`capstone/reference/`, D-046) is likewise never deployed; in a
+  public repository it is readable, which the owner can still change.

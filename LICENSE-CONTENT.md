@@ -15,5 +15,6 @@ covered by exactly one of the following.
   License 1.1. The license text, IBM's copyright notice and a FONTLOG (what
   was changed and from which version) ship next to the files in
   `site/assets/fonts/`.
-- **`source/`** is the owner's study book. All rights reserved. It is not part
-  of the site and is excluded from the Pages deploy.
+- **`source/`** is the owner's study book, shared for learning under the same
+  CC BY-NC-SA 4.0 as the course content (D-065). It is not part of the site
+  and is excluded from the Pages deploy.

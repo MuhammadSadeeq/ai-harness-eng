@@ -120,4 +120,5 @@ tools/               checkers + qa/ (Playwright)
 ## Licenses
 
 Code is MIT (`LICENSE`). Course content is CC BY-NC-SA 4.0, fonts are SIL OFL 1.1,
-and `source/` is all rights reserved. See `LICENSE-CONTENT.md` for the full split.
+and `source/`, the study book, is shared under CC BY-NC-SA 4.0 like the content. See
+`LICENSE-CONTENT.md` for the full split.

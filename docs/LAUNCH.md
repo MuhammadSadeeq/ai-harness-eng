@@ -25,11 +25,11 @@ repository settings or publish anything.
 
 ## Your steps
 
-1. **Decide the repository's visibility.** GitHub Pages on a private
-   repository needs a paid plan (GitHub Pro, Team or Enterprise). To publish
-   from a free account the repository must be public, and then `source/`
-   (`source/wire-by-wire.html`, all rights reserved) must leave the
-   repository first, including its history (D-001).
+1. **Make the repository public** (Settings → General → Danger zone →
+   Change visibility), or keep it private on a paid plan (GitHub Pro, Team or
+   Enterprise), which Pages on a private repository needs. You chose to share
+   everything for learning (D-065), so `source/` may stay in a public
+   repository; it is still not deployed.
 2. **Decide whether the Rust capstone's reference ships** (D-046):
    `capstone/reference/` is a full solution. It is never deployed, but a
    public repository shows it; the default is to keep it out of a public one,
