@@ -9,7 +9,8 @@
 // 2 is Got it (a visible line says so).
 import { HxElement } from "./lib/hx-element.js";
 import { cardCredit } from "./lib/credit.js";
-import { getContent, getCourseCore, getOncall } from "./lib/data.js";
+import { getContent, getCourseCore, getFactsCore, getOncall } from "./lib/data.js";
+import { mountFacts } from "../core/shell/facts.js";
 import { boardFreshOrder } from "./lib/pool.js";
 import {
   localToday, addDays, grade as gradeCard, stored, sessionQueue, sessionSummary, cardProblem, SESSION_LIMIT,
@@ -79,6 +80,8 @@ export class HxCards extends HxElement {
       if (ids.has(card.id)) throw new Error(`hx-cards: duplicate card ${card.id}`);
       ids.add(card.id);
     }
+    // A card that names a fact (cards.yaml `fact:`) shows the fact's chip on its back; the registry is read only then.
+    this.facts = cards.some((card) => typeof card.fact === "string") ? await getFactsCore() : null;
     this.src = src;
     // The board draws its new cards from the learner's pool (D-062); a module's own cards need no pool.
     this.board = board ? { cards, course, incidentModules: (oncall.incidents ?? []).map((incident) => incident.module) } : null;
@@ -98,6 +101,16 @@ export class HxCards extends HxElement {
 
   disconnectedCallback() {
     document.removeEventListener("keydown", this.#onDocumentKey);
+  }
+
+  /** A card's back. A card that names a fact gets the fact's chip on it (AUTHORING §7), from the registry it was given. */
+  backNode(card, tabindex = null) {
+    const attrs = tabindex === null ? { class: "card-back" } : { class: "card-back", tabindex };
+    const node = typeof card.fact === "string"
+      ? el("p", attrs, el("span", { class: "fact", "data-fact": card.fact, text: card.back }))
+      : el("p", { ...attrs, text: card.back });
+    if (this.facts) mountFacts(this.facts, node);
+    return node;
   }
 
   /** A fresh session from the stored boxes and today's date. */
@@ -303,7 +316,7 @@ export class HxCards extends HxElement {
         primary.addEventListener("click", () => this.setState({ reveal: true, focusBack: true }));
         body.append(el("div", { class: "card-keys" }, primary));
       } else {
-        body.append(el("p", { class: "card-back", text: card.back, tabindex: "-1" }));
+        body.append(this.backNode(card, "-1"));
         const again = el("button", { class: "key", type: "button", "data-key": "again", text: "Again" });
         const got = el("button", { class: "key key-primary", type: "button", "data-key": "got", text: "Got it" });
         again.addEventListener("click", () => this.selfGrade(false));
@@ -322,7 +335,7 @@ export class HxCards extends HxElement {
           el("p", { class: `verdict${s.correct ? " is-pass" : " is-fail"}` },
             glyph(s.correct ? "check" : "cross"), s.correct ? RIGHT : NOT_QUITE),
           el("div", { class: "card-correct" }, el("span", { class: "card-label", text: "Right answer: " }), answer.right),
-          el("p", { class: "card-back", text: card.back }),
+          this.backNode(card),
         );
         const next = el("button", { class: "key key-primary", type: "button", "data-key": "next", text: "Next" });
         next.addEventListener("click", () => this.advance());

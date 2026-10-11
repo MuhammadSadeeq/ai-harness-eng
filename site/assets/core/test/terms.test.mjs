@@ -36,7 +36,29 @@ class FakeNode {
   }
 
   dispatch(type, event = {}) {
-    for (const fn of this.listeners.get(type) ?? []) fn({ preventDefault() {}, ...event });
+    const full = { preventDefault() {}, ...event };
+    for (const fn of this.listeners.get(type) ?? []) fn(full);
+    // A key bubbles from the element it was pressed on to its ancestors, as in the browser.
+    if (type === "keydown" && this.parent) this.parent.dispatch(type, event);
+  }
+
+  get ownerDocument() {
+    return this.doc;
+  }
+
+  // The part of querySelectorAll and querySelector that the fact chips (shell/facts.js) use.
+  querySelectorAll(selector) {
+    assert.equal(selector, "[data-fact]");
+    return this.descendants().filter((node) => node.attrs.has("data-fact"));
+  }
+
+  querySelector(selector) {
+    assert.equal(selector, ".fact-chip");
+    return this.descendants().find((node) => node.className === "fact-chip") ?? null;
+  }
+
+  descendants() {
+    return this.children.flatMap((child) => [child, ...child.descendants()]);
   }
 
   click() {
@@ -44,6 +66,7 @@ class FakeNode {
   }
 
   append(...nodes) {
+    for (const node of nodes) node.parent = this;
     this.children.push(...nodes);
   }
 
@@ -194,3 +217,62 @@ test("Enter and Space open a term, Escape closes it", async () => {
   a.dispatch("keydown", { key: " " });
   assert.ok(popover(doc), "Space opens it again");
 });
+
+test("Escape from the popover's own Close button closes it and returns focus to the term", async () => {
+  const doc = new FakeDocument();
+  const a = doc.addTerm("agent", "agent");
+  mountTerms(() => Promise.resolve(terms), doc);
+  a.dispatch("keydown", { key: "Enter" });
+  await flush();
+  const close = popover(doc).children[2];
+  assert.equal(doc.focused, close, "focus moves to Close on open");
+  close.dispatch("keydown", { key: "Tab" });
+  assert.ok(popover(doc), "a key other than Escape does not close it");
+  close.dispatch("keydown", { key: "Escape" });
+  assert.equal(popover(doc), null);
+  assert.equal(a.getAttribute("aria-expanded"), "false");
+  assert.equal(doc.focused, a);
+});
+
+const withFact = {
+  agent: { id: "agent", term: "agent", definition: "A model called in a loop with tools.", fact: "api.x" },
+};
+const registry = {
+  "api.x": { status: "verified", verified_on: "2026-10-10", source: "https://platform.claude.com/docs/en/x" },
+};
+
+test("definitionFor carries a term's fact id only when the term names one", () => {
+  assert.deepEqual(definitionFor(withFact, "agent"), {
+    term: "agent", body: "A model called in a loop with tools.", fact: "api.x",
+  });
+  assert.deepEqual(definitionFor(terms, "agent"), { term: "agent", body: "A model called in a loop with tools." });
+});
+
+test("a term that names a fact shows its definition with the fact's chip, from the registry", async () => {
+  const doc = new FakeDocument();
+  const a = doc.addTerm("agent", "agent");
+  mountTerms(() => Promise.resolve(withFact), doc, () => Promise.resolve(registry));
+  a.dispatch("keydown", { key: "Enter" });
+  await flush();
+  await flush();
+  const claim = popover(doc).children[1].children[0];
+  assert.equal(claim.dataset.fact, "api.x");
+  assert.equal(claim.textContent, "A model called in a loop with tools.");
+  const chip = claim.querySelector(".fact-chip");
+  assert.ok(chip, "the chip is in the claim");
+  assert.equal(chip.getAttribute("href"), "https://platform.claude.com/docs/en/x");
+});
+
+test("a term whose fact is not in the registry shows its definition, marked as an error, and no chip", async () => {
+  const doc = new FakeDocument();
+  const a = doc.addTerm("agent", "agent");
+  mountTerms(() => Promise.resolve(withFact), doc, () => Promise.resolve({}));
+  a.dispatch("keydown", { key: "Enter" });
+  await flush();
+  await flush();
+  const claim = popover(doc).children[1].children[0];
+  assert.equal(claim.textContent, "A model called in a loop with tools.");
+  assert.equal(claim.querySelector(".fact-chip"), null);
+  assert.equal(claim.getAttribute("data-hx-error"), "fact api.x is unknown or not verified");
+});
+

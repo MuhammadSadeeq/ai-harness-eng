@@ -27,6 +27,7 @@ import html
 import json
 import re
 import sys
+import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -50,6 +51,7 @@ class Context:
     modules: dict[str, Json]
     built: dict[str, bool]
     sprite: frozenset[str]
+    facts: dict[str, Json]
 
 
 def esc(text: str) -> str:
@@ -90,6 +92,8 @@ def load(root: Path) -> Context:
     for wire in wires.values():
         if str(wire["glyph"]) not in sprite:
             raise GenError(f"wire {wire['id']}: glyph {wire['glyph']!r} is not in glyphs.svg")
+    facts_path = site / "data" / "facts.json"
+    facts = read_json(facts_path) if facts_path.is_file() else {}
     terms: dict[str, Json] = {}
     for key, term in terms_raw.items():
         where = f"terms.json {key}"
@@ -102,8 +106,14 @@ def load(root: Path) -> Context:
             raise GenError(f"{where}: unknown module {term.get('module')!r}")
         if not isinstance(term.get("term"), str) or not isinstance(term.get("definition"), str):
             raise GenError(f"{where}: needs a term and a definition")
+        if "fact" in term:
+            # A fact the term names must be a verified entry (B10): its chip is written here.
+            entry = facts.get(term["fact"]) if isinstance(term["fact"], str) else None
+            if not isinstance(entry, dict) or entry.get("status") != "verified":
+                raise GenError(f"{where}: fact {term['fact']!r} is not verified in facts.json")
         terms[key] = term
-    return Context(terms=terms, wires=wires, modules=modules, built=built, sprite=sprite)
+    return Context(terms=terms, wires=wires, modules=modules, built=built, sprite=sprite,
+                   facts=facts)
 
 
 def letter_of(term: Json) -> str:
@@ -128,6 +138,31 @@ def wire_tag(term: Json, ctx: Context) -> str:
     )
 
 
+MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def fact_claim(term: Json, ctx: Context) -> str:
+    """The definition in the fact's span, with its chip: the markup shell/facts.js writes, so the
+    page works without a script and the script adds no second chip. The chip opens the source."""
+    fact_id = str(term["fact"])
+    entry = ctx.facts[fact_id]
+    verified = str(entry["verified_on"])
+    year, month, _ = verified.split("-")
+    label = f"verified {MONTHS[int(month) - 1]} {year}"
+    source = str(entry.get("source", ""))
+    host = urllib.parse.urlsplit(source).netloc
+    hint = (f'<span class="sr-only"> (source: {esc(host)}, opens in a new tab)</span>'
+            if host else "")
+    title = f' title="Source: {esc(host)}"' if host else ""
+    if source:
+        chip = (f'<a class="fact-chip" href="{esc(source)}" target="_blank" '
+                f'rel="noopener noreferrer"{title}>{esc(label)}{hint}</a>')
+    else:
+        chip = f'<span class="fact-chip">{esc(label)}</span>'
+    return (f'<span class="fact" data-fact="{esc(fact_id)}" data-verified="{esc(verified)}">'
+            f"{esc(str(term['definition']))}{chip}</span>")
+
+
 def entry_lines(term: Json, ctx: Context) -> list[str]:
     wire_id = "" if term.get("wire") is None else str(term["wire"])
     wire_name = "" if not wire_id else str(ctx.wires[wire_id]["short"])
@@ -140,11 +175,12 @@ def entry_lines(term: Json, ctx: Context) -> list[str]:
         taught = f"{esc(label)} · coming"
     name = str(term["term"])
     aliases = [str(a) for a in term.get("aliases", []) if str(a) != name]
+    definition = fact_claim(term, ctx) if "fact" in term else esc(str(term["definition"]))
     lines = [
         f'<div class="term-entry" data-filter-item data-wire="{esc(wire_id)}" '
         f'data-wire-name="{esc(wire_name)}" id="entry-{esc(str(term["id"]))}">',
         f'  <h3 class="term-name"><dfn id="term-{esc(str(term["id"]))}">{esc(name)}</dfn></h3>',
-        f'  <p class="term-def">{esc(str(term["definition"]))}</p>',
+        f'  <p class="term-def">{definition}</p>',
         '  <p class="term-meta">',
         f"    {wire_tag(term, ctx)}",
         f'    <span class="taught">Taught in {taught}</span>',

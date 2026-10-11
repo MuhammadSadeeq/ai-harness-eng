@@ -458,3 +458,50 @@ def test_a_strict_term_in_component_text_is_checked_but_not_inside_code(tmp_path
     page = _edit_page(root, "python-dataclasses.html", T1_PROSE, coded)
     report, _ = run_on(root, [page])
     assert not any("[B7] term 'stop_reason'" in p.message for p in report.problems)
+
+
+FACT_CARD = (
+    "\n- id: fx-fact\n  type: term\n  front: What is a stop reason?\n"
+    "  back: Why the model stopped.\n  fact: {fact}\n"
+)
+VERIFIED_FACT = {
+    "claim": "A test claim.",
+    "source": "https://platform.claude.com/docs/en/x",
+    "status": "verified",
+    "verified_on": "2026-10-10",
+    "volatility": "volatile",
+}
+
+
+def _with_card_fact(root: Path, fact: str, registry: dict[str, Any] | None) -> Report:
+    cards = root / "content" / "A1" / "cards.yaml"
+    text = cards.read_text(encoding="utf-8") + FACT_CARD.format(fact=fact)
+    cards.write_text(text, encoding="utf-8")
+    if registry is not None:
+        (root / "site" / "data").mkdir(parents=True, exist_ok=True)
+        (root / "site" / "data" / "facts.json").write_text(json.dumps(registry), encoding="utf-8")
+    report, _ = run_on(root)
+    return report
+
+
+def test_a_card_fact_that_is_verified_is_clean(tmp_path: Path) -> None:
+    report = _with_card_fact(copy_fixture(tmp_path), "api.x", {"api.x": VERIFIED_FACT})
+    assert not [p for p in report.problems if "[B10]" in p.message]
+
+
+@pytest.mark.parametrize(
+    ("fact", "registry", "expected"),
+    [
+        ("api.missing", {"api.x": VERIFIED_FACT},
+         "[B10] fact 'api.missing' is not in site/data/facts.json"),
+        ("api.x", {"api.x": {**VERIFIED_FACT, "status": "contradicted"}},
+         "[B10] fact 'api.x' is contradicted, not verified"),
+        ("api.x", None, "[B10] site/data/facts.json is missing (run tools/gen_data.py)"),
+    ],
+)
+def test_a_card_fact_must_be_a_verified_registry_entry(
+    tmp_path: Path, fact: str, registry: dict[str, Any] | None, expected: str
+) -> None:
+    report = _with_card_fact(copy_fixture(tmp_path), fact, registry)
+    assert [p.message for p in report.problems if "[B10]" in p.message] == [expected]
+

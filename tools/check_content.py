@@ -1040,6 +1040,45 @@ def page_paths(args: Sequence[str], site: Path) -> list[Path]:
     return found
 
 
+FACT_FILES = ("terms.yaml", "cards.yaml")
+
+
+def _check_fact_refs(content: Path, facts_path: Path, report: Report) -> None:
+    """[B10] A term or card that names a fact (`fact:`) names a verified entry of facts.json.
+
+    The chip it shows comes from that entry (FACTS §4), so an unknown or unverified id is a
+    problem here. Syntax problems are reported by build_context, not here.
+    """
+    refs: list[tuple[str, int, Any]] = []
+    for path in sorted(content.glob("*/*.yaml")):
+        if path.name not in FACT_FILES:
+            continue
+        shown = display_path(path)
+        data, _ = load_yaml_file(path, shown)
+        if not isinstance(data, list):
+            continue
+        lines = yaml_item_lines(path)
+        for index, item in enumerate(data):
+            if isinstance(item, dict) and "fact" in item:
+                line = lines[index] if index < len(lines) else 0
+                refs.append((shown, line, item["fact"]))
+    if not refs:
+        return
+    if not facts_path.is_file():
+        for shown, line, _ in refs:
+            report.problem(shown, line,
+                           "[B10] site/data/facts.json is missing (run tools/gen_data.py)")
+        return
+    facts = json.loads(facts_path.read_text(encoding="utf-8"))
+    for shown, line, fact_id in refs:
+        entry = facts.get(fact_id) if isinstance(fact_id, str) else None
+        if not isinstance(entry, dict):
+            report.problem(shown, line, f"[B10] fact '{fact_id}' is not in site/data/facts.json")
+        elif entry.get("status") != "verified":
+            report.problem(shown, line,
+                           f"[B10] fact '{fact_id}' is {entry.get('status')}, not verified")
+
+
 def run_checks(
     *,
     course_path: Path,
@@ -1064,6 +1103,7 @@ def run_checks(
     if course is None:
         return RunResult(course_checked=False, pages_checked=0, modules=0)
     ctx = build_context(course, content, content.parent / "katas", report)
+    _check_fact_refs(content, site / "data" / "facts.json", report)
     checked = 0
     for path in page_paths(pages, site):
         check_page(path, ctx, report)

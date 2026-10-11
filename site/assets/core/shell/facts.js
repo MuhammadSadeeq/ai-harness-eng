@@ -3,8 +3,10 @@
 // checker fails the page too). Without the registry (the design page), a page's own data-verified dates the chip.
 import { factChipLabel } from "./pure.js";
 
-export function mountFacts(facts = null, doc = document) {
-  for (const el of doc.querySelectorAll("[data-fact]")) {
+/** Marks the data-fact claims under `root` (the document by default): a chip for each, or an error mark (round 3, D-063). */
+export function mountFacts(facts = null, root = document) {
+  const doc = root.ownerDocument ?? root;
+  for (const el of root.querySelectorAll("[data-fact]")) {
     if (el.querySelector(".fact-chip")) continue;
     const id = el.dataset.fact;
     if (facts) {

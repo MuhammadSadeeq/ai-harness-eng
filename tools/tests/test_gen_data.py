@@ -349,3 +349,21 @@ def test_engine_tapes_and_their_boards_are_not_copied_to_the_site(tmp_path: Path
     assert (root / "site" / "data" / "scenarios" / "b2-spiral.json").is_file()
     copied = [path for path in (root / "site" / "data").rglob("*") if path.name.startswith("eng-")]
     assert copied == []
+
+
+def test_a_term_and_a_card_keep_their_fact_id_in_the_generated_json(tmp_path: Path) -> None:
+    root = copy_root(tmp_path)
+    (root / "content" / "A1" / "terms.yaml").write_text(
+        "- id: fact-term\n  term: fact term\n  aliases: [fact term]\n  strict: true\n  wire: loop\n"
+        "  definition: x\n  fact: api.x\n",
+        encoding="utf-8",
+    )
+    (root / "content" / "A1" / "cards.yaml").write_text(
+        "- id: A1-fact\n  type: term\n  front: f\n  back: b\n  fact: api.x\n", encoding="utf-8"
+    )
+    assert run(root) == 0
+    terms = json.loads((root / "site" / "data" / "terms.json").read_text(encoding="utf-8"))
+    assert terms["fact-term"]["fact"] == "api.x"
+    cards = json.loads((root / "site" / "data" / "cards" / "A1.json").read_text(encoding="utf-8"))
+    assert [c["fact"] for c in cards if c["id"] == "A1-fact"] == ["api.x"]
+

@@ -224,3 +224,42 @@ def test_write_then_check_is_clean_and_a_changed_term_is_stale(
 
 def test_the_real_terms_and_course_generate_a_page_that_checks_clean() -> None:
     assert gen.main(["--check"]) == 0
+
+
+FACT = {
+    "claim": "A test claim.",
+    "source": "https://platform.claude.com/docs/en/x",
+    "status": "verified",
+    "verified_on": "2026-10-10",
+    "volatility": "volatile",
+}
+
+
+def test_a_term_with_a_verified_fact_carries_its_chip_in_the_page(tmp_path: Path) -> None:
+    root = make_root(tmp_path, {"alpha": {**term("alpha", "alpha"), "fact": "api.x"}})
+    write_json(root / "site" / "data" / "facts.json", {"api.x": FACT})
+    assert gen.main(["--root", str(root)]) == 0
+    text = (root / "site" / "glossary.html").read_text(encoding="utf-8")
+    assert (
+        '<p class="term-def"><span class="fact" data-fact="api.x" data-verified="2026-10-10">'
+        "A plain definition.<a class=\"fact-chip\" href=\"https://platform.claude.com/docs/en/x\" "
+        'target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">'
+        'verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)'
+        "</span></a></span></p>"
+    ) in text
+
+
+@pytest.mark.parametrize(
+    ("fact", "status"),
+    [("api.missing", "verified"), ("api.x", "unverifiable")],
+)
+def test_a_fact_that_is_unknown_or_not_verified_stops_the_generator(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], fact: str, status: str
+) -> None:
+    root = make_root(tmp_path, {"alpha": {**term("alpha", "alpha"), "fact": fact}})
+    write_json(root / "site" / "data" / "facts.json", {"api.x": {**FACT, "status": status}})
+    before = (root / "site" / "glossary.html").read_text(encoding="utf-8")
+    assert gen.main(["--root", str(root)]) == 2
+    assert "not verified" in capsys.readouterr().err
+    assert (root / "site" / "glossary.html").read_text(encoding="utf-8") == before
+
