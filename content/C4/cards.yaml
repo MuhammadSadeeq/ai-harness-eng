@@ -2,7 +2,8 @@
   type: term
   objective: C4.o1
   front: What is a cache prefix?
-  back: The part of a request before a point. The cache matches a whole prefix or none of it.
+  back: "The part of a request up to and including the block marked for caching. A cache hit needs all of that part to be identical."
+  fact: api.cache-prefix-whole-match
 - id: C4-k2
   type: order-turn
   objective: C4.o2
@@ -17,17 +18,20 @@
   type: term
   objective: C4.o3
   front: What is cache invalidation?
-  back: A change that makes earlier cache entries stop matching. The next call writes the request again.
+  back: "A change at one level invalidates that level and every level after it: tools, then system, then messages."
+  fact: api.cache-invalidation-hierarchy
 - id: C4-k4
   type: term
   objective: C4.o4
-  front: What is a cache read, compared with a cache write?
-  back: A read takes input from the cache at a low price. A write stores input in the cache at a higher price, once.
+  front: "What does a cache hit cost, against base input, on Sonnet 5.5?"
+  back: "On Sonnet 5.5, a cache hit costs $0.10 per million tokens. Base input costs $2 per million tokens."
+  fact: models.sonnet-5-5-price
 - id: C4-k5
   type: term
   objective: C4.o4
   front: What is a cache hit rate?
-  back: The share of the input that was read from the cache. Compute it from the read tokens over all the input tokens.
+  back: "Cache read tokens divided by all input tokens. The usage reports cache reads, cache writes and the uncached input as separate counts."
+  fact: api.cache-usage-fields
 - id: C4-k6
   type: term
   objective: C4.o1
@@ -37,9 +41,11 @@
   type: term
   objective: C4.o3
   front: Which block breaks a cache when it changes on every call?
-  back: A block that changes on every call, such as a clock line. Wherever it sits, the blocks after it miss.
+  back: "A change at one level invalidates that level and every level after it, so a block that changes on every call misses from its own level on."
+  fact: api.cache-invalidation-hierarchy
 - id: C4-k8
   type: term
   objective: C4.o1
   front: What is a cache TTL?
-  back: How long a cache entry lasts after it was last written or read. The default is five minutes.
+  back: "The default cache TTL is five minutes."
+  fact: api.cache-ttl-default-5m-and-1h

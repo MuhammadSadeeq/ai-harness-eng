@@ -113,7 +113,7 @@
   <section class="beat" data-beat="see" id="see">
     <h2>The model asks, the harness acts</h2>
     <p>A reply from the model is a list of blocks. A block that asks for a tool is a <dfn data-term="tool-use">tool_use</dfn> block: it has an id, a name and an input. <span class="fact" data-fact="api.stop-reason-tool-use">The stop reason tool_use means the model is calling a tool and expects the application to run it.</span> The model only writes the request. Some docs call this <dfn data-term="function-calling">function calling</dfn>.</p>
-    <p>The harness reads each block by its type, runs the named tool with its input, and records the output. <dfn data-term="parallel-tool-calls">Parallel tool calls</dfn> are several tool_use blocks in one reply.</p>
+    <p>The harness reads each block by its type, runs the named tool with its input, and records the output. <dfn data-term="parallel-tool-calls">Parallel tool calls</dfn> are several requests for tools in one reply, and <span class="fact" data-fact="api.parallel-results-one-message">their results go back together in one user message.</span></p>
 
     <pre data-run tabindex="0" role="region" aria-label="Python code"><code class="language-python">def read_file(path):
     return {"a.txt": "Buy milk."}.get(path, "missing")
@@ -128,7 +128,7 @@ for block in reply["content"]:
         print(block["id"], read_file(**block["input"]))</code></pre>
     <pre data-output tabindex="0" role="region" aria-label="Expected output">t1 Buy milk.
 t2 missing</pre>
-    <p>Run the code with the Run key. Each call keeps the id of its tool_use, so the output can be matched back to the call that asked for it.</p>
+    <p>Run the code with the Run key. <span class="fact" data-fact="api.tool-result-ids-must-match">Each call keeps the id of its tool use request, so the output can be matched back to the call that asked for it.</span></p>
 
     <hx-check mode="check" src="B1" item="B1-c1" data-objective="B1.o1">
       <p>Without JavaScript, the question is: the model wants a file read. Who runs the read?</p>
@@ -224,12 +224,12 @@ t2 missing</pre>
     <p class="law">The model asks; the harness acts.</p>
     <hx-cards src="B1">
       <dl>
-        <dt>What does the model do when it wants a tool run?</dt><dd>It writes a tool_use block that names the tool and its input. It does not run the tool. The harness does.</dd>
+        <dt>What does the model do when it wants a tool run?</dt><dd><span class="fact" data-fact="api.stop-reason-tool-use">It writes a tool request and expects the application to run it.</span> It does not run the tool. The harness does.</dd>
         <dt>What stop reason tells the harness that a tool run is needed?</dt><dd>tool_use. The harness runs the tools, then calls the model again with the results.</dd>
         <dt>What three parts make a tool definition?</dt><dd>A name, a description and an input schema.</dd>
         <dt>What does input_schema say?</dt><dd>The fields the tool takes, their types, and which of them are required.</dd>
-        <dt>What must each tool_result carry?</dt><dd>The tool_use_id of the call it answers.</dd>
-        <dt>How do you mark a failed call?</dt><dd>Set is_error to true and say why in the content.</dd>
+        <dt>What must each tool_result carry?</dt><dd><span class="fact" data-fact="api.tool-result-ids-must-match">The tool_use_id of the call it answers.</span></dd>
+        <dt>How do you mark a failed call?</dt><dd><span class="fact" data-fact="api.tool-result-is-error">Set is_error to true, an optional tool_result field, when the tool execution resulted in an error.</span></dd>
         <dt>Where do the results of one reply go?</dt><dd>All together in one user message, sent after the reply.</dd>
         <dt>Why is a tool a user interface for a model?</dt><dd>The model sees only the definition. The name, the description and the schema are its whole picture of the tool, so a poor definition leads to misuse.</dd>
       </dl>

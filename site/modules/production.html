@@ -115,7 +115,7 @@
       <p>Without JavaScript, the question is: a 429 response carries a retry-after value. What should the client do?</p>
       <ol>
         <li>Retry at once, since the limit may have cleared.</li>
-        <li>Wait the number of seconds retry-after gives, then retry.</li>
+        <li><span class="fact" data-fact="api.error-429-retry-after">Wait the number of seconds retry-after gives, then retry.</span></li>
         <li>Send the request to a bigger model.</li>
       </ol>
     </hx-check>

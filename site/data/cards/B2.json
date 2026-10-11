@@ -21,7 +21,8 @@
   "type": "term"
  },
  {
-  "back": "The model's own statement that it finished, carried by end_turn. The loop checks it. It is not proof.",
+  "back": "The model's own statement that it finished, carried by end_turn.",
+  "fact": "api.stop-reason-end-turn",
   "front": "What is a done claim?",
   "id": "B2-k4",
   "objective": "B2.o2",

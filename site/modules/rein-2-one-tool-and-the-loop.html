@@ -154,7 +154,7 @@
       <p>Without JavaScript, the question is: Which id does a tool_result carry?</p>
       <ol>
         <li>A new id that the loop makes up.</li>
-        <li>The tool_use_id of the request it answers.</li>
+        <li><span class="fact" data-fact="api.tool-result-ids-must-match">The tool_use_id of the request it answers.</span></li>
         <li>The name of the tool.</li>
       </ol>
     </hx-check>
@@ -170,7 +170,7 @@
       <p>Without JavaScript, the question is: the model asks for two tools in one reply. How many results go back, and where?</p>
       <ol>
         <li>One result per request, each in its own user message.</li>
-        <li>One result for each tool_use, all together in the next user message.</li>
+        <li><span class="fact" data-fact="api.tool-results-single-user-message">One result for each tool_use, all together in the next user message.</span></li>
         <li>Only the first result, because one tool runs at a time.</li>
         <li>None. The model reads the tool output itself.</li>
       </ol>
@@ -183,7 +183,7 @@
       <p>Without JavaScript, the question is: the model asks for a tool name that is not in the registry. What should the loop send back?</p>
       <ol>
         <li>An exception that stops the run.</li>
-        <li>A tool_result with is_error set to true, and a short reason.</li>
+        <li><span class="fact" data-fact="api.tool-result-unrun-call">A tool_result with is_error set to true, and a short reason.</span></li>
         <li>Nothing. Skip the call and go on.</li>
         <li>The same name again, in a new request.</li>
       </ol>
@@ -220,11 +220,11 @@
       <dl>
         <dt>What is a tool registry?</dt><dd>A table from each tool name to the Python function that runs it.</dd>
         <dt>What does a tool's spec tell the model, and what does its function do?</dt><dd>The spec describes the tool to the model. The function is the code the harness runs when the model asks for it.</dd>
-        <dt>Where do tool results go?</dt><dd>All in one user message, one per tool_use, each with the tool_use_id of its request.</dd>
+        <dt>Where do tool results go?</dt><dd><span class="fact" data-fact="api.tool-results-single-user-message">All in one user message, one for each tool_use.</span></dd>
         <dt>What is a turn limit?</dt><dd>A cap on the model calls in one run. The loop stops when the count reaches it.</dd>
         <dt>Why is one exit not enough?</dt><dd>A loop with one exit stops only when that exit is taken. A model that never takes it runs forever.</dd>
-        <dt>What does an unknown tool name get back?</dt><dd>A tool_result with is_error set to true and a short reason. The run carries on.</dd>
-        <dt>What does is_error tell the model?</dt><dd>That the result is a failure, so the model can try again or change its plan.</dd>
+        <dt>What does an unknown tool name get back?</dt><dd><span class="fact" data-fact="api.tool-result-unrun-call">A tool_result with is_error set to true and a brief explanation.</span></dd>
+        <dt>What does is_error tell the model?</dt><dd><span class="fact" data-fact="api.tool-result-is-error">An optional tool_result field, set to true when the tool execution resulted in an error.</span></dd>
       </dl>
     </hx-cards>
     <h3>Say it out loud</h3>

@@ -5,7 +5,7 @@
   - prompt cache
   strict: true
   wire: context
-  definition: Keeping the start of a request, so that a later call with the same start can read it back instead of processing it again.
+  definition: "Reusing the work done on the start of a request when a later call starts the same way, so that start costs less."
 - id: cache-prefix
   term: cache prefix
   aliases:
@@ -13,7 +13,8 @@
   - cache prefixes
   strict: true
   wire: context
-  definition: The part of a request that comes before a point. A cache matches a prefix whole, or not at all.
+  definition: "The part of a request up to and including the block marked for caching. A cache hit needs all of that part to be identical."
+  fact: api.cache-prefix-whole-match
 - id: cache-hit
   term: cache hit
   aliases:
@@ -21,7 +22,8 @@
   - cache hits
   strict: true
   wire: context
-  definition: A call that reads some of its input from the cache. The hit rate is the share of the input that was read.
+  definition: "A call that reads some of its input from the cache."
+  fact: api.cache-usage-fields
 - id: cache-write
   term: cache write
   aliases:
@@ -29,7 +31,8 @@
   - cache writes
   strict: true
   wire: context
-  definition: Input that a call stores in the cache, so that a later call can read it.
+  definition: "Input that a call writes to the cache. The usage reports it as cache_creation_input_tokens."
+  fact: api.cache-usage-fields
 - id: cache-read
   term: cache read
   aliases:
@@ -37,7 +40,8 @@
   - cache reads
   strict: true
   wire: context
-  definition: Input that a call takes from the cache instead of processing it again.
+  definition: "Input that a call takes from the cache. The usage reports it as cache_read_input_tokens."
+  fact: api.cache-usage-fields
 - id: cache-breakpoint
   term: cache breakpoint
   aliases:
@@ -53,7 +57,8 @@
   - cache lifetime
   strict: true
   wire: context
-  definition: How long a cache entry lasts after it was last written or read.
+  definition: "How long a cache entry lasts: by default five minutes, and each use of the cached content refreshes it at no extra cost."
+  fact: api.cache-read-refreshes-ttl
 - id: cache-invalidation
   term: cache invalidation
   aliases:
@@ -62,4 +67,5 @@
   - invalidates
   strict: true
   wire: context
-  definition: A change that makes earlier cache entries stop matching, so the next call writes the request again.
+  definition: "Cache order is tools, then system, then messages. A change at one level invalidates that level and every level after it."
+  fact: api.cache-invalidation-hierarchy

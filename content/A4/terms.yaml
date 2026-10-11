@@ -51,16 +51,16 @@
   aliases: [stop_reason, stop reason, stop reasons]
   strict: true
   wire: loop
-  definition: >-
-    The field in every response that says why the model stopped: end_turn, tool_use, max_tokens and a few others.
+  definition: "The field in every response that tells why the model stopped."
+  fact: api.stop-reason-field
 
 - id: end-turn
   term: end_turn
   aliases: [end_turn]
   strict: true
   wire: loop
-  definition: >-
-    The stop reason for a response that finished on its own. It is a done claim, not proof.
+  definition: "The stop reason when the model finished its response on its own."
+  fact: api.stop-reason-end-turn
 
 - id: max-tokens
   term: max_tokens
@@ -75,16 +75,16 @@
   aliases: [refusal, refusals]
   strict: true
   wire: loop
-  definition: >-
-    The stop reason for a response where the model declined to answer. It arrives as a normal reply, not an error.
+  definition: "The stop reason when the model declined to generate a response. It is returned as a normal HTTP 200 response, not as an error."
+  fact: api.stop-reason-refusal
 
 - id: pause-turn
   term: pause_turn
   aliases: [pause_turn]
   strict: true
   wire: loop
-  definition: >-
-    The stop reason for a server-side loop that reached its iteration limit. The harness decides whether to continue.
+  definition: "The stop reason when a server-tool loop reached its iteration limit."
+  fact: api.stop-reason-pause-turn
 
 - id: usage
   term: usage

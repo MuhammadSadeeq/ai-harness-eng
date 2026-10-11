@@ -269,7 +269,8 @@
   "type": "term"
  },
  {
-  "back": "Why the model stopped: end_turn, tool_use, max_tokens and a few others. The harness acts on each one.",
+  "back": "The field in every response that tells why the model stopped.",
+  "fact": "api.stop-reason-field",
   "front": "What does stop_reason tell the harness?",
   "id": "A4-c3",
   "module": "A4",
@@ -277,7 +278,8 @@
   "type": "term"
  },
  {
-  "back": "The response hit the request's length limit, so it may be cut off. Do not run a half-written tool request.",
+  "back": "The reply reached the request's max_tokens limit.",
+  "fact": "api.stop-reason-max-tokens",
   "front": "What is max_tokens as a stop reason?",
   "id": "A4-c4",
   "module": "A4",
@@ -367,7 +369,8 @@
   "type": "term"
  },
  {
-  "back": "Extra tokens the model writes before it answers, to work a problem out. They are billed as output.",
+  "back": "The tokens the model uses while it thinks before it answers. They are billed as output tokens.",
+  "fact": "api.thinking-billed-as-output",
   "front": "What is extended thinking?",
   "id": "A6-k1",
   "module": "A6",
@@ -375,7 +378,8 @@
   "type": "term"
  },
  {
-  "back": "It goes back to the model complete and unmodified, with the tool call that it belongs to.",
+  "back": "During tool use it must go back complete and unmodified, alongside the tool call.",
+  "fact": "api.thinking-blocks-pass-back-tool-use",
   "front": "What must happen to a thinking block during a tool loop?",
   "id": "A6-k2",
   "module": "A6",
@@ -506,6 +510,7 @@
  },
  {
   "back": "The tool_use_id of the call it answers.",
+  "fact": "api.tool-result-ids-must-match",
   "front": "What must each tool_result carry?",
   "id": "B1-k5",
   "module": "B1",
@@ -513,7 +518,8 @@
   "type": "term"
  },
  {
-  "back": "Set is_error to true and say why in the content.",
+  "back": "Set is_error to true, an optional tool_result field, when the tool execution resulted in an error.",
+  "fact": "api.tool-result-is-error",
   "front": "How do you mark a failed call?",
   "id": "B1-k6",
   "module": "B1",
@@ -561,7 +567,8 @@
   "type": "term"
  },
  {
-  "back": "The model's own statement that it finished, carried by end_turn. The loop checks it. It is not proof.",
+  "back": "The model's own statement that it finished, carried by end_turn.",
+  "fact": "api.stop-reason-end-turn",
   "front": "What is a done claim?",
   "id": "B2-k4",
   "module": "B2",
@@ -957,7 +964,8 @@
   "wire": "context"
  },
  {
-  "back": "The part of a request before a point. The cache matches a whole prefix or none of it.",
+  "back": "The part of a request up to and including the block marked for caching. A cache hit needs all of that part to be identical.",
+  "fact": "api.cache-prefix-whole-match",
   "front": "What is a cache prefix?",
   "id": "C4-k1",
   "module": "C4",
@@ -979,7 +987,8 @@
   "type": "order-turn"
  },
  {
-  "back": "A change that makes earlier cache entries stop matching. The next call writes the request again.",
+  "back": "A change at one level invalidates that level and every level after it: tools, then system, then messages.",
+  "fact": "api.cache-invalidation-hierarchy",
   "front": "What is cache invalidation?",
   "id": "C4-k3",
   "module": "C4",
@@ -987,15 +996,17 @@
   "type": "term"
  },
  {
-  "back": "A read takes input from the cache at a low price. A write stores input in the cache at a higher price, once.",
-  "front": "What is a cache read, compared with a cache write?",
+  "back": "On Sonnet 5.5, a cache hit costs $0.10 per million tokens. Base input costs $2 per million tokens.",
+  "fact": "models.sonnet-5-5-price",
+  "front": "What does a cache hit cost, against base input, on Sonnet 5.5?",
   "id": "C4-k4",
   "module": "C4",
   "objective": "C4.o4",
   "type": "term"
  },
  {
-  "back": "The share of the input that was read from the cache. Compute it from the read tokens over all the input tokens.",
+  "back": "Cache read tokens divided by all input tokens. The usage reports cache reads, cache writes and the uncached input as separate counts.",
+  "fact": "api.cache-usage-fields",
   "front": "What is a cache hit rate?",
   "id": "C4-k5",
   "module": "C4",
@@ -1011,7 +1022,8 @@
   "type": "term"
  },
  {
-  "back": "A block that changes on every call, such as a clock line. Wherever it sits, the blocks after it miss.",
+  "back": "A change at one level invalidates that level and every level after it, so a block that changes on every call misses from its own level on.",
+  "fact": "api.cache-invalidation-hierarchy",
   "front": "Which block breaks a cache when it changes on every call?",
   "id": "C4-k7",
   "module": "C4",
@@ -1019,7 +1031,8 @@
   "type": "term"
  },
  {
-  "back": "How long a cache entry lasts after it was last written or read. The default is five minutes.",
+  "back": "The default cache TTL is five minutes.",
+  "fact": "api.cache-ttl-default-5m-and-1h",
   "front": "What is a cache TTL?",
   "id": "C4-k8",
   "module": "C4",
@@ -2390,7 +2403,8 @@
   "type": "term"
  },
  {
-  "back": "Why the model stopped, such as tool_use or end_turn. The harness decides its next step from it.",
+  "back": "The field in every response that tells why the model stopped.",
+  "fact": "api.stop-reason-field",
   "front": "What does stop_reason tell the harness?",
   "id": "H1-k3",
   "module": "H1",
@@ -2446,7 +2460,8 @@
   "type": "term"
  },
  {
-  "back": "All in one user message, one per tool_use, each with the tool_use_id of its request.",
+  "back": "All in one user message, one for each tool_use.",
+  "fact": "api.tool-results-single-user-message",
   "front": "Where do tool results go?",
   "id": "H2-k3",
   "module": "H2",
@@ -2470,7 +2485,8 @@
   "type": "term"
  },
  {
-  "back": "A tool_result with is_error set to true and a short reason. The run carries on.",
+  "back": "A tool_result with is_error set to true and a brief explanation.",
+  "fact": "api.tool-result-unrun-call",
   "front": "What does an unknown tool name get back?",
   "id": "H2-k6",
   "module": "H2",
@@ -2478,7 +2494,8 @@
   "type": "term"
  },
  {
-  "back": "That the result is a failure, so the model can try again or change its plan.",
+  "back": "An optional tool_result field, set to true when the tool execution resulted in an error.",
+  "fact": "api.tool-result-is-error",
   "front": "What does is_error tell the model?",
   "id": "H2-k7",
   "module": "H2",
@@ -3504,6 +3521,7 @@
  },
  {
   "back": "529, with the error type overloaded_error.",
+  "fact": "api.error-529-overloaded",
   "front": "Which status code says the API is temporarily overloaded?",
   "id": "T5-k2",
   "module": "T5",
@@ -3512,6 +3530,7 @@
  },
  {
   "back": "429.",
+  "fact": "api.error-429-rate-limit",
   "front": "Which status code carries the error type rate_limit_error?",
   "id": "T5-k3",
   "module": "T5",
@@ -3519,7 +3538,8 @@
   "type": "term"
  },
  {
-  "back": "The request has a format or content problem. Fix the request; a retry without a change fails again.",
+  "back": "The request has a format or content problem.",
+  "fact": "api.error-400-invalid-request",
   "front": "What does a 400 mean?",
   "id": "T5-k4",
   "module": "T5",

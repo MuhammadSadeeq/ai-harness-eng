@@ -13,7 +13,8 @@
   type: term
   objective: H2.o1
   front: Where do tool results go?
-  back: All in one user message, one per tool_use, each with the tool_use_id of its request.
+  back: "All in one user message, one for each tool_use."
+  fact: api.tool-results-single-user-message
 - id: H2-k4
   type: term
   objective: H2.o2
@@ -28,9 +29,11 @@
   type: term
   objective: H2.o3
   front: What does an unknown tool name get back?
-  back: A tool_result with is_error set to true and a short reason. The run carries on.
+  back: "A tool_result with is_error set to true and a brief explanation."
+  fact: api.tool-result-unrun-call
 - id: H2-k7
   type: term
   objective: H2.o3
   front: What does is_error tell the model?
-  back: That the result is a failure, so the model can try again or change its plan.
+  back: "An optional tool_result field, set to true when the tool execution resulted in an error."
+  fact: api.tool-result-is-error

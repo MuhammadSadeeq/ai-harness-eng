@@ -179,7 +179,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
       <p>Without JavaScript, the question is: a reply comes back with stop_reason max_tokens, halfway through a tool call. What should the loop do?</p>
       <ol>
         <li>Run the half of the tool call it has, because most of it is there.</li>
-        <li>Retry with a higher max_tokens, so the whole tool call comes back. Never run the half-written call.</li>
+        <li><span class="fact" data-fact="api.max-tokens-incomplete-tool-use">Retry with a higher max_tokens, so the whole tool call comes back.</span> Never run the half-written call.</li>
         <li>Return the partial text as the final answer.</li>
         <li>Treat it as end_turn and check the work.</li>
       </ol>
@@ -253,7 +253,7 @@ print(run_loop(fake_model, {"add": lambda xs: str(sum(xs))}, "What is 2 + 3?", m
         <dt>What is a turn in the agent loop?</dt><dd>One call to the model, plus the tool results that follow it.</dd>
         <dt>What is a turn limit?</dt><dd>A cap on the number of model calls in one run. The loop stops when the cap is reached.</dd>
         <dt>What is a token budget?</dt><dd>A cap on the total tokens a run may use, input and output together. The loop checks it before each call.</dd>
-        <dt>What is a done claim?</dt><dd>The model's own statement that it finished, carried by end_turn. The loop checks it. It is not proof.</dd>
+        <dt>What is a done claim?</dt><dd><span class="fact" data-fact="api.stop-reason-end-turn">The model's own statement that it finished, carried by end_turn.</span> The loop checks it. It is not proof.</dd>
       </dl>
     </hx-cards>
     <h3>Say it out loud</h3>

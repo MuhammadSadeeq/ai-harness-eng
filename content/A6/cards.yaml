@@ -2,13 +2,15 @@
   type: term
   objective: A6.o1
   front: "What is extended thinking?"
-  back: "Extra tokens the model writes before it answers, to work a problem out. They are billed as output."
+  back: "The tokens the model uses while it thinks before it answers. They are billed as output tokens."
+  fact: api.thinking-billed-as-output
 
 - id: A6-k2
   type: term
   objective: A6.o3
   front: "What must happen to a thinking block during a tool loop?"
-  back: "It goes back to the model complete and unmodified, with the tool call that it belongs to."
+  back: "During tool use it must go back complete and unmodified, alongside the tool call."
+  fact: api.thinking-blocks-pass-back-tool-use
 
 - id: A6-k3
   type: term

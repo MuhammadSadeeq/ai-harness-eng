@@ -8,6 +8,7 @@
  },
  {
   "back": "529, with the error type overloaded_error.",
+  "fact": "api.error-529-overloaded",
   "front": "Which status code says the API is temporarily overloaded?",
   "id": "T5-k2",
   "objective": "T5.o2",
@@ -15,13 +16,15 @@
  },
  {
   "back": "429.",
+  "fact": "api.error-429-rate-limit",
   "front": "Which status code carries the error type rate_limit_error?",
   "id": "T5-k3",
   "objective": "T5.o2",
   "type": "term"
  },
  {
-  "back": "The request has a format or content problem. Fix the request; a retry without a change fails again.",
+  "back": "The request has a format or content problem.",
+  "fact": "api.error-400-invalid-request",
   "front": "What does a 400 mean?",
   "id": "T5-k4",
   "objective": "T5.o2",

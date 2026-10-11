@@ -32,8 +32,8 @@
   - tool_results
   strict: true
   wire: tools
-  definition: The block that answers one tool_use. It carries the tool_use_id of the call and the output the harness
-    got back.
+  definition: "The block that answers one tool use request. Its tool_use_id is the id of that request."
+  fact: api.tool-result-ids-must-match
 - id: tool-use-id
   term: tool_use_id
   aliases:
@@ -42,15 +42,16 @@
   - tool_use id
   strict: true
   wire: tools
-  definition: The id of a tool_use block. A tool_result names the id of the call it answers.
+  definition: "The id of the tool use request that a tool_result answers."
+  fact: api.tool-result-ids-must-match
 - id: is-error
   term: is_error
   aliases:
   - is_error
   strict: true
   wire: tools
-  definition: An optional field of a tool_result. It is set to true when the tool call failed, and says so to the
-    model.
+  definition: "An optional field of a tool_result. It is set to true when the tool execution resulted in an error."
+  fact: api.tool-result-is-error
 - id: parallel-tool-calls
   term: parallel tool calls
   aliases:
@@ -58,8 +59,8 @@
   - parallel tool call
   strict: true
   wire: tools
-  definition: Several tool_use blocks in one reply, so the harness runs them together and answers all of them in
-    one message.
+  definition: "Several tool requests in one reply. All their results go back together in a single user message."
+  fact: api.parallel-results-one-message
 - id: function-calling
   term: function calling
   aliases:

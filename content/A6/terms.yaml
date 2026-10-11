@@ -3,16 +3,16 @@
   aliases: [extended thinking]
   strict: true
   wire: loop
-  definition: >-
-    Extra tokens the model writes before it answers, to work a problem out. The thinking is billed as output.
+  definition: "The tokens the model uses while it thinks before it answers. They are billed as output tokens."
+  fact: api.thinking-billed-as-output
 
 - id: thinking-block
   term: thinking block
   aliases: [thinking block, thinking blocks]
   strict: true
   wire: loop
-  definition: >-
-    The part of a reply that holds the model's thinking. In a tool loop, it goes back to the model unchanged with the tool call.
+  definition: "A thinking block from an assistant turn. During tool use it must go back complete and unmodified, alongside the tool_use block."
+  fact: api.thinking-blocks-pass-back-tool-use
 
 - id: effort
   term: effort

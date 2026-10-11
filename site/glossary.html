@@ -344,7 +344,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-hit">
         <h3 class="term-name"><dfn id="term-cache-hit">cache hit</dfn></h3>
-        <p class="term-def">A call that reads some of its input from the cache. The hit rate is the share of the input that was read.</p>
+        <p class="term-def"><span class="fact" data-fact="api.cache-usage-fields" data-verified="2026-10-10">A call that reads some of its input from the cache.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
           <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
@@ -353,7 +353,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-invalidation">
         <h3 class="term-name"><dfn id="term-cache-invalidation">cache invalidation</dfn></h3>
-        <p class="term-def">A change that makes earlier cache entries stop matching, so the next call writes the request again.</p>
+        <p class="term-def"><span class="fact" data-fact="api.cache-invalidation-hierarchy" data-verified="2026-10-10">Cache order is tools, then system, then messages. A change at one level invalidates that level and every level after it.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
           <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
@@ -362,7 +362,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-prefix">
         <h3 class="term-name"><dfn id="term-cache-prefix">cache prefix</dfn></h3>
-        <p class="term-def">The part of a request that comes before a point. A cache matches a prefix whole, or not at all.</p>
+        <p class="term-def"><span class="fact" data-fact="api.cache-prefix-whole-match" data-verified="2026-10-11">The part of a request up to and including the block marked for caching. A cache hit needs all of that part to be identical.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
           <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
@@ -371,7 +371,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-read">
         <h3 class="term-name"><dfn id="term-cache-read">cache read</dfn></h3>
-        <p class="term-def">Input that a call takes from the cache instead of processing it again.</p>
+        <p class="term-def"><span class="fact" data-fact="api.cache-usage-fields" data-verified="2026-10-10">Input that a call takes from the cache. The usage reports it as cache_read_input_tokens.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
           <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
@@ -380,7 +380,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-ttl">
         <h3 class="term-name"><dfn id="term-cache-ttl">cache TTL</dfn></h3>
-        <p class="term-def">How long a cache entry lasts after it was last written or read.</p>
+        <p class="term-def"><span class="fact" data-fact="api.cache-read-refreshes-ttl" data-verified="2026-10-10">How long a cache entry lasts: by default five minutes, and each use of the cached content refreshes it at no extra cost.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
           <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
@@ -389,7 +389,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-cache-write">
         <h3 class="term-name"><dfn id="term-cache-write">cache write</dfn></h3>
-        <p class="term-def">Input that a call stores in the cache, so that a later call can read it.</p>
+        <p class="term-def"><span class="fact" data-fact="api.cache-usage-fields" data-verified="2026-10-10">Input that a call writes to the cache. The usage reports it as cache_creation_input_tokens.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
           <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
@@ -803,7 +803,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-end-turn">
         <h3 class="term-name"><dfn id="term-end-turn">end_turn</dfn></h3>
-        <p class="term-def">The stop reason for a response that finished on its own. It is a done claim, not proof.</p>
+        <p class="term-def"><span class="fact" data-fact="api.stop-reason-end-turn" data-verified="2026-10-10">The stop reason when the model finished its response on its own.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
           <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
@@ -942,7 +942,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-extended-thinking">
         <h3 class="term-name"><dfn id="term-extended-thinking">extended thinking</dfn></h3>
-        <p class="term-def">Extra tokens the model writes before it answers, to work a problem out. The thinking is billed as output.</p>
+        <p class="term-def"><span class="fact" data-fact="api.thinking-billed-as-output" data-verified="2026-10-10">The tokens the model uses while it thinks before it answers. They are billed as output tokens.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
           <span class="taught">Taught in <a href="modules/reasoning-and-effort.html">A6 · Reasoning and effort as harness knobs</a></span>
@@ -1385,7 +1385,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-is-error">
         <h3 class="term-name"><dfn id="term-is-error">is_error</dfn></h3>
-        <p class="term-def">An optional field of a tool_result. It is set to true when the tool call failed, and says so to the model.</p>
+        <p class="term-def"><span class="fact" data-fact="api.tool-result-is-error" data-verified="2026-10-10">An optional field of a tool_result. It is set to true when the tool execution resulted in an error.<a class="fact-chip" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
           <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
@@ -1804,7 +1804,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="errors" data-wire-name="Errors" id="entry-overloaded-error">
         <h3 class="term-name"><dfn id="term-overloaded-error">overloaded error</dfn></h3>
-        <p class="term-def">The error the API returns when it is temporarily overloaded. It is a transient error.</p>
+        <p class="term-def"><span class="fact" data-fact="api.error-529-overloaded" data-verified="2026-10-10">The error with HTTP status 529 and error type overloaded_error, which means the API is temporarily overloaded.<a class="fact-chip" href="https://platform.claude.com/docs/en/api/errors" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-errors"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-zigzag"></use></svg> Errors</span>
           <span class="taught">Taught in <a href="modules/errors-and-recovery.html">C6 · Errors are the main path</a></span>
@@ -1816,7 +1816,7 @@
       <h2>P</h2>
       <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-parallel-tool-calls">
         <h3 class="term-name"><dfn id="term-parallel-tool-calls">parallel tool calls</dfn></h3>
-        <p class="term-def">Several tool_use blocks in one reply, so the harness runs them together and answers all of them in one message.</p>
+        <p class="term-def"><span class="fact" data-fact="api.parallel-results-one-message" data-verified="2026-10-10">Several tool requests in one reply. All their results go back together in a single user message.<a class="fact-chip" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
           <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
@@ -1886,7 +1886,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-pause-turn">
         <h3 class="term-name"><dfn id="term-pause-turn">pause_turn</dfn></h3>
-        <p class="term-def">The stop reason for a server-side loop that reached its iteration limit. The harness decides whether to continue.</p>
+        <p class="term-def"><span class="fact" data-fact="api.stop-reason-pause-turn" data-verified="2026-10-10">The stop reason when a server-tool loop reached its iteration limit.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
           <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
@@ -2027,7 +2027,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-prompt-caching">
         <h3 class="term-name"><dfn id="term-prompt-caching">prompt caching</dfn></h3>
-        <p class="term-def">Keeping the start of a request, so that a later call with the same start can read it back instead of processing it again.</p>
+        <p class="term-def">Reusing the work done on the start of a request when a later call starts the same way, so that start costs less.</p>
         <p class="term-meta">
           <span class="wire w-context"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-window"></use></svg> Context</span>
           <span class="taught">Taught in <a href="modules/prompt-caching.html">C4 · Prompt caching</a></span>
@@ -2146,7 +2146,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-refusal">
         <h3 class="term-name"><dfn id="term-refusal">refusal</dfn></h3>
-        <p class="term-def">The stop reason for a response where the model declined to answer. It arrives as a normal reply, not an error.</p>
+        <p class="term-def"><span class="fact" data-fact="api.stop-reason-refusal" data-verified="2026-10-10">The stop reason when the model declined to generate a response. It is returned as a normal HTTP 200 response, not as an error.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
           <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
@@ -2524,7 +2524,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-stop-reason">
         <h3 class="term-name"><dfn id="term-stop-reason">stop_reason</dfn></h3>
-        <p class="term-def">The field in every response that says why the model stopped: end_turn, tool_use, max_tokens and a few others.</p>
+        <p class="term-def"><span class="fact" data-fact="api.stop-reason-field" data-verified="2026-10-11">The field in every response that tells why the model stopped.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
           <span class="taught">Taught in <a href="modules/the-api-call-on-the-wire.html">A4 · The API call on the wire</a></span>
@@ -2650,7 +2650,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="loop" data-wire-name="Loop" id="entry-thinking-block">
         <h3 class="term-name"><dfn id="term-thinking-block">thinking block</dfn></h3>
-        <p class="term-def">The part of a reply that holds the model&#x27;s thinking. In a tool loop, it goes back to the model unchanged with the tool call.</p>
+        <p class="term-def"><span class="fact" data-fact="api.thinking-blocks-pass-back-tool-use" data-verified="2026-10-10">A thinking block from an assistant turn. During tool use it must go back complete and unmodified, alongside the tool_use block.<a class="fact-chip" href="https://platform.claude.com/docs/en/build-with-claude/thinking" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-loop"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-cycle"></use></svg> Loop</span>
           <span class="taught">Taught in <a href="modules/reasoning-and-effort.html">A6 · Reasoning and effort as harness knobs</a></span>
@@ -2774,7 +2774,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-result">
         <h3 class="term-name"><dfn id="term-tool-result">tool_result</dfn></h3>
-        <p class="term-def">The block that answers one tool_use. It carries the tool_use_id of the call and the output the harness got back.</p>
+        <p class="term-def"><span class="fact" data-fact="api.tool-result-ids-must-match" data-verified="2026-10-10">The block that answers one tool use request. Its tool_use_id is the id of that request.<a class="fact-chip" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
           <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>
@@ -2792,7 +2792,7 @@
       </div>
       <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-tool-use-id">
         <h3 class="term-name"><dfn id="term-tool-use-id">tool_use_id</dfn></h3>
-        <p class="term-def">The id of a tool_use block. A tool_result names the id of the call it answers.</p>
+        <p class="term-def"><span class="fact" data-fact="api.tool-result-ids-must-match" data-verified="2026-10-10">The id of the tool use request that a tool_result answers.<a class="fact-chip" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls" target="_blank" rel="noopener noreferrer" title="Source: platform.claude.com">verified Oct 2026<span class="sr-only"> (source: platform.claude.com, opens in a new tab)</span></a></span></p>
         <p class="term-meta">
           <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
           <span class="taught">Taught in <a href="modules/tools-give-the-model-hands.html">B1 · Tools give the model hands</a></span>

@@ -103,7 +103,7 @@
       <p>Without JavaScript, the question is: a response has status 429 and a retry-after header. Which part tells the client how long to wait?</p>
       <ol>
         <li>The status code, 429.</li>
-        <li>The retry-after header.</li>
+        <li><span class="fact" data-fact="api.retry-after-meaning">The retry-after header.</span></li>
         <li>The body, because it is always the last line.</li>
       </ol>
     </hx-check>
@@ -118,7 +118,7 @@
 
     <h3>Read the status before the body</h3>
     <p>A response is read in a fixed order. First the status code, which says what happened. Then the headers, which say how to read the rest. Then the body. A client that reads the body first may spend time on a response it was going to refuse anyway.</p>
-    <p>Each status code tells you what to do next. A 400 means the request is wrong, so send it again only after you fix it. A 529 means the API is temporarily overloaded, so retry later, within a limit. A 500 is an internal error, so retry a few times, then report it. A 429 has a retry-after header when the API can say how long to wait, and you wait for that long.</p>
+    <p>Each status code tells you what to do next. <span class="fact" data-fact="api.error-400-invalid-request">A 400 means the request is wrong</span>, so send it again only after you fix it. <span class="fact" data-fact="api.error-529-overloaded">A 529 means the API is temporarily overloaded</span>, so retry later, within a limit. <span class="fact" data-fact="api.error-500-api-error">A 500 is an internal error</span>, so retry a few times, then report it. <span class="fact" data-fact="api.error-429-retry-after">A 429 has a retry-after header when the API can say how long to wait, and you wait for that long.</span></p>
 
     <h3>A stream is a message in pieces</h3>
     <p>A streamed reply arrives as lines of text. Each line has a field name and a value, separated by a colon. Split the text into lines, then read each one.</p>
@@ -172,9 +172,9 @@ for piece in pieces():
     <hx-cards src="T5">
       <dl>
         <dt>What does a response have besides its body?</dt><dd>A status code and headers, sent before the body.</dd>
-        <dt>Which status code says the API is temporarily overloaded?</dt><dd>529, with the error type overloaded_error.</dd>
-        <dt>Which status code carries the error type rate_limit_error?</dt><dd>429.</dd>
-        <dt>What does a 400 mean?</dt><dd>The request has a format or content problem. Fix the request before you send it again.</dd>
+        <dt>Which status code says the API is temporarily overloaded?</dt><dd><span class="fact" data-fact="api.error-529-overloaded">529, with the error type overloaded_error.</span></dd>
+        <dt>Which status code carries the error type rate_limit_error?</dt><dd><span class="fact" data-fact="api.error-429-rate-limit">429.</span></dd>
+        <dt>What does a 400 mean?</dt><dd><span class="fact" data-fact="api.error-400-invalid-request">The request has a format or content problem.</span> Fix the request before you send it again.</dd>
         <dt>What ends a server-sent event?</dt><dd>A blank line. Only an event with data is returned.</dd>
         <dt>What is a line that starts with a colon?</dt><dd>A comment, such as a keep-alive. The parser skips it.</dd>
       </dl>

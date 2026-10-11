@@ -13,7 +13,8 @@
   type: term
   objective: H1.o2
   front: What does stop_reason tell the harness?
-  back: Why the model stopped, such as tool_use or end_turn. The harness decides its next step from it.
+  back: "The field in every response that tells why the model stopped."
+  fact: api.stop-reason-field
 - id: H1-k4
   type: term
   objective: H1.o2

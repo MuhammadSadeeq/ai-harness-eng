@@ -74,4 +74,5 @@
   - overloaded errors
   strict: true
   wire: errors
-  definition: The error the API returns when it is temporarily overloaded. It is a transient error.
+  definition: "The error with HTTP status 529 and error type overloaded_error, which means the API is temporarily overloaded."
+  fact: api.error-529-overloaded

@@ -29,13 +29,15 @@
  },
  {
   "back": "The tool_use_id of the call it answers.",
+  "fact": "api.tool-result-ids-must-match",
   "front": "What must each tool_result carry?",
   "id": "B1-k5",
   "objective": "B1.o3",
   "type": "term"
  },
  {
-  "back": "Set is_error to true and say why in the content.",
+  "back": "Set is_error to true, an optional tool_result field, when the tool execution resulted in an error.",
+  "fact": "api.tool-result-is-error",
   "front": "How do you mark a failed call?",
   "id": "B1-k6",
   "objective": "B1.o3",

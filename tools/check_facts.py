@@ -465,8 +465,16 @@ def _token_in(token: str, haystack: str) -> bool:
     return re.search(pattern, _thousands(haystack).lower()) is not None
 
 
+FACT_CHIP = re.compile(r'<(a|span) class="fact-chip"[^>]*>.*?</\1>', re.DOTALL)
+
+
 def _check_span_tokens(fact: Fact, markup: str, shown: str, line: int, report: Report) -> None:
-    """A hard token the span states must appear in the fact's claim or quote (FACTS §6)."""
+    """A hard token the span states must appear in the fact's claim or quote (FACTS §6).
+
+    The chip (its verified date and source host) is written from the registry, not stated by the
+    span, so it is left out.
+    """
+    markup = FACT_CHIP.sub("", markup)
     if not markup.strip():
         return
     haystack = _thousands(f"{fact.claim} {fact.quote}").lower()

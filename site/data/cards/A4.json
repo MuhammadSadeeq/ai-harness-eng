@@ -14,14 +14,16 @@
   "type": "term"
  },
  {
-  "back": "Why the model stopped: end_turn, tool_use, max_tokens and a few others. The harness acts on each one.",
+  "back": "The field in every response that tells why the model stopped.",
+  "fact": "api.stop-reason-field",
   "front": "What does stop_reason tell the harness?",
   "id": "A4-c3",
   "objective": "A4.o3",
   "type": "term"
  },
  {
-  "back": "The response hit the request's length limit, so it may be cut off. Do not run a half-written tool request.",
+  "back": "The reply reached the request's max_tokens limit.",
+  "fact": "api.stop-reason-max-tokens",
   "front": "What is max_tokens as a stop reason?",
   "id": "A4-c4",
   "objective": "A4.o3",

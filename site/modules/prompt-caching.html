@@ -56,7 +56,7 @@
   <header class="module-head">
     <p class="plate-label">C4 · Part C · The eight wires</p>
     <h1>Prompt caching</h1>
-    <p class="lede">A cache reads the start of a request again on the next call. One line near the top that changes on every call makes it write everything again.</p>
+    <p class="lede"><span class="fact" data-fact="api.cache-prefix-whole-match">A cache reads the start of a request again on the next call, when every segment of that start is identical up to the block marked for caching.</span> <span class="fact" data-fact="api.cache-invalidation-hierarchy">One line near the top that changes on every call invalidates its level and every level after it.</span></p>
     <!-- gen:module-meta -->
     <div class="module-meta" data-module-id="C4" data-glyph="window">
       <ul class="wire-chips">
@@ -106,7 +106,7 @@
       <figcaption>FIG C4.0 · Four calls on one task. Try this: step to the second call and read its cache event.</figcaption>
     </figure>
 
-    <p>The clock line at the top of the system prompt changes on every call. Nothing before the end of the request matches the call before it, so the cache writes all of the request again and reads none of it. Nothing in the run said so.</p>
+    <p>The clock line at the top of the system prompt changes on every call. <span class="fact" data-fact="api.cache-invalidation-hierarchy">The change is in the system prompt, so the system level and the messages after it are invalidated; the tools before it are not.</span> Nothing in the run said so.</p>
   </section>
 
   <section class="beat" data-beat="see" id="see">
@@ -128,7 +128,7 @@
 
     <p>A write costs more than plain input, and a read costs less. <span class="fact" data-fact="models.cache-write-5m-multiplier">A 5-minute cache write costs 1.25x base input price and is valid for 5 minutes.</span> <span class="fact" data-fact="models.cache-read-multiplier">Cache reads cost 0.05x base input on Sonnet 5.5.</span> The minimum prompt that can be cached is <span class="fact" data-fact="models.cache-min-512-tokens">The minimum cacheable prompt is 512 tokens for Sonnet 5.5.</span></p>
 
-    <p>The <dfn data-term="cache-ttl">cache TTL</dfn> is how long an entry lasts after it was last written or read. <span class="fact" data-fact="api.cache-ttl-default-5m-and-1h">The default cache TTL is 5 minutes, and a 1-hour TTL is available at 2x the base input token price.</span></p>
+    <p>The <dfn data-term="cache-ttl">cache TTL</dfn> <span class="fact" data-fact="api.cache-read-refreshes-ttl">is the lifetime of an entry: five minutes by default, refreshed at no extra cost each time the cached content is used.</span> <span class="fact" data-fact="api.cache-ttl-default-5m-and-1h">The default cache TTL is 5 minutes, and a 1-hour TTL is available at 2x the base input token price.</span></p>
 
     <figure>
       <hx-wire tape="c4-cold-cache" board="c4-old" turn="2" diff data-objective="C4.o3">
@@ -192,7 +192,7 @@
     <p class="law">Stable first, changing last.</p>
     <hx-cards src="C4">
       <dl>
-        <dt>What is a cache prefix?</dt><dd>The part of a request before a point. The cache matches a whole prefix or none of it.</dd>
+        <dt>What is a cache prefix?</dt><dd><span class="fact" data-fact="api.cache-prefix-whole-match">The part of a request up to and including the block marked for caching. A cache hit needs all of that part to be identical.</span></dd>
         <dt>Which order does the cache read a request in?</dt><dd>Tools, then the system prompt, then the messages, with the new message last.</dd>
       </dl>
     </hx-cards>

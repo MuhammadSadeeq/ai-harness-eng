@@ -14,7 +14,8 @@
   "type": "term"
  },
  {
-  "back": "All in one user message, one per tool_use, each with the tool_use_id of its request.",
+  "back": "All in one user message, one for each tool_use.",
+  "fact": "api.tool-results-single-user-message",
   "front": "Where do tool results go?",
   "id": "H2-k3",
   "objective": "H2.o1",
@@ -35,14 +36,16 @@
   "type": "term"
  },
  {
-  "back": "A tool_result with is_error set to true and a short reason. The run carries on.",
+  "back": "A tool_result with is_error set to true and a brief explanation.",
+  "fact": "api.tool-result-unrun-call",
   "front": "What does an unknown tool name get back?",
   "id": "H2-k6",
   "objective": "H2.o3",
   "type": "term"
  },
  {
-  "back": "That the result is a failure, so the model can try again or change its plan.",
+  "back": "An optional tool_result field, set to true when the tool execution resulted in an error.",
+  "fact": "api.tool-result-is-error",
   "front": "What does is_error tell the model?",
   "id": "H2-k7",
   "objective": "H2.o3",

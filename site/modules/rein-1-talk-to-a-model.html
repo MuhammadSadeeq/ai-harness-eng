@@ -210,7 +210,7 @@ class ClaudeModel:
       <dl>
         <dt>What is a model interface?</dt><dd>One function the rest of Rein calls for a reply. A scripted model and a real model sit behind it.</dd>
         <dt>What is a dataclass?</dt><dd>A Python class with named fields. Rein uses one to hold a reply, so each field has a name.</dd>
-        <dt>What does stop_reason tell the harness?</dt><dd>Why the model stopped, such as <span class="fwd" data-term="tool-use">tool_use</span> or end_turn. The harness decides its next step from it.</dd>
+        <dt>What does stop_reason tell the harness?</dt><dd><span class="fact" data-fact="api.stop-reason-field">The field in every response that tells why the model stopped.</span></dd>
         <dt>Why does Reply keep the raw content blocks?</dt><dd>A reply's content is a list of blocks. A tool request can come after text, so the harness reads the blocks, not only the first.</dd>
         <dt>What does Rein print with each reply?</dt><dd>The stop reason and the input and output token counts, so you can see what each call used.</dd>
         <dt>Is the API stateless?</dt><dd>Yes. You send the full history with each request, and the API keeps nothing between requests.</dd>

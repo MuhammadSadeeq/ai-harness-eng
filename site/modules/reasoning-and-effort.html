@@ -169,7 +169,7 @@
       <p>Without JavaScript, the question is: during a tool loop, the reply carries a thinking block next to a tool call. What does the harness do with it?</p>
       <ol>
         <li>Trims it, to save tokens before the next call.</li>
-        <li>Passes it back complete and unmodified, with the tool call it belongs to.</li>
+        <li><span class="fact" data-fact="api.thinking-blocks-pass-back-tool-use">Passes it back complete and unmodified, with the tool call it belongs to.</span></li>
         <li>Removes it, because it is not part of the answer.</li>
       </ol>
     </hx-check>
@@ -189,8 +189,8 @@
     <p class="law">Effort is a dial with a price.</p>
     <hx-cards src="A6">
       <dl>
-        <dt>What is extended thinking?</dt><dd>Extra tokens the model writes before it answers, to work a problem out. They are billed as output.</dd>
-        <dt>What must happen to a thinking block during a tool loop?</dt><dd>It goes back to the model complete and unmodified, with the tool call that it belongs to.</dd>
+        <dt>What is extended thinking?</dt><dd><span class="fact" data-fact="api.thinking-billed-as-output">The tokens the model uses while it thinks before it answers. They are billed as output tokens.</span></dd>
+        <dt>What must happen to a thinking block during a tool loop?</dt><dd><span class="fact" data-fact="api.thinking-blocks-pass-back-tool-use">During tool use it must go back complete and unmodified, alongside the tool call.</span></dd>
         <dt>What is cost per completed task?</dt><dd>The cost of a task's calls, divided by the share of tasks that finish.</dd>
         <dt>Does a higher effort always help?</dt><dd>No. On easy work it can add cost and wait without a better answer.</dd>
       </dl>

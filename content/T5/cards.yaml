@@ -7,17 +7,20 @@
   type: term
   objective: T5.o2
   front: Which status code says the API is temporarily overloaded?
-  back: 529, with the error type overloaded_error.
+  back: "529, with the error type overloaded_error."
+  fact: api.error-529-overloaded
 - id: T5-k3
   type: term
   objective: T5.o2
   front: Which status code carries the error type rate_limit_error?
-  back: '429.'
+  back: "429."
+  fact: api.error-429-rate-limit
 - id: T5-k4
   type: term
   objective: T5.o2
-  front: What does a 400 mean?
-  back: The request has a format or content problem. Fix the request; a retry without a change fails again.
+  front: "What does a 400 mean?"
+  back: "The request has a format or content problem."
+  fact: api.error-400-invalid-request
 - id: T5-k5
   type: term
   objective: T5.o3
