@@ -47,6 +47,14 @@ capstone** tooling (parity runner, Rust skeleton, the director's reference;
 D-046). Every step runs in the browser (D-056: a stand-in for `python <file>.py`
 commands); a checkpoint or break the stand-in cannot reproduce is marked `local: true`.
 
+| Blueprint | Work | Builder | Needs first |
+|---|---|---|---|
+| BP-4.0-steps-platform | `hxshell` stand-in, `stdin` and `local` steps, `hx-replay accept-trace` | JS | none |
+| BP-4.1-steps | steps H3–H11 with their pages (output caps, the course's trace, a virtual clock, one status per ending) | Rein | BP-4.0 |
+| BP-4.2-package | `rein` command line, a live model behind the harness (mock API only, D-038), eval runner and results | bench | none |
+| BP-4.3-capstone | `tools/parity.py`, milestones, the Rust kit, the director's Rust reference | JS | BP-4.0 |
+| (later) | H0, H12, H13 guides; I4's page | Rein, bench | BP-4.1, BP-4.2, BP-4.3 |
+
 ## Phase 5: career track
 Interview Room (I5), Design Room prompts with rubrics, the question bank,
 portfolio templates (I3), the readiness radar and brag sheet (I2), the
