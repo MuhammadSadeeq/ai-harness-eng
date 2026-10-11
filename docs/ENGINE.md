@@ -1168,3 +1168,10 @@ eventually notices; lessons say so).
      `history` resend false, the task alone).
   8. `lose_reply` counts per tool name; idempotency keys are kept only by
      ledger tools.
+- **A18 (2026-10-11): branch locations are tape pointers.** Binding for both
+  runtimes. A branch's location (A3.22, in `--choices` and branch coverage)
+  is the JSON pointer of the branch step in the tape it came from:
+  `/script/<i>` for the tape's script, `/sessions/<k>/script/<i>` for a
+  session's (k from 0), `/agents/<name>/script/<i>` for a sub-agent's, and
+  `/models/<id>/script/<i>` for a model profile's; nested steps extend the
+  pointer as before. Every location therefore resolves against the tape.
