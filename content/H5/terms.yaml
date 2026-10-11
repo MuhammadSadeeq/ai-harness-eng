@@ -1,0 +1,8 @@
+- id: jsonl
+  term: JSONL
+  aliases:
+  - JSONL
+  strict: true
+  wire: observe
+  definition: 'JSON Lines: one JSON object per line. Each line is written as its event happens, so every line written
+    so far is complete.'

@@ -1,0 +1,9 @@
+{
+ "replies": [
+  {"say": "First I will clean up old build files.", "tools": [["run_command", {"command": "rm -rf build"}]]},
+  {"say": "That was denied, so I will skip the cleanup.", "tools": [["read_file", {"path": "calc.py"}]]},
+  {"say": "Fixing the bug.", "tools": [["edit_file", {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"}]]},
+  {"say": "Running the test.", "tools": [["run_command", {"command": "python test_calc.py"}]]},
+  {"say": "Fixed add() in calc.py. The test passes."}
+ ]
+}

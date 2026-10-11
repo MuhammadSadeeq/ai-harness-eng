@@ -1,0 +1,355 @@
+module: H5
+number: 5
+title: A trace of everything
+goal: Record every model call, verdict and tool call in a file as it happens, and print a summary at the end.
+requires_python: '3.11'
+theory: 'Chapter 18: observability'
+lines_after: 409
+size: rein.py grows to 409 lines
+chunks:
+- id: 5a
+  title: A clock
+  explain: time lets Rein note when each event happened. t counts whole milliseconds from the start of the run,
+    because the course's trace keeps integers.
+  hunks:
+  - where: at the top of the file
+    diff: |2
+       import re
+       import subprocess
+      +import time
+- id: 5b
+  title: The tracer
+  explain: 'The Tracer writes one line of JSON for every event, the moment it happens, in the course''s format:
+    v, run, seq, t, turn, agent, kind, wire, and the kind''s own fields. Each line is written straight away, so
+    a crash loses nothing before it. Before a line is stored, anything that looks like an API key is replaced. Prices
+    are dollars per million tokens, from a fact; a model with no price costs 0, as the fake model does.'
+  hunks:
+  - where: new code, above THE LOOP
+    diff: |
+      +# ============ TRACE: a record of everything ============
+      +
+      +KEY = re.compile(r"sk-[A-Za-z0-9_-]{12,}")  # looks like an API key: never stored in a trace
+      +
+      +def redact(value):
+      +    """Replaces anything that looks like an API key, in every string of an event."""
+      +    if isinstance(value, str):
+      +        return KEY.sub("[REDACTED]", value)
+      +    if isinstance(value, dict):
+      +        return {k: redact(v) for k, v in value.items()}
+      +    if isinstance(value, list):
+      +        return [redact(v) for v in value]
+      +    return value
+      +
+      +# Dollars per million tokens (facts: models.sonnet-5-5-price). A model without an entry costs 0.
+      +PRICES = {"claude-sonnet-5-5": (2, 10)}
+      +
+      +def cost_nano(model_id, usage):
+      +    """The cost of one reply, in nano-dollars: tokens times the price per million, times 1000."""
+      +    if model_id not in PRICES:
+      +        return 0
+      +    price_in, price_out = PRICES[model_id]
+      +    return usage["input_tokens"] * price_in * 1000 + usage["output_tokens"] * price_out * 1000
+      +
+      +class Tracer:
+      +    """Writes one JSON object per event to a file (JSONL), in the course's format (ENGINE section 9)."""
+      +
+      +    def __init__(self, path, run):
+      +        self.path, self.run = path, run
+      +        self.start = time.monotonic()
+      +        self.seq, self.turn, self.events = 0, 0, []
+      +        Path(path).write_text("")  # a fresh trace file for every run
+      +
+      +    def event(self, kind, wire, **fields):
+      +        record = {"v": 1, "run": self.run, "seq": self.seq, "t": int((time.monotonic() - self.start) * 1000),
+      +                  "turn": self.turn, "agent": "main", "kind": kind, "wire": wire, **redact(fields)}
+      +        self.seq += 1
+      +        self.events.append(record)
+      +        with open(self.path, "a") as f:
+      +            f.write(json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n")
+      +
+      +    def summary(self):
+      +        counts = {}
+      +        for e in self.events:
+      +            if e["kind"] not in ("run_start", "run_end", "model_reply"):  # a reply is counted by its model_call
+      +                counts[e["kind"]] = counts.get(e["kind"], 0) + 1
+      +        tokens = sum(e["usage"]["input_tokens"] + e["usage"]["output_tokens"]
+      +                     for e in self.events if e["kind"] == "model_reply")
+      +        return ", ".join(f"{n} {kind}" for kind, n in counts.items()) + f", {tokens} tokens"
+      +
+      +
+      +
+       # ============ THE LOOP ============
+- id: 5c
+  title: A verdict names its rule
+  explain: Each verdict carries the name of the rule that decided it, so the trace can say which rule ran. The fake
+    model has no price, and the real model's id is kept so its cost can be looked up.
+  hunks:
+  - where: in class Verdict
+    diff: |2
+           reason: str    # the model reads this too, so say why
+      +    rule: str = ""  # the policy rule that decided it, for the trace
+  - where: 'in decide(): read-only tools'
+    diff: |
+      -        return Verdict("allow", "read-only tool")
+      +        return Verdict("allow", "read-only tool", "read-only")
+  - where: 'in decide(): deny list'
+    diff: |
+      -            return Verdict("deny", "destructive, network, or admin command")
+      +            return Verdict("deny", "destructive, network, or admin command", "deny-list")
+  - where: 'in decide(): allow list'
+    diff: |
+      -            return Verdict("allow", "allow-listed command")
+      +            return Verdict("allow", "allow-listed command", "allow-list")
+  - where: 'in decide(): a command not on the allow list'
+    diff: |
+      -        return Verdict("ask", "this command is not on the allow-list")
+      +        return Verdict("ask", "this command is not on the allow-list", "allow-list-miss")
+  - where: 'in decide(): auto mode'
+    diff: |
+      -        return Verdict("allow", "edits are allowed in auto mode")
+      +        return Verdict("allow", "edits are allowed in auto mode", "auto-mode")
+  - where: 'in decide(): edits ask'
+    diff: |
+      -    return Verdict("ask", "this tool changes files")
+      +    return Verdict("ask", "this tool changes files", "edit-ask")
+  - where: in class FakeModel
+    diff: |2
+               self.replies = list(replies)
+               self.calls = 0
+      +        self.model_id = "fake"  # no price entry: the fake model costs 0
+  - where: in ClaudeModel.__init__()
+    diff: |2
+               self.model = model or os.environ.get("REIN_MODEL", "claude-sonnet-5-5")  # facts: models.ids-current
+      +        self.model_id = self.model
+- id: 5d
+  title: The trace file
+  explain: trace_file is where Config says the events of the run go.
+  hunks:
+  - where: in class Config
+    diff: |2
+           mode: str = "ask"        # "ask": edits need a human yes. "auto": edits are allowed
+      +    trace_file: str = "trace.jsonl"  # every event of the run is recorded here
+- id: 5e
+  title: Wire it in
+  explain: 'The agent takes a tracer and records six kinds: run_start once; model_call and model_reply for each
+    turn; permission for each verdict; tool_call for each tool call, denied ones too; and run_end at the end. run_end
+    uses the schema''s status names, so a turn limit is max_turns, although the transcript still says stopped.'
+  hunks:
+  - where: 'in Agent.__init__(): the tracer'
+    diff: |
+      -    def __init__(self, model, cfg):
+      -        self.model, self.cfg = model, cfg
+      +    def __init__(self, model, cfg, trace):
+      +        self.model, self.cfg, self.trace = model, cfg, trace
+  - where: 'in Agent.__init__(): the counters'
+    diff: |2
+               self.denied = set()  # once denied, always denied
+      +        self.turns, self.tokens_in, self.tokens_out, self.cost = 0, 0, 0, 0
+  - where: in Agent.finish()
+    diff: |2
+               self.say(status, note)
+      +        ended = {"done": "done", "stopped": "max_turns"}[status]  # the schema's status names
+      +        self.trace.event("run_end", "loop", status=ended, passed=False, turns=self.turns,
+      +                         tokens={"input": self.tokens_in, "output": self.tokens_out}, cost=self.cost)
+  - where: 'in Agent.run(): the run starts'
+    diff: |2
+               self.say("task", task)
+      +        self.trace.event("run_start", "loop", task=task, board=self.cfg.mode, seed=0, model_id=self.model.model_id)
+  - where: 'in Agent.run(): each turn'
+    diff: |2
+               for turn in range(1, self.cfg.max_turns + 1):
+      +            self.trace.turn = turn
+                   reply = self.model.call(SYSTEM_PROMPT, messages, self.specs)
+      +            cost = cost_nano(self.model.model_id, reply.usage)
+      +            self.turns += 1
+      +            self.tokens_in += reply.usage["input_tokens"]
+      +            self.tokens_out += reply.usage["output_tokens"]
+      +            self.cost += cost
+      +            self.trace.event("model_call", "loop", attempt=1, tokens_in=reply.usage["input_tokens"])
+      +            self.trace.event("model_reply", "loop", stop_reason=reply.stop_reason, text=reply.text,
+      +                             tool_uses=[{"id": c.id, "name": c.name, "input": c.input} for c in reply.tool_calls],
+      +                             usage=reply.usage, cost=cost)
+  - where: 'in Agent.run(): each tool call'
+    diff: |
+      -                output, is_error = self.run_tool(call)
+      +                output, is_error, truncated = self.run_tool(call)
+      +                self.trace.event("tool_call", "tools", tool=call.name, input=call.input, ok=not is_error,
+      +                                 output=output, output_tokens=len(output) // 4, truncated=truncated,
+      +                                 tool_use_id=call.id)
+  - where: in Agent.run_tool()
+    diff: |
+      -        return truncate(output, self.cfg.tool_output_chars), is_error
+      +        return truncate(output, self.cfg.tool_output_chars), is_error, len(output) > self.cfg.tool_output_chars
+  - where: in Agent.check_permission()
+    diff: |2
+           def check_permission(self, tool, call):
+               key = call.name + json.dumps(call.input, sort_keys=True)
+               if key in self.denied:
+      -            verdict = Verdict("deny", "this exact call was already denied")
+      +            decided = Verdict("deny", "this exact call was already denied", "already-denied")
+               else:
+      -            verdict = decide(tool, call.input, self.cfg.mode)
+      -        if verdict.decision == "ask":
+      -            yes = ask_human(call, verdict.reason)
+      -            verdict = Verdict("allow", "a human said yes") if yes else Verdict("deny", "a human said no")
+      +            decided = decide(tool, call.input, self.cfg.mode)
+      +        verdict, human = decided, None
+      +        if decided.decision == "ask":
+      +            yes = ask_human(call, decided.reason)
+      +            human = "approve" if yes else "deny"
+      +            verdict = Verdict("allow", "a human said yes", "human") if yes else Verdict("deny", "a human said no", "human")
+               if verdict.decision == "deny":
+                   self.denied.add(key)
+      +        self.trace.event("permission", "permissions", tool=call.name, decision=decided.decision,
+      +                         rule=decided.rule, reason=decided.reason, human=human, final=verdict.decision,
+      +                         tool_use_id=call.id)
+      +        return verdict
+  - where: 'in main(): the tracer'
+    diff: |
+      -    Agent(model, cfg).run(args.task)
+      +    trace = Tracer(cfg.trace_file, run=f"rein:{cfg.mode}:0")
+      +    agent = Agent(model, cfg, trace)
+      +    agent.run(args.task)
+      +    show("trace", f"{trace.summary()} (details in {cfg.trace_file})")
+checkpoint:
+  setup:
+  - reset_demo
+  argv:
+  - Fix the failing test in calc.py
+  - --fake
+  - scenarios/03_fix.json
+  - --mode
+  - auto
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me look around first.
+             tool   list_files {}
+             allow  read-only tool
+             result AGENTS.md | app.log | calc.py | test_calc.py
+    turn 2   model asks for tools
+             tool   read_file {"path": "../rein.py"}
+             allow  read-only tool
+             error  '../rein.py' is outside the project. Use a path inside it.
+    turn 3   model: That file is outside the project. Reading the code instead.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+             tool   read_file {"path": "test_calc.py"}
+             allow  read-only tool
+             result 1| from calc import add | 2| | 3| | 4| def test_add(): | 5|     result = add(2, 3) |
+    turn 4   model: add() subtracts. Fixing it.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 5   model: Now I will run the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 6   model: Fixed add() in calc.py. The test passes.
+    done     after 6 model calls
+    trace    6 model_call, 6 permission, 6 tool_call, 1993 tokens (details in trace.jsonl)
+  explain: 'This reuses the step 3 script, in auto mode so it runs without questions. Six model calls, six verdicts,
+    six tool calls, and 1,993 tokens, as estimated by the scripted model. Open trace.jsonl in your editor: every
+    line is one event.'
+breaks:
+- id: key
+  title: A key in the model's words
+  explain: 'The model''s last line now carries a string that looks like an API key. The transcript shows what the
+    model said. The trace file does not: the line stored for that reply has [REDACTED] where the key was. Open trace.jsonl
+    and find the model_reply line to see it.'
+  change:
+    script:
+      path: scenarios/03_fix.json
+      json:
+        replies:
+        - say: Let me look around first.
+          tools:
+          - - list_files
+            - {}
+        - tools:
+          - - read_file
+            - path: ../rein.py
+        - say: That file is outside the project. Reading the code instead.
+          tools:
+          - - read_file
+            - path: calc.py
+          - - read_file
+            - path: test_calc.py
+        - say: add() subtracts. Fixing it.
+          tools:
+          - - edit_file
+            - path: calc.py
+              old_text: return a - b
+              new_text: return a + b
+        - say: Now I will run the test.
+          tools:
+          - - run_command
+            - command: python test_calc.py
+        - say: Fixed add() in calc.py. The test passes. My key is sk-test-1234567890abcdef.
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me look around first.
+             tool   list_files {}
+             allow  read-only tool
+             result AGENTS.md | app.log | calc.py | test_calc.py
+    turn 2   model asks for tools
+             tool   read_file {"path": "../rein.py"}
+             allow  read-only tool
+             error  '../rein.py' is outside the project. Use a path inside it.
+    turn 3   model: That file is outside the project. Reading the code instead.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+             tool   read_file {"path": "test_calc.py"}
+             allow  read-only tool
+             result 1| from calc import add | 2| | 3| | 4| def test_add(): | 5|     result = add(2, 3) |
+    turn 4   model: add() subtracts. Fixing it.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 5   model: Now I will run the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 6   model: Fixed add() in calc.py. The test passes. My key is sk-test-1234567890abcdef.
+    done     after 6 model calls
+    trace    6 model_call, 6 permission, 6 tool_call, 2002 tokens (details in trace.jsonl)
+- id: ask
+  title: Without --mode auto
+  explain: 'Leave out --mode auto. The edit asks you, and your answer y comes from stdin. The permission line in
+    the trace now shows decision ask, human approve and final allow: three fields that one verdict carries.'
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/03_fix.json
+  stdin:
+  - y
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: Let me look around first.
+             tool   list_files {}
+             allow  read-only tool
+             result AGENTS.md | app.log | calc.py | test_calc.py
+    turn 2   model asks for tools
+             tool   read_file {"path": "../rein.py"}
+             allow  read-only tool
+             error  '../rein.py' is outside the project. Use a path inside it.
+    turn 3   model: That file is outside the project. Reading the code instead.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+             tool   read_file {"path": "test_calc.py"}
+             allow  read-only tool
+             result 1| from calc import add | 2| | 3| | 4| def test_add(): | 5|     result = add(2, 3) |
+    turn 4   model: add() subtracts. Fixing it.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             ? allow edit_file? (this tool changes files) [y/N]          allow  a human said yes
+             result Edited calc.py.
+    turn 5   model: Now I will run the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 6   model: Fixed add() in calc.py. The test passes.
+    done     after 6 model calls
+    trace    6 model_call, 6 permission, 6 tool_call, 1993 tokens (details in trace.jsonl)

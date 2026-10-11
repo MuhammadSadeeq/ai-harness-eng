@@ -1,0 +1,28 @@
+- id: H5-s1
+  objectives:
+  - H5.o1
+  - H5.o2
+  prompt: 'Walk me through one line of your trace: which fields it carries, and how the Replay Deck reads the run
+    from the lines.'
+  model_answer: Each line is one JSON object with v, run, seq, t in milliseconds, turn, agent, kind and wire, and
+    the kind's own fields. The deck checks each line against the schema, then checks that seq counts up from 0 and
+    that every line carries the same run. It reads the status from run_end and the cost and tokens from model_reply,
+    so the run can be replayed line by line.
+  rubric:
+  - Lists the common fields of each line
+  - Names seq as the check for gaps, counted from 0
+  - Says the deck reads the status from run_end
+  - Says the deck checks each line against the schema before it shows anything
+- id: H5-s2
+  objectives:
+  - H5.o3
+  prompt: A colleague wants your trace to debug a run. What do you check before you send it?
+  model_answer: 'I check that no key is in the file: anything that looked like an API key should show as [REDACTED].
+    I check that the lines are complete, seq with no gaps and a run_end last. I check that the tokens and cost are
+    there, so the cost can be read call by call. Then I send the file, not the screen, because the screen shows
+    what the model said and the file is what was stored.'
+  rubric:
+  - Checks that a key is replaced by [REDACTED] in the file
+  - Checks that seq has no gaps and run_end is last
+  - Checks the tokens and cost on the reply lines
+  - Sends the file, which is what was stored

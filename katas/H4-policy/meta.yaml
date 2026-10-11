@@ -1,0 +1,51 @@
+id: H4-policy
+module: H4
+title: The policy table, as one function
+objectives:
+- H4.o2
+minutes: 25
+hints:
+- 'Read the table in test_kata.py first: each row is a tool, whether it only reads, its arguments, the
+  mode, and the decision it must get.'
+- 'Follow the order of the policy: read-only tools first, then the run_command deny list, then the allow
+  list with the chaining check, then the mode for edits.'
+- 'Nearly the code: if read_only: return "allow"; then loop over BLOCKED with re.search on the stripped
+  command and return "deny" on a match; then return "allow" only when an ALLOWED pattern matches and CHAINING
+  does not; otherwise return "ask".'
+from_memory: true
+wrong_solutions:
+- name: always-allow
+  code: "def decide(tool_name, read_only, args, mode):\n    return \"allow\"\n"
+- name: no-chaining-check
+  code: "import re\n\nBLOCKED = [r\"\\brm\\s\", r\"\\bsudo\\b\", r\"\\bgit\\s+push\\b\", r\"\\bcurl\\\
+    b\", r\"\\bwget\\b\"]\nALLOWED = [r\"^python\\s+test_\\w+\\.py\\b\", r\"^python\\s+-m\\s+pytest\\\
+    b\"]\n\n\ndef decide(tool_name, read_only, args, mode):\n    if read_only:\n        return \"allow\"\
+    \n    if tool_name == \"run_command\":\n        command = args.get(\"command\", \"\").strip()\n  \
+    \      if any(re.search(p, command) for p in BLOCKED):\n            return \"deny\"\n        if any(re.search(p,\
+    \ command) for p in ALLOWED):\n            return \"allow\"\n        return \"ask\"\n    if mode ==\
+    \ \"auto\":\n        return \"allow\"\n    return \"ask\"\n"
+- name: allow-list-before-deny
+  code: "import re\n\nBLOCKED = [r\"\\brm\\s\", r\"\\bsudo\\b\", r\"\\bgit\\s+push\\b\", r\"\\bcurl\\\
+    b\", r\"\\bwget\\b\"]\nALLOWED = [r\"^python\\s+test_\\w+\\.py\\b\", r\"^python\\s+-m\\s+pytest\\\
+    b\"]\n\n\ndef decide(tool_name, read_only, args, mode):\n    if read_only:\n        return \"allow\"\
+    \n    if tool_name == \"run_command\":\n        command = args.get(\"command\", \"\").strip()\n  \
+    \      if any(re.search(p, command) for p in ALLOWED):\n            return \"allow\"\n        if any(re.search(p,\
+    \ command) for p in BLOCKED):\n            return \"deny\"\n        return \"ask\"\n    if mode ==\
+    \ \"auto\":\n        return \"allow\"\n    return \"ask\"\n"
+- name: edit-ignores-mode
+  code: "import re\n\nBLOCKED = [r\"\\brm\\s\", r\"\\bsudo\\b\", r\"\\bgit\\s+push\\b\", r\"\\bcurl\\\
+    b\", r\"\\bwget\\b\"]\nALLOWED = [r\"^python\\s+test_\\w+\\.py\\b\", r\"^python\\s+-m\\s+pytest\\\
+    b\"]\nCHAINING = re.compile(r\"[;&|`$<>]\")\n\n\ndef decide(tool_name, read_only, args, mode):\n \
+    \   if read_only:\n        return \"allow\"\n    if tool_name == \"run_command\":\n        command\
+    \ = args.get(\"command\", \"\").strip()\n        if any(re.search(p, command) for p in BLOCKED):\n\
+    \            return \"deny\"\n        if any(re.search(p, command) for p in ALLOWED) and not CHAINING.search(command):\n\
+    \            return \"allow\"\n        return \"ask\"\n    return \"ask\"\n"
+- name: reads-ask
+  code: "import re\n\nBLOCKED = [r\"\\brm\\s\", r\"\\bsudo\\b\", r\"\\bgit\\s+push\\b\", r\"\\bcurl\\\
+    b\", r\"\\bwget\\b\"]\nALLOWED = [r\"^python\\s+test_\\w+\\.py\\b\", r\"^python\\s+-m\\s+pytest\\\
+    b\"]\nCHAINING = re.compile(r\"[;&|`$<>]\")\n\n\ndef decide(tool_name, read_only, args, mode):\n \
+    \   if read_only:\n        return \"ask\"\n    if tool_name == \"run_command\":\n        command =\
+    \ args.get(\"command\", \"\").strip()\n        if any(re.search(p, command) for p in BLOCKED):\n \
+    \           return \"deny\"\n        if any(re.search(p, command) for p in ALLOWED) and not CHAINING.search(command):\n\
+    \            return \"allow\"\n        return \"ask\"\n    if mode == \"auto\":\n        return \"\
+    allow\"\n    return \"ask\"\n"

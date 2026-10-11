@@ -1,0 +1,44 @@
+[
+ {
+  "back": "In Workspace.path(). It turns the path into a real path, follows ../ and links, and refuses anything outside the project folder.",
+  "front": "Where does Rein check a path the model gives?",
+  "id": "H3-k1",
+  "objective": "H3.o1",
+  "type": "term"
+ },
+ {
+  "back": "It refuses the edit and says how many times the text appears, so the model can include more lines.",
+  "front": "What does edit_file do when old_text appears twice?",
+  "id": "H3-k2",
+  "objective": "H3.o1",
+  "type": "term"
+ },
+ {
+  "back": "So a check never runs stale cached code: Python would otherwise reuse an old .pyc file written in the same second.",
+  "front": "Why does Rein set PYTHONDONTWRITEBYTECODE for commands?",
+  "id": "H3-k3",
+  "objective": "H3.o1",
+  "type": "term"
+ },
+ {
+  "back": "It keeps the head and the tail of a result, because the error is usually near the end, and marks how many characters it cut.",
+  "front": "What does the output cap keep, and what does it mark?",
+  "id": "H3-k4",
+  "objective": "H3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Yes. Every result that enters the context is capped, including the messages the model reads as errors.",
+  "front": "Does the cap apply to error messages as well as to results?",
+  "id": "H3-k5",
+  "objective": "H3.o2",
+  "type": "term"
+ },
+ {
+  "back": "Because the path is resolved first: the ../ climbs out, so the resolved path is outside the root and the check refuses it.",
+  "front": "Why is a ../ path refused even when the join starts inside the project?",
+  "id": "H3-k6",
+  "objective": "H3.o3",
+  "type": "term"
+ }
+]

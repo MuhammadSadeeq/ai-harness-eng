@@ -1,0 +1,108 @@
+[
+ {
+  "answer": 1,
+  "id": "H3-p1",
+  "mode": "predict",
+  "objective": "H3.o3",
+  "options": [
+   {
+    "text": "It reads the outside file, because the name it was given is inside the project.",
+    "why": "Tempting. The name is inside the project, but the check acts on the real path, which the link moves outside."
+   },
+   {
+    "text": "It follows the link, finds the real path outside the project, and refuses the request.",
+    "why": "Right. resolve() follows the link, and the path check refuses any real path outside the root."
+   },
+   {
+    "text": "It refuses only paths that begin with ../.",
+    "why": "Tempting. A check on the text would miss a link. The wall checks where the path really points."
+   }
+  ],
+  "outcome": "The read was allowed, and the file it reached held the key. The check that refuses links was missing.",
+  "question": "The model asks to read a file inside the project. That file is a link to a file outside it. What does the wall do?"
+ },
+ {
+  "answer": 1,
+  "id": "H3-c1",
+  "mode": "check",
+  "objective": "H3.o1",
+  "options": [
+   {
+    "text": "In the model, which should know better.",
+    "why": "Tempting and wrong. The model can ask for anything; the harness must check it."
+   },
+   {
+    "text": "In Workspace.path(), which compares the resolved path with the project root.",
+    "why": "Right. Joining an absolute path replaces the project folder, and the check catches the result."
+   },
+   {
+    "text": "In run_command, which blocks absolute paths in shell commands.",
+    "why": "Tempting. run_command is a different tool; read_file and edit_file call the same path check."
+   }
+  ],
+  "question": "Where does an absolute path such as /etc/hosts get stopped?"
+ },
+ {
+  "answer": 1,
+  "id": "H3-c2",
+  "mode": "check",
+  "objective": "H3.o2",
+  "options": [
+   {
+    "text": "All of it, because the model needs every line.",
+    "why": "Tempting. Long results flood the context, which is what the cap prevents."
+   },
+   {
+    "text": "The head and the tail, with a marker for the cut.",
+    "why": "Right. The error is usually near the end, so the tail stays, and the marker says how much was removed."
+   },
+   {
+    "text": "Only the first line.",
+    "why": "Tempting. The end of a log often holds the error, so the tail is kept too."
+   }
+  ],
+  "question": "A result is longer than tool_output_chars. Which part of it reaches the model?"
+ },
+ {
+  "answer": 1,
+  "id": "H3-c3",
+  "mode": "check",
+  "objective": "H3.o3",
+  "options": [
+   {
+    "text": "To make the path shorter.",
+    "why": "Tempting. resolve() changes the path to its real form; shortening is not the point."
+   },
+   {
+    "text": "So ../ and links are worked out before the check, and the check sees where the path really points.",
+    "why": "Right. A check on the unresolved text would accept a path that climbs out or follows a link."
+   },
+   {
+    "text": "To create the file if it is missing.",
+    "why": "Tempting and wrong. resolve() does not create anything."
+   }
+  ],
+  "question": "Why does the wall call resolve() before it checks the path?"
+ },
+ {
+  "answer": 1,
+  "id": "H3-c4",
+  "mode": "check",
+  "objective": "H3.o3",
+  "options": [
+   {
+    "text": "The path check in Workspace.path(), which runs on every command.",
+    "why": "Tempting. The check runs on the paths the file tools receive. A shell command is not split into paths for it."
+   },
+   {
+    "text": "Nothing in this step. The wall guards the file tools, and only the gate in step 4 or the operating system's sandbox closes a shell.",
+    "why": "Right. A shell can open any path a command names, and the wall does not see the command."
+   },
+   {
+    "text": "The 60-second timeout.",
+    "why": "Tempting. The timeout limits how long a command runs, not where it can read."
+   }
+  ],
+  "question": "run_command runs cat ../rein.py. Which of these stops it in this step?"
+ }
+]

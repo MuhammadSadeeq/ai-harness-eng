@@ -890,6 +890,17 @@
   "term": "durable execution",
   "wire": "loop"
  },
+ "edit-file": {
+  "aliases": [
+   "edit_file"
+  ],
+  "definition": "A tool that replaces one exact piece of text in a file. The text must appear exactly once, so the edit is unambiguous.",
+  "id": "edit-file",
+  "module": "H3",
+  "strict": true,
+  "term": "edit_file",
+  "wire": "tools"
+ },
  "effort": {
   "aliases": [
    "effort"
@@ -1230,6 +1241,18 @@
   "strict": false,
   "term": "function calling",
   "wire": "tools"
+ },
+ "gate": {
+  "aliases": [
+   "gate",
+   "gates"
+  ],
+  "definition": "The check every tool call passes before it runs. It returns allow, ask or deny, with a reason the model can read.",
+  "id": "gate",
+  "module": "H4",
+  "strict": false,
+  "term": "gate",
+  "wire": "permissions"
  },
  "genai-conventions": {
   "aliases": [
@@ -1666,6 +1689,17 @@
   "strict": true,
   "term": "JSON Schema",
   "wire": "tools"
+ },
+ "jsonl": {
+  "aliases": [
+   "JSONL"
+  ],
+  "definition": "JSON Lines: one JSON object per line. Each line is written as its event happens, so every line written so far is complete.",
+  "id": "jsonl",
+  "module": "H5",
+  "strict": true,
+  "term": "JSONL",
+  "wire": "observe"
  },
  "just-in-time-retrieval": {
   "aliases": [
@@ -2778,6 +2812,17 @@
   "strict": false,
   "term": "run",
   "wire": "loop"
+ },
+ "run-command": {
+  "aliases": [
+   "run_command"
+  ],
+  "definition": "A tool that runs a shell command in the project folder and returns its exit code and output, with a time limit.",
+  "id": "run-command",
+  "module": "H3",
+  "strict": true,
+  "term": "run_command",
+  "wire": "tools"
  },
  "run-state": {
   "aliases": [

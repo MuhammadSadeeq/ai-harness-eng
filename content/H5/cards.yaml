@@ -1,0 +1,30 @@
+- id: H5-k1
+  type: term
+  objective: H5.o1
+  front: What does every line of the trace carry?
+  back: v, run, seq, t in milliseconds, turn, agent, kind and wire, then the kind's own fields.
+- id: H5-k2
+  type: term
+  objective: H5.o1
+  front: What does seq tell you about a file?
+  back: It counts one run's lines from 0 with no gaps, so a missing line shows as a jump in seq.
+- id: H5-k3
+  type: term
+  objective: H5.o2
+  front: Where does the deck read a run's status?
+  back: From the run_end line, which is the last line of the run.
+- id: H5-k4
+  type: term
+  objective: H5.o3
+  front: Why are the tokens on each model_reply line?
+  back: The usage on each reply says how many tokens that call used, so the cost can be read call by call.
+- id: H5-k5
+  type: term
+  objective: H5.o3
+  front: What happens to an API-key-like string before a line is stored?
+  back: It is replaced with [REDACTED], so the file can be shared without the key.
+- id: H5-k6
+  type: term
+  objective: H5.o1
+  front: Why is each line written as it happens?
+  back: 'So a crash loses nothing before it: the file holds every line written so far.'

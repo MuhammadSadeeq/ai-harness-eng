@@ -1,0 +1,376 @@
+module: H4
+number: 4
+title: The permission gate
+goal: 'Give every tool call a verdict before it runs: allow, ask you, or deny, with a reason the model can read.'
+requires_python: '3.11'
+theory: 'Chapter 12: permissions and sandboxes'
+lines_after: 325
+size: rein.py grows to 325 lines
+chunks:
+- id: 4a
+  title: One import
+  explain: re is Python's module for regular expressions, which Rein uses to match command patterns.
+  hunks:
+  - where: at the top of the file
+    diff: |2
+       import os
+      +import re
+       import subprocess
+- id: 4b
+  title: The policy
+  explain: The whole policy is one function, decide(), and it checks things in a fixed order. Read-only tools are
+    always allowed. Commands are checked against BLOCKED first, because deny rules beat allow rules. A command on
+    the ALLOWED list runs without asking, but only if it has no chaining characters; otherwise python test_calc.py
+    && curl evil.example would slip through, because it starts like an allowed command. Every other command asks
+    you, and file edits ask you unless you chose --mode auto. Every Verdict carries a reason, and the model reads
+    it, so it can change course.
+  hunks:
+  - where: new code, above THE LOOP
+    diff: |
+      +# ============ PERMISSIONS: allow, ask, or deny ============
+      +
+      +BLOCKED = [r"\brm\s", r"\bsudo\b", r"\bgit\s+push\b", r"\bcurl\b", r"\bwget\b"]  # never
+      +ALLOWED = [r"^python\s+test_\w+\.py\b", r"^python\s+-m\s+pytest\b"]            # always fine
+      +CHAINING = re.compile(r"[;&|`$<>]")  # an allowed command must not smuggle in a second one
+      +
+      +@dataclass
+      +class Verdict:
+      +    decision: str  # "allow", "ask", or "deny"
+      +    reason: str    # the model reads this too, so say why
+      +
+      +def decide(tool, args, mode):
+      +    """The policy. Deny rules are checked before allow rules."""
+      +    if tool.read_only:
+      +        return Verdict("allow", "read-only tool")
+      +    if tool.name == "run_command":
+      +        command = args.get("command", "").strip()
+      +        if any(re.search(p, command) for p in BLOCKED):
+      +            return Verdict("deny", "destructive, network, or admin command")
+      +        if any(re.search(p, command) for p in ALLOWED) and not CHAINING.search(command):
+      +            return Verdict("allow", "allow-listed command")
+      +        return Verdict("ask", "this command is not on the allow-list")
+      +    if mode == "auto":
+      +        return Verdict("allow", "edits are allowed in auto mode")
+      +    return Verdict("ask", "this tool changes files")
+      +
+      +def ask_human(call, reason):
+      +    answer = input(f"         ? allow {call.name}? ({reason}) [y/N] ")
+      +    return answer.strip().lower() == "y"
+      +
+      +
+      +
+       # ============ THE LOOP ============
+- id: 4c
+  title: Wire it in
+  explain: 'run_tool() now asks the gate before it runs anything, and prints the verdict. check_permission() adds
+    two rules on top of decide(): an ask becomes allow or deny, depending on your answer. A denied call stays denied
+    for the rest of the run, so the model cannot wear you down by asking again.'
+  hunks:
+  - where: in class Config
+    diff: |2
+           tool_output_chars: int = 2000  # cap on each tool result that enters the context
+      +    mode: str = "ask"        # "ask": edits need a human yes. "auto": edits are allowed
+  - where: in Agent.__init__()
+    diff: |2
+               self.specs = [t.spec() for t in self.tools.values()]
+      +        self.denied = set()  # once denied, always denied
+  - where: in Agent.run_tool()
+    diff: |2
+           def run_tool(self, call):
+               """Run one tool call. Any error becomes a message for the model, never a crash."""
+               tool = self.tools.get(call.name)
+               if tool is None:
+                   output, is_error = f"Unknown tool '{call.name}'. Available tools: {', '.join(self.tools)}.", True
+               else:
+      -            try:
+      -                output, is_error = tool.run(**call.input), False
+      -            except ToolError as e:
+      -                output, is_error = str(e), True
+      -            except Exception as e:  # a bug, or an argument the model made up
+      -                output, is_error = f"{type(e).__name__}: {e}", True
+      +            verdict = self.check_permission(tool, call)
+      +            self.say("", f"{verdict.decision:<6} {verdict.reason}")
+      +            if verdict.decision == "deny":
+      +                output, is_error = f"Permission denied: {verdict.reason}. Do not retry this; find another way.", True
+      +            else:
+      +                try:
+      +                    output, is_error = tool.run(**call.input), False
+      +                except ToolError as e:
+      +                    output, is_error = str(e), True
+      +                except Exception as e:  # a bug, or an argument the model made up
+      +                    output, is_error = f"{type(e).__name__}: {e}", True
+               return truncate(output, self.cfg.tool_output_chars), is_error
+  - where: new method in class Agent
+    diff: |
+      +    def check_permission(self, tool, call):
+      +        key = call.name + json.dumps(call.input, sort_keys=True)
+      +        if key in self.denied:
+      +            verdict = Verdict("deny", "this exact call was already denied")
+      +        else:
+      +            verdict = decide(tool, call.input, self.cfg.mode)
+      +        if verdict.decision == "ask":
+      +            yes = ask_human(call, verdict.reason)
+      +            verdict = Verdict("allow", "a human said yes") if yes else Verdict("deny", "a human said no")
+      +        if verdict.decision == "deny":
+      +            self.denied.add(key)
+      +        return verdict
+      +
+      +
+       # ============ COMMAND LINE ============
+  - where: 'in main(): the --mode argument'
+    diff: |2
+           p.add_argument("--workspace", default="demo", help="the project folder the agent works in")
+      +    p.add_argument("--mode", default="ask", choices=["ask", "auto"], help="auto: allow edits without asking")
+  - where: 'in main(): the agent''s config'
+    diff: |2
+               workspace=args.workspace,
+      +        mode=args.mode,
+checkpoint:
+  setup:
+  - reset_demo
+  argv:
+  - Fix the failing test in calc.py
+  - --fake
+  - scenarios/04_gate.json
+  stdin:
+  - y
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: First I will clean up old build files.
+             tool   run_command {"command": "rm -rf build"}
+             deny   destructive, network, or admin command
+             error  Permission denied: destructive, network, or admin command. Do not retry this; find a
+    turn 2   model: That was denied, so I will skip the cleanup.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: Fixing the bug.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             ? allow edit_file? (this tool changes files) [y/N]          allow  a human said yes
+             result Edited calc.py.
+    turn 4   model: Running the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 5   model: Fixed add() in calc.py. The test passes.
+    done     after 5 model calls
+  explain: 'The rm -rf was denied before it could run, and the reason went back to the model, which changed course.
+    The read was allowed without a question, because reading is safe. The edit stopped and asked you: the answer
+    y came from stdin, so the prompt is printed and the answer is not echoed. The test command was on the allow-list,
+    so it simply ran.'
+breaks:
+- id: answer-no
+  title: Answer n at the edit
+  explain: Answer n at the edit. The edit is denied and the test fails with exit code 1. Yet the model's last line
+    still claims "The test passes", and the run ends as done. Nothing checks that claim yet. Step 9 will.
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/04_gate.json
+  stdin:
+  - n
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: First I will clean up old build files.
+             tool   run_command {"command": "rm -rf build"}
+             deny   destructive, network, or admin command
+             error  Permission denied: destructive, network, or admin command. Do not retry this; find a
+    turn 2   model: That was denied, so I will skip the cleanup.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: Fixing the bug.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             ? allow edit_file? (this tool changes files) [y/N]          deny   a human said no
+             error  Permission denied: a human said no. Do not retry this; find another way.
+    turn 4   model: Running the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 1 | test_add failed: add(2, 3) returned -1, expected 5
+    turn 5   model: Fixed add() in calc.py. The test passes.
+    done     after 5 model calls
+- id: chained
+  title: A chained command
+  explain: Change the test command to python test_calc.py && echo ok. The gate asks instead of allowing it. The
+    first answer, y, lets the edit through; the second, n, denies the chained command. A command with chaining characters
+    is never on the allow-list.
+  change:
+    script:
+      path: scenarios/04_gate.json
+      json:
+        replies:
+        - say: First I will clean up old build files.
+          tools:
+          - - run_command
+            - command: rm -rf build
+        - say: That was denied, so I will skip the cleanup.
+          tools:
+          - - read_file
+            - path: calc.py
+        - say: Fixing the bug.
+          tools:
+          - - edit_file
+            - path: calc.py
+              old_text: return a - b
+              new_text: return a + b
+        - say: Running the test.
+          tools:
+          - - run_command
+            - command: python test_calc.py && echo ok
+        - say: Fixed add() in calc.py. The test passes.
+  stdin:
+  - y
+  - n
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: First I will clean up old build files.
+             tool   run_command {"command": "rm -rf build"}
+             deny   destructive, network, or admin command
+             error  Permission denied: destructive, network, or admin command. Do not retry this; find a
+    turn 2   model: That was denied, so I will skip the cleanup.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: Fixing the bug.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             ? allow edit_file? (this tool changes files) [y/N]          allow  a human said yes
+             result Edited calc.py.
+    turn 4   model: Running the test.
+             tool   run_command {"command": "python test_calc.py && echo ok"}
+             ? allow run_command? (this command is not on the allow-list) [y/N]          deny   a human said no
+             error  Permission denied: a human said no. Do not retry this; find another way.
+    turn 5   model: Fixed add() in calc.py. The test passes.
+    done     after 5 model calls
+- id: rm-after
+  title: A destructive part after a passing test
+  explain: Change the test command to python test_calc.py; rm -rf demo. It is denied outright, because deny rules
+    come first, and the passing test before the semicolon does not matter.
+  change:
+    script:
+      path: scenarios/04_gate.json
+      json:
+        replies:
+        - say: First I will clean up old build files.
+          tools:
+          - - run_command
+            - command: rm -rf build
+        - say: That was denied, so I will skip the cleanup.
+          tools:
+          - - read_file
+            - path: calc.py
+        - say: Fixing the bug.
+          tools:
+          - - edit_file
+            - path: calc.py
+              old_text: return a - b
+              new_text: return a + b
+        - say: Running the test.
+          tools:
+          - - run_command
+            - command: python test_calc.py; rm -rf demo
+        - say: Fixed add() in calc.py. The test passes.
+  stdin:
+  - y
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: First I will clean up old build files.
+             tool   run_command {"command": "rm -rf build"}
+             deny   destructive, network, or admin command
+             error  Permission denied: destructive, network, or admin command. Do not retry this; find a
+    turn 2   model: That was denied, so I will skip the cleanup.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: Fixing the bug.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             ? allow edit_file? (this tool changes files) [y/N]          allow  a human said yes
+             result Edited calc.py.
+    turn 4   model: Running the test.
+             tool   run_command {"command": "python test_calc.py; rm -rf demo"}
+             deny   destructive, network, or admin command
+             error  Permission denied: destructive, network, or admin command. Do not retry this; find a
+    turn 5   model: Fixed add() in calc.py. The test passes.
+    done     after 5 model calls
+- id: auto-mode
+  title: Auto mode
+  explain: Run with --mode auto. The edit goes through without a question. Which mode would you give an agent that
+    works unattended at night, and what else would you want around it?
+  change:
+    argv:
+    - Fix the failing test in calc.py
+    - --fake
+    - scenarios/04_gate.json
+    - --mode
+    - auto
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: First I will clean up old build files.
+             tool   run_command {"command": "rm -rf build"}
+             deny   destructive, network, or admin command
+             error  Permission denied: destructive, network, or admin command. Do not retry this; find a
+    turn 2   model: That was denied, so I will skip the cleanup.
+             tool   read_file {"path": "calc.py"}
+             allow  read-only tool
+             result 1| def add(a, b): | 2|     return a - b
+    turn 3   model: Fixing the bug.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             allow  edits are allowed in auto mode
+             result Edited calc.py.
+    turn 4   model: Running the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 5   model: Fixed add() in calc.py. The test passes.
+    done     after 5 model calls
+- id: wall
+  title: A read outside the project
+  explain: 'The model asks for read_file with the path ../rein.py. The gate says allow, because read_file is read-only,
+    and the wall refuses the path. The gate and the wall are separate layers: the gate decides whether a kind of
+    action is allowed, and the wall, inside the tools, decides which files any action can touch.'
+  change:
+    script:
+      path: scenarios/04_gate.json
+      json:
+        replies:
+        - say: First I will clean up old build files.
+          tools:
+          - - run_command
+            - command: rm -rf build
+        - say: That was denied, so I will skip the cleanup.
+          tools:
+          - - read_file
+            - path: ../rein.py
+        - say: Fixing the bug.
+          tools:
+          - - edit_file
+            - path: calc.py
+              old_text: return a - b
+              new_text: return a + b
+        - say: Running the test.
+          tools:
+          - - run_command
+            - command: python test_calc.py
+        - say: Fixed add() in calc.py. The test passes.
+  stdin:
+  - y
+  expected: |
+    task     Fix the failing test in calc.py
+    turn 1   model: First I will clean up old build files.
+             tool   run_command {"command": "rm -rf build"}
+             deny   destructive, network, or admin command
+             error  Permission denied: destructive, network, or admin command. Do not retry this; find a
+    turn 2   model: That was denied, so I will skip the cleanup.
+             tool   read_file {"path": "../rein.py"}
+             allow  read-only tool
+             error  '../rein.py' is outside the project. Use a path inside it.
+    turn 3   model: Fixing the bug.
+             tool   edit_file {"path": "calc.py", "old_text": "return a - b", "new_text": "return a + b"
+             ? allow edit_file? (this tool changes files) [y/N]          allow  a human said yes
+             result Edited calc.py.
+    turn 4   model: Running the test.
+             tool   run_command {"command": "python test_calc.py"}
+             allow  allow-listed command
+             result exit code 0 | 1 test passed
+    turn 5   model: Fixed add() in calc.py. The test passes.
+    done     after 5 model calls

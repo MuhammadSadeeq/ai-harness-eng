@@ -1,0 +1,16 @@
+- id: edit-file
+  term: edit_file
+  aliases:
+  - edit_file
+  strict: true
+  wire: tools
+  definition: A tool that replaces one exact piece of text in a file. The text must appear exactly once, so the
+    edit is unambiguous.
+- id: run-command
+  term: run_command
+  aliases:
+  - run_command
+  strict: true
+  wire: tools
+  definition: A tool that runs a shell command in the project folder and returns its exit code and output, with
+    a time limit.

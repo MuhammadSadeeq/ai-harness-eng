@@ -1,0 +1,87 @@
+[
+ {
+  "answer": 1,
+  "id": "H5-p1",
+  "mode": "predict",
+  "objective": "H5.o3",
+  "options": [
+   {
+    "text": "The first model_call, because the run starts there.",
+    "why": "Tempting. The first call is one call among many; it does not say which turn grew."
+   },
+   {
+    "text": "The model_reply lines, which carry the tokens and cost of each call, so you can see the turn where the cost moves.",
+    "why": "Right. The per-call lines show where the cost went; the total only says that it went."
+   },
+   {
+    "text": "The run_end line alone, because it has the total.",
+    "why": "Tempting. The total is the sum; it does not name the turn that made it."
+   }
+  ],
+  "outcome": "The cost moved on turn 2: the deploy log went out again on every call after the first read. The total did not say which turn.",
+  "question": "A run costs far more than the last one. The total in run_end is high. Which line do you read first?"
+ },
+ {
+  "answer": 0,
+  "id": "H5-c1",
+  "mode": "check",
+  "objective": "H5.o1",
+  "options": [
+   {
+    "text": "seq, because it counts one run's lines from 0 with no gaps.",
+    "why": "Right. A jump in seq means a line was lost."
+   },
+   {
+    "text": "t, because it is the time.",
+    "why": "Tempting. t tells you when, not whether a line is missing."
+   },
+   {
+    "text": "run, because it names the run.",
+    "why": "Tempting. run is the same on every line of one run; it does not count them."
+   }
+  ],
+  "question": "Which field shows that a line is missing from a file?"
+ },
+ {
+  "answer": 0,
+  "id": "H5-c2",
+  "mode": "check",
+  "objective": "H5.o2",
+  "options": [
+   {
+    "text": "run_end, which closes the run and carries its status.",
+    "why": "Right. The deck reads the status from it."
+   },
+   {
+    "text": "model_reply, because it is the last thing the model said.",
+    "why": "Tempting. The reply carries the text and the cost; the status is on run_end."
+   },
+   {
+    "text": "permission, because the last verdict ends the run.",
+    "why": "Tempting and wrong. A verdict is not the end of a run."
+   }
+  ],
+  "question": "The last line of a run says status done. Which kind of line is it?"
+ },
+ {
+  "answer": 1,
+  "id": "H5-c3",
+  "mode": "check",
+  "objective": "H5.o3",
+  "options": [
+   {
+    "text": "The key, because the trace exists for debugging.",
+    "why": "Tempting and wrong. The trace is shared; a stored key leaks with it."
+   },
+   {
+    "text": "[REDACTED] in its place, so the file can be shared.",
+    "why": "Right. Redaction happens before the line is stored."
+   },
+   {
+    "text": "Nothing: the line is not written at all.",
+    "why": "Tempting. The line is written with the key replaced, so the event is kept."
+   }
+  ],
+  "question": "A tool result contains a string that looks like an API key. What does the trace store?"
+ }
+]

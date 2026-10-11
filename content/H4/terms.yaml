@@ -1,0 +1,9 @@
+- id: gate
+  term: gate
+  aliases:
+  - gate
+  - gates
+  strict: false
+  wire: permissions
+  definition: The check every tool call passes before it runs. It returns allow, ask or deny, with a reason the
+    model can read.

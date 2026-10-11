@@ -1,0 +1,27 @@
+- id: H3-s1
+  objectives:
+  - H3.o1
+  - H3.o3
+  prompt: The model asks to read a file that is a link to a file outside the project. What does your wall do, and
+    why?
+  model_answer: The path is resolved first, and resolve() follows the link. The real path is outside the project
+    folder, so Workspace.path() raises a ToolError with a message the model can act on. The model reads that error
+    and tries another path. The check is on the real path, not on the text the model wrote, so a name inside the
+    project does not help a link that points out.
+  rubric:
+  - Names resolve() as the step that follows the link
+  - Says the check is on the real path, not on the typed name
+  - Says the refusal is a ToolError written for the model
+  - Names the project folder as the only place the check allows
+- id: H3-s2
+  objectives:
+  - H3.o2
+  prompt: A tool returns a 50,000-character log. What does Rein send the model, and what does the model still know?
+  model_answer: Rein cuts the result to tool_output_chars before it enters the context. The cut keeps the head and
+    the tail, because the error is usually near the end, and a marker says how many characters were removed. The
+    model knows the start, the end, and that the middle was cut, so it can ask for a smaller slice.
+  rubric:
+  - Says the result is capped before it enters the context
+  - Says the head and the tail are kept
+  - Says the marker states how much was removed
+  - Says the model can ask for a smaller part

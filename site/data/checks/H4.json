@@ -1,0 +1,129 @@
+[
+ {
+  "answer": 1,
+  "id": "H4-p1",
+  "mode": "predict",
+  "objective": "H4.o3",
+  "options": [
+   {
+    "text": "The gate stops it, because a delete outside the project is always denied.",
+    "why": "Tempting. The gate has that rule only if the board sets it. This board only asks."
+   },
+   {
+    "text": "The person approves it without reading, because ten yeses came first.",
+    "why": "Right. Repeated prompts train the person to approve, and nothing in the gate says the eleventh ask is different."
+   },
+   {
+    "text": "The wall in the delete tool stops it.",
+    "why": "Tempting. The wall guards paths in the file tools; the approval is decided before the tool runs."
+   }
+  ],
+  "outcome": "The person approved the eleventh ask without reading it, and the delete ran. The run still passed its tests.",
+  "question": "After ten harmless prompts, the eleventh ask is a delete outside the project. The person has said yes ten times. What happens?"
+ },
+ {
+  "answer": 0,
+  "id": "H4-c1",
+  "mode": "check",
+  "objective": "H4.o1",
+  "options": [
+   {
+    "text": "In run_tool(), before the tool's function is called.",
+    "why": "Right. The verdict comes first; only then does the tool run."
+   },
+   {
+    "text": "After the tool has run, to check the result.",
+    "why": "Tempting and wrong. A gate after the run cannot stop the run."
+   },
+   {
+    "text": "In the system prompt, as a rule for the model.",
+    "why": "Tempting. A rule in the prompt is words the model may ignore; the gate is code the harness runs."
+   }
+  ],
+  "question": "Where in Rein does the gate run?"
+ },
+ {
+  "answer": 1,
+  "id": "H4-c2",
+  "mode": "check",
+  "objective": "H4.o2",
+  "options": [
+   {
+    "text": "allow, because it starts with an allow-listed command.",
+    "why": "Tempting. The prefix matches, but the chaining check finds &&, so it is not allow-listed."
+   },
+   {
+    "text": "ask, because a chained command is not on the allow-list.",
+    "why": "Right. The chaining check sends it to the person."
+   },
+   {
+    "text": "deny, because it has two commands.",
+    "why": "Tempting and wrong. Only the deny list denies; a second command alone asks."
+   }
+  ],
+  "question": "run_command gets python test_calc.py && echo ok. Which decision does decide() return?"
+ },
+ {
+  "answer": 1,
+  "id": "H4-c3",
+  "mode": "check",
+  "objective": "H4.o2",
+  "options": [
+   {
+    "text": "The allow list, so a known test command runs at once.",
+    "why": "Tempting. Deny rules come first, so a command that matches both is denied."
+   },
+   {
+    "text": "The deny list, which denies a match before anything is allowed.",
+    "why": "Right. Deny rules are checked before allow rules."
+   },
+   {
+    "text": "The mode, so auto allows everything.",
+    "why": "Tempting. The mode applies to edits, after the command rules."
+   }
+  ],
+  "question": "Which check comes first in decide(), for a run_command?"
+ },
+ {
+  "answer": 1,
+  "id": "H4-c4",
+  "mode": "check",
+  "objective": "H4.o3",
+  "options": [
+   {
+    "text": "The gate, which should have asked.",
+    "why": "Tempting. The gate allowed the kind of action; a read-only tool is never asked about."
+   },
+   {
+    "text": "The wall inside read_file, which checks the path before it reads.",
+    "why": "Right. The gate decides whether a kind of action is allowed; the wall decides which files the tool can touch."
+   },
+   {
+    "text": "The model's system prompt.",
+    "why": "Tempting. Words guide the model; they do not stop a read the code allows."
+   }
+  ],
+  "question": "The gate allows read_file because it is read-only. The model reads ../rein.py. What stops the read?"
+ },
+ {
+  "answer": 1,
+  "id": "H4-c5",
+  "mode": "check",
+  "objective": "H4.o3",
+  "options": [
+   {
+    "text": "allow, because the request was polite and the model is trusted.",
+    "why": "Tempting and wrong. Politeness is not a permission; the command matches the deny list."
+   },
+   {
+    "text": "deny, with the reason, and the model is told not to retry the same call.",
+    "why": "Right. The reason goes back as an error, and the denial stays for the run."
+   },
+   {
+    "text": "ask, so the person decides about the cleanup.",
+    "why": "Tempting. Deny rules come before the ask; a matched destructive command is refused outright."
+   }
+  ],
+  "question": "A model asks politely to run rm -rf build. What does the gate return to it?"
+ }
+]

@@ -767,6 +767,14 @@
     </section>
     <section class="glossary-group" id="letter-e" data-filter-group>
       <h2>E</h2>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-edit-file">
+        <h3 class="term-name"><dfn id="term-edit-file">edit_file</dfn></h3>
+        <p class="term-def">A tool that replaces one exact piece of text in a file. The text must appear exactly once, so the edit is unambiguous.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/rein-3-real-tools-inside-a-wall.html">H3 · Rein 3: real tools inside a wall</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-effort">
         <h3 class="term-name"><dfn id="term-effort">effort</dfn></h3>
         <p class="term-def">A setting that tells the model how much to work before it answers. The harness sets it on each request.</p>
@@ -1026,6 +1034,15 @@
     </section>
     <section class="glossary-group" id="letter-g" data-filter-group>
       <h2>G</h2>
+      <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-gate">
+        <h3 class="term-name"><dfn id="term-gate">gate</dfn></h3>
+        <p class="term-def">The check every tool call passes before it runs. It returns allow, ask or deny, with a reason the model can read.</p>
+        <p class="term-meta">
+          <span class="wire w-permissions"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-diamond"></use></svg> Permissions</span>
+          <span class="taught">Taught in <a href="modules/rein-4-the-permission-gate.html">H4 · Rein 4: the permission gate</a></span>
+        </p>
+        <p class="term-alias">Also written: gates</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-genai-conventions">
         <h3 class="term-name"><dfn id="term-genai-conventions">GenAI semantic conventions</dfn></h3>
         <p class="term-def">OpenTelemetry&#x27;s names for generative AI spans and attributes. The registry declares them in development, so names can still change.</p>
@@ -1358,6 +1375,14 @@
           <span class="taught">Taught in <a href="modules/structured-outputs.html">A5 · Structured outputs and schemas</a></span>
         </p>
         <p class="term-alias">Also written: JSON schema, JSON schemas</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-jsonl">
+        <h3 class="term-name"><dfn id="term-jsonl">JSONL</dfn></h3>
+        <p class="term-def">JSON Lines: one JSON object per line. Each line is written as its event happens, so every line written so far is complete.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/rein-5-a-trace.html">H5 · Rein 5: a trace</a></span>
+        </p>
       </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-just-in-time-retrieval">
         <h3 class="term-name"><dfn id="term-just-in-time-retrieval">just-in-time retrieval</dfn></h3>
@@ -2215,6 +2240,14 @@
           <span class="taught">Taught in <a href="modules/loop-state-and-stopping.html">C5 · Loop state and stopping well</a></span>
         </p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="tools" data-wire-name="Tools" id="entry-run-command">
+        <h3 class="term-name"><dfn id="term-run-command">run_command</dfn></h3>
+        <p class="term-def">A tool that runs a shell command in the project folder and returns its exit code and output, with a time limit.</p>
+        <p class="term-meta">
+          <span class="wire w-tools"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-hexagon"></use></svg> Tools</span>
+          <span class="taught">Taught in <a href="modules/rein-3-real-tools-inside-a-wall.html">H3 · Rein 3: real tools inside a wall</a></span>
+        </p>
+      </div>
     </section>
     <section class="glossary-group" id="letter-s" data-filter-group>
       <h2>S</h2>
@@ -2891,7 +2924,7 @@
       </div>
     </section>
     </div>
-    <p class="glossary-count" data-glossary-count>312 terms</p>
+    <p class="glossary-count" data-glossary-count>316 terms</p>
     <!-- /gen:glossary -->
   </section>
 </main>

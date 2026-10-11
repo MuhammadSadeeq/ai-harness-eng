@@ -1,0 +1,7 @@
+{
+ "replies": [
+  {"say": "I will try the files outside the project.", "tools": [["read_file", {"path": "../rein.py"}], ["read_file", {"path": "/etc/hosts"}]]},
+  {"say": "Now a link that points out of the folder.", "tools": [["read_file", {"path": "link.txt"}]]},
+  {"say": "All three were refused. I will stop here."}
+ ]
+}

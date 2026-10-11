@@ -1,0 +1,28 @@
+- id: H4-s1
+  objectives:
+  - H4.o1
+  - H4.o2
+  prompt: Walk me through what the gate does with a run_command that chains two commands with &&.
+  model_answer: The gate calls decide(). The command is not read-only, so it checks the deny list first, and nothing
+    there matches. It then checks the allow list, and the test command matches, but the chaining check finds &&.
+    A command with chaining characters is never allow-listed, so the verdict is ask. The gate asks the person, and
+    the answer decides the call. The verdict and its reason go back to the model either way.
+  rubric:
+  - Runs the deny list before the allow list
+  - Says the chaining check stops an allow-listed prefix from carrying a second command
+  - Says the verdict is ask, so the person decides
+  - Says the verdict and its reason go back to the model
+- id: H4-s2
+  objectives:
+  - H4.o3
+  prompt: A model asks politely to run rm -rf build to clean up. What does the gate return, and what should the
+    model do next?
+  model_answer: The gate returns deny, because the command matches the destructive-command rule, and the reason
+    says so. The denial goes back to the model as an error that says not to retry it. The model should find another
+    way to finish, such as skipping the cleanup and saying so, and it must not try the same command again, because
+    the denial stays for the run.
+  rubric:
+  - Says the gate returns deny without asking the person
+  - Names the reason the model reads
+  - Says the model should find another way, not retry
+  - Says the denial stays for the rest of the run

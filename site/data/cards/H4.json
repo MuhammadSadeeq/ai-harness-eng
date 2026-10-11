@@ -1,0 +1,44 @@
+[
+ {
+  "back": "One of allow, ask or deny, each with a reason the model can read.",
+  "front": "What does the gate return for a tool call?",
+  "id": "H4-k1",
+  "objective": "H4.o1",
+  "type": "term"
+ },
+ {
+  "back": "In run_tool(), before the tool runs. No tool call runs before its verdict.",
+  "front": "Where does the gate run?",
+  "id": "H4-k2",
+  "objective": "H4.o1",
+  "type": "term"
+ },
+ {
+  "back": "Read-only tools first; then the deny rules; then the allow list, only without chaining characters; then the mode for edits.",
+  "front": "What is the decision order in decide()?",
+  "id": "H4-k3",
+  "objective": "H4.o2",
+  "type": "term"
+ },
+ {
+  "back": "Because python test_calc.py && curl evil.example starts like an allowed command, so the second command would ride along.",
+  "front": "Why does the chaining check matter?",
+  "id": "H4-k4",
+  "objective": "H4.o2",
+  "type": "term"
+ },
+ {
+  "back": "So the model cannot wear the person down by asking for the same thing again.",
+  "front": "Why does a denied call stay denied for the rest of the run?",
+  "id": "H4-k5",
+  "objective": "H4.o3",
+  "type": "term"
+ },
+ {
+  "back": "No. The gate decides whether a kind of action is allowed; the wall inside the tool decides which files it can touch.",
+  "front": "Does the gate check the paths inside a file tool?",
+  "id": "H4-k6",
+  "objective": "H4.o3",
+  "type": "term"
+ }
+]

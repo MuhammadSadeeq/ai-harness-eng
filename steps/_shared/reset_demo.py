@@ -36,4 +36,12 @@ lines = [f"2026-09-26 10:{i // 60:02d}:{i % 60:02d} INFO request {i} served in {
 lines[396] = "2026-09-26 10:06:37 ERROR add(2, 3) returned -1, expected 5"
 (demo / "app.log").write_text("\n".join(lines) + "\n")
 
+# A second, empty project for the hostile tape: its one file is a link that points out of it.
+import os
+trap = Path("trap")
+shutil.rmtree(trap, ignore_errors=True)
+trap.mkdir()
+(trap / "notes.txt").write_text("Nothing in this folder yet.\n")
+os.symlink("../rein.py", trap / "link.txt")
+
 print("Demo project ready: demo/calc.py, demo/test_calc.py, demo/app.log, demo/AGENTS.md")
