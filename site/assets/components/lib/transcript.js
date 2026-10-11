@@ -196,7 +196,8 @@ function rowBody(event, expanded) {
     const head = el("span", { class: "label", text: event.ok ? "Tool ran" : "Tool failed" });
     const call = el("span", { class: "ev-tool", text: `${event.tool}(${compactJson(event.input)})` });
     const out = el("span", { class: "ev-out", text: shown });
-    return { body: el("span", { class: "ev-card" }, head, call, out), callout: text, more: card.more && !expanded };
+    // more stays true once expanded, so the key turns into "Show less" and keeps the focus.
+    return { body: el("span", { class: "ev-card" }, head, call, out), callout: text, more: card.more };
   }
   return { body: el("span", { class: "ev-meta", text }), callout: null };
 }
@@ -238,7 +239,7 @@ export function transcriptList(opts) {
       main = el("div", { class: "ev-main", "data-index": index }, head);
     }
     const moreEl = more
-      ? el("button", { class: "ev-more", type: "button", "aria-expanded": expanded.has(index) ? "true" : "false", text: expanded.has(index) ? "Show less" : "Show all" })
+      ? el("button", { class: "ev-more", type: "button", "data-key": `more-${index}`, "aria-expanded": expanded.has(index) ? "true" : "false", text: expanded.has(index) ? "Show less" : "Show all" })
       : null;
     if (moreEl) moreEl.addEventListener("click", () => opts.onExpand?.(index));
     const callEl = callouts && callout ? el("p", { class: "ev-callout", text: callout }) : null;

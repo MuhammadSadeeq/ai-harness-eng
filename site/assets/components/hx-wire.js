@@ -90,6 +90,7 @@ export class HxWire extends HxElement {
       diff: this.hasAttribute("diff"),
       showSystem: false,
       copied: null,
+      copyFailed: null,
       hit: -1,
       toolsOpen: false,
       ver: 0,
@@ -324,7 +325,8 @@ export class HxWire extends HxElement {
       region.setAttribute("aria-label", `${name === "request" ? "Request" : "Response"} JSON, turn ${this.state.turn}`);
       if (name === "request" && range) section.append(this.#toolsToggle(this.state.toolsOpen));
       region.append(this.#pre(text, hit, name, name === "request" ? fold : null));
-      const copy = el("button", "key", this.state.copied === name ? "Copied" : "Copy");
+      const label = this.state.copied === name ? "Copied" : this.state.copyFailed === name ? "Could not copy" : "Copy";
+      const copy = el("button", "key", label);
       copy.type = "button";
       copy.dataset.key = `copy-${name}`;
       copy.addEventListener("click", () => this.#copy(name, text));
@@ -407,14 +409,23 @@ export class HxWire extends HxElement {
   #copy(name, text) {
     const write = globalThis.navigator?.clipboard?.writeText?.(text);
     if (!write) {
-      this.live(COPY_FAILED);
+      this.#copyFailed(name);
       return;
     }
-    write.then(() => this.#copied(name), () => this.live(COPY_FAILED));
+    write.then(() => this.#copied(name), () => this.#copyFailed(name));
+  }
+
+  // "Could not copy" stays on the key for 4 s, so a learner who cannot hear the live region sees it too.
+  #copyFailed(name) {
+    this.setState({ copied: null, copyFailed: name });
+    this.live(COPY_FAILED);
+    setTimeout(() => {
+      if (this.state.copyFailed === name) this.setState({ copyFailed: null });
+    }, 4000);
   }
 
   #copied(name) {
-    this.setState({ copied: name });
+    this.setState({ copied: name, copyFailed: null });
     this.live("Copied");
     setTimeout(() => {
       if (this.state.copied === name) this.setState({ copied: null });

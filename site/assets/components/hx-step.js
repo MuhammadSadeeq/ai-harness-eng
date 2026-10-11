@@ -29,6 +29,8 @@ const FAILED_COPY = "Python could not load. Check your connection and try again.
 const RETRY_COPY = "Try again";
 const COPIED = "Copied";
 const COPY_FAILED = "Could not copy. Select the text and copy it.";
+// On the key itself, so a learner who cannot hear the live region sees that nothing was copied.
+const COPY_FAILED_KEY = "Could not copy";
 const COPY_NEW = "Copy new lines";
 const COPY_FILE = "Copy rein.py";
 const RUN_HERE = "Run it here";
@@ -43,6 +45,7 @@ const BROKEN = "Broken";
 const YOUR_FILE_OUTPUT = "Your output";
 const SCROLL_HINT = "Long lines scroll sideways.";
 const COPY_CONFIRM_MS = 2000;
+const COPY_FAILED_MS = 4000;
 const COPY_COMMAND = "Copy command";
 const LOCAL_TITLE = "Run this on your machine";
 const LOCAL_NOTE = "This command needs your own machine. It is shown here, not run: run it in your project folder.";
@@ -141,7 +144,7 @@ export class HxStep extends HxElement {
     this.lastCopy = null;
     this.normal = null;
     this.breakOutputs = new Map();
-    this.state = { running: false, ran: false, verdict: null, copied: null, breaksOn: [], check: false, checkOutcome: null };
+    this.state = { running: false, ran: false, verdict: null, copied: null, copyFailed: null, breaksOn: [], check: false, checkOutcome: null };
     this.#unsubscribe = python.subscribe(() => this.patch({}));
     this.addEventListener("focusin", (event) => {
       const target = event.target;
@@ -204,18 +207,31 @@ export class HxStep extends HxElement {
     this.lastCopy = text;
     const write = navigator.clipboard?.writeText(text);
     if (!write) {
-      this.live(COPY_FAILED);
+      this.#copyFailed(key);
       this.copyJob = Promise.resolve();
       return;
     }
-    this.copyJob = write.then(() => this.#copied(key), () => this.live(COPY_FAILED));
+    this.copyJob = write.then(() => this.#copied(key), () => this.#copyFailed(key));
   }
 
   #copied(key) {
     this.live(COPIED);
     clearTimeout(this.#copyTimer);
-    this.patch({ copied: key });
+    this.patch({ copied: key, copyFailed: null });
     this.#copyTimer = setTimeout(() => this.patch({ copied: null }), COPY_CONFIRM_MS);
+  }
+
+  #copyFailed(key) {
+    this.live(COPY_FAILED);
+    clearTimeout(this.#copyTimer);
+    this.patch({ copied: null, copyFailed: key });
+    this.#copyTimer = setTimeout(() => this.patch({ copyFailed: null }), COPY_FAILED_MS);
+  }
+
+  /** A copy key's label: Copied, Could not copy, or its own. */
+  #copyLabel(key, label) {
+    if (this.state.copied === key) return COPIED;
+    return this.state.copyFailed === key ? COPY_FAILED_KEY : label;
   }
 
   // ---- the reference run ----
@@ -474,16 +490,16 @@ export class HxStep extends HxElement {
     dom.runMine.disabled = py !== "ready";
     dom.runMine.textContent = s.running ? RUNNING_COPY : localCheckpoint ? CHECK_MINE : RUN_MINE;
     for (const button of this.ui.querySelectorAll("[data-copy-label]")) {
-      button.textContent = s.copied === button.dataset.key ? COPIED : button.dataset.copyLabel;
+      button.textContent = this.#copyLabel(button.dataset.key, button.dataset.copyLabel);
     }
     if (localCheckpoint) dom.explain.hidden = false;
 
     for (const chunk of step.chunks) {
       const copy = this.ui.querySelector(`[data-key="copy-${chunk.id}"]`);
-      if (copy) copy.textContent = s.copied === `copy-${chunk.id}` ? COPIED : COPY_NEW;
+      if (copy) copy.textContent = this.#copyLabel(`copy-${chunk.id}`, COPY_NEW);
     }
     const fileCopy = this.ui.querySelector('[data-key="copy-file"]');
-    if (fileCopy) fileCopy.textContent = s.copied === "copy-file" ? COPIED : COPY_FILE;
+    if (fileCopy) fileCopy.textContent = this.#copyLabel("copy-file", COPY_FILE);
 
     dom.runVerdict.hidden = !s.ran;
     if (s.ran) {

@@ -444,6 +444,7 @@ async function settleAfterPress(page) {
 // Returns { failures, presses, stops } for one page (failures are named without the page; runPage prefixes it).
 async function checkKeyboardWalk(browser, url) {
   const failures = [];
+  const warnings = [];
   const presses = new Map();
   let stops = 0;
   let pressed = 0;
@@ -464,15 +465,21 @@ async function checkKeyboardWalk(browser, url) {
       pressed += 1;
       await page.keyboard.press("Enter");
       await settleAfterPress(page);
-      const lost = await page.evaluate(() => document.activeElement === null || document.activeElement === document.body);
-      if (lost) failures.push(`focus lost to BODY after Enter on "${control.name}" (${control.component})`);
+      const landed = await page.evaluate(() => {
+        const a = document.activeElement;
+        if (a === null || a === document.body) return "body";
+        return a.classList.contains("hx-ui") ? "component" : "control";
+      });
+      if (landed === "body") failures.push(`focus lost to BODY after Enter on "${control.name}" (${control.component})`);
+      // The base's last resort (D-063): focus stayed in the component, but on no control. Named, not failed.
+      if (landed === "component") warnings.push(`focus fell back to the component after Enter on "${control.name}" (${control.component})`);
     }
   } catch (error) {
     failures.push(`keyboard walk failed while stop ${stops}: ${error.message.split("\n")[0]}`);
   } finally {
     await context.close().catch(() => {});
   }
-  return { failures, presses: pressed, stops };
+  return { failures, warnings, presses: pressed, stops };
 }
 
 async function runCvd(page, pageSlug, outDir, shots) {
@@ -642,6 +649,7 @@ async function main() {
           pageFailures.push(`keyboard walk: timed out after ${VIEW_LIMIT_MS / 1000} s`);
         } else {
           for (const f of walk.failures) pageFailures.push(f);
+          for (const w of walk.warnings) pageWarnings.push(`keyboard walk: ${w}`);
           lines.push(`walk ${pagePath}: ${walk.presses} presses in ${walk.stops} stops, ${walk.failures.length} failures`);
         }
       }

@@ -100,7 +100,7 @@ FIXED, NOT FIXED or RULED for each, then any new problem a fix introduced.
 |---|---|---|---|---|---|---|
 | 1. Technical accuracy | 283d660 | 55 | 3 | 0 | 4 (1 major) | phase6-audit-1-round2.md |
 | 2. Sequencing and pedagogy | 283d660 | 20 | 2 | 2 | 3 (1 major) | phase6-audit-2-round2.md |
-| 3. Interaction QA | 509ef41 | — | — | — | — | running |
+| 3. Interaction QA | 509ef41 | 11 | 1 | 2 | 1 (major) | phase6-audit-3-round2.md |
 | 4. Accessibility and mobile | 312e352 | — | — | — | — | running |
 | 5. Code and tests | 283d660 | 22 | 0 | 1 | 4 (minor) | phase6-audit-5-round2.md |
 
@@ -131,6 +131,17 @@ No blocker in any report so far.
   kata's function: it now prefers the def the test imports and reads
   `async def`. D2's touching test stubs `wilson`, so a solution that
   computes its intervals inside `differ` fails it: ruled below.
+
+- **Audit 3, new major:** a refused copy was announced only to screen
+  readers. The key itself now reads "Could not copy" for 4 s, as it reads
+  "Copied" on success (hx-step, hx-wire).
+- **Audit 3, not fixed (the transcript's "Show all"):** seen only in the
+  audit's walk log, landing on the component, not BODY; not reproduced in
+  isolation, and the lab's replays have no tool output long enough to show
+  the transcript's expand key. That key had no `data-key` and vanished once
+  pressed, so it now carries one and stays as "Show less". QA's keyboard
+  walk now warns when focus falls back to a component (D-063's last
+  resort): none on all 35 walked pages.
 
 ### Ruled in round 2
 
