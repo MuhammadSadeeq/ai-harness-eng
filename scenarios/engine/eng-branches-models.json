@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "id": "eng-branches-models",
+  "title": "A branch in a model profile's script",
+  "task": "Write summary.txt from the two notes.",
+  "model_id": "model-a",
+  "pricing": {
+    "input_milli_per_mtok": 1000,
+    "output_milli_per_mtok": 2000,
+    "cache_write_milli_per_mtok": 1250,
+    "cache_read_milli_per_mtok": 100
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given.",
+  "rules": [],
+  "workspace": {
+    "notes/a.txt": "Buy milk.\n",
+    "notes/b.txt": "Call Sam.\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [],
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "seed_base": 20261010,
+  "checks": [
+    {
+      "file": "summary.txt",
+      "contains": "Buy milk"
+    }
+  ],
+  "models": {
+    "model-a": {
+      "pricing": {
+        "input_milli_per_mtok": 1000,
+        "output_milli_per_mtok": 2000,
+        "cache_write_milli_per_mtok": 1250,
+        "cache_read_milli_per_mtok": 100
+      }
+    },
+    "model-b": {
+      "pricing": {
+        "input_milli_per_mtok": 2000,
+        "output_milli_per_mtok": 4000,
+        "cache_write_milli_per_mtok": 2500,
+        "cache_read_milli_per_mtok": 200
+      },
+      "script": [
+        {
+          "branch": [
+            {
+              "percent": 50,
+              "then": [
+                {
+                  "say": "I write the summary.",
+                  "tools": [
+                    [
+                      "write_file",
+                      {
+                        "path": "summary.txt",
+                        "content": "Buy milk. Call Sam.\n"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "say": "Done.",
+                  "stop": "end_turn"
+                }
+              ]
+            },
+            {
+              "percent": 50,
+              "then": [
+                {
+                  "say": "I write the summary in one line.",
+                  "tools": [
+                    [
+                      "write_file",
+                      {
+                        "path": "summary.txt",
+                        "content": "Buy milk. Call Sam.\n"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "say": "Done.",
+                  "stop": "end_turn"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "say": "Done without a summary.",
+      "stop": "end_turn"
+    }
+  ],
+  "boards": [
+    "eng-branches-model-b"
+  ],
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ]
+}

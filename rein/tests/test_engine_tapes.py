@@ -2,18 +2,19 @@
 
 from __future__ import annotations
 
+import copy
 import dataclasses
 import json
 from pathlib import Path
 from typing import Any
 
 import pytest
-from support import FACTS_PATH, of_kind
+from support import BASE_TAPE, FACTS_PATH, of_kind
 
 from rein.board import board_from_dict, load_board
 from rein.sim import run_trial
 from rein.spec import STATUSES
-from rein.tape import load_tape
+from rein.tape import TapeError, load_tape, tape_from_dict
 
 ENGINE = Path(__file__).resolve().parents[2] / "scenarios" / "engine"
 ENGINE_BOARDS = ENGINE / "boards"
@@ -461,3 +462,35 @@ def test_sub_agent_ids_are_scoped_by_its_number_and_turn() -> None:
     assert stubborn_reply["tool_uses"][0]["id"] == "toolu_a2_2_1"
     response_ids = [item["id"] for item in result.wire if item.get("role") == "assistant"]
     assert "msg_a1_1" in response_ids and "msg_a2_2" in response_ids
+
+
+def test_a_branch_is_located_by_its_tape_pointer() -> None:
+    # A18: a session's, a sub-agent's and a model profile's branches name their tape pointers.
+    sessions = trial("eng-branches", "eng-branches-isolated", 0)
+    assert sessions.choices[0] == ("/sessions/0/script/0", 0)
+    assert {location for location, _ in sessions.choices} == {
+        "/sessions/0/script/0",
+        "/agents/checker/script/0",
+    }
+    models = trial("eng-branches-models", "eng-branches-model-b", 0)
+    assert models.choices == [("/models/model-b/script/0", 0)]
+
+
+def test_a17_3_a_profile_script_on_a_sessions_tape_is_refused_by_the_loader() -> None:
+    """A17.3: refused at load time, whether or not a board selects the profile."""
+    pricing = {"input_milli_per_mtok": 1000, "output_milli_per_mtok": 2000}
+    raw = copy.deepcopy(BASE_TAPE)
+    del raw["script"]
+    raw["sessions"] = [
+        {"script": [{"say": "one", "stop": "end_turn"}]},
+        {"script": [{"say": "two", "stop": "end_turn"}]},
+    ]
+    raw["models"] = {"model-b": {"pricing": pricing, "script": [{"say": "b", "stop": "end_turn"}]}}
+    with pytest.raises(TapeError, match="A17.3"):
+        tape_from_dict(raw)
+    raw["models"] = {"model-b": {"pricing": pricing}}  # no script: allowed on a sessions tape
+    assert len(tape_from_dict(raw).sessions) == 2
+    plain = copy.deepcopy(BASE_TAPE)  # a profile script on a plain script tape: allowed
+    script = [{"say": "b", "stop": "end_turn"}]
+    plain["models"] = {"model-b": {"pricing": pricing, "script": script}}
+    assert tape_from_dict(plain).models["model-b"]["script"]

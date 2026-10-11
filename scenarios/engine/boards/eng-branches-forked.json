@@ -1,0 +1,11 @@
+{
+  "id": "eng-branches-forked",
+  "label": "sub-agents, forked",
+  "modules": {
+    "subagents": {
+      "context": "forked",
+      "max": 2,
+      "max_turns": 3
+    }
+  }
+}

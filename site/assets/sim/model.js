@@ -67,8 +67,10 @@ function children(steps, base) {
 }
 
 export class ScriptedModel {
-  constructor(tape, prng) {
-    this.queue = tape.script.map((step, i) => ({ step, path: `/script/${i}` }));
+  // A18: base is the JSON pointer of the script this model runs: /script, /sessions/<k>/script, /agents/<name>/script
+  // or /models/<id>/script. Branch locations resolve against the tape from it.
+  constructor(tape, prng, base = "/script") {
+    this.queue = tape.script.map((step, i) => ({ step, path: `${base}/${i}` }));
     this.prng = prng;
     this.faults = tape.faults;
     this.outage = tape.outage;

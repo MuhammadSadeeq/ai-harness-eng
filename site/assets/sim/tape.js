@@ -378,6 +378,12 @@ export function loadTape(raw) {
   }
   t.agents = loadAgents(raw.agents, where);
   t.models = loadModels(raw.models, where);
+  // A17.3: a model profile with a script on a tape with sessions is refused by the loader (Python does the same).
+  if (t.sessions) {
+    for (const [id, m] of Object.entries(t.models)) {
+      if (m.script !== null) fail(`${where}.models ${id}`, "a model profile's script cannot replace sessions (A17.3)");
+    }
+  }
   t.crash = loadCrash(raw.crash, where);
   t.human = loadHuman(raw.human ?? { default: "deny" }, where);
   t.notes = loadNotes(raw.notes, where);

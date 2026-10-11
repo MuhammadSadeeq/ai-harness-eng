@@ -171,6 +171,7 @@ export function runCore(tape, board, seed, facts) {
     system: cfg.system,
     layers: cfg.layers,
     script: cfg.script,
+    scriptBase: cfg.scriptBase ?? "/script",
     maxTurns: cfg.maxTurns,
     params: cfg.params ?? {},
     rejectedParam: cfg.rejectedParam,
@@ -194,7 +195,7 @@ export function runCore(tape, board, seed, facts) {
     tokensOut: 0,
     lastText: "",
   });
-  const newModel = (ag) => new ScriptedModel({ script: ag.script, faults: tape.faults, outage: tape.outage }, prng);
+  const newModel = (ag) => new ScriptedModel({ script: ag.script, faults: tape.faults, outage: tape.outage }, prng, ag.scriptBase);
   const retireModel = (ag) => {
     if (ag.model) branches.push(...ag.model.branches);
     ag.model = null;
@@ -719,6 +720,7 @@ export function runCore(tape, board, seed, facts) {
         system: def.system ?? tape.system,
         layers: ["system", "tools", "history"],
         script: def.script,
+        scriptBase: `/agents/${name}/script`,
         maxTurns: mods.subagents.max_turns,
         params: sentParams,
         rejectedParam,
@@ -767,6 +769,11 @@ export function runCore(tape, board, seed, facts) {
     return [...pre, "tools", mods.history?.resend === false ? "history (not resent)" : "history"];
   };
   const scriptFor = (s) => (tape.sessions ? tape.sessions[s].script : (profile?.script ?? tape.script));
+  // A18: the pointer of the script scriptFor(s) returns: a session's, a profile's, or the tape's.
+  const scriptBaseFor = (s) => {
+    if (tape.sessions) return `/sessions/${s}/script`;
+    return profile?.script !== undefined ? `/models/${mods.model.id}/script` : "/script";
+  };
   const main = newAgent({
     isSub: false,
     label: "main",
@@ -779,6 +786,7 @@ export function runCore(tape, board, seed, facts) {
     system: systemBase,
     layers: layersFor(false),
     script: scriptFor(0),
+    scriptBase: scriptBaseFor(0),
     maxTurns: undefined,
     params: sentParams,
     rejectedParam,
@@ -799,6 +807,7 @@ export function runCore(tape, board, seed, facts) {
       : `${systemBase}\n\nProgress so far (from ${mods.progress_file.path}):\n${progress}`;
     main.layers = layersFor(progress !== null && mods.progress_file !== undefined);
     main.script = scriptFor(s);
+    main.scriptBase = scriptBaseFor(s);
     main.session = s + 1;
     retireModel(main);
     main.model = newModel(main);

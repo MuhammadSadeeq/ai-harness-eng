@@ -172,10 +172,10 @@ class Harness:
         self.model_id, profile = model_choice(tape, board)  # A14.5
         self.rejects: list[str] = [str(n) for n in profile.get("rejects", [])] if profile else []
         main_script = list(tape.script)
+        main_prefix = "/script"  # A18: a branch's location is its tape pointer
         if profile is not None and "script" in profile:  # A14.5: the profile's, else the tape's
-            if tape.sessions:
-                raise BoardError("a model profile's script cannot replace sessions (A14.5)")
-            main_script = list(profile["script"])
+            main_script = list(profile["script"])  # A17.3: the loader refuses it on sessions
+            main_prefix = f"/models/{self.model_id}/script"
         self.request_params: dict[str, Any] = (  # A14.5: added to every request
             dict(board.modules["request_params"]) if board.has("request_params") else {}
         )
@@ -186,7 +186,7 @@ class Harness:
         self.session_scripts: list[list[dict[str, Any]]] = [list(s) for s in tape.sessions]
         self.session = 1  # A14.2: from 1; a tape without sessions is session 1 throughout
         self.session_script: list[dict[str, Any]] = main_script
-        self.session_prefix = "/script"
+        self.session_prefix = main_prefix
         self.model = self._new_model()
         self.system_base = tape.system  # A14.1: a sub-agent may have its own
         self.agent = "main"  # A14.4: the events' agent label (a sub-agent's is name#k)

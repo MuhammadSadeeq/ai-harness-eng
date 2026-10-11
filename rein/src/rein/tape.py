@@ -120,6 +120,10 @@ def _build(raw: dict[str, Any]) -> Tape:
         raise TapeError("a tape has either a script or sessions (A14.2)")
     script = list(raw["script"]) if "script" in raw else []
     _check_steps(script, "script")
+    models = _check_models(raw.get("models", {}))
+    # A17.3: a model profile's script cannot sit on a sessions tape, whatever the boards select.
+    if "sessions" in raw and any("script" in profile for profile in models.values()):
+        raise TapeError("a model profile's script cannot sit on a sessions tape (A17.3)")
     faults = [dict(f) for f in raw.get("faults", [])]
     for fault in faults:
         _int(fault["percent"], "faults.percent", minimum=0)
@@ -160,7 +164,7 @@ def _build(raw: dict[str, Any]) -> Tape:
         sessions=_check_sessions(raw.get("sessions", [])) if "sessions" in raw else [],
         agents=_check_agents(raw.get("agents", {})),
         crash=_check_crash(raw.get("crash")),
-        models=_check_models(raw.get("models", {})),
+        models=models,
         raw=raw,
     )
 

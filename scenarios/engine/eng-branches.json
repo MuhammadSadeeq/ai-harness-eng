@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "id": "eng-branches",
+  "title": "Branches in a session's script and in a sub-agent's script",
+  "task": "Read the first note in session one, have a checker read the second in session two, and write summary.txt.",
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "input_milli_per_mtok": 1000,
+    "output_milli_per_mtok": 2000,
+    "cache_write_milli_per_mtok": 1250,
+    "cache_read_milli_per_mtok": 100
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given.",
+  "rules": [],
+  "workspace": {
+    "notes/a.txt": "Buy milk.\n",
+    "notes/b.txt": "Call Sam.\n"
+  },
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [],
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "seed_base": 20261010,
+  "checks": [
+    {
+      "file": "summary.txt",
+      "contains": "Two notes"
+    }
+  ],
+  "sessions": [
+    {
+      "script": [
+        {
+          "branch": [
+            {
+              "percent": 60,
+              "then": [
+                {
+                  "say": "I read the first note.",
+                  "tools": [
+                    [
+                      "read_file",
+                      {
+                        "path": "notes/a.txt"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "say": "Session one has the first note.",
+                  "stop": "end_turn"
+                }
+              ]
+            },
+            {
+              "percent": 40,
+              "then": [
+                {
+                  "say": "I skip the first note for now.",
+                  "stop": "end_turn"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "script": [
+        {
+          "say": "I ask a checker to read the second note.",
+          "tools": [
+            [
+              "run_agent",
+              {
+                "agent": "checker",
+                "brief": "Read notes/b.txt and return the note."
+              }
+            ]
+          ]
+        },
+        {
+          "say": "Writing the summary.",
+          "tools": [
+            [
+              "write_file",
+              {
+                "path": "summary.txt",
+                "content": "Two notes.\n"
+              }
+            ]
+          ]
+        },
+        {
+          "say": "Session two is done.",
+          "stop": "end_turn"
+        }
+      ]
+    }
+  ],
+  "agents": {
+    "checker": {
+      "script": [
+        {
+          "branch": [
+            {
+              "percent": 70,
+              "then": [
+                {
+                  "say": "Reading the note.",
+                  "tools": [
+                    [
+                      "read_file",
+                      {
+                        "path": "notes/b.txt"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "say": "The note says: Call Sam.",
+                  "stop": "end_turn"
+                }
+              ]
+            },
+            {
+              "percent": 30,
+              "then": [
+                {
+                  "say": "The note is Call Sam, from my memory.",
+                  "stop": "end_turn"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "boards": [
+    "eng-branches-isolated",
+    "eng-branches-forked"
+  ],
+  "golden_seeds": [
+    0,
+    1,
+    5
+  ]
+}

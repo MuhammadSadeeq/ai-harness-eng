@@ -1,0 +1,9 @@
+{
+  "id": "eng-branches-model-b",
+  "label": "model model-b",
+  "modules": {
+    "model": {
+      "id": "model-b"
+    }
+  }
+}

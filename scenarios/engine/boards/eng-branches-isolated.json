@@ -1,0 +1,11 @@
+{
+  "id": "eng-branches-isolated",
+  "label": "sub-agents, isolated",
+  "modules": {
+    "subagents": {
+      "context": "isolated",
+      "max": 2,
+      "max_turns": 3
+    }
+  }
+}
