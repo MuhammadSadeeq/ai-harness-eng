@@ -94,6 +94,50 @@
   volatility: "stable"
   kind: "docs"
 
+- id: "anthropic.harness-changes-move-results"
+  claim: "Anthropic reports that, after fixing bugs and using a less constrained scaffold, Opus 4.5's score jumped to 95%."
+  source: "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+  quote: "After fixing bugs and using a less constrained scaffold, Opus 4.5’s score jumped to 95%."
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "company-report"
+  note: "The sentence joins two changes (bug fixes and a scaffold change), so the claim does not attribute the jump to the scaffold alone. The same model name appears in both halves of the sentence; the post does not restate that it is the same model."
+
+- id: "anthropic.harness-counterpoint"
+  claim: "Anthropic says each harness component encodes an assumption about what the model can't do on its own, and those assumptions can quickly go stale as models improve."
+  source: "https://www.anthropic.com/engineering/harness-design-long-running-apps"
+  quote: "every component in a harness encodes an assumption about what the model can't do on its own, and those assumptions are worth stress testing, both because they may be incorrect, and because they can quickly go stale as models improve."
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "docs"
+  note: "The same post's example, which is not quoted here: Opus 4.5 largely removed the context-anxiety behaviour on its own, so the author dropped context resets from the harness."
+
+- id: "anthropic.multi-agent-tokens"
+  claim: "Anthropic reports that, in its data, agents typically use about 4× more tokens than chat interactions and multi-agent systems about 15× more tokens than chats."
+  source: "https://www.anthropic.com/engineering/multi-agent-research-system"
+  quote: "In our data, agents typically use about 4× more tokens than chat interactions, and multi-agent systems use about 15× more tokens than chats."
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "company-report"
+  note: "The post's own title is \"How we built our multi-agent research system\"; the URL that serves it is /engineering/multi-agent-research-system (the page we requested redirects there). The post gives no multi-agent versus single-agent ratio, and the claim states none."
+
+- id: "anthropic.multi-agent-when"
+  claim: "Anthropic says multi-agent systems excel at valuable tasks with heavy parallelization, information that exceeds single context windows, and interfacing with numerous complex tools, and that domains where all agents must share the same context or have many dependencies between agents are not a good fit today."
+  source: "https://www.anthropic.com/engineering/multi-agent-research-system"
+  quote: "Further, some domains that require all agents to share the same context or involve many dependencies between agents are not a good fit for multi-agent systems today. For instance, most coding tasks involve fewer truly parallelizable tasks than research, and LLM agents are not yet great at coordinating and delegating to other agents in real time. We’ve found that multi-agent systems excel at valuable tasks that involve heavy parallelization, information that exceeds single context windows, and interfacing with numerous complex tools."
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "docs"
+
+- id: "anthropic.postmortem-2025-issues"
+  claim: "Anthropic's postmortem describes three bugs that caused the degradation, and gives when each occurred and how it was resolved."
+  source: "https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues"
+  quote: "Below we describe the three bugs that caused the degradation, when they occurred, and how we resolved them:"
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "docs"
+  note: "The three causes are headings on the page and are not quoted here: 1. Context window routing error; 2. Output corruption; 3. Approximate top-k XLA:TPU miscompilation. The page's publication date (Sep 17, 2025) appears in its markup. The page was read through its embedded text."
+
 - id: "anthropic.twt-meaningful-context"
   claim: "Anthropic's second tool-writing principle is returning meaningful context from tools back to agents."
   source: "https://www.anthropic.com/engineering/writing-tools-for-agents"

@@ -1,0 +1,19 @@
+- id: "pytest.fixtures"
+  claim: "A fixture is a function marked @pytest.fixture; a test asks for it by naming it as an argument."
+  source: "https://docs.pytest.org/en/stable/how-to/fixtures.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.pytest.org gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (one request, 2026-10-11). No text was retrieved. No mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."
+
+- id: "pytest.parametrize"
+  claim: "@pytest.mark.parametrize runs a test once for each set of arguments."
+  source: "https://docs.pytest.org/en/stable/how-to/parametrize.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.pytest.org gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (one request, 2026-10-11). No text was retrieved. No mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."

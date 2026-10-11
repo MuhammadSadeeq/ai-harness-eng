@@ -1,0 +1,49 @@
+- id: "docker.bind-mount"
+  claim: "-v and --mount type=bind mount a host directory into the container."
+  source: "https://docs.docker.com/engine/storage/bind-mounts/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.docker.com gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (three requests this run: the network-driver, run-reference and overview pages). The bind-mount page was not requested again. No text was retrieved, and no mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."
+
+- id: "docker.network-none"
+  claim: "--network none runs a container with no network access beyond loopback."
+  source: "https://docs.docker.com/engine/network/drivers/none/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.docker.com gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (three requests this run: the network-driver, run-reference and overview pages). The bind-mount page was not requested again. No text was retrieved, and no mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."
+
+- id: "docker.read-only"
+  claim: "--read-only mounts the container's root filesystem read-only."
+  source: "https://docs.docker.com/reference/cli/docker/container/run/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.docker.com gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (three requests this run: the network-driver, run-reference and overview pages). The bind-mount page was not requested again. No text was retrieved, and no mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."
+
+- id: "docker.shares-host-kernel"
+  claim: "Containers share the host's kernel, unlike virtual machines."
+  source: "https://docs.docker.com/get-started/docker-overview/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.docker.com gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (three requests this run: the network-driver, run-reference and overview pages). The bind-mount page was not requested again. No text was retrieved, and no mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."
+
+- id: "docker.vm-difference"
+  claim: "Docker's docs say what separates a container from a virtual machine (the shared kernel and the weight)."
+  source: "https://docs.docker.com/get-started/docker-overview/"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "docs.docker.com gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (three requests this run: the network-driver, run-reference and overview pages). The bind-mount page was not requested again. No text was retrieved, and no mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."

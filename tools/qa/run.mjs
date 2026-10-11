@@ -24,6 +24,18 @@ const SITE = path.join(ROOT, "site");
 const WEIGHT_BUDGET_BYTES = 300 * 1000;
 const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const MIN_FONT_PX = 14;
+// One browser view (a load, an axe pass, the weight or the motion check) gets at most this long. Playwright's
+// page.evaluate has no timeout of its own, and a page whose main thread is stuck never fires the self-tests'
+// in-page 30 s limit, so without this one stuck view would hang the whole run.
+const VIEW_LIMIT_MS = Number(process.env.HX_QA_VIEW_LIMIT_MS) || 5 * 60 * 1000;
+const TIMED_OUT = Symbol("timed out");
+
+/** Resolves to the work's value, or to TIMED_OUT after ms (the caller then closes the view's context). */
+function withDeadline(work, ms) {
+  let timer;
+  const limit = new Promise((resolve) => { timer = setTimeout(() => resolve(TIMED_OUT), ms); });
+  return Promise.race([work, limit]).finally(() => clearTimeout(timer));
+}
 const ACCEPTED_LABS = new URL("./accepted-labs.txt", import.meta.url);
 const CVD_TYPES = ["protan", "deutan", "tritan"];
 // Machado et al. 2009, severity 1.0, applied in linearRGB (same as check_palette.py).
@@ -170,7 +182,7 @@ const SMALL_TEXT_JS = () => {
   return out;
 };
 
-async function checkPageLoad(page, url, width, screenshotPath, hookCounts) {
+async function checkPageLoad(page, url, width, screenshotPath, hookCounts, stage = { name: "" }) {
   const failures = [];
   let shot = false;
   const onConsole = (msg) => {
@@ -186,9 +198,12 @@ async function checkPageLoad(page, url, width, screenshotPath, hookCounts) {
   page.on("requestfailed", onFailed);
   page.on("response", onResponse);
   try {
+    stage.name = "loading the page";
     await page.goto(url, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
+    stage.name = "settling the components";
     await settlePage(page);
+    stage.name = "checking the page";
     // A registered component that never upgraded, or that fell back to its no-JS content, fails.
     const unready = await page.evaluate(async () => {
       const { REGISTRY } = await import("/assets/components/registry.js");
@@ -228,9 +243,11 @@ async function checkPageLoad(page, url, width, screenshotPath, hookCounts) {
         if (response.status() >= 400) failures.push(`broken link: ${href.replace(/^https?:\/\/[^/]+/, "")} (HTTP ${response.status()})`);
       }
     }
+    stage.name = "running the self-tests";
     const tests = await runHooks(page);
     for (const item of tests.failures) failures.push(item);
     hookCounts.push(tests.count);
+    stage.name = "taking the screenshot";
     await page.screenshot({ path: screenshotPath, fullPage: true, animations: "disabled", caret: "hide" });
     shot = true;
   } catch (error) {
@@ -452,11 +469,13 @@ async function main() {
           });
           const page = await context.newPage();
           const file = path.join(opts.out, `${slug}-${width}-${theme}.png`);
-          const result = await checkPageLoad(page, url, width, file, hookCounts);
+          const stage = { name: "" };
+          let result = await withDeadline(checkPageLoad(page, url, width, file, hookCounts, stage), VIEW_LIMIT_MS);
+          if (result === TIMED_OUT) result = { shot: false, failures: [`view timed out after ${VIEW_LIMIT_MS / 1000} s while ${stage.name}`] };
           if (result.shot) shots.push(file);
           report.screens.push({ page: pagePath, width, theme, screenshot: file, failures: result.failures });
           for (const f of result.failures) pageFailures.push(`${width}/${theme}: ${f}`);
-          await context.close();
+          await context.close().catch(() => {});
         }
       }
 
@@ -470,42 +489,65 @@ async function main() {
           for (const theme of opts.themes) {
             const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme });
             const page = await context.newPage();
-            await page.goto(url, { waitUntil: "load" });
-            await page.evaluate(() => document.fonts.ready);
-            await settlePage(page);
             const where = `${width}/${theme}`;
-            const axe = await checkAxe(page);
-            report.axe[pagePath][where] = { violations: axe.violations, failures: axe.failures, warnings: axe.warnings };
-            for (const f of axe.failures) pageFailures.push(`${where}: ${f}`);
-            for (const w of axe.warnings) pageWarnings.push(`${where}: ${w}`);
-            // Audit again after the hooks drove the UI: controls that only appear after
-            // interaction (an unlocked replay, results, par states) must pass too, so the
-            // self-tests keep their results on screen instead of restoring the start state.
-            const hooks = await runHooks(page, true);
-            if (hooks.count > 0) {
-              const after = await checkAxe(page);
-              const whereAfter = `${where} after interaction`;
-              report.axe[pagePath][whereAfter] = { violations: after.violations, failures: after.failures, warnings: after.warnings };
-              for (const f of after.failures) pageFailures.push(`${whereAfter}: ${f}`);
-              for (const w of after.warnings) pageWarnings.push(`${whereAfter}: ${w}`);
+            const stage = { name: "" };
+            const audit = async () => {
+              stage.name = "loading the page";
+              await page.goto(url, { waitUntil: "load" });
+              await page.evaluate(() => document.fonts.ready);
+              stage.name = "settling the components";
+              await settlePage(page);
+              stage.name = "auditing the page";
+              const axe = await checkAxe(page);
+              report.axe[pagePath][where] = { violations: axe.violations, failures: axe.failures, warnings: axe.warnings };
+              for (const f of axe.failures) pageFailures.push(`${where}: ${f}`);
+              for (const w of axe.warnings) pageWarnings.push(`${where}: ${w}`);
+              // Audit again after the hooks drove the UI: controls that only appear after
+              // interaction (an unlocked replay, results, par states) must pass too, so the
+              // self-tests keep their results on screen instead of restoring the start state.
+              stage.name = "running the self-tests for the audit";
+              const hooks = await runHooks(page, true);
+              if (hooks.count > 0) {
+                stage.name = "auditing after interaction";
+                const after = await checkAxe(page);
+                const whereAfter = `${where} after interaction`;
+                report.axe[pagePath][whereAfter] = { violations: after.violations, failures: after.failures, warnings: after.warnings };
+                for (const f of after.failures) pageFailures.push(`${whereAfter}: ${f}`);
+                for (const w of after.warnings) pageWarnings.push(`${whereAfter}: ${w}`);
+              }
+              if (opts.cvd && width === 1280 && theme === "light") {
+                stage.name = "taking the colour-vision screenshots";
+                const cvdFailures = await runCvd(page, slug, opts.out, shots);
+                for (const f of cvdFailures) pageFailures.push(`${where}: ${f}`);
+                report.cvd.push({ page: pagePath, types: CVD_TYPES });
+              }
+            };
+            let timedOut = false;
+            const done = await withDeadline(audit().catch((error) => {
+              // After a timeout the closed context rejects the audit's last call: that is not a second failure.
+              if (!timedOut) pageFailures.push(`${where}: audit failed while ${stage.name}: ${error.message.split("\n")[0]}`);
+            }), VIEW_LIMIT_MS);
+            if (done === TIMED_OUT) {
+              timedOut = true;
+              pageFailures.push(`${where}: view timed out after ${VIEW_LIMIT_MS / 1000} s while ${stage.name}`);
             }
-            if (opts.cvd && width === 1280 && theme === "light") {
-              const cvdFailures = await runCvd(page, slug, opts.out, shots);
-              for (const f of cvdFailures) pageFailures.push(`${where}: ${f}`);
-              report.cvd.push({ page: pagePath, types: CVD_TYPES });
-            }
-            await context.close();
+            await context.close().catch(() => {});
           }
         }
       }
 
-      const bytes = await checkWeight(browser, url);
+      let bytes = await withDeadline(checkWeight(browser, url), VIEW_LIMIT_MS);
+      if (bytes === TIMED_OUT) {
+        pageFailures.push(`page weight: timed out after ${VIEW_LIMIT_MS / 1000} s`);
+        bytes = 0;
+      }
       report.weights[pagePath] = bytes;
       if (bytes > WEIGHT_BUDGET_BYTES) {
         pageFailures.push(`page weight ${bytes} bytes > ${WEIGHT_BUDGET_BYTES} budget`);
       }
 
-      const motion = await checkReducedMotion(browser, url);
+      let motion = await withDeadline(checkReducedMotion(browser, url), VIEW_LIMIT_MS);
+      if (motion === TIMED_OUT) motion = [`timed out after ${VIEW_LIMIT_MS / 1000} s`];
       report.reducedMotion[pagePath] = motion;
       for (const m of motion) pageFailures.push(`1280/reduced: ${m}`);
 

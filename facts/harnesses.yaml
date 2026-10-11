@@ -1,0 +1,122 @@
+- id: "harnesses.cc-auto-mode"
+  claim: "The docs name the permission mode auto, which lets everything run without asking, with background safety checks."
+  source: "https://code.claude.com/docs/en/permission-modes"
+  source_alt: "https://code.claude.com/docs/en/permission-modes.md"
+  quote: "[`auto`](#eliminate-prompts-with-auto-mode) | Everything, with background safety checks | Long tasks, reducing prompt fatigue"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  note: "The mode is called auto in the docs. The docs use \"auto-accept edits\" only as the label of a plan-approval option that appears when auto mode is unavailable (the plan mode section of the same page)."
+
+- id: "harnesses.cc-compaction"
+  claim: "Claude Code compacts automatically as the context window approaches its limit, and its automatic pass works the same way as the /compact step."
+  source: "https://code.claude.com/docs/en/context-window"
+  source_alt: "https://code.claude.com/docs/en/context-window.md"
+  quote: "Claude Code compacts automatically as you approach the limit, so a full context window doesn't end your session. The automatic pass works the same way as the `/compact` step in the timeline."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "harnesses.cc-hooks"
+  claim: "Claude Code's hook events PreToolUse and PostToolUse fire on every tool call inside the agentic loop, except EndConversation calls, which skip both."
+  source: "https://code.claude.com/docs/en/hooks"
+  source_alt: "https://code.claude.com/docs/en/hooks.md"
+  quote: "on every tool call inside the agentic loop: `PreToolUse` and `PostToolUse`, except [`EndConversation`](/docs/en/tools-reference#endconversation-tool-behavior) calls, which skip both"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "harnesses.cc-mcp"
+  claim: "Claude Code can connect to external tools and data sources through the Model Context Protocol (MCP)."
+  source: "https://code.claude.com/docs/en/mcp"
+  source_alt: "https://code.claude.com/docs/en/mcp.md"
+  quote: "Claude Code can connect to hundreds of external tools and data sources through the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction), an open source standard for AI-tool integrations."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "harnesses.cc-memory-files"
+  claim: "Claude Code's CLAUDE.md locations include ~/.claude/CLAUDE.md for the user and ./CLAUDE.md or ./.claude/CLAUDE.md for the project."
+  source: "https://code.claude.com/docs/en/memory"
+  source_alt: "https://code.claude.com/docs/en/memory.md"
+  quote: "**User instructions** | `~/.claude/CLAUDE.md` | Personal preferences for all projects | Code styling preferences, personal tooling shortcuts | Only you (all projects) | | **Project instructions** | `./CLAUDE.md` or `./.claude/CLAUDE.md`."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "harnesses.cc-permission-modes"
+  claim: "The docs name Claude Code's permission modes default, acceptEdits, plan, auto, dontAsk and bypassPermissions, and give what each runs without asking."
+  source: "https://code.claude.com/docs/en/permission-modes"
+  source_alt: "https://code.claude.com/docs/en/permission-modes.md"
+  quote: "| `default` | Reads only | Reviewing every action yourself, sensitive work | | [`acceptEdits`](#auto-approve-file-edits-with-acceptedits-mode) | Reads, file edits, and common filesystem commands (`mkdir`, `touch`, `mv`, `cp`, etc.) | Iterating on code you're reviewing | | [`plan`](#analyze-before-you-edit-with-plan-mode) | Reads, plus classifier-approved commands when [auto mode](#eliminate-prompts-with-auto-mode) is available | Exploring a codebase before changing it | | [`auto`](#eliminate-prompts-with-auto-mode) | Everything, with background safety checks | Long tasks, reducing prompt fatigue | | [`dontAsk`](#allow-only-pre-approved-tools-with-dontask-mode) | File reads inside your working directories and pre-approved tools; anything that would prompt is denied | Locked-down CI and scripts | | [`bypassPermissions`](#skip-all-checks-with-bypasspermissions-mode) | Everything | Isolated containers and VMs only |"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "harnesses.cc-plan-mode"
+  claim: "The docs say plan mode tells Claude to research and propose changes without making them: Claude reads files and runs shell commands to explore, writes a plan, and does not edit the source; edits stay blocked until the plan is approved, except in interactive terminal sessions with bypass permissions available."
+  source: "https://code.claude.com/docs/en/permission-modes"
+  source_alt: "https://code.claude.com/docs/en/permission-modes.md"
+  quote: "Plan mode tells Claude to research and propose changes without making them. Claude reads files, runs shell commands to explore, and writes a plan, but does not edit your source. Except in interactive terminal sessions with [bypass permissions available](#skip-all-checks-with-bypasspermissions-mode), edits stay blocked until you approve the plan."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "harnesses.cc-sandbox"
+  claim: "Claude Code's Bash sandbox uses the operating system's own isolation: the built-in Seatbelt framework on macOS, and bubblewrap and socat on Linux and WSL2."
+  source: "https://code.claude.com/docs/en/sandboxing"
+  source_alt: "https://code.claude.com/docs/en/sandboxing.md"
+  quote: "**macOS**: sandboxing uses the built-in Seatbelt framework, so you can go straight to the steps * **Linux and WSL2**: the sandbox relies on `bubblewrap` and `socat`, covered in [Set up Linux and WSL2](#set-up-linux-and-wsl2)."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  note: "The same page says the Bash sandbox is a boundary the operating system enforces and that it limits which files and network domains shell commands can reach (sentences not quoted here). Also covers BP-3.2's harnesses.claude-code-os-sandbox (one fact)."
+
+- id: "harnesses.cc-subagents"
+  claim: "Each subagent runs in its own context window, with a custom system prompt, specific tool access and independent permissions."
+  source: "https://code.claude.com/docs/en/sub-agents"
+  source_alt: "https://code.claude.com/docs/en/sub-agents.md"
+  quote: "Each subagent runs in its own context window with a custom system prompt, specific tool access, and independent permissions."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "harnesses.codex-agents-md"
+  claim: "Codex collects every AGENTS.md from the project root down to the current working directory and concatenates them."
+  source: "https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/agents_md.rs"
+  source_alt: "https://raw.githubusercontent.com/openai/codex/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/agents_md.rs"
+  quote: "Collect every `AGENTS.md` found from the project root down to the current working directory (inclusive) and concatenate their contents in that order."
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "docs"
+  note: "Read at tag rust-v0.162.1 (commit 092d3acd6bec3e3a14bdc7e7a2810ab628ab759d) from the openai/codex repository, which is the vendor's own source. The product docs on developers.openai.com are denied (D-052), and the repository's docs/ files only link to them. The quote is from the module doc comment (\"//!\" markers removed)."
+
+- id: "harnesses.codex-approval-modes"
+  claim: "Codex's approval policy values are untrusted, on-request and never: untrusted requires approval for commands unless an exec policy rule allows them, on-request lets the model decide when to ask the user, and never does not ask the user to approve commands."
+  source: "https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/protocol/src/protocol.rs"
+  source_alt: "https://raw.githubusercontent.com/openai/codex/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/protocol/src/protocol.rs"
+  quote: "#[serde(rename_all = \"kebab-case\")] #[strum(serialize_all = \"kebab-case\")] pub enum AskForApproval { Internal policy for projects marked untrusted. Commands require approval unless an explicit exec policy rule allows them. #[serde(rename = \"untrusted\")] #[strum(serialize = \"untrusted\")] UnlessTrusted, The model decides when to ask the user for approval. #[serde(alias = \"on-failure\")] #[default] OnRequest, Fine-grained controls for individual approval flows. When a field is `true`, commands in that category are allowed. When it is `false`, those requests are automatically rejected instead of shown to the user. #[strum(serialize = \"granular\")] Granular(GranularApprovalConfig), Never ask the user to approve commands. Failures are immediately returned to the model, and never escalated to the user for approval. Never,"
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "docs"
+  note: "Read at tag rust-v0.162.1 (commit 092d3acd6bec3e3a14bdc7e7a2810ab628ab759d) from the openai/codex repository, which is the vendor's own source. The product docs on developers.openai.com are denied (D-052), and the repository's docs/ files only link to them. Quote is the AskForApproval enum with its doc comments; line breaks and doc markers collapsed. The repository's prompt template codex-rs/prompts/templates/permissions/approval_policy/unless_trusted.md names this mode \"unless-trusted\", which disagrees with the serde name \"untrusted\"; the fact uses the enum's name."
+
+- id: "harnesses.codex-sandbox-modes"
+  claim: "Codex's sandbox modes, by the repository's serde names, are read-only (the default), workspace-write and danger-full-access."
+  source: "https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/protocol/src/config_types.rs"
+  source_alt: "https://raw.githubusercontent.com/openai/codex/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/protocol/src/config_types.rs"
+  quote: "pub enum SandboxMode { #[serde(rename = \"read-only\")] #[default] ReadOnly, #[serde(rename = \"workspace-write\")] WorkspaceWrite, #[serde(rename = \"danger-full-access\")] DangerFullAccess,"
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "docs"
+  note: "Read at tag rust-v0.162.1 (commit 092d3acd6bec3e3a14bdc7e7a2810ab628ab759d) from the openai/codex repository, which is the vendor's own source. The product docs on developers.openai.com are denied (D-052), and the repository's docs/ files only link to them. The quote is the SandboxMode enum; line breaks are collapsed."
+
+- id: "harnesses.mini-swe-agent-mit"
+  claim: "mini-swe-agent is released under the MIT License."
+  source: "https://github.com/SWE-agent/mini-swe-agent/blob/v2.4.6/LICENSE.md"
+  source_alt: "https://raw.githubusercontent.com/SWE-agent/mini-swe-agent/v2.4.6/LICENSE.md"
+  quote: "MIT License Copyright (c) 2025 Kilian A. Lieret and Carlos E. Jimenez"
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "docs"
+  note: "Read at tag v2.4.6 (commit a83fcae82d2a08f0ee0c688f9d137b3566c097f8) from github.com/SWE-agent/mini-swe-agent, the project's own repository."

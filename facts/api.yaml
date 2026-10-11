@@ -263,6 +263,15 @@
   volatility: "volatile"
   kind: "docs"
 
+- id: "api.error-401-authentication"
+  claim: "HTTP 401 carries error type authentication_error, meaning there is an issue with the API key."
+  source: "https://platform.claude.com/docs/en/api/errors"
+  source_alt: "https://platform.claude.com/docs/en/api/errors.md"
+  quote: "401 - `authentication_error`: There's an issue with your [API key](https://platform.claude.com/docs/en/get-api-key) (for example, it's malformed, revoked, or expired; see [Key expiration](https://platform.claude.com/docs/en/manage-claude/authentication#key-expiration))."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
 - id: "api.error-429-rate-limit"
   claim: "HTTP 429 carries error type rate_limit_error when a rate limit, spend cap or Claude Code workspace limit is reached."
   source: "https://platform.claude.com/docs/en/api/errors"
@@ -506,6 +515,15 @@
   source_alt: "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md"
   quote: "Claude is calling a tool and expects you to run it."
   verified_on: 2026-10-10
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "api.streaming-event-types"
+  claim: "A streamed response is a sequence of events: message_start, then for each content block content_block_start, content_block_delta events and content_block_stop, then message_delta and message_stop."
+  source: "https://platform.claude.com/docs/en/build-with-claude/streaming"
+  source_alt: "https://platform.claude.com/docs/en/build-with-claude/streaming.md"
+  quote: "A stream response consists of: 1. A `message_start` event 2. Potentially multiple content blocks, each of which contains: * A `content_block_start` event * Potentially multiple `content_block_delta` events * A `content_block_stop` event 3. One or more `message_delta` events 4. A `message_stop` event"
+  verified_on: 2026-10-11
   volatility: "volatile"
   kind: "docs"
 
@@ -773,3 +791,13 @@
   volatility: "volatile"
   kind: "docs"
   note: "The page gives no status code or error type for this case. The 400 invalid_request_error in the same section applies to a server tool called directly. The handle-tool-calls page quotes the same message ('If you receive an error like ...') and says to check that tool results are formatted correctly."
+
+- id: "api.usage-input-output-tokens"
+  claim: "The Messages API reference's usage object has input_tokens and output_tokens, the numbers of input and output tokens used."
+  source: "https://platform.claude.com/docs/en/api/messages"
+  source_alt: "https://platform.claude.com/docs/en/api/messages.md"
+  quote: "`input_tokens: number` The number of input tokens which were used. minimum: 0 - `output_tokens: number` The number of output tokens which were used."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  note: "The Message object's usage field is described on the same page as billing and rate-limit usage (\"Billing and rate-limit usage.\"); the quote covers the usage object's fields only."

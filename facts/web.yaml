@@ -1,0 +1,19 @@
+- id: "web.http-request-response"
+  claim: "An HTTP request has a method, a target, headers and an optional body; a response has a status code, headers and an optional body."
+  source: "https://www.rfc-editor.org/rfc/rfc9110.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "spec"
+  status: "unverifiable"
+  note: "www.rfc-editor.org gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (one request, 2026-10-11). No text was retrieved. No mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list in the brief; flagged for the director."
+
+- id: "web.sse-format"
+  claim: "A server-sent event stream is text: each event is lines of field: value (such as event: and data:), and a blank line ends the event."
+  source: "https://html.spec.whatwg.org/multipage/server-sent-events.html"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "spec"
+  status: "unverifiable"
+  note: "html.spec.whatwg.org gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (one request, 2026-10-11). No text was retrieved. No mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list in the brief; flagged for the director."

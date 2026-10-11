@@ -1,0 +1,39 @@
+- id: "git.diff-format"
+  claim: "git diff prints the unified diff format: ---/+++ file lines, @@ hunk lines, and - and + line marks."
+  source: "https://git-scm.com/docs/git-diff"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "git-scm.com gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (four requests this run: git-restore, git-revert, git-worktree, git-diff). No text was retrieved, and no mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."
+
+- id: "git.restore"
+  claim: "git restore restores working tree files from a source (per the manual's words)."
+  source: "https://git-scm.com/docs/git-restore"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "git-scm.com gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (four requests this run: git-restore, git-revert, git-worktree, git-diff). No text was retrieved, and no mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."
+
+- id: "git.revert"
+  claim: "git revert creates a new commit that undoes a commit (per the manual's words)."
+  source: "https://git-scm.com/docs/git-revert"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "git-scm.com gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (four requests this run: git-restore, git-revert, git-worktree, git-diff). No text was retrieved, and no mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."
+
+- id: "git.worktree"
+  claim: "git worktree add creates a linked working tree at a path (per the manual's words)."
+  source: "https://git-scm.com/docs/git-worktree"
+  quote: "(no text retrieved)"
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+  status: "unverifiable"
+  note: "git-scm.com gave CONNECT 403 from the egress proxy (policy denial) on 2026-10-11 (four requests this run: git-restore, git-revert, git-worktree, git-diff). No text was retrieved, and no mirror, cache or repository copy was used (FACTS section 4). Not on the D-052 list; flagged for the director."

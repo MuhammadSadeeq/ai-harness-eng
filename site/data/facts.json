@@ -159,6 +159,46 @@
   "verified_on": "2026-10-10",
   "volatility": "stable"
  },
+ "anthropic.harness-changes-move-results": {
+  "claim": "Anthropic reports that, after fixing bugs and using a less constrained scaffold, Opus 4.5's score jumped to 95%.",
+  "kind": "company-report",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "anthropic.harness-counterpoint": {
+  "claim": "Anthropic says each harness component encodes an assumption about what the model can't do on its own, and those assumptions can quickly go stale as models improve.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/harness-design-long-running-apps",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "anthropic.multi-agent-tokens": {
+  "claim": "Anthropic reports that, in its data, agents typically use about 4× more tokens than chat interactions and multi-agent systems about 15× more tokens than chats.",
+  "kind": "company-report",
+  "source": "https://www.anthropic.com/engineering/multi-agent-research-system",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "anthropic.multi-agent-when": {
+  "claim": "Anthropic says multi-agent systems excel at valuable tasks with heavy parallelization, information that exceeds single context windows, and interfacing with numerous complex tools, and that domains where all agents must share the same context or have many dependencies between agents are not a good fit today.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/multi-agent-research-system",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "anthropic.postmortem-2025-issues": {
+  "claim": "Anthropic's postmortem describes three bugs that caused the degradation, and gives when each occurred and how it was resolved.",
+  "kind": "docs",
+  "source": "https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
  "anthropic.twt-meaningful-context": {
   "claim": "Anthropic's second tool-writing principle is returning meaningful context from tools back to agents.",
   "kind": "docs",
@@ -415,6 +455,14 @@
   "verified_on": "2026-10-10",
   "volatility": "volatile"
  },
+ "api.error-401-authentication": {
+  "claim": "HTTP 401 carries error type authentication_error, meaning there is an issue with the API key.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
  "api.error-429-rate-limit": {
   "claim": "HTTP 429 carries error type rate_limit_error when a rate limit, spend cap or Claude Code workspace limit is reached.",
   "kind": "docs",
@@ -621,6 +669,14 @@
   "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
   "status": "verified",
   "verified_on": "2026-10-10",
+  "volatility": "volatile"
+ },
+ "api.streaming-event-types": {
+  "claim": "A streamed response is a sequence of events: message_start, then for each content block content_block_start, content_block_delta events and content_block_stop, then message_delta and message_stop.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/streaming",
+  "status": "verified",
+  "verified_on": "2026-10-11",
   "volatility": "volatile"
  },
  "api.structured-outputs-citations-incompatible": {
@@ -855,6 +911,14 @@
   "verified_on": "2026-10-10",
   "volatility": "volatile"
  },
+ "api.usage-input-output-tokens": {
+  "claim": "The Messages API reference's usage object has input_tokens and output_tokens, the numbers of input and output tokens used.",
+  "kind": "docs",
+  "source": "https://platform.claude.com/docs/en/api/messages",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
  "evals.grader": {
   "claim": "Anthropic defines a grader as logic that scores some aspect of the agent's performance; a task can have several graders.",
   "kind": "docs",
@@ -925,6 +989,142 @@
   "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
   "status": "verified",
   "verified_on": "2026-10-10",
+  "volatility": "stable"
+ },
+ "harnesses.cc-auto-mode": {
+  "claim": "The docs name the permission mode auto, which lets everything run without asking, with background safety checks.",
+  "kind": "docs",
+  "source": "https://code.claude.com/docs/en/permission-modes",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "harnesses.cc-compaction": {
+  "claim": "Claude Code compacts automatically as the context window approaches its limit, and its automatic pass works the same way as the /compact step.",
+  "kind": "docs",
+  "source": "https://code.claude.com/docs/en/context-window",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "harnesses.cc-hooks": {
+  "claim": "Claude Code's hook events PreToolUse and PostToolUse fire on every tool call inside the agentic loop, except EndConversation calls, which skip both.",
+  "kind": "docs",
+  "source": "https://code.claude.com/docs/en/hooks",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "harnesses.cc-mcp": {
+  "claim": "Claude Code can connect to external tools and data sources through the Model Context Protocol (MCP).",
+  "kind": "docs",
+  "source": "https://code.claude.com/docs/en/mcp",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "harnesses.cc-memory-files": {
+  "claim": "Claude Code's CLAUDE.md locations include ~/.claude/CLAUDE.md for the user and ./CLAUDE.md or ./.claude/CLAUDE.md for the project.",
+  "kind": "docs",
+  "source": "https://code.claude.com/docs/en/memory",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "harnesses.cc-permission-modes": {
+  "claim": "The docs name Claude Code's permission modes default, acceptEdits, plan, auto, dontAsk and bypassPermissions, and give what each runs without asking.",
+  "kind": "docs",
+  "source": "https://code.claude.com/docs/en/permission-modes",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "harnesses.cc-plan-mode": {
+  "claim": "The docs say plan mode tells Claude to research and propose changes without making them: Claude reads files and runs shell commands to explore, writes a plan, and does not edit the source; edits stay blocked until the plan is approved, except in interactive terminal sessions with bypass permissions available.",
+  "kind": "docs",
+  "source": "https://code.claude.com/docs/en/permission-modes",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "harnesses.cc-sandbox": {
+  "claim": "Claude Code's Bash sandbox uses the operating system's own isolation: the built-in Seatbelt framework on macOS, and bubblewrap and socat on Linux and WSL2.",
+  "kind": "docs",
+  "source": "https://code.claude.com/docs/en/sandboxing",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "harnesses.cc-subagents": {
+  "claim": "Each subagent runs in its own context window, with a custom system prompt, specific tool access and independent permissions.",
+  "kind": "docs",
+  "source": "https://code.claude.com/docs/en/sub-agents",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "harnesses.codex-agents-md": {
+  "claim": "Codex collects every AGENTS.md from the project root down to the current working directory and concatenates them.",
+  "kind": "docs",
+  "source": "https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/agents_md.rs",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "harnesses.codex-approval-modes": {
+  "claim": "Codex's approval policy values are untrusted, on-request and never: untrusted requires approval for commands unless an exec policy rule allows them, on-request lets the model decide when to ask the user, and never does not ask the user to approve commands.",
+  "kind": "docs",
+  "source": "https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/protocol/src/protocol.rs",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "harnesses.codex-sandbox-modes": {
+  "claim": "Codex's sandbox modes, by the repository's serde names, are read-only (the default), workspace-write and danger-full-access.",
+  "kind": "docs",
+  "source": "https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/protocol/src/config_types.rs",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "harnesses.mini-swe-agent-mit": {
+  "claim": "mini-swe-agent is released under the MIT License.",
+  "kind": "docs",
+  "source": "https://github.com/SWE-agent/mini-swe-agent/blob/v2.4.6/LICENSE.md",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "jsonschema.additional-properties-false": {
+  "claim": "Setting additionalProperties to false means no additional properties will be allowed.",
+  "kind": "docs",
+  "source": "https://json-schema.org/understanding-json-schema/reference/object",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "volatile"
+ },
+ "jsonschema.enum": {
+  "claim": "enum: an instance validates successfully if its value is equal to one of the elements of the enum array.",
+  "kind": "spec",
+  "source": "https://json-schema.org/draft/2020-12/json-schema-validation",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "jsonschema.required": {
+  "claim": "required: an object instance is valid against it if every item in its array is the name of a property in the instance.",
+  "kind": "spec",
+  "source": "https://json-schema.org/draft/2020-12/json-schema-validation",
+  "status": "verified",
+  "verified_on": "2026-10-11",
+  "volatility": "stable"
+ },
+ "jsonschema.type": {
+  "claim": "type restricts an instance to the primitive types null, boolean, object, array, number and string, and to integer, which matches a number with a zero fractional part.",
+  "kind": "spec",
+  "source": "https://json-schema.org/draft/2020-12/json-schema-validation",
+  "status": "verified",
+  "verified_on": "2026-10-11",
   "volatility": "stable"
  },
  "mcp.annotation-destructive": {

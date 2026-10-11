@@ -1,0 +1,31 @@
+- id: "jsonschema.additional-properties-false"
+  claim: "Setting additionalProperties to false means no additional properties will be allowed."
+  source: "https://json-schema.org/understanding-json-schema/reference/object"
+  quote: "Setting the additionalProperties schema to false means no additional properties will be allowed."
+  verified_on: 2026-10-11
+  volatility: "volatile"
+  kind: "docs"
+
+- id: "jsonschema.enum"
+  claim: "enum: an instance validates successfully if its value is equal to one of the elements of the enum array."
+  source: "https://json-schema.org/draft/2020-12/json-schema-validation"
+  quote: "An instance validates successfully against this keyword if its value is equal to one of the elements in this keyword's array value."
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "spec"
+
+- id: "jsonschema.required"
+  claim: "required: an object instance is valid against it if every item in its array is the name of a property in the instance."
+  source: "https://json-schema.org/draft/2020-12/json-schema-validation"
+  quote: "An object instance is valid against this keyword if every item in the array is the name of a property in the instance."
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "spec"
+
+- id: "jsonschema.type"
+  claim: "type restricts an instance to the primitive types null, boolean, object, array, number and string, and to integer, which matches a number with a zero fractional part."
+  source: "https://json-schema.org/draft/2020-12/json-schema-validation"
+  quote: "String values MUST be one of the six primitive types (\"null\", \"boolean\", \"object\", \"array\", \"number\", or \"string\"), or \"integer\" which matches any number with a zero fractional part."
+  verified_on: 2026-10-11
+  volatility: "stable"
+  kind: "spec"

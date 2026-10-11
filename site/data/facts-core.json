@@ -119,6 +119,36 @@
   "status": "verified",
   "verified_on": "2026-10-10"
  },
+ "anthropic.harness-changes-move-results": {
+  "id": "anthropic.harness-changes-move-results",
+  "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "anthropic.harness-counterpoint": {
+  "id": "anthropic.harness-counterpoint",
+  "source": "https://www.anthropic.com/engineering/harness-design-long-running-apps",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "anthropic.multi-agent-tokens": {
+  "id": "anthropic.multi-agent-tokens",
+  "source": "https://www.anthropic.com/engineering/multi-agent-research-system",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "anthropic.multi-agent-when": {
+  "id": "anthropic.multi-agent-when",
+  "source": "https://www.anthropic.com/engineering/multi-agent-research-system",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "anthropic.postmortem-2025-issues": {
+  "id": "anthropic.postmortem-2025-issues",
+  "source": "https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
  "anthropic.twt-meaningful-context": {
   "id": "anthropic.twt-meaningful-context",
   "source": "https://www.anthropic.com/engineering/writing-tools-for-agents",
@@ -311,6 +341,12 @@
   "status": "verified",
   "verified_on": "2026-10-10"
  },
+ "api.error-401-authentication": {
+  "id": "api.error-401-authentication",
+  "source": "https://platform.claude.com/docs/en/api/errors",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
  "api.error-429-rate-limit": {
   "id": "api.error-429-rate-limit",
   "source": "https://platform.claude.com/docs/en/api/errors",
@@ -466,6 +502,12 @@
   "source": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
   "status": "verified",
   "verified_on": "2026-10-10"
+ },
+ "api.streaming-event-types": {
+  "id": "api.streaming-event-types",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/streaming",
+  "status": "verified",
+  "verified_on": "2026-10-11"
  },
  "api.structured-outputs-citations-incompatible": {
   "id": "api.structured-outputs-citations-incompatible",
@@ -641,6 +683,12 @@
   "status": "verified",
   "verified_on": "2026-10-10"
  },
+ "api.usage-input-output-tokens": {
+  "id": "api.usage-input-output-tokens",
+  "source": "https://platform.claude.com/docs/en/api/messages",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
  "evals.grader": {
   "id": "evals.grader",
   "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
@@ -694,6 +742,108 @@
   "source": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
   "status": "verified",
   "verified_on": "2026-10-10"
+ },
+ "harnesses.cc-auto-mode": {
+  "id": "harnesses.cc-auto-mode",
+  "source": "https://code.claude.com/docs/en/permission-modes",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.cc-compaction": {
+  "id": "harnesses.cc-compaction",
+  "source": "https://code.claude.com/docs/en/context-window",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.cc-hooks": {
+  "id": "harnesses.cc-hooks",
+  "source": "https://code.claude.com/docs/en/hooks",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.cc-mcp": {
+  "id": "harnesses.cc-mcp",
+  "source": "https://code.claude.com/docs/en/mcp",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.cc-memory-files": {
+  "id": "harnesses.cc-memory-files",
+  "source": "https://code.claude.com/docs/en/memory",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.cc-permission-modes": {
+  "id": "harnesses.cc-permission-modes",
+  "source": "https://code.claude.com/docs/en/permission-modes",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.cc-plan-mode": {
+  "id": "harnesses.cc-plan-mode",
+  "source": "https://code.claude.com/docs/en/permission-modes",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.cc-sandbox": {
+  "id": "harnesses.cc-sandbox",
+  "source": "https://code.claude.com/docs/en/sandboxing",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.cc-subagents": {
+  "id": "harnesses.cc-subagents",
+  "source": "https://code.claude.com/docs/en/sub-agents",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.codex-agents-md": {
+  "id": "harnesses.codex-agents-md",
+  "source": "https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/core/src/agents_md.rs",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.codex-approval-modes": {
+  "id": "harnesses.codex-approval-modes",
+  "source": "https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/protocol/src/protocol.rs",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.codex-sandbox-modes": {
+  "id": "harnesses.codex-sandbox-modes",
+  "source": "https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/protocol/src/config_types.rs",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "harnesses.mini-swe-agent-mit": {
+  "id": "harnesses.mini-swe-agent-mit",
+  "source": "https://github.com/SWE-agent/mini-swe-agent/blob/v2.4.6/LICENSE.md",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "jsonschema.additional-properties-false": {
+  "id": "jsonschema.additional-properties-false",
+  "source": "https://json-schema.org/understanding-json-schema/reference/object",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "jsonschema.enum": {
+  "id": "jsonschema.enum",
+  "source": "https://json-schema.org/draft/2020-12/json-schema-validation",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "jsonschema.required": {
+  "id": "jsonschema.required",
+  "source": "https://json-schema.org/draft/2020-12/json-schema-validation",
+  "status": "verified",
+  "verified_on": "2026-10-11"
+ },
+ "jsonschema.type": {
+  "id": "jsonschema.type",
+  "source": "https://json-schema.org/draft/2020-12/json-schema-validation",
+  "status": "verified",
+  "verified_on": "2026-10-11"
  },
  "mcp.annotation-destructive": {
   "id": "mcp.annotation-destructive",
