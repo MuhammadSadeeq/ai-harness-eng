@@ -1,13 +1,13 @@
 name: Pages
 
-# Deploys site/ only, and only a commit on main whose CI run passed (checkers, Rein and browser QA).
+# Deploys site/ only, and only a commit on the default branch whose CI run passed (checkers, Rein and
+# browser QA). The branch is read from the repository, so a rename (to main, say) needs no change here.
 # source/ (the owner's book) and capstone/ are never uploaded (D-001, D-046). A manual run deploys
 # the commit it is started on, for the first deploy or a re-deploy.
 on:
   workflow_run:
     workflows: [CI]
     types: [completed]
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -21,12 +21,16 @@ concurrency:
 
 jobs:
   build:
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    if: >-
+      github.event_name == 'workflow_dispatch' || (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'push' &&
+        github.event.workflow_run.head_branch == github.event.repository.default_branch)
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
         with:
-          # The commit CI passed, not whatever main points to by the time this runs.
+          # The commit CI passed, not whatever the branch points to by the time this runs.
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-node@v5
         with:

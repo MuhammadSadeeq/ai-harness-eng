@@ -1,7 +1,7 @@
 # Launch: what is ready, and the owner's steps
 
 Phase 7 (SPEC §10) ends with **the owner's acceptance**. Everything below the
-line "Your steps" needs you: the director does not push to `main`, change
+line "Your steps" needs you: the director does not change
 repository settings or publish anything.
 
 ## What is ready (verified on the branch `claude/funny-darwin-daqksa`)
@@ -13,7 +13,7 @@ repository settings or publish anything.
   GitHub Pages serves a project site, and passed every page that way (D-064).
   The service worker, which would never have registered on Pages, now does.
 - **Deploy.** `.github/workflows/pages.yml` uploads `site/` only, and only for
-  a commit on `main` whose CI run passed. `source/` (the study book) and
+  a commit on the default branch whose CI run passed. `source/` (the study book) and
   `capstone/` (with the Rust reference) are never uploaded.
 - **Facts freshness.** `.github/workflows/facts-freshness.yml` runs every
   Monday: it flags volatile facts older than 75 days and dead source links.
@@ -34,11 +34,13 @@ repository settings or publish anything.
    `capstone/reference/` is a full solution. It is never deployed, but a
    public repository shows it; the default is to keep it out of a public one,
    since a public solution undercuts the portfolio value.
-3. **Merge the branch into `main`.** A pull request from
-   `claude/funny-darwin-daqksa` (the director can open it if you ask).
+3. **No merge is needed.** `claude/funny-darwin-daqksa` is the repository's
+   only branch and its default branch, and the Pages workflow deploys the
+   default branch, whatever its name. To rename it to `main`, use Settings →
+   Branches; the workflow needs no change.
 4. **Turn on Pages:** Settings → Pages → Build and deployment → Source:
-   **GitHub Actions**. The first deploy runs when CI passes on `main`, or by
-   hand from Actions → Pages → Run workflow.
+   **GitHub Actions**. The first deploy runs the next time CI passes on the
+   default branch, or by hand from Actions → Pages → Run workflow.
 5. **Open the site** at the Pages address (for this repository,
    `https://muhammadsadeeq.github.io/ai-harness-eng/`), start the first
    module, and accept, or name what to change.

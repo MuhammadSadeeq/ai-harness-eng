@@ -95,7 +95,7 @@ and API claim is registered, sourced and dated) and `DECISIONS.md`.
 ## Deploy
 
 GitHub Pages, from `.github/workflows/pages.yml`: when CI passes on a push to
-`main`, the workflow uploads `site/` and nothing else. `source/` (the study book
+the default branch, the workflow uploads `site/` and nothing else. `source/` (the study book
 the course was written from) and `capstone/` are never uploaded. A weekly job
 (`facts-freshness.yml`) flags facts older than 75 days and dead source links;
 GitHub runs scheduled jobs from the default branch.
