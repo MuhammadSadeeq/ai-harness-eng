@@ -101,11 +101,11 @@ FIXED, NOT FIXED or RULED for each, then any new problem a fix introduced.
 |---|---|---|---|---|---|---|
 | 1. Technical accuracy | 283d660 | 55 | 3 | 0 | 4 (1 major) | phase6-audit-1-round2.md |
 | 2. Sequencing and pedagogy | 283d660 | 20 | 2 | 2 | 3 (1 major) | phase6-audit-2-round2.md |
-| 3. Interaction QA | — | — | — | — | — | waits on BP-6.2 |
+| 3. Interaction QA | 509ef41 | — | — | — | — | running |
 | 4. Accessibility and mobile | — | — | — | — | — | waits on BP-6.2 |
-| 5. Code and tests | 283d660 | — | — | — | — | running |
+| 5. Code and tests | 283d660 | 22 | 0 | 1 | 4 (minor) | phase6-audit-5-round2.md |
 
-No blocker in either report.
+No blocker in any report so far.
 
 ### Round 2 findings, and what closed them
 
@@ -126,12 +126,22 @@ No blocker in either report.
 - **Audit 2, not fixed:** F6's misconception "more tasks fix a weak
   grader" now has its sentence.
 
+- **Audit 5, new (4 minor):** an unclosed fact span flooded check_facts
+  with false problems; check_katas named a helper's or an async def's line
+  instead of the kata's function; D2's touching test stubbed `wilson`, so a
+  correct solution computing its own intervals failed (being fixed).
+
 ### Ruled in round 2
 
 - **Term collisions (audit 2, m9):** Rein's "checkpoint" is defined where
   it first appears (rein-setup.html:91: "a checkpoint that compares your
   output with the expected output"); "retry policies" is the everyday
   word. Neither is the strict term the checker reads; left as they are.
+- **A price swapped for another number from the same claim (audit 5,
+  N5):** check_facts passes it, since the token is in the claim. That is
+  the known limit of the hard-token rule (FACTS §6): the rule catches a
+  number the claim does not have, not a number moved to the wrong place.
+  Spans that state prices are read by the accuracy reviewer.
 - **A one-module drill (audit 2, N3):** with one module in the pool and no
   memory kata, the drill is that module's say prompts every day. That is
   intended: the drill reviews what was seen (D-062).
