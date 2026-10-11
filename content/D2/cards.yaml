@@ -20,7 +20,7 @@
   type: term
   objective: D2.o2
   front: "When do two results really differ?"
-  back: "When their intervals do not overlap. A gap between the two point estimates is not enough."
+  back: "When their Wilson intervals do not overlap. Overlap does not prove they are the same: this data cannot tell them apart yet. A gap between the point estimates is not enough."
 
 - id: D2-k5
   type: term

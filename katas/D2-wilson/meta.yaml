@@ -6,7 +6,7 @@ minutes: 25
 hints:
   - "Use the Wilson score interval, not the normal approximation: it stays inside 0 and 1 and handles 0 and all passes."
   - "With p = passed / n and z = 1.959964, the centre is (p + z*z/(2n)) / (1 + z*z/n), and the half-width is z * sqrt(p(1-p)/n + z*z/(4n*n)) / (1 + z*z/n)."
-  - "Two results differ only when their intervals do not overlap: one ends before the other starts. The gap between the two point estimates is not enough."
+  - "Two results differ when their intervals do not overlap: one ends before the other starts. Overlap means this data cannot tell them apart yet. The gap between the two point estimates is not enough."
 from_memory: false
 wrong_solutions:
   - name: normal-approximation

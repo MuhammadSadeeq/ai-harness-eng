@@ -14,7 +14,10 @@ def wilson(passed, n):
 
 
 def differ(a, b):
-    """True when two results really differ: their Wilson intervals do not overlap. a and b are (passed, n)."""
+    """True when the Wilson intervals show a difference: they do not overlap. a and b are (passed, n).
+
+    False means this data cannot tell the two apart yet, which does not prove they are equal.
+    """
     lo_a, hi_a = wilson(*a)
     lo_b, hi_b = wilson(*b)
     return hi_a < lo_b or hi_b < lo_a

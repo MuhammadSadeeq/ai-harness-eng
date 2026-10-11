@@ -1,7 +1,7 @@
 [
  {
   "id": "D2-s1",
-  "model_answer": "Pass@3 is the chance that at least one of three tries passes, so a retrying harness looks good on it. Pass^3 is the chance that all three pass, so it shows how reliable one try is. They disagree because the first grows with retries and the second shrinks. To tell two rates apart I would compare their Wilson intervals and call them different only when the intervals do not overlap.",
+  "model_answer": "Pass@3 is the chance that at least one of three tries passes, so a retrying harness looks good on it. Pass^3 is the chance that all three pass, so it shows how reliable one try is. They disagree because the first grows with retries and the second shrinks. To tell two rates apart I would compare their Wilson intervals and call them different when the intervals do not overlap. If they overlap, the data cannot tell them apart yet, which is not proof that they are the same.",
   "objectives": [
    "D2.o1",
    "D2.o2"
@@ -11,7 +11,7 @@
    "Defines pass@k as at least one of k passes and pass^k as all k pass",
    "Says why the two numbers can disagree for the same tries",
    "Compares Wilson intervals, not the point estimates",
-   "Calls two rates different only when the intervals do not overlap"
+   "Calls two rates different when the intervals do not overlap, and says overlap does not prove they are equal"
   ]
  },
  {

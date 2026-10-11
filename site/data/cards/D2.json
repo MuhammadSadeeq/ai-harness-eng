@@ -21,7 +21,7 @@
   "type": "term"
  },
  {
-  "back": "When their intervals do not overlap. A gap between the two point estimates is not enough.",
+  "back": "When their Wilson intervals do not overlap. Overlap does not prove they are the same: this data cannot tell them apart yet. A gap between the point estimates is not enough.",
   "front": "When do two results really differ?",
   "id": "D2-k4",
   "objective": "D2.o2",

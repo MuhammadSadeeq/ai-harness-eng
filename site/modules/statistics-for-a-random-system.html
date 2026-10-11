@@ -115,7 +115,7 @@
     <p>They tell opposite stories. One says the agent can nearly always finish when it may retry. The other says that, without retries, all three tries work only about half the time. A report that gives one of them without the other hides the reliability, or the reach, depending on which you kept.</p>
 
     <p>Every rate here comes from few trials, so it has high <dfn data-term="variance">variance</dfn>: a new batch of the same harness can score higher or lower. The <dfn data-term="sample-size">sample size</dfn>, the number of trials behind the rate, moves the honest range more than the point estimate does.</p>
-    <p>A <dfn data-term="confidence-interval">confidence interval</dfn> gives the range the true rate is likely to lie in. The <dfn data-term="wilson-interval">Wilson interval</dfn> is the one to use for a pass rate: it stays inside 0 and 1, and it behaves at small counts. Two results differ only when their intervals do not overlap. Six of ten against four of ten overlap, so they do not differ yet. Sixty of a hundred against forty of a hundred do not overlap, so they do. Equal gaps do not decide it; the spread around each rate does.</p>
+    <p>A <dfn data-term="confidence-interval">confidence interval</dfn> gives the range the true rate is likely to lie in. The <dfn data-term="wilson-interval">Wilson interval</dfn> is the one to use for a pass rate: it stays inside 0 and 1, and it behaves at small counts. When two intervals do not overlap, the results really differ. When they overlap, this data cannot tell them apart yet: the rates may still differ, and only more trials or a direct test of the difference can say. Six of ten against four of ten overlap, so this data cannot tell them apart. Sixty of a hundred against forty of a hundred do not overlap, so they differ. Equal gaps do not decide it; the spread around each rate does.</p>
     <p>Sampling is not the only noise. <dfn data-term="infrastructure-noise">Infrastructure noise</dfn> comes from the machine, the network or a time limit that cuts slow runs. A flaky check fails for reasons that have nothing to do with the work. Both move a result without any change in the model or the harness, and a bigger batch of trials does not remove them.</p>
 
     <h3>Check your reading</h3>
@@ -200,7 +200,7 @@
     <hx-cards src="D2">
       <dl>
         <dt>What does pass@k measure?</dt><dd>The chance that at least one of k tries passes.</dd>
-        <dt>When do two results really differ?</dt><dd>When their Wilson intervals do not overlap. A gap between the two point estimates is not enough.</dd>
+        <dt>When do two results really differ?</dt><dd>When their Wilson intervals do not overlap. Overlap does not prove they are the same: this data cannot tell them apart yet. A gap between the point estimates is not enough.</dd>
         <dt>Name noise that is not sampling.</dt><dd>Infrastructure noise, a time limit that cuts slow runs, or a flaky check.</dd>
       </dl>
     </hx-cards>
@@ -215,7 +215,7 @@
     <aside class="portfolio">
       <h3>What to show from this module</h3>
       <ul>
-        <li>A pass rate with its Wilson interval, and one pair of results you called the same or different, with the reason.</li>
+        <li>A pass rate with its Wilson interval, and one pair of results you called different, or not yet told apart, with the reason.</li>
         <li>One change that moved a run without changing the policy, and the noise it came from.</li>
       </ul>
     </aside>

@@ -31,7 +31,7 @@
   question: "Which pair of results really differs?"
   options:
     - text: "6 of 10 against 4 of 10."
-      why: "Tempting. The gap is the same, but the intervals overlap, so the two do not differ yet."
+      why: "Tempting. The gap is the same, but the intervals overlap, so this data cannot tell the two apart yet."
     - text: "60 of 100 against 40 of 100."
       why: "Right. With this many trials the intervals do not overlap, so the two really differ."
     - text: "Both pairs differ, because the gaps are equal."

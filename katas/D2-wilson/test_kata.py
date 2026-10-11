@@ -32,7 +32,7 @@ def test_the_interval_contains_the_pass_rate():
         assert 0.0 <= lo <= hi <= 1.0, (passed, n)
 
 
-def test_two_of_ten_and_eight_of_ten_overlap_so_they_do_not_differ():
+def test_two_of_ten_and_eight_of_ten_overlap_so_the_data_cannot_tell_them_apart():
     assert differ((2, 10), (8, 10)) is False
 
 
