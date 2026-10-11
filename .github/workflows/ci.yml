@@ -58,6 +58,8 @@ jobs:
           python tools/check_wire.py
       - name: Wire palette (color-vision thresholds)
         run: python tools/qa/check_palette.py
+      - name: Fonts cover the site's text
+        run: python tools/qa/check_fonts.py
 
   rein:
     name: Rein (Python ${{ matrix.python }})

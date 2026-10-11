@@ -147,7 +147,11 @@ rows show the glyph at full size).
 
 ## 5. Typography
 
-Three families, self-hosted, Latin subsets, `font-display: swap`; no CDN.
+Three families, self-hosted, `font-display: swap`; no CDN. Each face is
+subset to the characters the site uses, plus Basic Latin and Latin-1
+punctuation (`tools/vendor/build_fonts.py`, reproducible from the pinned
+packages); `tools/qa/check_fonts.py` fails on a character a face lacks, so
+new text means a rebuild, not a silent fallback.
 
 | Role | Family (CSS) | Source | Faces | Token |
 |---|---|---|---|---|
