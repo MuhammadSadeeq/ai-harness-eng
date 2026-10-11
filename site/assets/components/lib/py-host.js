@@ -187,12 +187,15 @@ export function sharedPython() {
     const hxtestUrl = new URL("../../py/hxtest.py", import.meta.url).href;
     const hxshellUrl = new URL("../../py/hxshell.py", import.meta.url).href;
     const swUrl = new URL("../../../sw.js", import.meta.url).href;
+    // The site's own folder, not "/": on GitHub Pages the site lives under /<repo>/, and a worker
+    // may not claim a scope above the folder it is served from.
+    const swScope = new URL("../../../", import.meta.url).href;
     let registered = false;
     shared = createPythonHost({
       createWorker: () => {
         if (!registered) {
           registered = true;
-          navigator.serviceWorker?.register(swUrl, { scope: "/" })?.catch(() => {});
+          navigator.serviceWorker?.register(swUrl, { scope: swScope })?.catch(() => {});
         }
         return new Worker(workerUrl, { type: "module" });
       },

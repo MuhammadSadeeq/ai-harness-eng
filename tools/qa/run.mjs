@@ -129,11 +129,20 @@ async function listHtml(dir, base = "") {
   return found.sort();
 }
 
+// The site is served under a folder, as GitHub Pages serves a project site (/<repo>/): a path that
+// starts at the server root ("/assets/...") would work at the root and break once deployed, so here
+// it gets a 404 and fails the page.
+const SITE_PREFIX = "/harnessed";
+
 function startServer() {
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url ?? "/", "http://127.0.0.1");
-      let rel = decodeURIComponent(url.pathname);
+      if (!url.pathname.startsWith(`${SITE_PREFIX}/`)) {
+        res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" }).end("not found");
+        return;
+      }
+      let rel = decodeURIComponent(url.pathname.slice(SITE_PREFIX.length));
       if (rel.endsWith("/")) rel += "index.html";
       const file = path.normalize(path.join(SITE, rel));
       if (!file.startsWith(SITE + path.sep)) {
@@ -209,7 +218,9 @@ async function checkPageLoad(page, url, width, screenshotPath, hookCounts, stage
     stage.name = "checking the page";
     // A registered component that never upgraded, or that fell back to its no-JS content, fails.
     const unready = await page.evaluate(async () => {
-      const { REGISTRY } = await import("/assets/components/registry.js");
+      // The registry sits next to the shell's script, wherever the site is served from.
+      const app = document.querySelector('script[type="module"][src$="assets/core/app.js"]');
+      const { REGISTRY } = await import(new URL("../components/registry.js", app.src).href);
       return [...document.querySelectorAll("*")]
         .filter((el) => Object.hasOwn(REGISTRY, el.localName))
         .filter((el) => !el.hasAttribute("data-hx-ready") || el.hasAttribute("data-hx-error"))
@@ -270,7 +281,8 @@ async function checkPageLoad(page, url, width, screenshotPath, hookCounts, stage
 // Both passes (screenshots and axe) settle the same way before they look at the page.
 async function settlePage(page) {
   await page.evaluate(async () => {
-    const { REGISTRY } = await import("/assets/components/registry.js");
+    const app = document.querySelector('script[type="module"][src$="assets/core/app.js"]');
+    const { REGISTRY } = await import(new URL("../components/registry.js", app.src).href);
     // Components below the fold load as their element nears the viewport (shell/loader.js): visit each one,
     // then return to the top, so every registered element can settle.
     for (const el of [...document.querySelectorAll("*")].filter((e) => Object.hasOwn(REGISTRY, e.localName))) {
@@ -552,7 +564,7 @@ async function main() {
   await mkdir(opts.out, { recursive: true });
   const server = await startServer();
   const { port } = server.address();
-  const base = `http://127.0.0.1:${port}`;
+  const base = `http://127.0.0.1:${port}${SITE_PREFIX}`;
   const browser = await chromium.launch({ headless: true });
   const report = { generated: new Date().toISOString(), screens: [], pages: [], weights: {}, reducedMotion: {}, axe: {}, cvd: [] };
   const shots = [];

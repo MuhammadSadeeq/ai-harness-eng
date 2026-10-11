@@ -655,3 +655,18 @@ basis for Phase 1, and answered SPEC §14:
     the component's UI (tabindex -1). Never BODY.
   - QA walks every lab page by keyboard and fails a press that leaves focus
     on BODY, so the rule holds for components written later.
+
+
+## D-064 The site is checked where it will live: under a folder
+
+- **Context:** GitHub Pages serves a project site under `/<repo>/`, but QA
+  served `site/` at the server root, so a root-absolute path would pass QA
+  and break once deployed. The launch check found one such bug: the service
+  worker registered with `scope: "/"`, which a worker served from
+  `/<repo>/sw.js` may not claim, so on Pages it never registered (the error
+  was swallowed) and Pyodide was never cached. QA's own registry import
+  also assumed the root.
+- **Decision:** QA serves the site under `/harnessed/` and 404s every other
+  path, so a root-absolute path fails the page; the service worker's scope
+  is the site's own folder. The Pages workflow deploys only a commit on
+  `main` whose CI run passed, and checks out that exact commit.

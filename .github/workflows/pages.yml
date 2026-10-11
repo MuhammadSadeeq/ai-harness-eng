@@ -1,8 +1,12 @@
 name: Pages
 
-# Deploys site/ only. source/ (the owner's book) is never uploaded (D-001).
+# Deploys site/ only, and only a commit on main whose CI run passed (checkers, Rein and browser QA).
+# source/ (the owner's book) and capstone/ are never uploaded (D-001, D-046). A manual run deploys
+# the commit it is started on, for the first deploy or a re-deploy.
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -17,16 +21,20 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
+        with:
+          # The commit CI passed, not whatever main points to by the time this runs.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-node@v5
         with:
           node-version: "22"
           cache: npm
       - run: npm ci
       - name: Copy self-hosted Pyodide (D-015)
-        run: if [ -f tools/vendor/copy_pyodide.mjs ]; then node tools/vendor/copy_pyodide.mjs; fi
+        run: node tools/vendor/copy_pyodide.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
