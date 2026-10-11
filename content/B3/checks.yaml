@@ -1,7 +1,7 @@
 - id: B3-p1
   objective: B3.o5
   mode: predict
-  question: "The model stays the same, but the output cap is changed. What happens to the results?"
+  question: "The model stays the same, but the output limit is changed. What happens to the results?"
   options:
     - text: "Nothing changes, because the model is the same."
       why: "Tempting. The model is the same, but the harness is not, and the harness decides what the model sees."

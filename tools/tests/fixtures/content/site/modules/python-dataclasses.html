@@ -23,15 +23,17 @@
     <p class="lede">Types written in the code are read by a checker.</p>
   </header>
 
-  <section class="beat" data-beat="see" id="see" data-objective="T1.o1">
+  <section class="beat" data-beat="see" id="see">
     <h2>See</h2>
     <p>A <dfn data-term="type-hint">type hint</dfn> says what a value should be. Python does not enforce it at runtime.</p>
     <p>A <span class="term" data-term="dataclass">dataclass</span> is a record with defaults. It is useful when a value has several named fields.</p>
+    <hx-check mode="check" src="T1" item="T1-c1" data-objective="T1.o1"><p>Does Python enforce a type hint at runtime?</p></hx-check>
   </section>
 
-  <section class="beat" data-beat="fix" id="fix" data-objective="T1.o2">
+  <section class="beat" data-beat="fix" id="fix">
     <h2>Fix</h2>
     <p>Run <span class="term" data-term="mypy">mypy</span> on the file, then fix the error it reports.</p>
+    <hx-check mode="check" src="T1" item="T1-c2" data-objective="T1.o2"><p>What does mypy report?</p></hx-check>
     <hx-kata id="T1-typing" data-objective="T1.o3">
       <p>Annotate the function and check it with mypy.</p>
     </hx-kata>

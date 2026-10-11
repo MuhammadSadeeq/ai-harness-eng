@@ -8,6 +8,7 @@ import { runTrial, createPrng } from "../sim/index.js";
 import { el, glyph, WIRES, repeats, transcriptList, laneStrip, ensureSprite } from "./lib/transcript.js";
 import { formatMs, plural } from "./lib/format.js";
 import { validHunt } from "./lib/restore.js";
+import { incidentCredit } from "./lib/credit.js";
 
 /** The three families for the naming step: the right one, then two others, all shuffled by the same PRNG. */
 export function familyOptions(tapeId, correctId, families) {
@@ -204,10 +205,13 @@ export class HxIncident extends HxElement {
       bubbles: true,
       detail: { source: "incident", stage: "end", wrong_taps: this.state.wrongTaps, seconds, fix_ok: fixOk },
     }));
+    // D-061: a hunt credits its objectives only when the family, the wire and the fix are all right.
+    const declared = (this.dataset.objective ?? "").split(/\s+/).filter(Boolean);
+    const picks = { family: this.state.familyPick, wire: this.state.wirePick, fix: this.state.fixPick };
     this.evidence("incident", {
       tape: this.model.tapeId, wrong_taps: this.state.wrongTaps, seconds,
       family_ok: this.state.familyPick === inc.family, wire_ok: this.state.wirePick === inc.wire, fix_ok: fixOk,
-    });
+    }, incidentCredit(declared, inc, picks));
   }
 
   seconds() {

@@ -378,3 +378,61 @@ def test_the_generated_objectives_list_is_not_an_assessment_item(tmp_path: Path)
     page.write_text(text, encoding="utf-8")
     report, _ = run_on(root, [page])
     assert any("[B4] objective T1.o1 has no assessment item" in p.message for p in report.problems)
+
+
+def _edit_page(root: Path, name: str, old: str, new: str) -> Path:
+    page = root / "site" / "modules" / name
+    text = page.read_text(encoding="utf-8")
+    assert text.count(old) == 1, old[:60]
+    page.write_text(text.replace(old, new), encoding="utf-8")
+    return page
+
+
+T1_PROSE = "<p>Does Python enforce a type hint at runtime?</p></hx-check>"
+HX_CHECK_T1_1 = f'<hx-check mode="check" src="T1" item="T1-c1" data-objective="T1.o1">{T1_PROSE}'
+
+
+def test_a_replay_credits_no_objective_so_its_objective_is_uncovered(tmp_path: Path) -> None:
+    # D-061: hx-replay credits nothing. T1.o1 was credited by the hx-check; a replay is not.
+    root = copy_fixture(tmp_path)
+    new = (
+        '<hx-replay tape="T1" data-objective="T1.o1">'
+        "<p>Does Python enforce a type hint at runtime?</p></hx-replay>"
+    )
+    page = _edit_page(root, "python-dataclasses.html", HX_CHECK_T1_1, new)
+    report, _ = run_on(root, [page])
+    assert any("[B4] objective T1.o1 has no assessment item" in p.message for p in report.problems)
+
+
+def test_say_and_cards_objectives_count_only_while_their_component_is_rendered(
+    tmp_path: Path,
+) -> None:
+    # D-061: an objective named in say.yaml is credited only where hx-say is rendered; cards.yaml
+    # likewise for hx-cards.
+    root = copy_fixture(tmp_path)
+    say = '<hx-say src="A1"><p>Say the loop out loud.</p></hx-say>'
+    page = _edit_page(root, "the-agent-loop.html", say, "<p>Say the loop out loud.</p>")
+    report, _ = run_on(root, [page])
+    assert any("[B4] objective A1.o3 has no assessment item" in p.message for p in report.problems)
+    root = copy_fixture(tmp_path / "again")
+    cards = '<hx-cards src="A1"><p>Cards for this module appear here.</p></hx-cards>'
+    text = "<p>Cards for this module appear here.</p>"
+    page = _edit_page(root, "the-agent-loop.html", cards, text)
+    report, _ = run_on(root, [page])
+    assert any("[B4] objective A1.o2 has no assessment item" in p.message for p in report.problems)
+
+
+def test_a_strict_term_in_component_text_is_checked_but_not_inside_code(tmp_path: Path) -> None:
+    # B7 scans the static text inside hx-* elements (what a reader sees with no JavaScript), not pre
+    # or code. T1 requires S0 only, so a term of A1 (not a prerequisite of T1) is out of order.
+    root = copy_fixture(tmp_path)
+    taught = "<p>Does a stop reason say why the model stopped?</p></hx-check>"
+    page = _edit_page(root, "python-dataclasses.html", T1_PROSE, taught)
+    report, _ = run_on(root, [page])
+    taught_in_a1 = "[B7] term 'stop_reason' is taught in A1"
+    assert any(taught_in_a1 in p.message for p in report.problems)
+    root = copy_fixture(tmp_path / "coded")
+    coded = "<pre><code>stop reason</code></pre></hx-check>"
+    page = _edit_page(root, "python-dataclasses.html", T1_PROSE, coded)
+    report, _ = run_on(root, [page])
+    assert not any("[B7] term 'stop_reason'" in p.message for p in report.problems)

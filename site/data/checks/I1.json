@@ -27,7 +27,7 @@
   "objective": "I1.o3",
   "options": [
    {
-    "text": "A repository with tests, and a results table linked from a write-up.",
+    "text": "A repository with tests, and a results table linked from a short account of the method.",
     "why": "Right. It shows the building, the measuring and the explanation, and a reviewer can check each one."
    },
    {

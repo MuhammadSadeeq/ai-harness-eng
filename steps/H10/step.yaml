@@ -116,7 +116,7 @@ checkpoint:
     unverified still failing after 2 fix rounds
     trace    6 model_call, 3 permission, 3 tool_call, 3 verify, 1710 tokens (details in trace.jsonl)
   explain: The scripted model edits the test so it expects the wrong answer. The rule in code denies the edit, so
-    the test still fails. The model claims done twice; the gate refuses both claims, and after two fix rounds the
+    the test still fails. The model claims done once; the gate refuses it, the script runs out, and after two fix rounds the
     run ends unverified. The rules layer does not stop the edit by itself; the code does.
 breaks:
 - id: show-prompt

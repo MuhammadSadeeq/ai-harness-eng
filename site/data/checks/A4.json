@@ -28,7 +28,7 @@
   "objective": "A4.o1",
   "options": [
    {
-    "text": "The system prompt and the tool definitions.",
+    "text": "The system prompt and the list of tools.",
     "why": "Tempting. Those are sent with the call, so they sit in the request, not the response."
    },
    {

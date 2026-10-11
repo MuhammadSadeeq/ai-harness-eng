@@ -140,7 +140,7 @@
   </section>
   <section class="beat" data-beat="fix" id="fix">
     <h2>Add the layers and the rule to rein.py</h2>
-    <p>Step 10 adds the layers, the rules loader, the prompt built once per run, <code>--show-prompt</code>, and the hook. The checkpoint runs the tamper script with <code>--check "python test_calc.py"</code>. The hook denies the edit, the gate refuses both claims, and the run ends <code>unverified</code>.</p>
+    <p>Step 10 adds the layers, the rules loader, the prompt built once per run, <code>--show-prompt</code>, and the hook. The checkpoint runs the tamper script with <code>--check "python test_calc.py"</code>. The hook denies the edit. The model claims done once, the gate refuses it, the script runs out, and after two fix rounds the run ends <code>unverified</code>.</p>
     <figure>
       <hx-step step="H10" data-objective="H10.o1 H10.o2">
         <p>Without JavaScript, you see the goal of step 10 and the command it ends with: python rein.py "Fix the failing test in calc.py" --fake scenarios/10_rules.json --mode auto --check "python test_calc.py". The run writes trace.jsonl beside rein.py.</p>

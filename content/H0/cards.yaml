@@ -7,7 +7,7 @@
   type: term
   objective: H0.o3
   front: What is a scripted model?
-  back: A model that answers from a fixed list. The same script gives the same reply and token counts every run.
+  back: A model that answers from a fixed list. The same script gives the same reply and the same counts every run.
 - id: H0-k3
   type: term
   objective: H0.o3

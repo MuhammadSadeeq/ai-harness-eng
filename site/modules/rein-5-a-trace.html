@@ -106,7 +106,7 @@
   </section>
   <section class="beat" data-beat="see" id="see">
     <h2>One line per event</h2>
-    <p>The tracer writes one line of JSON for each event as it happens, so the file is a <dfn data-term="jsonl">JSONL</dfn> record of the run. Each line carries v, run, seq, t in milliseconds, turn, agent, kind and wire, then the kind's own fields. A run emits six kinds: run_start once; model_call and model_reply for each turn; permission for each verdict; tool_call for each tool call, denied ones too; and run_end at the end.</p>
+    <p>The tracer writes one line of JSON for each event as it happens, so the file is a <dfn data-term="jsonl">JSONL</dfn> record of the run. Each line carries v, run, seq, t in milliseconds, turn, agent, kind and wire, then the kind's own fields. A plain run emits six kinds: run_start once; model_call and model_reply for each turn; permission for each verdict; tool_call for each tool call, denied ones too; and run_end at the end. A check, guard, retry or <span class="fwd" data-term="compaction">compaction</span> adds more.</p>
     <hx-check mode="check" src="H5" item="H5-c1" data-objective="H5.o1">
       <p>Without JavaScript, the question is: Which field shows that a line is missing from a file?</p>
       <ol>

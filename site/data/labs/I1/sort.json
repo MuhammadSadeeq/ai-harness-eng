@@ -57,8 +57,8 @@
   {
    "bucket": "errors",
    "id": "i1-r3",
-   "text": "Rate limits and overloaded responses are retried with backoff",
-   "why": "Recovery is the errors wire: retry, back off, and stop after a limit."
+   "text": "Refused requests and overloaded responses are retried after a growing wait",
+   "why": "Recovery is the errors wire: retry after a growing wait, and stop after a limit."
   },
   {
    "bucket": "tools",

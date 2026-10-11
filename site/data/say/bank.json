@@ -1021,7 +1021,7 @@
    "F2.o1",
    "F2.o2"
   ],
-  "prompt": "A long task spans three sessions. What does each session need from the one before it, and what does the first session set up?",
+  "prompt": "A long task runs across three sessions. What does each session need from the one before it, and what does the first session set up?",
   "rubric": [
    "Says a new session has no memory of the last one",
    "Names the progress file and what it records",
@@ -1828,7 +1828,7 @@
   "objectives": [
    "H13.o3"
   ],
-  "prompt": "The numbers did not move after your change. Write the line for the brag sheet and the first sentence of the report.",
+  "prompt": "The numbers did not move after your change. Write the line for your results list and the first sentence of the report.",
   "rubric": [
    "Says the number did not move, and gives the table's numbers",
    "Says what the suite could not see, and why",
@@ -1857,7 +1857,7 @@
  },
  {
   "id": "I1-s2",
-  "model_answer": "Take a requirement such as retrying rate limits. It touches the errors wire: retry with backoff, and stop after a limit. To prove it I would show a run where the rate limit is injected, the retries and the stop, and the trace of each attempt. That is evidence a reviewer can check.",
+  "model_answer": "Take a requirement such as retrying refused requests. It touches the errors wire: retry after a growing wait, and stop after a limit. To prove it I would show a run where a refused request is injected, the retries and the stop, and the trace of each attempt. That is evidence a reviewer can check.",
   "module": "I1",
   "objectives": [
    "I1.o2"

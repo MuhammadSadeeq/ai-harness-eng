@@ -150,6 +150,7 @@ print(len(messages), [m["role"] for m in messages])</code></pre>
         <li>A file path where the result was saved.</li>
       </ol>
     </hx-check>
+    <p>It is tempting to think that resending the history is free, but every call sends the whole history again, so the cost and the wait grow with it.</p>
   </section>
 
   <section class="beat" data-beat="fix" id="fix">

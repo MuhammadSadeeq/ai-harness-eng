@@ -13,7 +13,7 @@
   "items": [
     {"id": "i1-r1", "text": "The run stops at a clear exit, not when the model seems finished", "bucket": "loop", "why": "Stop conditions belong to the loop. A reply that says it is finished is not an exit by itself."},
     {"id": "i1-r2", "text": "The conversation fits the window, and old turns are summarized", "bucket": "context", "why": "Context decides what is on the desk for each call, and what is saved from earlier turns."},
-    {"id": "i1-r3", "text": "Rate limits and overloaded responses are retried with backoff", "bucket": "errors", "why": "Recovery is the errors wire: retry, back off, and stop after a limit."},
+    {"id": "i1-r3", "text": "Refused requests and overloaded responses are retried after a growing wait", "bucket": "errors", "why": "Recovery is the errors wire: retry after a growing wait, and stop after a limit."},
     {"id": "i1-r4", "text": "Each tool validates its input and returns errors the model can act on", "bucket": "tools", "why": "A tool's inputs and its error messages are the tools wire."},
     {"id": "i1-r5", "text": "A tool that writes files asks before it runs", "bucket": "permissions", "why": "Which actions are allowed, and whether one needs a yes first, belongs to permissions."},
     {"id": "i1-r6", "text": "The system prompt says which instruction wins when two conflict", "bucket": "control", "why": "What the model is told, and which instruction wins, is the control wire."},

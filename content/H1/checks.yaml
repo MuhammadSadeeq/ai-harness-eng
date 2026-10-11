@@ -1,7 +1,7 @@
 - id: H1-p1
   objective: H1.o2
   mode: predict
-  question: 'The reply starts with text: "I''ll run the tests first." Then it asks for run_command. What
+  question: 'The reply starts with text: "I''ll run the tests first." Then it asks to run a shell command. What
     does the harness do next?'
   options:
   - text: It runs the tests, reads the output and keeps going.
@@ -33,17 +33,17 @@
 - id: H1-c2
   objective: H1.o2
   mode: check
-  question: A reply comes back with stop_reason tool_use. What does it tell the harness?
+  question: A reply comes back with a stop_reason that asks for a tool. What does it tell the harness?
   options:
   - text: The run is finished.
-    why: Tempting. end_turn says the model finished. tool_use says it wants a tool run first.
+    why: Tempting. A finished reply says the model is done. This one wants a tool run first.
   - text: Claude is calling a tool and expects the application to run it.
     why: Right. The harness runs the tools the reply asks for, then calls the model again.
     fact: api.stop-reason-tool-use
   - text: The reply was cut off at the token limit.
-    why: Tempting. That is max_tokens, a different stop reason.
+    why: Tempting. That is a different stop reason, for a reply cut at its limit.
   - text: The model refused to answer.
-    why: Wrong. That is refusal, another stop reason, and it is not what tool_use means.
+    why: Wrong. A refusal is another stop reason, and it is not a request for a tool.
   answer: 1
 - id: H1-c3
   objective: H1.o3

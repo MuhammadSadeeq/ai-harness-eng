@@ -2,7 +2,7 @@
   objectives:
   - F2.o1
   - F2.o2
-  prompt: A long task spans three sessions. What does each session need from the one before it, and what does the
+  prompt: A long task runs across three sessions. What does each session need from the one before it, and what does the
     first session set up?
   model_answer: 'Each session starts with no memory, so it needs a record of the state: what is done, what is next
     and what is open. The first session sets up the files, a feature list and a progress file, and makes an initial

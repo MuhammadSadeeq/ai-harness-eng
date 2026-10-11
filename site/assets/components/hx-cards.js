@@ -8,6 +8,7 @@
 // keys come after the reveal. Keys: Space or Enter shows the answer on the self-graded types, 1 is Again,
 // 2 is Got it (a visible line says so).
 import { HxElement } from "./lib/hx-element.js";
+import { cardCredit } from "./lib/credit.js";
 import { getContent, getCourseCore } from "./lib/data.js";
 import {
   localToday, addDays, grade as gradeCard, stored, sessionQueue, sessionSummary, cardProblem,
@@ -100,6 +101,7 @@ export class HxCards extends HxElement {
     this.queueStart = this.queue.length;
     this.seen = new Set();
     this.missed = new Set();
+    this.rightIds = new Set();
     this.#finished = false;
     this.state = {
       index: 0,
@@ -149,6 +151,8 @@ export class HxCards extends HxElement {
     if (!correct) {
       this.missed.add(id);
       this.queue.push(id);
+    } else {
+      this.rightIds.add(id);
     }
     const s = this.state;
     this.setState({
@@ -182,7 +186,8 @@ export class HxCards extends HxElement {
     this.live(summary);
     if (s.reviewed > 0 && !this.#finished) {
       this.#finished = true;
-      this.evidence("cards", { src: this.src, reviewed: s.reviewed, right: s.right });
+      // D-061: each card answered right credits its own objective (cards.yaml), once; "Again" credits nothing.
+      this.evidence("cards", { src: this.src, reviewed: s.reviewed, right: s.right }, cardCredit(this.rightIds, this.cards));
     }
   }
 

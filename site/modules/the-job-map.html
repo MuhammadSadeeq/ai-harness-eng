@@ -118,9 +118,9 @@
 
     <figure>
       <hx-sort src="../data/labs/I1/sort.json" data-objective="I1.o2">
-        <p>Without JavaScript, the eight wires are the buckets, and these requirements belong to them: a loop stops at a clear exit; the conversation fits the window; rate limits are retried with backoff; a tool validates its input; a file-writing tool asks first; the system prompt settles conflicts; each run is checked before it is called done; every call is traced.</p>
+        <p>Without JavaScript, the eight wires are the buckets, and these requirements belong to them: a loop stops at a clear exit; the conversation fits the window; refused requests and overloaded responses are retried after a growing wait; a tool validates its input; a file-writing tool asks first; the system prompt settles conflicts; each run is checked before it is called done; every call is traced.</p>
       </hx-sort>
-      <figcaption>FIG I1.1 · Eight requirements, eight wires. Try this: place the rate-limit requirement, then name the wire and the evidence you would show.</figcaption>
+      <figcaption>FIG I1.1 · Eight requirements, eight wires. Try this: place the retry requirement, then name the wire and the evidence you would show.</figcaption>
     </figure>
 
     <p>A requirement can touch two wires. When it does, place it with the wire whose question you would have to answer first. The other wire is the second piece of evidence.</p>
@@ -137,7 +137,7 @@
     <hx-check mode="check" src="I1" item="I1-c2" data-objective="I1.o3">
       <p>Without JavaScript, the question is: labs look for building, measuring and debugging, shown in public. Which evidence fits best?</p>
       <ol>
-        <li>A repository with tests, and a results table linked from a write-up.</li>
+        <li>A repository with tests, and a results table linked from a short account of the method.</li>
         <li>A certificate from a short online course.</li>
         <li>A long list of tools on a résumé.</li>
       </ol>

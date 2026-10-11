@@ -39,7 +39,7 @@
     "why": "Wrong. Stricter is not better unless it changes a result that matters, and this one changed nothing."
    }
   ],
-  "question": "The table shows the same numbers before and after your change. What goes on the brag sheet?"
+  "question": "The table shows the same numbers before and after your change. What goes on the brag sheet, the short list of results you keep for interviews?"
  },
  {
   "answer": 0,
@@ -56,7 +56,7 @@
     "why": "Wrong. The control is not in the suite and does not change the suite's numbers."
    },
    {
-    "text": "To keep the null off the brag sheet.",
+    "text": "To keep the null out of the report.",
     "why": "Wrong. A null is reported as it is. The control makes it readable, it does not hide it."
    }
   ],

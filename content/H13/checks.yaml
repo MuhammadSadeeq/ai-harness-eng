@@ -13,7 +13,7 @@
 - id: H13-c2
   objective: H13.o3
   mode: check
-  question: The table shows the same numbers before and after your change. What goes on the brag sheet?
+  question: The table shows the same numbers before and after your change. What goes on the brag sheet, the short list of results you keep for interviews?
   options:
     - text: The process check does not work.
       why: "Wrong. A control task showed the check works: it failed ten of ten with the check and passed ten of ten without it."
@@ -31,6 +31,6 @@
       why: "Right. The control writes before it reads, and the check fails it. That shows the check can see what it measures."
     - text: To raise the pass count, since a control is an easier task.
       why: "Wrong. The control is not in the suite and does not change the suite's numbers."
-    - text: To keep the null off the brag sheet.
+    - text: To keep the null out of the report.
       why: "Wrong. A null is reported as it is. The control makes it readable, it does not hide it."
   answer: 0

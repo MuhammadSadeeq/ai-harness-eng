@@ -92,7 +92,7 @@
     <p>The run has to find the file that imports calc.py and write its path down. The tool is called search_text, and its description is two words. Predict how the run ends.</p>
 
     <hx-check mode="predict" src="C7" item="C7-p1" for="break-run">
-      <p>Without JavaScript, the question is: the description says only 'Search files.', and the first call sends a field named file. What is the final status?</p>
+      <p>Without JavaScript, the question is: the description says only 'Search files.', and the first call sends a field named file. How does the run end?</p>
       <ol>
         <li>The run keeps trying until the search works.</li>
         <li>The run says done, and answer.txt is never written.</li>
@@ -156,6 +156,8 @@
     </hx-check>
 
     <p>Calls in one reply can run in parallel only when they are <dfn data-term="parallel-safe">parallel-safe</dfn>: neither writes a resource that the other reads or writes. The scheduler below checks that for a run's calls.</p>
+    <p>It is tempting to think that more tools make an agent more capable, but each extra tool is one more choice for the model, and a long list makes the wrong choice likelier.</p>
+    <p>It is tempting to think that a tool's output should be complete, but a full dump fills the space the model needs for the task and buries the line that matters.</p>
   </section>
 
   <section class="beat" data-beat="fix" id="fix">

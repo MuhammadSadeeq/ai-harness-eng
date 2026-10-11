@@ -6,7 +6,7 @@
    "F2.o1",
    "F2.o2"
   ],
-  "prompt": "A long task spans three sessions. What does each session need from the one before it, and what does the first session set up?",
+  "prompt": "A long task runs across three sessions. What does each session need from the one before it, and what does the first session set up?",
   "rubric": [
    "Says a new session has no memory of the last one",
    "Names the progress file and what it records",

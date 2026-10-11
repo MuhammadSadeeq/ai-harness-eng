@@ -101,7 +101,7 @@
     </hx-check>
     <figure>
       <hx-incident id="break-run" tape="f7-migration-break" seed="0" locked data-objective="F7.o1">
-        <p>Without JavaScript, you see a summary: the request, the permanent error it returned, and a run that ended at its first turn.</p>
+        <p>Without JavaScript, you see a summary: the request, the error it returned, which a retry never fixes, and a run that ended at its first turn.</p>
       </hx-incident>
       <figcaption>FIG F7.0 · The same request, to a model that refuses one field. Try this: read the event that carries the request, then the error after it.</figcaption>
     </figure>
@@ -127,6 +127,7 @@
         <li>Delete it everywhere and move on.</li>
       </ol>
     </hx-check>
+    <p>It is tempting to think that a prompt tuned for one model transfers unchanged, but each new model needs its own regression check before you trust the prompt.</p>
   </section>
 
   <section class="beat" data-beat="fix" id="fix">

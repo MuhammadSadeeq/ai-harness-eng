@@ -130,9 +130,11 @@
 
     <p>After the run, on the maximum-effort board, <hx-num for="effort-bench" name="passed.old">—</hx-num> of <hx-num for="effort-bench" name="trials">20</hx-num> runs pass. On the low-effort board, <hx-num for="effort-bench" name="passed.new">—</hx-num> of <hx-num for="effort-bench" name="trials">20</hx-num> pass. The worst run costs ≈ <hx-num for="effort-bench" name="worst_cost.old" format="usd">—</hx-num> on the maximum board and ≈ <hx-num for="effort-bench" name="worst_cost.new" format="usd">—</hx-num> on the low board. The pass counts match and the costs do not. The bench counts passes and cost; the wait is in the trace of the incident above, where the same rename takes far longer on the maximum board.</p>
 
+    <p>The calculator's <span class="fwd" data-term="cache-hit">cache hit rate</span> is the share of input read from the cache, rather than processed again.</p>
+
     <figure>
       <hx-costcalc src="../data/labs/A6/costcalc.json">
-        <p>Without JavaScript, the calculator takes a model, an effort, turns per task, tokens per turn, a cache hit rate and a success rate, and shows the cost per call and per completed task.</p>
+        <p>Without JavaScript, the calculator takes a model, an effort, turns per task, tokens per turn, the share of input read from the cache and a success rate, and shows the cost per call and per completed task.</p>
       </hx-costcalc>
       <figcaption>FIG A6.1 · Cost per completed task. Try this: set the effort to low, then to high, on the same task, and read the cost per completed task each time. The effort multipliers are the course's illustration, not a measurement.</figcaption>
     </figure>

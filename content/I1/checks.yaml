@@ -16,7 +16,7 @@
   mode: check
   question: "Labs look for building, measuring and debugging, shown in public. Which evidence fits best?"
   options:
-    - text: "A repository with tests, and a results table linked from a write-up."
+    - text: "A repository with tests, and a results table linked from a short account of the method."
       why: "Right. It shows the building, the measuring and the explanation, and a reviewer can check each one."
     - text: "A certificate from a short online course."
       why: "Wrong. A certificate shows you finished a course. It does not show that you built or measured anything."

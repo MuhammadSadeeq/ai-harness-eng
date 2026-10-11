@@ -9,6 +9,7 @@ import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runTrial } from "../sim/index.js";
 import { checkTrace } from "./lib/trace-check.js";
 import { explain, turnSummary } from "./lib/explain.js";
+import { replayCredit } from "./lib/credit.js";
 import { formatCost, formatMs } from "./lib/format.js";
 import { pricedOn } from "./hx-bench.js";
 import {
@@ -227,7 +228,8 @@ export class HxReplay extends HxElement {
       bubbles: true,
       detail: { source: "replay", status, passed, turns, cost },
     }));
-    this.evidence("replay", { tape: this.model.tapeId, board: this.model.boardId, seed: this.model.seed, status, passed });
+    // D-061: watching to the end proves nothing, so the record is kept and no objective is credited.
+    this.evidence("replay", { tape: this.model.tapeId, board: this.model.boardId, seed: this.model.seed, status, passed }, replayCredit());
     this.live(explain(this.events[this.events.length - 1]).text);
   }
 

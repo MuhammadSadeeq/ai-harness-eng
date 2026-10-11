@@ -103,7 +103,7 @@
 
     <figure>
       <hx-incident id="break-run" tape="h1-first-block" locked data-objective="A4.o3">
-        <p>Without JavaScript, you see a summary: the reply asks for run_command, and the run ends as done on its first turn.</p>
+        <p>Without JavaScript, you see a summary: the reply asks for a shell command, and the run ends as done on its first turn.</p>
       </hx-incident>
       <figcaption>FIG A4.0 · The reply that was read too little. Try this: find the reply and count its blocks.</figcaption>
     </figure>
@@ -125,7 +125,7 @@
     <hx-check mode="check" src="A4" item="A4-c1" data-objective="A4.o1">
       <p>Without JavaScript, the question is: in the Wire view of a call, which part is the response?</p>
       <ol>
-        <li>The system prompt and the tool definitions.</li>
+        <li>The system prompt and the list of tools.</li>
         <li>The content blocks and the stop reason the model sent back.</li>
         <li>The task the harness wrote on turn 1.</li>
       </ol>
@@ -183,7 +183,7 @@ I'll run the tests.</pre>
     <p>Each response carries <dfn data-term="usage">usage</dfn>: the counts of input and output tokens for the call. The cost of a call comes from those counts and the prices. <span class="fact" data-fact="models.sonnet-5-5-price">Claude Sonnet 5.5 base input is $2 per million input tokens and $10 per million output tokens.</span></p>
 
     <pre data-run tabindex="0" role="region" aria-label="Python code"><code class="language-python">usage = {"input_tokens": 1200, "output_tokens": 300}
-input_price, output_price = 2, 10  # Claude Sonnet 5.5, dollars per million tokens
+input_price, output_price = 2, 10  # input_price and output_price, in dollars per million tokens; the prose above gives their source
 cost = (usage["input_tokens"] * input_price + usage["output_tokens"] * output_price) / 1_000_000
 print(round(cost, 4))</code></pre>
     <pre data-output>0.0054</pre>

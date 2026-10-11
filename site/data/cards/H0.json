@@ -7,7 +7,7 @@
   "type": "term"
  },
  {
-  "back": "A model that answers from a fixed list. The same script gives the same reply and token counts every run.",
+  "back": "A model that answers from a fixed list. The same script gives the same reply and the same counts every run.",
   "front": "What is a scripted model?",
   "id": "H0-k2",
   "objective": "H0.o3",

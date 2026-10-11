@@ -54,33 +54,27 @@
 - id: A2-c4
   objective: A2.o3
   mode: check
-  question: "A reply stops because it reached its output limit. Which value does the API report as the reason?"
+  question: "A reply stops because it reached its output limit. What does the harness see?"
   options:
-    - text: "end_turn"
-      why: "Tempting. end_turn is the reason when the model finished its response naturally, not when it hits a limit."
-      fact: api.stop-reason-end-turn
-    - text: "max_tokens"
-      why: "Right. The API reports max_tokens when the reply reaches the request's max_tokens limit."
-      fact: api.stop-reason-max-tokens
-    - text: "model_context_window_exceeded"
-      why: "Tempting. That value is for the window filling up, not for the reply's own limit."
-      fact: api.stop-reason-model-context-window-exceeded
+    - text: "A complete answer, with nothing left out."
+      why: "Tempting. A reply is complete when the model finishes on its own. This one was stopped by a limit."
+    - text: "A reply cut short at the output limit."
+      why: "Right. The output limit is on the reply itself, so the reply stops early and is not complete."
+    - text: "An error that says the window is full."
+      why: "Tempting. The window is the whole desk. The output limit is only the most one reply may use."
   answer: 1
 
 - id: A2-c5
   objective: A2.o3
   mode: check
-  question: "The whole context window fills before the reply finishes. Which value does the API report as the reason?"
+  question: "The whole context window fills before the reply finishes. What happens?"
   options:
-    - text: "max_tokens"
-      why: "Tempting. That value is for the reply reaching its own limit, not the window filling."
-      fact: api.stop-reason-max-tokens
-    - text: "model_context_window_exceeded"
-      why: "Right. The API reports this when the reply stops because it reached the model's context window limit."
-      fact: api.stop-reason-model-context-window-exceeded
-    - text: "tool_use"
-      why: "Tempting. tool_use is the value when the model is calling a tool and expects the application to run it."
-      fact: api.stop-reason-tool-use
+    - text: "The reply is cut at the output limit, and the run goes on."
+      why: "Tempting. That is the output limit, which caps the reply alone. Here the whole window is what filled up."
+    - text: "The reply stops early, because the whole window is full."
+      why: "Right. The window is the whole desk, shared by the instructions, history, tool results and the reply. When it is full, the reply cannot grow."
+    - text: "The reply finishes anyway, because the model makes room by itself."
+      why: "Wrong. The model does not shrink the window. The harness has to make room before the next call."
   answer: 1
 
 - id: A2-c6

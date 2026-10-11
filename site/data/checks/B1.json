@@ -99,8 +99,8 @@
     "why": "Right. These are the parts the model reads when it writes the call."
    },
    {
-    "text": "A higher turn limit.",
-    "why": "No. The limit stops runs; it does not change what the model sends."
+    "text": "A longer wait between calls.",
+    "why": "No. A longer wait does not change what the model sends."
    },
    {
     "text": "Removing the tool from the list.",

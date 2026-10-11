@@ -1,7 +1,7 @@
 - id: C7-p1
   objective: C7.o1
   mode: predict
-  question: On the old board the description is 'Search files.' and the fields have no descriptions. The model's first call sends a field named file. What is the final status?
+  question: On the old board the description is 'Search files.' and the fields have no descriptions. The model's first call sends a field named file. How does the run end?
   options:
   - text: The run keeps trying until the search works.
     why: Tempting. A retry would only help if the call were fixed, and nothing in this run fixes it.

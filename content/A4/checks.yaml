@@ -17,7 +17,7 @@
   mode: check
   question: "In the Wire view of a call, which part is the response?"
   options:
-    - text: "The system prompt and the tool definitions."
+    - text: "The system prompt and the list of tools."
       why: "Tempting. Those are sent with the call, so they sit in the request, not the response."
     - text: "The content blocks and the stop reason the model sent back."
       why: "Right. The response is what came back: the content blocks, the stop reason and the usage."

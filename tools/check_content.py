@@ -225,15 +225,28 @@ def collapse(text: str) -> str:
 
 
 def visible_text(
-    node: Element, *, skip_fwd: bool, prose_only: bool = False, in_prose: bool = False
+    node: Element,
+    *,
+    skip_fwd: bool,
+    prose_only: bool = False,
+    in_prose: bool = False,
+    components: bool = False,
 ) -> Iterator[Text]:
-    """Visible text under node. Skips pre/code/script/style/svg, hx-* and optionally .fwd."""
+    """Visible text under node.
+
+    Skips pre/code/script/style/svg, optionally .fwd, and hx-* unless components.
+
+    components=True includes the static fallback text inside hx-* elements (what a reader sees
+    with no JavaScript).
+    """
     for child in node.children:
         if isinstance(child, Text):
             if in_prose or not prose_only:
                 yield child
             continue
-        if child.tag == "#gen" or child.tag in SKIP_TAGS or child.tag.startswith("hx-"):
+        if child.tag == "#gen" or child.tag in SKIP_TAGS:
+            continue
+        if child.tag.startswith("hx-") and not components:
             continue
         if skip_fwd and "fwd" in child.classes:
             continue
@@ -242,6 +255,7 @@ def visible_text(
             skip_fwd=skip_fwd,
             prose_only=prose_only,
             in_prose=in_prose or child.tag in PROSE_TAGS,
+            components=components,
         )
 
 
@@ -486,9 +500,16 @@ def _check_curriculum(course: Course, curriculum: Path, report: Report) -> None:
 
 @dataclass(frozen=True)
 class ObjectiveRef:
+    """An objective a content file names.
+
+    source is the file's stem (cards, say, checks) or "kata"; item is the id of the naming item.
+    """
+
     objective: str
     shown: str
     line: int
+    source: str = ""
+    item: str = ""
 
 
 @dataclass(frozen=True)
@@ -564,7 +585,10 @@ def build_context(course: Course, content_dir: Path, katas_dir: Path, report: Re
                         names.append(item["objective"])
                     if isinstance(item.get("objectives"), list):
                         names.extend(str(x) for x in item["objectives"])
-                    refs[owner].extend(ObjectiveRef(n, shown, line) for n in names)
+                    refs[owner].extend(
+                        ObjectiveRef(n, shown, line, yaml_path.stem, str(item.get("id", "")))
+                        for n in names
+                    )
     if katas_dir.is_dir():
         for meta_path in sorted(katas_dir.glob("*/meta.yaml")):
             shown = display_path(meta_path)
@@ -574,7 +598,10 @@ def build_context(course: Course, content_dir: Path, katas_dir: Path, report: Re
             owner = str(meta.get("module", ""))
             objectives = meta.get("objectives", [])
             if owner in refs and isinstance(objectives, list):
-                refs[owner].extend(ObjectiveRef(str(x), shown, 0) for x in objectives)
+                refs[owner].extend(
+                    ObjectiveRef(str(x), shown, 0, "kata", meta_path.parent.name)
+                    for x in objectives
+                )
 
     for owner, module_refs in refs.items():
         for ref in module_refs:
@@ -816,8 +843,38 @@ PREDICT_OBJECTIVE = ('[B4] a prediction proves no objective: remove data-objecti
                      'mode="predict" (AUTHORING §13.7)')
 
 
+# D-061: the components whose success credits the objectives on their element. hx-say and hx-cards
+# credit the objectives their content names (below), hx-check credits its check item, and hx-replay
+# credits nothing.
+CREDITING_ELEMENTS = frozenset({"hx-incident", "hx-kata", "hx-step", "hx-bench"})
+
+
+def _ref_is_credited(ref: ObjectiveRef, module_id: str, page_items: _PageCredits) -> bool:
+    """Whether the page renders the component that credits this content objective (D-061)."""
+    if ref.source == "cards":
+        return module_id in page_items.cards
+    if ref.source == "say":
+        return module_id in page_items.says
+    if ref.source == "checks":
+        return ref.item in page_items.checks
+    if ref.source == "kata":
+        return ref.item in page_items.katas
+    return False
+
+
+@dataclass
+class _PageCredits:
+    """What the page renders that can credit an objective: check items, katas, say and cards."""
+
+    checks: set[str] = field(default_factory=set)
+    katas: set[str] = field(default_factory=set)
+    says: set[str] = field(default_factory=set)
+    cards: set[str] = field(default_factory=set)
+
+
 def _check_objectives(page: Page, module: Module, ctx: Context, shown: str, report: Report) -> None:
     covered: set[str] = set()
+    page_items = _PageCredits()
     # The generated header lists every objective (gen:module-meta); a list item there is not an
     # assessment item, so it never counts as coverage.
     listed = {id(d) for e in descendants(page.root) if "data-objective-list" in e.attrs
@@ -830,15 +887,28 @@ def _check_objectives(page: Page, module: Module, ctx: Context, shown: str, repo
             if element.attrs.get("data-objective", "").strip():
                 report.problem(shown, element.line, PREDICT_OBJECTIVE)
             continue
+        if element.tag == "hx-check":
+            page_items.checks.add(element.attrs.get("item", ""))
+        elif element.tag == "hx-kata":
+            page_items.katas.add(element.attrs.get("kata", ""))
+        elif element.tag == "hx-say":
+            page_items.says.add(element.attrs.get("src", ""))
+        elif element.tag == "hx-cards":
+            page_items.cards.add(element.attrs.get("src", ""))
+        credits = element.tag == "hx-check" or element.tag in CREDITING_ELEMENTS
         for token in element.attrs.get("data-objective", "").split():
-            covered.add(token)
+            if credits:
+                covered.add(token)
             if token not in ctx.objective_ids:
                 report.problem(shown, element.line, f"[B4] unknown objective id '{token}'")
-    covered.update(ref.objective for ref in ctx.refs.get(module["id"], []))
+    for ref in ctx.refs.get(module["id"], []):
+        if _ref_is_credited(ref, module["id"], page_items):
+            covered.add(ref.objective)
     for objective in module["objectives"]:
         if objective["id"] not in covered:
             report.problem(shown, 0, f"[B4] objective {objective['id']} has no assessment item "
-                                     "(data-objective, content yaml or kata meta)")
+                                     "(a crediting component's data-objective, or a content item "
+                                     "it renders)")
 
 
 def _check_prose(page: Page, shown: str, report: Report) -> None:
@@ -895,7 +965,11 @@ def _check_terms(page: Page, module: Module, ctx: Context, shown: str, report: R
     if len(fwd) > 2:
         report.problem(shown, fwd[2].line,
                        f"[B7] {len(fwd)} .fwd spans on this page; at most two are allowed")
-    text, starts, lines = join_visible(visible_text(_main_or_root(page), skip_fwd=True))
+    # The static text inside components counts too: a term there is taught to a reader with no
+    # JavaScript (B7).
+    text, starts, lines = join_visible(
+        visible_text(_main_or_root(page), skip_fwd=True, components=True)
+    )
     allowed = ancestors(ctx.course, mid) | {mid}
     local = {t.lower() for t in module.get("local_terms", [])}
     for info in ctx.terms.values():

@@ -164,20 +164,20 @@
     </hx-check>
 
     <hx-check mode="check" src="A2" item="A2-c4" data-objective="A2.o3">
-      <p>Without JavaScript, the question is: a reply stops because it reached its output limit. Which value does the API report as the reason?</p>
+      <p>Without JavaScript, the question is: a reply stops because it reached its output limit. What does the harness see?</p>
       <ol>
-        <li>end_turn</li>
-        <li>max_tokens</li>
-        <li>model_context_window_exceeded</li>
+        <li>A complete answer, with nothing left out.</li>
+        <li>A reply cut short at the output limit.</li>
+        <li>An error that says the window is full.</li>
       </ol>
     </hx-check>
 
     <hx-check mode="check" src="A2" item="A2-c5" data-objective="A2.o3">
-      <p>Without JavaScript, the question is: the whole context window fills before the reply finishes. Which value does the API report as the reason?</p>
+      <p>Without JavaScript, the question is: the whole context window fills before the reply finishes. What happens?</p>
       <ol>
-        <li>max_tokens</li>
-        <li>model_context_window_exceeded</li>
-        <li>tool_use</li>
+        <li>The reply is cut at the output limit, and the run goes on.</li>
+        <li>The reply stops early, because the whole window is full.</li>
+        <li>The reply finishes anyway, because the model makes room by itself.</li>
       </ol>
     </hx-check>
 

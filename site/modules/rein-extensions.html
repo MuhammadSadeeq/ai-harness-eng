@@ -145,7 +145,7 @@ git apply -R rein/examples/h13-process-check/write-before-read.patch</code></pre
     </div>
     <p>That is a <dfn data-term="null-result">null result</dfn>: ten of ten on all five tasks, before and after. The check had nothing to catch. Each held-out task reads all three files before it writes them, and the example tasks use <code>edit_file</code>, which the check does not count. The suite cannot tell a careful run from a careless one, because every script in it is careful.</p>
     <hx-check mode="check" src="H13" item="H13-c2" data-objective="H13.o3">
-      <p>Without JavaScript, the question is: the table shows the same numbers before and after your change. What goes on the brag sheet?</p>
+      <p>Without JavaScript, the question is: the table shows the same numbers before and after your change. What goes on the <span class="fwd" data-term="brag-sheet">brag sheet</span>, the short list of results you keep for interviews?</p>
       <ol>
         <li>The process check does not work.</li>
         <li>The suite could not show the check's effect, because no trial wrote a file it had not read. The result is a null on this suite.</li>
@@ -154,7 +154,7 @@ git apply -R rein/examples/h13-process-check/write-before-read.patch</code></pre
     </hx-check>
 
     <h3>Make sure the check can see</h3>
-    <p>A null is only useful if the check works. So the course adds one control task outside the suite: its script writes each file before it reads it, and its checks are the same. Its files are in <code>rein/examples/h13-process-check/scenarios/</code>. Under the baseline it passes ten of ten. With the check it passes none. Tokens and outcomes are the same in both runs, so the process is the only thing the check changed. The check works, and the suite is why the number did not move.</p>
+    <p>A null is only useful if the check works. So the course adds one control task outside the suite: its script writes each file before it reads it, and its checks are the same. Its files are in <code>rein/examples/h13-process-check/scenarios/</code>. Under the baseline it passes ten of ten. With the check it passes none. Tokens are the same in both runs, and only the pass count changes, so the process is the only thing the check changed. The check works, and the suite is why the number did not move.</p>
     <p>Run the control on your machine, without the check and then with it:</p>
     <pre tabindex="0" role="region" aria-label="The control without the check, then with it, on your machine"><code>python -m rein eval --eval rein/examples/h13-process-check/scenarios/evals/d1-control.json --board scenarios/boards/d1-old.json --out control-baseline.json
 git apply rein/examples/h13-process-check/write-before-read.patch
@@ -165,7 +165,7 @@ git apply -R rein/examples/h13-process-check/write-before-read.patch</code></pre
       <ol>
         <li>To show the check works, so the null is about the suite and not about a broken check.</li>
         <li>To raise the pass count, since a control is an easier task.</li>
-        <li>To keep the null off the brag sheet.</li>
+        <li>To keep the null out of the report.</li>
       </ol>
     </hx-check>
 
@@ -193,7 +193,7 @@ git apply -R rein/examples/h13-process-check/write-before-read.patch</code></pre
     <hx-say src="H13" data-objective="H13.o2 H13.o3">
       <ol>
         <li>Write the criterion for your own extension before you write any code. Say what it changes, the command and seed, the number that decides, and the rule for reading it.</li>
-        <li>The numbers did not move after your change. Write the line for the brag sheet and the first sentence of the report.</li>
+        <li>The numbers did not move after your change. Write the line for your results list and the first sentence of the report.</li>
       </ol>
     </hx-say>
   </section>

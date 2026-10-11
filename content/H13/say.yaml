@@ -12,7 +12,7 @@
 - id: H13-s2
   objectives:
   - H13.o3
-  prompt: "The numbers did not move after your change. Write the line for the brag sheet and the first sentence of the report."
+  prompt: "The numbers did not move after your change. Write the line for your results list and the first sentence of the report."
   model_answer: "The process check did not change any pass count on the D1 suite: ten of ten on each task, before and after. That is a null on this suite. The suite contains no run that writes before it reads, so the check had nothing to catch; a control task that does write first showed the check works."
   rubric:
   - Says the number did not move, and gives the table's numbers

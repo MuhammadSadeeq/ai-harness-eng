@@ -19,7 +19,7 @@
    }
   ],
   "outcome": "The run guessed a port and ended as done. The test still failed. Only the harness had changed.",
-  "question": "The model stays the same, but the output cap is changed. What happens to the results?"
+  "question": "The model stays the same, but the output limit is changed. What happens to the results?"
  },
  {
   "answer": 0,

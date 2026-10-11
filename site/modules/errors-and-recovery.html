@@ -185,7 +185,7 @@
     <p>The old board retries every 200 ms, with no growth, no jitter and no breaker. The new board backs off with full jitter, and a breaker opens after eight failures in a row. Some runs on the new board end with the breaker open: read the status of each run.</p>
     <figure>
       <hx-bench tape="c6-outage" old="c6-old" new="c6-new" trials="20" data-objective="C6.o3">
-        <p>Without JavaScript, this shows the two boards on the same seeds: the pass rate and the final status of each run.</p>
+        <p>Without JavaScript, this shows the two boards on the same seeds: the pass rate and how each run ended.</p>
       </hx-bench>
       <figcaption>FIG C6.2 · Old board against new board. Try this: run the bench and read the status of a run on each board.</figcaption>
     </figure>

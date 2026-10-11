@@ -20,7 +20,7 @@
    }
   ],
   "outcome": "It ended as done on turn 1. The tests never ran, and the checks still fail.",
-  "question": "The reply starts with text: \"I'll run the tests first.\" Then it asks for run_command. What does the harness do next?"
+  "question": "The reply starts with text: \"I'll run the tests first.\" Then it asks to run a shell command. What does the harness do next?"
  },
  {
   "answer": 1,
@@ -55,7 +55,7 @@
   "options": [
    {
     "text": "The run is finished.",
-    "why": "Tempting. end_turn says the model finished. tool_use says it wants a tool run first."
+    "why": "Tempting. A finished reply says the model is done. This one wants a tool run first."
    },
    {
     "fact": "api.stop-reason-tool-use",
@@ -64,14 +64,14 @@
    },
    {
     "text": "The reply was cut off at the token limit.",
-    "why": "Tempting. That is max_tokens, a different stop reason."
+    "why": "Tempting. That is a different stop reason, for a reply cut at its limit."
    },
    {
     "text": "The model refused to answer.",
-    "why": "Wrong. That is refusal, another stop reason, and it is not what tool_use means."
+    "why": "Wrong. A refusal is another stop reason, and it is not a request for a tool."
    }
   ],
-  "question": "A reply comes back with stop_reason tool_use. What does it tell the harness?"
+  "question": "A reply comes back with a stop_reason that asks for a tool. What does it tell the harness?"
  },
  {
   "answer": 1,

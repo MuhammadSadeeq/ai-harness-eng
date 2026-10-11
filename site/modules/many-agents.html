@@ -132,9 +132,9 @@
     </hx-check>
     <p>A <dfn data-term="fan-out">fan-out</dfn> starts several sub-agents at once, one per piece of work. A <dfn data-term="topology">topology</dfn> is the shape of the whole system: who starts whom, who reads whose output, and where work waits. The lab compares five shapes for one task. Each one buys something and pays for it in cost, wall-clock time and a set of failure modes.</p>
     <hx-check mode="check" src="F1" item="F1-c2" data-objective="F1.o2">
-      <p>Without JavaScript, the question is: a generator and an evaluator run in a loop. What failure should you watch for?</p>
+      <p>Without JavaScript, the question is: a writer agent and a judge agent run in a loop. What failure should you watch for?</p>
       <ol>
-        <li>The evaluator approves its own style of work.</li>
+        <li>The judge approves work written in its own style.</li>
         <li>The two agents need too much memory to run.</li>
         <li>The loop costs nothing, because each side is short.</li>
       </ol>

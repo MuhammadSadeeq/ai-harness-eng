@@ -19,7 +19,7 @@
    }
   ],
   "outcome": "The run ended as done after the failed search. answer.txt was never written, so the checks fail.",
-  "question": "On the old board the description is 'Search files.' and the fields have no descriptions. The model's first call sends a field named file. What is the final status?"
+  "question": "On the old board the description is 'Search files.' and the fields have no descriptions. The model's first call sends a field named file. How does the run end?"
  },
  {
   "answer": 0,

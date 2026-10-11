@@ -49,8 +49,8 @@
   "objective": "F1.o2",
   "options": [
    {
-    "text": "The evaluator approves its own style of work.",
-    "why": "Right. An evaluator that shares the generator's habits passes its work. Its criteria must come from outside the loop."
+    "text": "The judge approves work written in its own style.",
+    "why": "Right. A judge that shares the writer's habits passes its work. Its criteria must come from outside the loop."
    },
    {
     "text": "The two agents need too much memory to run.",
@@ -61,7 +61,7 @@
     "why": "Tempting and wrong. Each turn of the loop is a model call, so every round costs more."
    }
   ],
-  "question": "A generator and an evaluator run in a loop. What failure should you watch for?"
+  "question": "A writer agent and a judge agent run in a loop. What failure should you watch for?"
  },
  {
   "answer": 1,

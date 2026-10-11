@@ -27,10 +27,10 @@
   mode: check
   question: I run the scripted command three times. What changes between the runs?
   options:
-  - text: Nothing. The script is the same, so the reply and the token counts repeat.
+  - text: Nothing. The script is the same, so the reply and the numbers it reports repeat.
     why: Right. The scripted model reads the same list each time, and nothing carries over between runs.
   - text: The reply changes, because the model samples its words.
     why: Wrong. The scripted model answers from a fixed list, so its reply cannot change between runs of the same script.
-  - text: The token count grows, because the first run is remembered.
+  - text: The numbers grow, because the first run is remembered.
     why: Tempting, because a conversation grows. But each run is a new request, and nothing from the first run is kept.
   answer: 0
