@@ -1,0 +1,108 @@
+[
+ {
+  "answer": 1,
+  "id": "F4-p1",
+  "mode": "predict",
+  "objective": "F4.o1",
+  "options": [
+   {
+    "text": "Lower, because it costs half as much per token.",
+    "why": "Tempting. Price per token ignores how many runs complete; the cheap model's failed runs are paid for too."
+   },
+   {
+    "text": "Higher, because a small share of its runs complete and each run still costs something.",
+    "why": "Right. The total cost is spread over the few completed runs, which can outweigh the lower price."
+   },
+   {
+    "text": "About the same, since each run costs about the same.",
+    "why": "Wrong. The cheap model's runs cost less each, and that is why per-call numbers mislead."
+   }
+  ],
+  "outcome": "On the cheap board the cost per completed task is higher. The runs cost less each, but few complete, and the failed runs are paid for too.",
+  "question": "The cheap model costs half as much per token, and only a small share of its runs complete. Compared with the capable model, its cost per completed task is:"
+ },
+ {
+  "answer": 0,
+  "id": "F4-c1",
+  "mode": "check",
+  "objective": "F4.o1",
+  "options": [
+   {
+    "text": "The total cost divided by the runs that completed as a true done.",
+    "why": "Right. It counts every run's cost and divides it by the completed runs."
+   },
+   {
+    "text": "The cost of one call.",
+    "why": "Wrong. A cost per call hides the runs that never complete."
+   },
+   {
+    "text": "The cost per token.",
+    "why": "Wrong. A price per token does not count how many runs complete."
+   }
+  ],
+  "question": "Which measure is cost per completed task?"
+ },
+ {
+  "answer": 0,
+  "id": "F4-c2",
+  "mode": "check",
+  "objective": "F4.o2",
+  "options": [
+   {
+    "text": "The cost per call falls, and the cost per completed task falls only if the success rate holds.",
+    "why": "Right. The cut lowers the call's cost; whether the task gets cheaper depends on the runs still completing."
+   },
+   {
+    "text": "Nothing changes, because caching is about speed.",
+    "why": "Wrong. Caching changes what each call pays for its input."
+   },
+   {
+    "text": "The success rate rises, because the model reads the cache.",
+    "why": "Wrong. The cache changes the price of the input, not the model's answers."
+   }
+  ],
+  "question": "A cache hit lowers the input cost of each call. Before you measure it, what should you predict?"
+ },
+ {
+  "answer": 0,
+  "id": "F4-c3",
+  "mode": "check",
+  "objective": "F4.o3",
+  "options": [
+   {
+    "text": "Stop it cleanly, keep the trace, and count the run as not completed.",
+    "why": "Right. A budget guard stops the run, keeps what it did, and the cost stays visible."
+   },
+   {
+    "text": "Let it run on, because budgets are only an accounting matter.",
+    "why": "Wrong. A budget that does not stop anything is only a number on a report."
+   },
+   {
+    "text": "Start a new run from scratch and bill both runs as one.",
+    "why": "Wrong. It hides the cost of the first run and does not finish the work."
+   }
+  ],
+  "question": "A run spends its token budget halfway through the work. What should the harness do?"
+ },
+ {
+  "answer": 0,
+  "id": "F4-c4",
+  "mode": "check",
+  "objective": "F4.o4",
+  "options": [
+   {
+    "text": "When the call starts, and when its reply arrives.",
+    "why": "Right. Those two stamps give the call's time. The trace does not split that time further."
+   },
+   {
+    "text": "The time to first token, measured apart from the generation.",
+    "why": "Wrong. This trace does not record a first token, so it cannot split a call that way."
+   },
+   {
+    "text": "The tokens per second while the reply streams.",
+    "why": "Wrong. This trace does not record the stream, so it has no speed while the reply arrives."
+   }
+  ],
+  "question": "Which timestamps does this course's trace give you for a model call?"
+ }
+]

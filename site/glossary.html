@@ -216,6 +216,14 @@
     </section>
     <section class="glossary-group" id="letter-b" data-filter-group>
       <h2>B</h2>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-batch-processing">
+        <h3 class="term-name"><dfn id="term-batch-processing">batch processing</dfn></h3>
+        <p class="term-def">Sending many requests as one job, to be answered later rather than at once. It trades the wait for a different price.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/cost-and-latency.html">F4 · Cost and latency engineering</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="permissions" data-wire-name="Permissions" id="entry-blast-radius">
         <h3 class="term-name"><dfn id="term-blast-radius">blast radius</dfn></h3>
         <p class="term-def">How much a single mistake can reach: the files, the network and the secrets it could touch.</p>
@@ -250,6 +258,15 @@
           <span class="taught">Taught in <a href="modules/many-agents.html">F1 · Many agents: when and how</a></span>
         </p>
         <p class="term-alias">Also written: briefs</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-budget-guard">
+        <h3 class="term-name"><dfn id="term-budget-guard">budget guard</dfn></h3>
+        <p class="term-def">A check that stops a run when its token or cost budget is spent, and keeps the trace of what it did.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/cost-and-latency.html">F4 · Cost and latency engineering</a></span>
+        </p>
+        <p class="term-alias">Also written: budget guards</p>
       </div>
       <div class="term-entry" data-filter-item data-wire="control" data-wire-name="Control" id="entry-build-to-delete">
         <h3 class="term-name"><dfn id="term-build-to-delete">build to delete</dfn></h3>
@@ -1282,6 +1299,15 @@
           <span class="taught">Taught in <a href="modules/tokens-and-the-window.html">A2 · Tokens and the context window</a></span>
         </p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-latency-budget">
+        <h3 class="term-name"><dfn id="term-latency-budget">latency budget</dfn></h3>
+        <p class="term-def">A limit on how long a task may take from start to end, set before you measure the work.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/cost-and-latency.html">F4 · Cost and latency engineering</a></span>
+        </p>
+        <p class="term-alias">Also written: latency budgets</p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="verify" data-wire-name="Verification" id="entry-llm-judge">
         <h3 class="term-name"><dfn id="term-llm-judge">LLM judge</dfn></h3>
         <p class="term-def">A model that grades another model&#x27;s run. The same as a model grader: cheap and quick, and it reads the claim as easily as the work.</p>
@@ -1462,6 +1488,14 @@
           <span class="taught">Taught in <a href="modules/model-migrations.html">F7 · Model migrations: when the model changes under you</a></span>
         </p>
         <p class="term-alias">Also written: model migrations</p>
+      </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-model-routing">
+        <h3 class="term-name"><dfn id="term-model-routing">model routing</dfn></h3>
+        <p class="term-def">Choosing a model for each task, a cheap one for easy work and a capable one for hard work, from a rule or a check.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/cost-and-latency.html">F4 · Cost and latency engineering</a></span>
+        </p>
       </div>
       <div class="term-entry" data-filter-item data-wire="" data-wire-name="" id="entry-mount">
         <h3 class="term-name"><dfn id="term-mount">mount</dfn></h3>
@@ -2298,6 +2332,14 @@
         </p>
         <p class="term-alias">Also written: thinking blocks</p>
       </div>
+      <div class="term-entry" data-filter-item data-wire="observe" data-wire-name="Observability" id="entry-time-to-first-token">
+        <h3 class="term-name"><dfn id="term-time-to-first-token">time to first token</dfn></h3>
+        <p class="term-def">The wait from sending a request to the first token of the reply. It is latency, not how fast the model writes.</p>
+        <p class="term-meta">
+          <span class="wire w-observe"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/core/glyphs.svg#g-eye"></use></svg> Observability</span>
+          <span class="taught">Taught in <a href="modules/cost-and-latency.html">F4 · Cost and latency engineering</a></span>
+        </p>
+      </div>
       <div class="term-entry" data-filter-item data-wire="context" data-wire-name="Context" id="entry-token">
         <h3 class="term-name"><dfn id="term-token">token</dfn></h3>
         <p class="term-def">A piece of text the model reads and writes. A token is often a word, but it can be part of a word or a punctuation mark.</p>
@@ -2636,7 +2678,7 @@
       </div>
     </section>
     </div>
-    <p class="glossary-count" data-glossary-count>283 terms</p>
+    <p class="glossary-count" data-glossary-count>288 terms</p>
     <!-- /gen:glossary -->
   </section>
 </main>

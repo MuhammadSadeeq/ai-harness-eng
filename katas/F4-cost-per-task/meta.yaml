@@ -1,0 +1,36 @@
+id: F4-cost-per-task
+module: F4
+title: Cost per completed task from trial results
+objectives: [F4.o1]
+minutes: 25
+hints:
+  - "Cost per call is not the number to compare. Count every run's cost, then divide by the runs that completed."
+  - "A run completes only as a true done: status done and passed True. A guard stop with the files right does not complete, and neither does a false done."
+  - "Sum the cost of all the trials, count the completed ones, and floor the division. With no completed run, return None instead of dividing."
+from_memory: false
+wrong_solutions:
+  - name: cost-per-call
+    code: |
+      def cost_per_completed(trials):
+          if not trials:
+              return None
+          return sum(t["cost"] for t in trials) // len(trials)
+  - name: done-counts-as-complete
+    code: |
+      def cost_per_completed(trials):
+          total = sum(t["cost"] for t in trials)
+          completed = sum(1 for t in trials if t["status"] == "done")
+          return None if completed == 0 else total // completed
+  - name: only-completed-cost
+    code: |
+      def cost_per_completed(trials):
+          done = [t for t in trials if t["status"] == "done" and t["passed"] is True]
+          if not done:
+              return None
+          return sum(t["cost"] for t in done) // len(done)
+  - name: no-guard-for-zero
+    code: |
+      def cost_per_completed(trials):
+          total = sum(t["cost"] for t in trials)
+          completed = sum(1 for t in trials if t["status"] == "done" and t["passed"] is True)
+          return total // completed

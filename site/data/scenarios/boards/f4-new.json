@@ -1,0 +1,9 @@
+{
+ "id": "f4-new",
+ "label": "The cheap model: half the price",
+ "modules": {
+  "model": {
+   "id": "claude-sonnet-5-5"
+  }
+ }
+}

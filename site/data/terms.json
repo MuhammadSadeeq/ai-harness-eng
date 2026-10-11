@@ -161,6 +161,17 @@
   "term": "attention budget",
   "wire": "context"
  },
+ "batch-processing": {
+  "aliases": [
+   "batch processing"
+  ],
+  "definition": "Sending many requests as one job, to be answered later rather than at once. It trades the wait for a different price.",
+  "id": "batch-processing",
+  "module": "F4",
+  "strict": false,
+  "term": "batch processing",
+  "wire": "observe"
+ },
  "blast-radius": {
   "aliases": [
    "blast radius"
@@ -207,6 +218,18 @@
   "strict": false,
   "term": "brief",
   "wire": "context"
+ },
+ "budget-guard": {
+  "aliases": [
+   "budget guard",
+   "budget guards"
+  ],
+  "definition": "A check that stops a run when its token or cost budget is spent, and keeps the trace of what it did.",
+  "id": "budget-guard",
+  "module": "F4",
+  "strict": false,
+  "term": "budget guard",
+  "wire": "observe"
  },
  "build-to-delete": {
   "aliases": [
@@ -1557,6 +1580,18 @@
   "term": "latency",
   "wire": "loop"
  },
+ "latency-budget": {
+  "aliases": [
+   "latency budget",
+   "latency budgets"
+  ],
+  "definition": "A limit on how long a task may take from start to end, set before you measure the work.",
+  "id": "latency-budget",
+  "module": "F4",
+  "strict": false,
+  "term": "latency budget",
+  "wire": "observe"
+ },
  "llm-judge": {
   "aliases": [
    "LLM judge",
@@ -1796,6 +1831,17 @@
   "strict": true,
   "term": "model migration",
   "wire": "loop"
+ },
+ "model-routing": {
+  "aliases": [
+   "model routing"
+  ],
+  "definition": "Choosing a model for each task, a cheap one for easy work and a capable one for hard work, from a rule or a check.",
+  "id": "model-routing",
+  "module": "F4",
+  "strict": false,
+  "term": "model routing",
+  "wire": "observe"
  },
  "mount": {
   "aliases": [
@@ -2892,6 +2938,17 @@
   "strict": true,
   "term": "thinking block",
   "wire": "loop"
+ },
+ "time-to-first-token": {
+  "aliases": [
+   "time to first token"
+  ],
+  "definition": "The wait from sending a request to the first token of the reply. It is latency, not how fast the model writes.",
+  "id": "time-to-first-token",
+  "module": "F4",
+  "strict": false,
+  "term": "time to first token",
+  "wire": "observe"
  },
  "token": {
   "aliases": [

@@ -6,8 +6,9 @@ import assert from "node:assert/strict";
 
 globalThis.HTMLElement ??= class {};
 globalThis.customElements ??= { define() {}, get() {}, whenDefined: () => new Promise(() => {}) };
-const { nextValue } = await import("../hx-num.js");
+const { nextValue, moneyText, HxNum } = await import("../hx-num.js");
 const { formatValue } = await import("../lib/stats.js");
+const { formatCost } = await import("../lib/format.js");
 
 const knob = { min: 4, max: 30, step: 1 };
 
@@ -37,6 +38,26 @@ test("reading formats: int, usd, percent", () => {
   assert.equal(formatValue(26438000, "usd"), "$0.0264");
   assert.equal(formatValue(13, "percent"), "13%");
   assert.equal(formatValue(null, "int"), "—", "no value yet is an em dash");
+});
+
+// format="money" is the bench's money(): the same formatCost call with usd set from the board's priced flag.
+test("money format: dollars on a priced board, units otherwise, an em dash for no value", () => {
+  assert.equal(moneyText(1908000, true), "≈ $0.0019");
+  assert.equal(moneyText(1908000, true), formatCost(1908000, { usd: true }), "the bench's money() wording");
+  assert.equal(moneyText(1908000, false), formatCost(1908000, { usd: false }));
+  assert.equal(moneyText(null, true), "—", "no completed run gives no value");
+  assert.equal(moneyText(undefined, false), "—");
+});
+
+test("money format reads whether its target's board is priced, by the name of the value", () => {
+  const text = (format, priced, value) => HxNum.prototype.formatText.call(
+    { format, name: "cost_per_pass.old", target: { hxPriced: (name) => priced && name === "cost_per_pass.old" } },
+    value,
+  );
+  assert.equal(text("money", true, 1908000), "≈ $0.0019");
+  assert.equal(text("money", false, 1908000), "≈ 0.0019 units");
+  assert.equal(text("money", true, null), "—");
+  assert.equal(text("int", true, 1908000), "1,908,000", "other formats ignore the priced flag");
 });
 
 // A target that defines after hx-num (lazy loading, COMPONENTS §10): hx-num waits for its definition and its ready

@@ -1,0 +1,9 @@
+{
+ "id": "f4-old",
+ "label": "The capable model",
+ "modules": {
+  "model": {
+   "id": "claude-opus-5-5"
+  }
+ }
+}

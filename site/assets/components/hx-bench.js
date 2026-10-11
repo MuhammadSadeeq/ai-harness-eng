@@ -1,6 +1,6 @@
 // hx-bench: the Knob Bench (DESIGN §7.5–§7.6, COMPONENTS §10). Every number is computed from runBench results.
-// Attributes are read at upgrade. Values: knob, passed.*, worst_turns.*, worst_cost.*, worst_ms.*, mean_ms.*, trials;
-// hxLabel(name).
+// Attributes are read at upgrade. Values: knob, passed.*, worst_turns.*, worst_cost.*, cost_per_pass.*, worst_ms.*,
+// mean_ms.*, trials; hxLabel(name); hxPriced(name) for the money values.
 import { HxElement } from "./lib/hx-element.js";
 import { getTape, getBoard, getFactsCore } from "./lib/data.js";
 import { runBench } from "../sim/index.js";
@@ -69,6 +69,27 @@ const glyph = (name) => {
 
 const words = (module) => module.replace(/_/g, " ");
 const money = (nano, priced) => formatCost(nano, { usd: priced });
+
+/**
+ * Cost per completed task on one board: the total cost of its trials divided by the runs that pass, as the
+ * F4-cost-per-task kata divides it (floored, in nano-units). null when no run passes.
+ */
+export function costPerPass(trials) {
+  let total = 0;
+  let passed = 0;
+  for (const t of trials) {
+    total += t.cost;
+    if (isPass(t.status, t.passed)) passed += 1;
+  }
+  return passed > 0 ? Math.floor(total / passed) : null;
+}
+
+/** True when a board's model profile prices its tokens from the facts registry (so its costs are USD). */
+export function pricedOn(tape, board) {
+  const id = board?.modules?.model?.id;
+  const profile = id !== undefined && tape?.models ? tape.models[id] : undefined;
+  return pricingIsUsd({ pricing: profile ? profile.pricing : tape?.pricing });
+}
 
 /** A retry that waits the same time every try: base equals cap, no jitter (B-16). */
 const isFixedWait = (p) => Number.isInteger(p.base_ms) && p.base_ms === p.cap_ms && p.jitter === "none" && Number.isInteger(p.max_attempts);
@@ -267,7 +288,9 @@ export class HxBench extends HxElement {
     const oldId = this.getAttribute("old") ?? tape.boards[0];
     const newId = this.getAttribute("new") ?? tape.boards[1];
     [this.oldBoard, this.newBoard] = await Promise.all([getBoard(oldId), getBoard(newId)]);
-    this.priced = pricingIsUsd(tape);
+    this.pricedOld = pricedOn(tape, this.oldBoard);
+    this.pricedNew = pricedOn(tape, this.newBoard);
+    this.priced = this.pricedOld && this.pricedNew;
     this.knobCfg = this.parseKnob();
     const par = this.getAttribute("par");
     if (par !== null && (par !== PAR_MODE || !this.knobCfg)) throw new Error("hx-bench: par needs knob and cheapest-worst-case");
@@ -317,6 +340,8 @@ export class HxBench extends HxElement {
       "worst_turns.new": r ? r.new.worst_turns : null,
       "worst_cost.old": r ? r.old.worst_cost : null,
       "worst_cost.new": r ? r.new.worst_cost : null,
+      "cost_per_pass.old": r ? costPerPass(r.oldTrials) : null,
+      "cost_per_pass.new": r ? costPerPass(r.newTrials) : null,
       "worst_ms.old": r ? r.old.worst_ms : null,
       "worst_ms.new": r ? r.new.worst_ms : null,
       "mean_ms.old": r ? r.old.mean_ms : null,
@@ -340,6 +365,12 @@ export class HxBench extends HxElement {
 
   hxLabel(name) {
     return name === "knob" && this.knobCfg ? this.knobCfg.label : null;
+  }
+
+  /** Whether the money value `name` (worst_cost.* or cost_per_pass.*) is on a priced board, so hx-num shows dollars. */
+  hxPriced(name) {
+    if (!/^(worst_cost|cost_per_pass)\.(old|new)$/.test(name)) return false;
+    return name.endsWith(".old") ? this.pricedOld === true : this.pricedNew === true;
   }
 
   emitChange(name, value) {

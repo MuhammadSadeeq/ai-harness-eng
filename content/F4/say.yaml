@@ -1,0 +1,27 @@
+- id: F4-s1
+  objectives: [F4.o1, F4.o3]
+  prompt: "Why can a cheaper model cost more per completed task, and how would you budget a run?"
+  model_answer: >-
+    A cheaper model's runs cost less each, but if fewer of them complete, the cost of the failed runs is spread over the
+    few successes. I would divide the total cost by the completed runs and compare that. To budget a run I would set a
+    token or cost limit before it starts, and a budget guard that stops the run when the limit is spent and keeps the
+    trace, so that the failure is visible.
+  rubric:
+    - "Divides the total cost by the runs that completed, not by the calls"
+    - "Says the failed runs' cost is paid and spread over fewer completions"
+    - "Sets the budget before the run and says what happens when it is spent"
+    - "Keeps the trace of a stopped run, so the cost can be read"
+
+- id: F4-s2
+  objectives: [F4.o2, F4.o4]
+  prompt: "Name two cuts and predict each one's effect before you measure, and say where latency comes from in a trace."
+  model_answer: >-
+    A cache hit lowers the input cost of each call, and I would predict a lower cost per call with the same success. A
+    cheaper model I would predict to cost more per completed task unless its success holds. In a trace I would read the
+    time of each model call and each tool call, find the largest part, and change that part first. This course's trace
+    does not split a call into its first token and its generation, so I would not claim that split.
+  rubric:
+    - "Names two cuts, such as caching, effort or routing"
+    - "Predicts each one's effect on cost per call and on cost per completed task"
+    - "Says the effect of a cut waits on the success rate staying the same"
+    - "Finds the largest part of latency from the trace's timestamps, and claims no split the trace does not record"

@@ -1,0 +1,18 @@
+{
+ "from_memory": false,
+ "hints": [
+  "Cost per call is not the number to compare. Count every run's cost, then divide by the runs that completed.",
+  "A run completes only as a true done: status done and passed True. A guard stop with the files right does not complete, and neither does a false done.",
+  "Sum the cost of all the trials, count the completed ones, and floor the division. With no completed run, return None instead of dividing."
+ ],
+ "id": "F4-cost-per-task",
+ "minutes": 25,
+ "module": "F4",
+ "objectives": [
+  "F4.o1"
+ ],
+ "solution": "def cost_per_completed(trials):\n    \"\"\"Cost per completed task for one board: all the cost, divided by the runs that completed.\n\n    trials is a list of {\"status\", \"passed\", \"cost\"}; cost is in nano-units. A run completes only as a true done:\n    status \"done\" and passed True. The cost of every run counts, completed or not. Floor the result to an integer.\n    With no completed run there is no cost per completed task, so return None.\n    \"\"\"\n    total = sum(t[\"cost\"] for t in trials)\n    completed = sum(1 for t in trials if t[\"status\"] == \"done\" and t[\"passed\"] is True)\n    if completed == 0:\n        return None\n    return total // completed\n",
+ "starter": "def cost_per_completed(trials):\n    \"\"\"Return the cost per completed task, in nano-units, or None when no run completed.\n\n    trials is a list of {\"status\", \"passed\", \"cost\"}. A run completes as a true done: status \"done\" and passed True.\n    \"\"\"\n    return 0\n",
+ "tests": "from kata import cost_per_completed\n\nRUNS = [\n    {\"status\": \"done\", \"passed\": True, \"cost\": 100},\n    {\"status\": \"done\", \"passed\": False, \"cost\": 100},\n    {\"status\": \"max_turns\", \"passed\": False, \"cost\": 50},\n    {\"status\": \"done\", \"passed\": True, \"cost\": 150},\n]\n\n\ndef test_all_the_cost_divided_by_the_completed_runs():\n    assert cost_per_completed(RUNS) == 200, \"400 in all over 2 completed runs\"\n\n\ndef test_a_false_done_does_not_complete():\n    got = cost_per_completed([\n        {\"status\": \"done\", \"passed\": False, \"cost\": 90},\n        {\"status\": \"done\", \"passed\": True, \"cost\": 10},\n    ])\n    assert got == 100, \"the false done's cost counts, but only the true done completes\"\n\n\ndef test_a_guard_stopped_run_does_not_complete_even_with_files_right():\n    got = cost_per_completed([\n        {\"status\": \"max_turns\", \"passed\": True, \"cost\": 30},\n        {\"status\": \"done\", \"passed\": True, \"cost\": 70},\n    ])\n    assert got == 100\n\n\ndef test_no_completed_run_gives_none():\n    assert cost_per_completed([{\"status\": \"done\", \"passed\": False, \"cost\": 5}]) is None\n    assert cost_per_completed([]) is None\n\n\ndef test_the_result_is_floored_to_an_integer():\n    got = cost_per_completed([\n        {\"status\": \"done\", \"passed\": True, \"cost\": 10},\n        {\"status\": \"done\", \"passed\": True, \"cost\": 10},\n        {\"status\": \"done\", \"passed\": False, \"cost\": 1},\n    ])\n    assert got == 10 and isinstance(got, int), \"21 over 2 completed floors to 10\"\n\n\ndef test_the_order_of_runs_does_not_change_the_result():\n    assert cost_per_completed(list(reversed(RUNS))) == cost_per_completed(RUNS)\n",
+ "title": "Cost per completed task from trial results"
+}

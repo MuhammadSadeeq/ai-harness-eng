@@ -1,0 +1,12 @@
+{
+  "efforts": {"low": 1, "medium": 2, "high": 4},
+  "defaults": {
+    "model": "sonnet-5-5",
+    "effort": "medium",
+    "turns": 6,
+    "input_tokens": 4000,
+    "output_tokens": 600,
+    "cache_hit_percent": 60,
+    "success_percent": 80
+  }
+}

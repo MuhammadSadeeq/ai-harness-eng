@@ -1,0 +1,44 @@
+[
+ {
+  "back": "Per completed task: the cost of every run divided by the runs that completed as a true done. Cost per call hides the failures.",
+  "front": "How do you compare two models on cost?",
+  "id": "F4-k1",
+  "objective": "F4.o1",
+  "type": "term"
+ },
+ {
+  "back": "Predict its effect on cost per call and on cost per completed task. A cache hit lowers the first; only a steady success rate carries it to the second.",
+  "front": "What do you do before you measure a cut in cost?",
+  "id": "F4-k2",
+  "objective": "F4.o2",
+  "type": "term"
+ },
+ {
+  "back": "A check that stops a run when its token or cost budget is spent, and keeps the trace of what it did.",
+  "front": "What is a budget guard?",
+  "id": "F4-k3",
+  "objective": "F4.o3",
+  "type": "term"
+ },
+ {
+  "back": "The wait from sending a request to the first token of the reply. It is one part of latency, next to the time to generate the reply and the time tools take.",
+  "front": "What is time to first token?",
+  "id": "F4-k4",
+  "objective": "F4.o4",
+  "type": "term"
+ },
+ {
+  "back": "A limit on how long a task may take from start to end, set before you measure the work.",
+  "front": "What is a latency budget?",
+  "id": "F4-k5",
+  "objective": "F4.o3",
+  "type": "term"
+ },
+ {
+  "back": "Its runs cost less each, but fewer of them complete. The cost of the runs that fail is still paid, so it is spread over fewer successes.",
+  "front": "Why can a cheaper model cost more per completed task?",
+  "id": "F4-k6",
+  "objective": "F4.o1",
+  "type": "term"
+ }
+]

@@ -7,9 +7,16 @@
 // focusable. The − / + keys are never in the tab order.
 import { HxElement } from "./lib/hx-element.js";
 import { formatValue } from "./lib/stats.js";
+import { formatCost } from "./lib/format.js";
 
 const DRAG_PX_PER_STEP = 8;
 const PAGE_STEPS = 10;
+
+/** format="money": the bench's money() (hx-bench.js), so a nano-unit cost reads in dollars on a priced tape. */
+export function moneyText(nano, priced) {
+  if (nano === null || nano === undefined) return "—";
+  return formatCost(nano, { usd: priced === true });
+}
 
 /** The value `steps` steps from `current`, on the target's grid (min + k * step) and inside [min, max]. */
 export function nextValue(current, range, steps) {
@@ -52,10 +59,16 @@ export class HxNum extends HxElement {
     target.addEventListener("hx-change", this.onTargetChange);
   }
 
+  /** The text for a value in this element's format. "money" asks the target whether its board is priced. */
+  formatText(value) {
+    if (this.format === "money") return moneyText(value, this.target.hxPriced?.(this.name) === true);
+    return formatValue(value, this.format);
+  }
+
   render() {
     if (!this.dom) this.build();
     const value = this.target.hxValue(this.name);
-    const text = formatValue(value, this.format);
+    const text = this.formatText(value);
     this.dom.value.textContent = text;
     if (this.range) {
       const { min, max } = this.range;
@@ -140,7 +153,7 @@ export class HxNum extends HxElement {
   async selfTest() {
     const before = this.target.hxValue(this.name);
     if (!this.range) {
-      return this.dom.value.textContent === formatValue(before, this.format);
+      return this.dom.value.textContent === this.formatText(before);
     }
     this.dom.spin.focus({ preventScroll: true });
     this.dom.spin.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp", bubbles: true }));

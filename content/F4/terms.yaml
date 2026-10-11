@@ -1,0 +1,39 @@
+- id: batch-processing
+  term: batch processing
+  aliases: [batch processing]
+  strict: false
+  wire: observe
+  definition: >-
+    Sending many requests as one job, to be answered later rather than at once. It trades the wait for a different price.
+
+- id: model-routing
+  term: model routing
+  aliases: [model routing]
+  strict: false
+  wire: observe
+  definition: >-
+    Choosing a model for each task, a cheap one for easy work and a capable one for hard work, from a rule or a check.
+
+- id: time-to-first-token
+  term: time to first token
+  aliases: [time to first token]
+  strict: false
+  wire: observe
+  definition: >-
+    The wait from sending a request to the first token of the reply. It is latency, not how fast the model writes.
+
+- id: latency-budget
+  term: latency budget
+  aliases: [latency budget, latency budgets]
+  strict: false
+  wire: observe
+  definition: >-
+    A limit on how long a task may take from start to end, set before you measure the work.
+
+- id: budget-guard
+  term: budget guard
+  aliases: [budget guard, budget guards]
+  strict: false
+  wire: observe
+  definition: >-
+    A check that stops a run when its token or cost budget is spent, and keeps the trace of what it did.
