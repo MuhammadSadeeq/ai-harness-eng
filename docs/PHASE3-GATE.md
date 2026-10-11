@@ -1,0 +1,108 @@
+# Phase 3 gate: the content waves
+
+**Status:** content complete; the gate closes when the two walkthrough
+majors still in flight (M2 focus, M3 label in name) are committed, below.
+SPEC §10 sets the Phase 3 exit gate: **each wave is checker-green and
+reviewed, its facts are verified, and its screenshots are approved.** Each
+condition is below, with its evidence. Phase 4 (the build track) started
+during Phase 3, as the path allows; it is recorded in its own gate.
+
+## 1. The waves
+
+53 modules, from the B2 bar (`docs/PHASE2-GATE.md`). With B2, H1 and H2
+(Phase 2) and H3–H5 (Phase 4), 59 of the 70 modules in `course.json` have a
+page. The 11 without one are Phase 4 and 5 work: H0, H6–H13, I4, I5.
+
+| Wave | Modules | Blueprint | Commit |
+|---|---|---|---|
+| 3.1 | S0, A1–A3; primers T1–T3 | BP-3.1-content | 2113d39 |
+| 3.2 | A4–A7, B1, B3, B4; primers T4–T6 | BP-3.2-content | c9120ab |
+| 3.3 | C1–C6; primer T7 | BP-3.3-content | c9120ab |
+| 3.4 | C7–C12; primer T8 (and T9, T10) | BP-3.4-content | c9120ab |
+| 3.5 | D1–D3, E1, E2 | BP-3.5-content | 15e5c65, 15ed054 |
+| 3.6 | F1–F7 | BP-3.6-content | 15e5c65, 11b21a4, b8eccda |
+| 3.7 | G1–G4, I1–I3, I6 | BP-3.7-content | 9136ac5, c73ffb6, 458c064, 394c379 |
+
+Labs and engine work landed ahead of the content that needed them: ENGINE
+A6–A19 in both runtimes with parity and goldens, and the labs hx-stack,
+hx-outage, hx-desk, hx-cacheline, hx-placement, hx-evalbench, hx-escape,
+hx-shift, hx-envbuilder and hx-topology, each with its demo page.
+
+## 2. Checker-green and reviewed
+
+- Every wave was committed through the full local gate
+  (`tools/ci_local.sh --committed --qa`, D-044): `check_content`,
+  `check_facts`, `check_snippets`, `check_katas` (CPython and Pyodide agree),
+  `check_scenarios` (goldens and parity), `check_wire`, `check_steps`, ruff,
+  mypy, pytest, the node tests, and browser QA at 375, 768 and 1280 in both
+  themes (axe before and after every self-test, the 14 px floor, no
+  horizontal scroll, page weight ≤ 300 KB).
+- The director reviewed every module before its commit: the page as text
+  (prose, beats, checks and their whys), the content files, and element
+  screenshots at 375 and 1280. Rounds of notes went back to the builder until
+  the bar held. The fixes the reviews forced include G4's Prove measuring a
+  symptom fix (ENGINE A19 and a reworked board), F4's real prices inverting
+  its lesson (now Opus against Sonnet, a real 2:1 ratio), and three
+  prerequisite gaps that forced vague terms (D-057 G1 requires C8, D-058 I5
+  requires I3, D-059 H6 requires C3).
+
+## 3. Facts verified
+
+`check_facts: 272 facts OK (235 verified, 37 unverifiable, 0 contradicted)`,
+130 page references. Every verified fact has a verbatim quote fetched from a
+primary source on its `verified_on` date (fact passes BP-3.0 to BP-3.3 and
+BP-3.8). The 37 unverifiable facts are on hosts this environment cannot
+reach (D-052: docs.python.org, mypy.readthedocs.io, openreview.net,
+openai.com; also rfc-editor.org, whatwg.org, docs.pytest.org,
+docs.docker.com, git-scm.com, simonwillison.net). They were never routed
+around. A page that uses one says no more than its claim, and the freshness
+job re-tries them (Phase 7).
+
+## 4. The walkthrough (BP-3.9)
+
+One reviewer walked seven modules in full as Sam, one per part (A4, C3, C9,
+D2, F2, G4 and the primer T6), on a phone (375, touch) and on a desk (1280,
+keyboard only), and checked the course as one path. Report:
+`docs/gate/phase3-walkthrough.md`.
+
+| Module | A4 | C3 | C9 | D2 | F2 | G4 | T6 |
+|---|---|---|---|---|---|---|---|
+| Score / 500 | 355 | 375 | 355 | 370 | 355 | 375 | 345 |
+
+B2 scored 400 on its re-score. On the walker's focus and target checks, which
+the B2 re-score did not repeat, B2 is at 375 too: the Phase 3 modules are at
+the bar, not above it. As one path: no term used before the module that
+teaches it, families and laws consistent with `course.json`, the prose
+numbers in five benches match the bench on screen, and nine of ten fact spans
+say no more than their claims (the tenth is m1).
+
+Findings: 0 blockers, 5 majors, 9 minors.
+
+| Id | Finding | Outcome |
+|---|---|---|
+| M1 | A tap in an incident credited an objective | **Fixed** (1178fca): a prediction credits no objective. Every predict check carried `data-objective`, and it revealed on the hunt's first tap. `check_content` B4 now rejects it. Re-probed: all eight A4 events leave the progress line at 0 of 5. |
+| M2 | Focus dropped to the page after "Show answer", a beat link and a Run key | In flight: hx-cards and the Run key (JS builder), the beat strip (design builder) |
+| M3 | Label in Name on events that quote the model | In flight: the accessible name starts with the visible text (JS builder) |
+| M4 | Built pages marked "soon" in the course map | **Not a product defect.** The walk read the director's working tree, whose generated chrome was older than HEAD (commits are assembled in a clean worktree). At HEAD every built page is linked. The assemble step now regenerates the working tree's pages after each commit. |
+| M5 | Term markers 19 px tall | **Ruled**: DESIGN §9 now exempts links and term markers in running text (WCAG 2.5.8's inline exception). |
+| m1–m6 | A4 chip over-reach, repeated heading and prompt, dash placeholders before a run, F2's doubled label, percent style | In flight (JS builder); rulings: "95%" with no space; a sentence with run numbers reads as pending before the run |
+| m7 | Continue sends a learner back to S0 after A4 | **Ruled**: Continue goes to the first unfinished module after the latest one with evidence (design builder) |
+| m8 | The glossary shows no per-learner mark | Checked against SPEC by the design builder; changed only if a spec line asks for it |
+| m9 | Five laws repeat in theory and build pairs | Deliberate: a build module restates its theory module's law and links back to it with a margin note (AUTHORING §13.11) |
+
+## 5. Open items carried forward
+
+- Facts still missing for later pages (BP-4.5-facts, running): the
+  postmortem's three causes (G1.o3 names none until then), the SDK reading
+  `ANTHROPIC_API_KEY`, where keys are made, the Models API, thinking blocks
+  in tool loops, retry-after and the SDK's retry option.
+- The loader loads a component inside a closed `details` eagerly: it reads
+  its top as 0. Weight stays in budget; fix it in the Phase 6 audit.
+- A self-test that restores state after itself (`restoreAfterTest`) is
+  silent when the restore fails; the after-interaction audit runs with
+  `keep: true`, so QA still sees the learner's end state.
+
+## Sign-off
+
+The director signs the waves off when M2, M3 and the minors are committed
+and the gate is green on that commit.

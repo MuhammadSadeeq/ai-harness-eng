@@ -350,7 +350,9 @@ ticks; bins are chosen so every bin label is legible at 375 px.
 
 - WCAG 2.2 AA. Text ≥ 4.5:1, UI strokes and wires ≥ 3:1, nothing below 14 px.
 - **Targets ≥ 44 × 44 px**, including radio rows, lane marks (via invisible
-  hit areas), brand links and mini-board slots.
+  hit areas), brand links and mini-board slots. A link or term marker inside
+  running text follows the line it sits in (WCAG 2.5.8's inline exception):
+  padding it to 44 px would overlap the lines above and below.
 - Keyboard: everything; arrows within lanes, clock spokes, step grids and
   radio groups; Esc closes popovers; visible 3 px focus ring.
 - Every setting persists (theme, motion, sound) in the progress store.
