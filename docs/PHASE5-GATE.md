@@ -12,7 +12,7 @@ worktree with real clicks at 375 where a learner acts.
 |---|---|
 | 40+ say prompts with rubrics, covering every wire plus design, debugging and behavioral | **Pass.** 134 in the bank: all eight wires; design 6, debugging 6, behavioral 4; rubrics 4–6 lines; a test counts them. |
 | 6+ Design Room prompts with clarifying questions, a wire-by-wire model answer, cheating risks, cost and rollout | **Pass.** Six (I5-d1 to I5-d6), every field present. |
-| 10+ timed from-memory katas: the ten named patterns | **Pass.** Ten mapped (B2-loop, A5-validate, C6-backoff, C9-policy, C3-compact, I5-trace-writer, C11-gate, D1-eval, I5-pass-k, F5-idempotent); a memory blank shows only the names the tests import, and `check_katas` makes every blank fail. |
+| 10+ timed from-memory katas: the ten named patterns | **Pass.** Ten mapped (B2-loop, A5-validate, C6-backoff, C9-policy, C3-compact, I5-trace-writer, C11-gate, D1-eval, I5-pass-k, F5-idempotent); a memory blank shows only the names the tests import, and `check_katas` checks that each blank imports cleanly and fails at least one test. |
 | 4 portfolio project templates, each with a README skeleton, a results table and a write-up outline | **Pass** after a fix (f9db7eb): the README skeleton was missing. |
 | The readiness radar reads real evidence, and the brag sheet prints cleanly | **Pass** after a fix (f9db7eb): words broke mid-word at 375. With a seed built from every built module's real ids, the radar reaches L3 on every wire by its stated rules; the print is two clean A4 pages. |
 
