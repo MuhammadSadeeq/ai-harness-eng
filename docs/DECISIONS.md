@@ -358,6 +358,15 @@ basis for Phase 1, and answered SPEC §14:
   change. Anything else still needs `--qa`. A change to `.github/` is
   then proved by GitHub's CI run on the pushed commit, which the director
   reads.
+- Amended again 2026-10-11: a background command stops at 2 hours, and a
+  full `--committed --qa` run under audit load no longer fits (the run on
+  283d660 was stopped after all 972 screenshots, before it could exit). The
+  same gate may run in parts on one clean worktree of the commit:
+  `tools/ci_local.sh` there (every check but browser QA), then
+  `tools/qa/run.mjs --cvd --only <chunk>` over QA's default page set (all
+  pages but vendor/, proto/ and labs not in accepted-labs.txt) in chunks
+  that together list it exactly. Every part must exit 0; the gate record
+  is the parts' logs.
 - Default QA (and CI) checks `site/labs/` pages only once the director accepts
   them (`tools/qa/accepted-labs.txt`, director-owned), matching the component
   registry (only accepted components load on real pages). Builders keep
