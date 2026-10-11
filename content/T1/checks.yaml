@@ -26,3 +26,17 @@
     - text: "An empty string"
       why: "No. done is a bool field, so its default is False."
   answer: 1
+- id: T1-c3
+  objective: T1.o3
+  mode: check
+  question: "mypy reports an error for average(prices: list[int]) -> int. Which one-line change makes mypy pass and keeps the value the function returns?"
+  options:
+    - text: "Use // instead of / in the return line"
+      why: "Tempting and wrong. // makes the result an int, so mypy passes, but it rounds the average down, so the function no longer returns the average."
+    - text: "Annotate the return type as float instead of int"
+      why: "Right. sum(prices) / len(prices) is a float. The annotation must say so, and the value stays the same."
+    - text: "Add # type: ignore to the return line"
+      why: "Wrong. It hides the error. The annotation still says int while the function returns a float."
+    - text: "Wrap the division in int(...)"
+      why: "Wrong. It passes mypy by cutting off the decimal part, so the function returns a truncated number."
+  answer: 1

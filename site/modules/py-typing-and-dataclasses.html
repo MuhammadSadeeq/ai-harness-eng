@@ -166,6 +166,18 @@ print(inspect.signature(Task))</code></pre>
       <p>Without JavaScript, open katas/T1-dataclass/test_kata.py and write the three names in kata.py.</p>
     </hx-kata>
     <p>Then run mypy on <code>kata.py</code> on your own machine. Fix the first error it reports, and run the tests again.</p>
+    <p>mypy prints one line per error: the file, the line number, the word error, the message, and the code in brackets. This is mypy 2.3.1 on a file named average.py, which returns a float from a function declared to return an int:</p>
+    <pre tabindex="0" role="region" aria-label="mypy output for average.py"><code>average.py:2: error: Incompatible return value type (got "float", expected "int")  [return-value]
+Found 1 error in 1 file (checked 1 source file)</code></pre>
+    <hx-check mode="check" src="T1" item="T1-c3" data-objective="T1.o3">
+      <p>Without JavaScript, the question is: mypy reports an error for average(prices: list[int]) -&gt; int. Which one-line change makes mypy pass and keeps the value the function returns?</p>
+      <ol>
+        <li>Use // instead of / in the return line.</li>
+        <li>Change the return annotation to -&gt; float.</li>
+        <li>Add # type: ignore to the return line.</li>
+        <li>Wrap the division in int(...).</li>
+      </ol>
+    </hx-check>
   </section>
   <section class="beat" data-beat="keep" id="keep">
     <h2>Keep it</h2>
