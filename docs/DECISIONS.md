@@ -609,3 +609,10 @@ basis for Phase 1, and answered SPEC §14:
   among those the wire drilled least recently, ties broken by the day's
   seed. Fresh cards and new say prompts come only from that pool,
   round-robin by wire, in a seeded order per day.
+- **Amended (2026-10-11), after the replays:** when every incident in the
+  pool is hunted, the shift offers the one hunted longest ago if that was at
+  least 3 days ago; otherwise it has no incident that day and names the next
+  unfinished module, which will add one. A module the learner has not started
+  never joins the pool. The drill takes the least recently drilled item in
+  the pool. I5.o2 is credited only by a passing memory kata: the slot that
+  mounts the kata declares the objective, and check_content B4 reads it.
