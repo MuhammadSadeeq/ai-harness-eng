@@ -568,6 +568,19 @@ async function main() {
         for (const line of results[index].lines) console.log(line);
       }
     }));
+    // A page whose only failures are timeouts (a component not ready, a self-test or a view past its deadline) is
+    // checked once more, alone, after the pool: on a loaded machine the pool starves a page of CPU. A real failure
+    // fails again; the retry's result replaces the first, and a warning says the page was re-checked.
+    const TIMEOUT = /not ready after \d+ s|timed out after \d+ s/;
+    for (const [index, pagePath] of pages.entries()) {
+      const entry = report.pages.find((p) => p.page === pagePath);
+      if (!entry || entry.failures.length === 0 || !entry.failures.every((f) => TIMEOUT.test(f))) continue;
+      const first = entry.failures.length;
+      report.pages.splice(report.pages.indexOf(entry), 1);
+      results[index] = await runPage(pagePath);
+      console.log(`warn: ${pagePath}: re-checked alone after ${first} timeout failure(s) in the pool`);
+      for (const line of results[index].lines) console.log(line);
+    }
     for (const result of results) failureCount += result.failures;
     report.pages.sort((a, b) => pages.indexOf(a.page) - pages.indexOf(b.page));
   } finally {

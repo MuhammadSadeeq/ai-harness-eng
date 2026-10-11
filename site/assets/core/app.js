@@ -16,8 +16,6 @@ import { loadComponents } from "./shell/loader.js";
 import { getFactsCore, getTerms } from "../components/lib/data.js";
 import { mountEvidence } from "./shell/evidence.js";
 import { setContext } from "./context.js";
-import { mountShift } from "./shell/shift.js";
-import { mountStations } from "./shell/stations.js";
 
 // Scripts are running: CSS shows the drawn parts of the page only from here on.
 document.documentElement.classList.add("js");
@@ -46,6 +44,11 @@ if (document.querySelector("[data-term]")) mountTerms(getTerms);
 setContext({ store, announce });
 mountEvidence(store);
 // The stations (Interview Room) and today's shift (oncall) build their components themselves, on open or on load.
-if (document.querySelector("[data-station]")) mountStations(store);
-mountShift(store);
+// Each is imported only on its own page: on every other page it would be dead weight against the 300 KB budget.
+if (document.querySelector("[data-station]")) {
+  import("./shell/stations.js").then(({ mountStations }) => mountStations(store));
+}
+if (document.querySelector("[data-shift-page]")) {
+  import("./shell/shift.js").then(({ mountShift }) => mountShift(store));
+}
 loadComponents();
