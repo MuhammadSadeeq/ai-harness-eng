@@ -1,0 +1,16 @@
+{
+  "tape": "envbuilder-tape.json",
+  "base_board": "envbuilder-board.json",
+  "trials": 20,
+  "grader_options": [
+    { "id": "says-done", "label": "The policy says it is done", "patch": { "board": { "verify_gate": null } } },
+    { "id": "workspace-tests", "label": "Run the tests in the workspace", "default": true, "patch": { "board": { "verify_gate": { "max_feedback": 1 } } } },
+    { "id": "pristine-tests", "label": "Run the original tests (pristine)", "patch": { "board": { "verify_gate": { "max_feedback": 1, "pristine_tests": true } } } },
+    { "id": "hidden-tests", "label": "Run hidden tests (the task's own checks)", "patch": { "tape": { "tests": null }, "board": { "verify_gate": { "max_feedback": 1 } } } }
+  ],
+  "sandbox_options": [
+    { "id": "confine", "label": "Confine files to the workspace", "patch": { "board": { "sandbox": { "egress": ["collect.example"] } } } },
+    { "id": "no-network", "label": "No network", "patch": { "board": { "sandbox": { "egress": [] } } } }
+  ],
+  "note": "Illustrative: a scripted policy on a tiny task, run with the simulator. The graders and the sandbox are the engine's own; the policy's hacks are its scripted branches, not a measurement of any model."
+}

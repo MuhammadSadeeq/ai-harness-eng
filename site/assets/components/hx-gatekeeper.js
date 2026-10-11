@@ -470,7 +470,7 @@ export class HxGatekeeper extends HxElement {
       this.removeEventListener("hx-evidence", count);
       this.human = savedHuman;
       this.prng = savedPrng;
-      this.setState(saved);
+      this.restoreAfterTest(saved);
     }
   }
 }

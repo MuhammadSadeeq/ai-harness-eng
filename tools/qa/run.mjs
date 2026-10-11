@@ -270,8 +270,8 @@ async function settlePage(page) {
 
 // Runs every hx-* element's __test.run() (it drives the real UI). Returns the
 // number of hooks run and any failures.
-async function runHooks(page) {
-  return page.evaluate(async () => {
+async function runHooks(page, keep = false) {
+  return page.evaluate(async (keep) => {
     const failures = [];
     let count = 0;
     for (const el of document.querySelectorAll("*")) {
@@ -281,14 +281,14 @@ async function runHooks(page) {
       try {
         // A self-test that never settles fails instead of hanging the run (30 s each).
         const limit = new Promise((_, reject) => setTimeout(() => reject(new Error("timed out after 30 s")), 30000));
-        const ok = await Promise.race([el.__test.run(), limit]);
+        const ok = await Promise.race([el.__test.run({ keep }), limit]);
         if (ok === false) failures.push(`${name}: self-test returned false`);
       } catch (error) {
         failures.push(`${name}: self-test threw ${error.message}`);
       }
     }
     return { count, failures };
-  });
+  }, keep);
 }
 
 async function checkAxe(page) {
@@ -479,8 +479,9 @@ async function main() {
             for (const f of axe.failures) pageFailures.push(`${where}: ${f}`);
             for (const w of axe.warnings) pageWarnings.push(`${where}: ${w}`);
             // Audit again after the hooks drove the UI: controls that only appear after
-            // interaction (an unlocked replay, results, par states) must pass too.
-            const hooks = await runHooks(page);
+            // interaction (an unlocked replay, results, par states) must pass too, so the
+            // self-tests keep their results on screen instead of restoring the start state.
+            const hooks = await runHooks(page, true);
             if (hooks.count > 0) {
               const after = await checkAxe(page);
               const whereAfter = `${where} after interaction`;

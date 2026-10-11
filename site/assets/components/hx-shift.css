@@ -1,0 +1,39 @@
+/* hx-shift: a handoff note (a text box and one primary key), the next shift's outcome as two readouts, the required items
+   as a checklist with the reason for each missing one, the trial cells, and the second session's replay. Tokens only; keys,
+   readouts and the glyph sprite come from hx.css. Phones: the readouts stack and the note box takes the full width. */
+hx-shift { display: block; margin: var(--sp-5) 0; }
+hx-shift .hx-ui { display: grid; gap: var(--sp-4); }
+.sh-title { margin: 0; font: 600 var(--fs-h3)/1.2 var(--font-serif); color: var(--hx-ink); }
+.sh-note-line, .sh-line, .sh-hint, .sh-verdict { margin: 0; font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); }
+.sh-verdict { font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.sh-error { color: var(--hx-fail); font-weight: 600; }
+.sh-write { display: grid; gap: var(--sp-2); min-width: 0; }
+.sh-label { font: 600 var(--fs-small)/1.3 var(--font-sans); color: var(--hx-ink-2); }
+.sh-box { width: 100%; min-height: 9rem; padding: var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 400 var(--fs-body)/1.5 var(--font-mono); resize: vertical; box-sizing: border-box; }
+.sh-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.sh-actions .key[aria-disabled="true"] { opacity: .45; cursor: not-allowed; transform: none; }
+.sh-readouts { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 700px) { .sh-readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.sh-readout { display: grid; gap: var(--sp-1); align-content: start; min-width: 0; }
+.sh-readout .readout-value { white-space: normal; overflow-wrap: anywhere; }
+.sh-items { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--sp-2); }
+.sh-item { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: var(--sp-2); align-items: start; padding: var(--sp-2) var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-chip); background: var(--hx-panel); min-width: 0; }
+.sh-item .glyph { width: 18px; height: 18px; margin-top: 2px; fill: none; stroke: currentColor; stroke-width: 2; }
+.sh-item.is-in .glyph { color: var(--hx-pass); }
+.sh-item.is-missing .glyph { color: var(--hx-fail); }
+.sh-item-text { display: grid; gap: 2px; min-width: 0; }
+.sh-item-head { font: 600 var(--fs-small)/1.3 var(--font-sans); color: var(--hx-ink); overflow-wrap: anywhere; }
+.sh-item-why { font: 400 var(--fs-small)/1.45 var(--font-sans); color: var(--hx-ink-2); }
+.sh-grid { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.sh-cell { display: inline-flex; align-items: center; gap: var(--sp-1); min-width: 44px; min-height: 44px; padding: 0 var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 600 var(--fs-small)/1.2 var(--font-mono); cursor: pointer; }
+.sh-cell .glyph { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+.sh-cell.is-pass { border-color: var(--hx-pass); }
+.sh-cell.is-fail { border-color: var(--hx-fail); }
+.sh-cell.is-open { outline: 2px solid var(--hx-ink); outline-offset: 2px; }
+.sh-detail { display: grid; gap: var(--sp-2); padding: var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-chip); background: var(--hx-panel); min-width: 0; }
+.sh-detail-head { margin: 0; font: 600 var(--fs-ui)/1.3 var(--font-sans); color: var(--hx-ink); }
+.sh-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--sp-2); }
+.sh-step { display: grid; gap: 2px; min-width: 0; }
+.sh-step-turn { font: 600 var(--fs-small)/1.3 var(--font-mono); color: var(--hx-ink-2); }
+.sh-step-text { font: 400 var(--fs-body)/1.5 var(--font-serif); color: var(--hx-ink); overflow-wrap: anywhere; }
+.sh-step-calls { font: 400 var(--fs-small)/1.4 var(--font-mono); color: var(--hx-ink-2); overflow-wrap: anywhere; }

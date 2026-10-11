@@ -1,0 +1,32 @@
+/* hx-envbuilder: build an environment (a grader select, sandbox toggles, one primary key), read the reward against the
+   truth as two readouts, a verdict line, a row of trial cells (a hack is marked) and the trial panel. Tokens only; keys,
+   seg toggles, readouts and the glyph sprite come from hx.css. Phones: the readouts stack and the cells wrap. */
+hx-envbuilder { display: block; margin: var(--sp-5) 0; }
+hx-envbuilder .hx-ui { display: grid; gap: var(--sp-4); }
+.ev-title { margin: 0; font: 600 var(--fs-h3)/1.2 var(--font-serif); color: var(--hx-ink); }
+.ev-note, .ev-line, .ev-hint, .ev-verdict { margin: 0; font: 400 var(--fs-small)/1.5 var(--font-sans); color: var(--hx-ink-2); }
+.ev-verdict { font: 600 var(--fs-ui)/1.4 var(--font-sans); color: var(--hx-ink); }
+.ev-error { color: var(--hx-fail); font-weight: 600; }
+.ev-build { display: grid; gap: var(--sp-3); }
+.ev-field { display: grid; gap: var(--sp-2); min-width: 0; }
+.ev-label { margin: 0; font: 600 var(--fs-small)/1.3 var(--font-sans); color: var(--hx-ink-2); }
+.ev-grader { min-height: 44px; min-width: 0; padding: 0 var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 500 var(--fs-ui)/1.2 var(--font-sans); }
+.ev-seg { display: flex; flex-wrap: wrap; }
+.ev-seg button { flex: 1 1 auto; min-height: 44px; }
+.ev-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.ev-actions .key[aria-disabled="true"] { opacity: .45; cursor: not-allowed; transform: none; }
+.ev-readouts { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 700px) { .ev-readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ev-readout { display: grid; gap: var(--sp-1); align-content: start; min-width: 0; }
+.ev-readout .readout-value { white-space: normal; overflow-wrap: anywhere; }
+.ev-grid { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.ev-cell { display: inline-flex; align-items: center; gap: var(--sp-1); min-width: 44px; min-height: 44px; padding: 0 var(--sp-2); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-btn); background: var(--hx-panel); color: var(--hx-ink); font: 600 var(--fs-small)/1.2 var(--font-mono); cursor: pointer; }
+.ev-cell .glyph { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+.ev-cell.is-pass { border-color: var(--hx-pass); }
+.ev-cell.is-fail { border-color: var(--hx-fail); }
+.ev-cell.is-hack { box-shadow: inset 0 0 0 2px var(--hx-warn); }
+.ev-cell.is-open { outline: 2px solid var(--hx-ink); outline-offset: 2px; }
+.ev-cell-hack { font: 600 var(--fs-small)/1 var(--font-sans); color: var(--hx-warn); }
+.ev-detail { display: grid; gap: var(--sp-2); padding: var(--sp-3); border: 1px solid var(--hx-rule-strong); border-radius: var(--r-chip); background: var(--hx-panel); min-width: 0; }
+.ev-detail-head { margin: 0; font: 600 var(--fs-ui)/1.3 var(--font-sans); color: var(--hx-ink); }
+.ev-reply { margin: 0; padding: var(--sp-2) var(--sp-3); border-left: 3px solid var(--hx-rule-strong); font: 400 var(--fs-body)/1.5 var(--font-serif); color: var(--hx-ink); overflow-wrap: anywhere; }

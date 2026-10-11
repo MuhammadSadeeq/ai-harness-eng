@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Five shapes, and what each costs · HARNESSED</title>
+<meta name="description" content="Five ways to arrange agents for one task: one agent, an orchestrator with workers, a pipeline, a generator and an evaluator in a loop, and peers on a shared board. Compare what each costs, and run the sub-agent isolated or forked to read its input tokens.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module" src="../assets/components/hx-topology.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · the shape of the work</p>
+    <h1>Five shapes, and what each costs</h1>
+    <p class="lede">Pick a way to arrange agents for one task and read what it costs against one agent. Then run the sub-agent isolated or forked and compare its input.</p>
+  </header>
+  <section class="row" aria-labelledby="tp-h">
+    <h2 id="tp-h">One task, five shapes</h2>
+    <hx-topology src="data/topology-demo.json">
+      <p>Without JavaScript, the lab lists five shapes for one bug report. Choose a shape to read its cost, its wall clock and how it fails.</p>
+    </hx-topology>
+  </section>
+</main>
+</body>
+</html>

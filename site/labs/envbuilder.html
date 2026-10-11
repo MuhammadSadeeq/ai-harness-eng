@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build the environment, then find the hack · HARNESSED</title>
+<meta name="description" content="Choose a grader and a sandbox, run a scripted policy over twenty seeds, and read the reward the grader gave against the truth of the task. Where they differ, the policy found a way to pass the grader.">
+<link rel="stylesheet" href="../assets/core/tokens.css">
+<link rel="stylesheet" href="../assets/core/hx.css">
+<script type="module" src="../assets/core/app.js"></script>
+<script type="module" src="../assets/components/hx-envbuilder.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="module">
+  <header class="module-head">
+    <p class="plate-label">Lab · the grader you trust</p>
+    <h1>Build the environment, then find the hack</h1>
+    <p class="lede">Choose how the work is graded and what the sandbox allows. Run the policy, then compare what the grader rewarded with what really solved the task.</p>
+  </header>
+  <section class="row" aria-labelledby="ev-h">
+    <h2 id="ev-h">One task, four graders, two sandbox options</h2>
+    <hx-envbuilder src="data/envbuilder-demo.json">
+      <p>Without JavaScript, the lab lists four graders and two sandbox options. Run the policy to read the reward the grader gave beside the truth of the task.</p>
+    </hx-envbuilder>
+  </section>
+</main>
+</body>
+</html>

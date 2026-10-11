@@ -31,3 +31,6 @@ labs/gatekeeper.html
 labs/design.html
 labs/evalbench.html
 labs/escape.html
+labs/envbuilder.html
+labs/shift.html
+labs/topology.html

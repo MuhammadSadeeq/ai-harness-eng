@@ -52,10 +52,18 @@ export class HxElement extends HTMLElement {
     this.ready = new Promise((resolve) => {
       this.#resolveReady = resolve;
     });
+    // QA runs each self-test twice: once restoring the state it found, and once with
+    // keep: true, so the accessibility audit after interaction sees the results a learner sees.
+    this.testKeepsState = false;
     this.__test = {
-      run: async () => {
+      run: async ({ keep = false } = {}) => {
         if (!(await this.ready)) return false;
-        return (await this.selfTest()) === true;
+        this.testKeepsState = keep;
+        try {
+          return (await this.selfTest()) === true;
+        } finally {
+          this.testKeepsState = false;
+        }
       },
     };
   }
@@ -82,6 +90,11 @@ export class HxElement extends HTMLElement {
 
   async selfTest() {
     throw new Error(`${this.localName} has no selfTest()`);
+  }
+
+  /** A self-test's finally block calls this: it puts the saved state back unless QA asked to keep the results. */
+  restoreAfterTest(saved) {
+    if (!this.testKeepsState) this.setState(saved);
   }
 
   setState(patch) {

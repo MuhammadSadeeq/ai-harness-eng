@@ -297,7 +297,7 @@ export class HxStack extends HxElement {
       return true;
     } finally {
       this.removeEventListener("hx-evidence", count);
-      this.setState(saved);
+      this.restoreAfterTest(saved);
     }
   }
 }

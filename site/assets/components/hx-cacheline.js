@@ -443,7 +443,7 @@ export class HxCacheline extends HxElement {
       return evidence >= 1;
     } finally {
       this.removeEventListener("hx-evidence", count);
-      this.setState(saved);
+      this.restoreAfterTest(saved);
     }
   }
 }

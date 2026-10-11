@@ -83,7 +83,10 @@ Every component instance exposes `el.__test = { run: async () => boolean }`
 that drives the **real UI** (clicks, keys) through its main path and returns
 `true` only if the expected end state is reached. The QA runner calls it and
 then audits the page again (D-037). Hooks must not depend on timing: they
-await the component's own `ready` promise and step deterministically.
+await the component's own `ready` promise and step deterministically. A hook
+that puts the learner's state back ends with `this.restoreAfterTest(saved)` in
+its `finally`, never a bare `setState(saved)`: the audit after interaction runs
+`run({ keep: true })`, so it sees the results a learner sees.
 
 ## 8. Demo pages
 Each component has a demo page `site/labs/<name>.html` (the AUTHORING page

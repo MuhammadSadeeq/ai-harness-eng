@@ -1,0 +1,243 @@
+{
+  "task": {
+    "name": "A bug report across two modules, with the tests that show it",
+    "note": "The same task for every shape: read the report, find the two causes, fix both, run the tests."
+  },
+  "subagent_tape": "topology-subagents.json",
+  "boards": {
+    "isolated": "topology-isolated.json",
+    "forked": "topology-forked.json"
+  },
+  "topologies": [
+    {
+      "id": "single",
+      "name": "A single agent",
+      "cost": 1,
+      "wall_clock": 1,
+      "diagram": {
+        "nodes": [
+          {
+            "id": "a",
+            "x": 140,
+            "y": 62,
+            "label": "Agent",
+            "mark": "layers"
+          }
+        ],
+        "edges": []
+      },
+      "failure_modes": [
+        "One context fills with every step of the task.",
+        "No second pair of eyes checks its claims."
+      ]
+    },
+    {
+      "id": "orchestrator",
+      "name": "An orchestrator and workers",
+      "cost": 3.2,
+      "wall_clock": 1.6,
+      "diagram": {
+        "nodes": [
+          {
+            "id": "o",
+            "x": 140,
+            "y": 22,
+            "label": "Orchestrator",
+            "mark": "box"
+          },
+          {
+            "id": "w1",
+            "x": 50,
+            "y": 100,
+            "label": "Worker",
+            "mark": "hexagon"
+          },
+          {
+            "id": "w2",
+            "x": 140,
+            "y": 100,
+            "label": "Worker",
+            "mark": "hexagon"
+          },
+          {
+            "id": "w3",
+            "x": 230,
+            "y": 100,
+            "label": "Worker",
+            "mark": "hexagon"
+          }
+        ],
+        "edges": [
+          [
+            "o",
+            "w1"
+          ],
+          [
+            "o",
+            "w2"
+          ],
+          [
+            "o",
+            "w3"
+          ]
+        ]
+      },
+      "failure_modes": [
+        "The brief drops a constraint the orchestrator knew.",
+        "Workers read the same files and repeat each other's work.",
+        "The summaries lose the detail the orchestrator needed."
+      ]
+    },
+    {
+      "id": "pipeline",
+      "name": "A pipeline",
+      "cost": 1.9,
+      "wall_clock": 2.4,
+      "diagram": {
+        "nodes": [
+          {
+            "id": "r",
+            "x": 40,
+            "y": 62,
+            "label": "Read",
+            "mark": "box"
+          },
+          {
+            "id": "p",
+            "x": 107,
+            "y": 62,
+            "label": "Plan",
+            "mark": "box"
+          },
+          {
+            "id": "e",
+            "x": 173,
+            "y": 62,
+            "label": "Edit",
+            "mark": "box"
+          },
+          {
+            "id": "t",
+            "x": 240,
+            "y": 62,
+            "label": "Test",
+            "mark": "box"
+          }
+        ],
+        "edges": [
+          [
+            "r",
+            "p"
+          ],
+          [
+            "p",
+            "e"
+          ],
+          [
+            "e",
+            "t"
+          ]
+        ]
+      },
+      "failure_modes": [
+        "A stage's mistake is carried to the last stage.",
+        "Each stage needs the whole output of the one before."
+      ]
+    },
+    {
+      "id": "loop",
+      "name": "A generator and an evaluator in a loop",
+      "cost": 2.8,
+      "wall_clock": 3.1,
+      "diagram": {
+        "nodes": [
+          {
+            "id": "g",
+            "x": 84,
+            "y": 62,
+            "label": "Generator",
+            "mark": "cycle"
+          },
+          {
+            "id": "v",
+            "x": 196,
+            "y": 62,
+            "label": "Evaluator",
+            "mark": "shield"
+          }
+        ],
+        "edges": [
+          [
+            "g",
+            "v"
+          ],
+          [
+            "v",
+            "g"
+          ]
+        ]
+      },
+      "failure_modes": [
+        "The evaluator approves its own style of work.",
+        "The loop runs until the budget is spent, with no new evidence."
+      ]
+    },
+    {
+      "id": "board",
+      "name": "Peers on a shared board",
+      "cost": 2.6,
+      "wall_clock": 1.5,
+      "diagram": {
+        "nodes": [
+          {
+            "id": "b",
+            "x": 140,
+            "y": 62,
+            "label": "Board",
+            "mark": "window"
+          },
+          {
+            "id": "p1",
+            "x": 50,
+            "y": 22,
+            "label": "Peer",
+            "mark": "hexagon"
+          },
+          {
+            "id": "p2",
+            "x": 230,
+            "y": 22,
+            "label": "Peer",
+            "mark": "hexagon"
+          },
+          {
+            "id": "p3",
+            "x": 140,
+            "y": 110,
+            "label": "Peer",
+            "mark": "hexagon"
+          }
+        ],
+        "edges": [
+          [
+            "p1",
+            "b"
+          ],
+          [
+            "p2",
+            "b"
+          ],
+          [
+            "p3",
+            "b"
+          ]
+        ]
+      },
+      "failure_modes": [
+        "Peers overwrite each other's notes on the board.",
+        "Nobody owns the final answer."
+      ]
+    }
+  ],
+  "note": "The cost and wall-clock ratios are the course's model, against one agent on the same task: illustrative, not measured on any model."
+}

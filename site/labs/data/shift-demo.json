@@ -1,0 +1,13 @@
+{
+  "tape": "shift-tape.json",
+  "board": "shift-board.json",
+  "note_path": "progress.md",
+  "trials": 5,
+  "starter_note": "",
+  "required": [
+    { "id": "parser", "phrase": "parser is done", "why": "The next shift rewrote the parser, because the note did not say it was done." },
+    { "id": "migrations", "phrase": "do not edit migrations", "why": "The next shift changed the migrations, because the note did not say to leave them alone." },
+    { "id": "tests", "phrase": "run the tests", "why": "The next shift wrote the report without running the tests, because the note did not say to run them." }
+  ],
+  "note": "Illustrative: a scripted next shift. The session before it did the parser work; the note is the only thing the next shift is told."
+}

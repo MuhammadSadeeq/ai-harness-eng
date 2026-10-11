@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "model_id": "claude-sonnet-5-5",
+  "pricing": {
+    "input_milli_per_mtok": 1000,
+    "output_milli_per_mtok": 2000,
+    "cache_write_milli_per_mtok": 1250,
+    "cache_read_milli_per_mtok": 100
+  },
+  "window": 8000,
+  "system": "You are a coding agent. Use the tools you are given.",
+  "rules": [],
+  "outside": {},
+  "tools": [
+    "read_file",
+    "write_file"
+  ],
+  "custom_tools": [],
+  "human": {
+    "default": "approve"
+  },
+  "interrupt": null,
+  "test_output": {
+    "pass": "1 passed",
+    "fail": "1 failed"
+  },
+  "seed_base": 20261010,
+  "golden_seeds": [
+    0,
+    1,
+    2
+  ],
+  "id": "eng-subagents",
+  "title": "Two sub-agents, one stopped by its turn limit",
+  "task": "Ask a reader for the first note and a second agent for the other, then write summary.txt.",
+  "workspace": {
+    "notes/a.txt": "Buy milk.\n",
+    "notes/b.txt": "Call Sam.\n"
+  },
+  "checks": [
+    {
+      "file": "summary.txt",
+      "contains": "Two notes"
+    }
+  ],
+  "agents": {
+    "reader": {
+      "script": [
+        {
+          "say": "The note is about milk.",
+          "tools": [
+            [
+              "read_file",
+              {
+                "path": "notes/a.txt"
+              }
+            ]
+          ]
+        },
+        {
+          "say": "The note says: Buy milk.",
+          "stop": "end_turn"
+        }
+      ]
+    },
+    "stubborn": {
+      "script": [
+        {
+          "say": "Still reading.",
+          "tools": [
+            [
+              "read_file",
+              {
+                "path": "notes/b.txt"
+              }
+            ]
+          ]
+        },
+        {
+          "say": "Still reading again.",
+          "tools": [
+            [
+              "read_file",
+              {
+                "path": "notes/b.txt"
+              }
+            ]
+          ]
+        },
+        {
+          "say": "Done.",
+          "stop": "end_turn"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "say": "I'll ask the reader for the first note.",
+      "tools": [
+        [
+          "run_agent",
+          {
+            "agent": "reader",
+            "brief": "Read notes/a.txt and return the note."
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Now the stubborn one.",
+      "tools": [
+        [
+          "run_agent",
+          {
+            "agent": "stubborn",
+            "brief": "Read notes/b.txt twice."
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Asking a sub-agent that does not exist.",
+      "tools": [
+        [
+          "run_agent",
+          {
+            "agent": "ghost",
+            "brief": "Anything."
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Writing the summary.",
+      "tools": [
+        [
+          "write_file",
+          {
+            "path": "summary.txt",
+            "content": "Two notes.\n"
+          }
+        ]
+      ]
+    },
+    {
+      "say": "Done.",
+      "stop": "end_turn"
+    }
+  ],
+  "boards": [
+    "eng-subagents-isolated",
+    "eng-subagents-forked",
+    "eng-subagents-max"
+  ]
+}
