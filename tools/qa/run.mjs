@@ -24,7 +24,6 @@ const SITE = path.join(ROOT, "site");
 const WEIGHT_BUDGET_BYTES = 300 * 1000;
 const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const MIN_FONT_PX = 14;
-const hookCounts = []; // self-tests run per page view (reset per page)
 const ACCEPTED_LABS = new URL("./accepted-labs.txt", import.meta.url);
 const CVD_TYPES = ["protan", "deutan", "tritan"];
 // Machado et al. 2009, severity 1.0, applied in linearRGB (same as check_palette.py).
@@ -64,6 +63,7 @@ function parseArgs(argv) {
     only: null,
     out: path.join(ROOT, "tools", "qa", "out"),
     widths: [375, 768, 1280],
+    jobs: 2,
     themes: ["light", "dark"],
     cvd: false,
     axe: true,
@@ -79,6 +79,9 @@ function parseArgs(argv) {
     } else if (arg === "--out") {
       i += 1;
       opts.out = path.resolve(argv[i]);
+    } else if (arg === "--jobs") {
+      i += 1;
+      opts.jobs = Number(argv[i]);
     } else if (arg === "--widths") {
       i += 1;
       opts.widths = argv[i].split(",").map((w) => Number(w));
@@ -167,7 +170,7 @@ const SMALL_TEXT_JS = () => {
   return out;
 };
 
-async function checkPageLoad(page, url, width, screenshotPath) {
+async function checkPageLoad(page, url, width, screenshotPath, hookCounts) {
   const failures = [];
   let shot = false;
   const onConsole = (msg) => {
@@ -220,7 +223,8 @@ async function checkPageLoad(page, url, width, screenshotPath) {
         .filter((u) => u.origin === location.origin)
         .map((u) => u.origin + u.pathname))]);
       for (const href of hrefs) {
-        const response = await page.request.get(href);
+        // One retry on a network error: with pages checked in parallel a connection can reset.
+        const response = await page.request.get(href).catch(() => page.request.get(href));
         if (response.status() >= 400) failures.push(`broken link: ${href.replace(/^https?:\/\/[^/]+/, "")} (HTTP ${response.status()})`);
       }
     }
@@ -431,11 +435,14 @@ async function main() {
   let failureCount = 0;
 
   try {
-    for (const pagePath of pages) {
+    // Pages are checked by a small pool (--jobs, default 2); each page's lines print when it finishes.
+    const runPage = async (pagePath) => {
       const slug = pagePath.replace(/\.html$/, "").replace(/\//g, "__");
       const url = `${base}/${pagePath}`;
       const pageFailures = [];
       const pageWarnings = [];
+      const hookCounts = []; // self-tests run per view of this page
+      const lines = [];
 
       for (const width of opts.widths) {
         for (const theme of opts.themes) {
@@ -445,7 +452,7 @@ async function main() {
           });
           const page = await context.newPage();
           const file = path.join(opts.out, `${slug}-${width}-${theme}.png`);
-          const result = await checkPageLoad(page, url, width, file);
+          const result = await checkPageLoad(page, url, width, file, hookCounts);
           if (result.shot) shots.push(file);
           report.screens.push({ page: pagePath, width, theme, screenshot: file, failures: result.failures });
           for (const f of result.failures) pageFailures.push(`${width}/${theme}: ${f}`);
@@ -501,14 +508,24 @@ async function main() {
       report.reducedMotion[pagePath] = motion;
       for (const m of motion) pageFailures.push(`1280/reduced: ${m}`);
 
-      failureCount += pageFailures.length;
-      for (const w of pageWarnings) console.log(`warn: ${pagePath}: ${w}`);
-      for (const f of pageFailures) console.log(`fail: ${pagePath}: ${f}`);
+      for (const w of pageWarnings) lines.push(`warn: ${pagePath}: ${w}`);
+      for (const f of pageFailures) lines.push(`fail: ${pagePath}: ${f}`);
       const selfTests = Math.max(0, ...hookCounts);
-      hookCounts.length = 0;
-      console.log(`page ${pagePath}: weight ${(bytes / 1000).toFixed(1)} KB, ${selfTests} self-tests, ${pageFailures.length} failures`);
+      lines.push(`page ${pagePath}: weight ${(bytes / 1000).toFixed(1)} KB, ${selfTests} self-tests, ${pageFailures.length} failures`);
       report.pages.push({ page: pagePath, weightBytes: bytes, failures: pageFailures, warnings: pageWarnings });
-    }
+      return { failures: pageFailures.length, lines };
+    };
+    const results = new Array(pages.length);
+    let next = 0;
+    await Promise.all(Array.from({ length: Math.min(Math.max(1, opts.jobs), pages.length) }, async () => {
+      while (next < pages.length) {
+        const index = next++;
+        results[index] = await runPage(pages[index]);
+        for (const line of results[index].lines) console.log(line);
+      }
+    }));
+    for (const result of results) failureCount += result.failures;
+    report.pages.sort((a, b) => pages.indexOf(a.page) - pages.indexOf(b.page));
   } finally {
     await browser.close();
     server.close();
