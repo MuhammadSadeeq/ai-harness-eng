@@ -352,6 +352,12 @@ basis for Phase 1, and answered SPEC §14:
   browser QA) and was pushed; CI's Browser QA then failed on builders'
   unreviewed demo pages. From now on every push is gated on
   `tools/ci_local.sh --committed --qa`.
+- Amended 2026-10-11: a push whose commits, since the last commit that passed
+  `--committed --qa`, change only `.github/` and `docs/` is gated on
+  `tools/ci_local.sh --committed` (no browser QA): nothing QA loads can
+  change. Anything else still needs `--qa`. A change to `.github/` is
+  then proved by GitHub's CI run on the pushed commit, which the director
+  reads.
 - Default QA (and CI) checks `site/labs/` pages only once the director accepts
   them (`tools/qa/accepted-labs.txt`, director-owned), matching the component
   registry (only accepted components load on real pages). Builders keep

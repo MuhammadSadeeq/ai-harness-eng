@@ -1,8 +1,7 @@
 # Phase 3 gate: the content waves
 
-**Status:** every walkthrough finding is fixed or ruled (e601ea8 closes the
-last two majors); the gate is signed off on the first commit after it that
-the full local gate passes, below.
+**Status:** passed; signed off on 6578297 (below). Every walkthrough
+finding is fixed or ruled (e601ea8 closes the last two majors).
 SPEC §10 sets the Phase 3 exit gate: **each wave is checker-green and
 reviewed, its facts are verified, and its screenshots are approved.** Each
 condition is below, with its evidence. Phase 4 (the build track) started
@@ -107,8 +106,8 @@ Findings: 0 blockers, 5 majors, 9 minors.
   silent when the restore fails; the after-interaction audit runs with
   `keep: true`, so QA still sees the learner's end state.
 
-## Sign-off
+## Signed off
 
-The director signs the waves off on the first commit at or after e601ea8
-that `tools/ci_local.sh --committed --qa` passes; the commit is recorded
-here when it does.
+On 6578297 (2026-10-11): `tools/ci_local.sh --committed --qa` passed: every
+checker, the package, and browser QA on 108 pages (972 screenshots, 0
+failures; pages that timed out in the pool were re-checked alone and passed).

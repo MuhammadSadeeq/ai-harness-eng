@@ -1,8 +1,7 @@
 # Phase 5 gate: the career track
 
-**Status:** every item passes on the evidence below. The gate is signed off
-on the first commit at or after f9db7eb that `tools/ci_local.sh --committed
---qa` passes; the commit is recorded here when it does.
+**Status:** passed; signed off on 6578297 (below). Every item passes on the
+evidence below.
 
 SPEC §10 sets the Phase 5 exit gate: **the career-track gate list (Appendix
 D) passes.** Evidence: `docs/gate/phase5-evidence.md`, run on a clean HEAD
@@ -25,3 +24,9 @@ the stations load only on their own pages (ebce3d9).
 Carried to BACKLOG: B-21 (rebuild module status on import of a hand-made
 file), B-22 (a mypy run for T1.o3; a check on mypy's output covers it now,
 e94e4b7).
+
+## Signed off
+
+On 6578297 (2026-10-11): `tools/ci_local.sh --committed --qa` passed: every
+checker, the package, and browser QA on 108 pages (972 screenshots, 0
+failures; pages that timed out in the pool were re-checked alone and passed).

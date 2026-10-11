@@ -1,8 +1,7 @@
 # Phase 4 gate: the build track
 
-**Status:** every item passes on the evidence below. The gate is signed off
-on the first commit at or after 9601074 that `tools/ci_local.sh --committed
---qa` passes; the commit is recorded here when it does.
+**Status:** passed; signed off on 6578297 (below). Every item passes on the
+evidence below.
 
 SPEC §10 sets the Phase 4 exit gate: **`check_steps` and parity are green.
 The local package passes ruff, mypy and pytest. The eval runner works
@@ -49,3 +48,9 @@ repository root, with its exit code and final line).
 - Every command the course shows runs from the repository root.
 - A worked example on a page ships with its code and a test that proves its
   numbers (H13).
+
+## Signed off
+
+On 6578297 (2026-10-11): `tools/ci_local.sh --committed --qa` passed: every
+checker, the package, and browser QA on 108 pages (972 screenshots, 0
+failures; pages that timed out in the pool were re-checked alone and passed).

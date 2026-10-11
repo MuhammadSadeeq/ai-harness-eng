@@ -75,8 +75,9 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install
         run: |
-          pip install pytest==9.1.1 ruff==0.16.9 mypy==2.3.1
-          pip install -e rein
+          # pyyaml: the tests read facts/*.yaml. The live extra pins the SDK, so mypy checks live.py against it.
+          pip install pytest==9.1.1 ruff==0.16.9 mypy==2.3.1 pyyaml==6.0.3
+          pip install -e "rein[live]"
       - name: Lint, types, tests
         working-directory: rein
         run: |
